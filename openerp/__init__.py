@@ -56,22 +56,20 @@ del time
 # The hard-coded super-user id (a.k.a. administrator, or root user).
 SUPERUSER_ID = 1
 
-def registry(database_name=None):
+def registry(database_name):
     """
-    Return the model registry for the given database, or the database mentioned
-    on the current thread. If the registry does not exist yet, it is created on
-    the fly.
+    Return the model registry for the given database. If the registry does not
+    exist yet, it is created on the fly.
     """
-    if database_name is None:
-        import threading
-        database_name = threading.currentThread().dbname
     return modules.registry.RegistryManager.get(database_name)
 
 #----------------------------------------------------------
 # Imports
 #----------------------------------------------------------
 import addons
+import cli
 import conf
+import http
 import loglevels
 import modules
 import netsvc
@@ -84,18 +82,5 @@ import sql_db
 import tools
 import workflow
 
-#----------------------------------------------------------
-# Model classes, fields, api decorators, and translations
-#----------------------------------------------------------
-from . import models
-from . import fields
-from . import api
-from openerp.tools.translate import _
-
-#----------------------------------------------------------
-# Other imports, which may require stuff from above
-#----------------------------------------------------------
-import cli
-import http
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

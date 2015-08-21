@@ -154,7 +154,7 @@ def check(f):
 
 def execute_cr(cr, uid, obj, method, *args, **kw):
     object = openerp.registry(cr.dbname).get(obj)
-    if object is None:
+    if not object:
         raise except_orm('Object Error', "Object %s doesn't exist" % obj)
     return getattr(object, method)(cr, uid, *args, **kw)
 

@@ -357,35 +357,27 @@ workflow"""
         cids = self.res_country.search(cr, uid, [('name', 'ilike', 'NewCountry')])
         self.assertEqual(len(cids), 1, 'ir_actions_server: TODO')
 
-    @mute_logger('openerp.addons.base.ir.ir_model', 'openerp.models')
+    @mute_logger('openerp.addons.base.ir.ir_model', 'openerp.osv.orm')
     def test_60_multi(self):
         cr, uid = self.cr, self.uid
 
         # Data: 2 server actions that will be nested
         act1_id = self.ir_actions_server.create(cr, uid, {
             'name': 'Subaction1',
-            'sequence': 1,
             'model_id': self.res_partner_model_id,
             'state': 'code',
             'code': 'action = {"type": "ir.actions.act_window"}',
         })
+        # Do: create a new record in the same model and link it
         act2_id = self.ir_actions_server.create(cr, uid, {
             'name': 'Subaction2',
-            'sequence': 2,
             'model_id': self.res_partner_model_id,
             'state': 'object_create',
             'use_create': 'copy_current',
         })
-        act3_id = self.ir_actions_server.create(cr, uid, {
-            'name': 'Subaction3',
-            'sequence': 3,
-            'model_id': self.res_partner_model_id,
-            'state': 'code',
-            'code': 'action = {"type": "ir.actions.act_url"}',
-        })
         self.ir_actions_server.write(cr, uid, [self.act_id], {
             'state': 'multi',
-            'child_ids': [(6, 0, [act1_id, act2_id, act3_id])],
+            'child_ids': [(6, 0, [act1_id, act2_id])],
         })
 
         # Do: run the action
@@ -395,13 +387,12 @@ workflow"""
         pids = self.res_partner.search(cr, uid, [('name', 'ilike', 'TestingPartner (copy)')])  # currently res_partner overrides default['name'] whatever its value
         self.assertEqual(len(pids), 1, 'ir_actions_server: TODO')
         # Test: action returned
-        self.assertEqual(res.get('type'), 'ir.actions.act_url')
+        self.assertEqual(res.get('type'), 'ir.actions.act_window', '')
 
         # Test loops
-        with self.assertRaises(except_orm):
-            self.ir_actions_server.write(cr, uid, [self.act_id], {
-                'child_ids': [(6, 0, [self.act_id])]
-            })
+        self.assertRaises(except_orm, self.ir_actions_server.write, cr, uid, [self.act_id], {
+            'child_ids': [(6, 0, [self.act_id])]
+        })
 
 
 if __name__ == '__main__':

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+ <data>
+
+	<record id="purchase_order_form_invisible" model="ir.ui.view">
+	    <field name="name">purchase.order.form.invisible</field>
+	    <field name="model">purchase.order</field>
+	    <field name="inherit_id" ref="purchase.purchase_order_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <page string="Incoming Shipments &amp; Invoices" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	    </field>
+	</record>
+
+	<record model="ir.ui.menu" id="purchase.menu_procurement_management_inventory">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="purchase.menu_procurement_management_invoice">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="purchase.menu_purchase_partner_cat">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+  </data>  
+</openerp>

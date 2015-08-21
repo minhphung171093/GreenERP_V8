@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <menuitem id="ql_vanban_di" name="Văn bản đi" parent="ql_vanban" sequence="20" groups="group_vanban_nv"/>
+		
+		<!--Văn bản đi-->
+        <record id="van_ban_di_tree_view" model="ir.ui.view">
+            <field name="name">vanban.di.tree</field>
+            <field name="model">vanban.di</field>
+            <field eval="1" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Văn bản đi" >
+                    <field name="nguoi_tao_id" />
+                    <field name="loai_vanban_id" />
+                    <field name="nguoi_ky_vb_id" />
+                    <field name="chuc_vu_id" />
+                    <field name="ma_hoso" />
+                    <field name="thuoc_phongban_id" />
+                    <field name="do_mat_id" />
+                    <field name="do_khan_id" />
+                    <field name="can_phuc_dap" />
+                    <field name="so_to" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="van_ban_di_form_view" model="ir.ui.view">
+            <field name="name">vanban.di.form</field>
+            <field name="model">vanban.di</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Văn bản đi" version="7.0">
+                	<header>
+                        <field name="state" widget="statusbar" statusbar_visible="moitao,dangxuly,daxuly" statusbar_colors='{"moitao":"blue"}'/>
+                	</header>
+                	<sheet>
+                		<group>
+		                	<group>
+		                    	<field name="nguoi_tao_id" options='{"no_create":True}'/>
+			                    <field name="loai_vanban_id" options='{"no_create":True}'/>
+			                    <field name="nguoi_ky_vb_id" options='{"no_create":True}'/>
+			                    <field name="chuc_vu_id" options='{"no_create":True}'/>
+			                    <field name="ma_hoso" />
+		                    </group>
+		                    <group>
+		                    	<field name="thuoc_phongban_id" options='{"no_create":True}'/>
+			                    <field name="do_mat_id" options='{"no_create":True}'/>
+			                    <field name="do_khan_id" options='{"no_create":True}'/>
+			                    <field name="can_phuc_dap" />
+			                    <field name="so_to" />
+		                    </group>
+		            	</group>
+		            	<group>
+		                    <field name="trich_yeu_noidung" />
+		            	</group>
+		            	<group>
+		                    <field name="hoso_lines" context="{'default_res_model': 'vanban.di'}">
+		                    	<tree>
+		                    		<field name="name" />
+		                    		<field name="datas" />
+		                    		<field name="res_model"/>
+		                    		<field name="user_id" options='{"no_create":True}' string="Người thực hiện"/>
+		                    	</tree>
+		                    	<form>
+		                    		<field name="name" />
+		                    		<field name="datas" />
+		                    		<field name="res_model"/>
+		                    		<field name="user_id" options='{"no_create":True}' string="Người thực hiện"/>
+		                    	</form>
+		                    </field>
+		            	</group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_van_ban_di_form" model="ir.actions.act_window">
+            <field name="name">Văn bản đi</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vanban.di</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="van_ban_di_tree_view"/>
+        </record>
+        
+        <menuitem action="action_van_ban_di_form"
+            id="menu_action_van_ban_di_form"
+            parent="ql_vanban_di" sequence="120"/>
+		
+    </data>
+</openerp>

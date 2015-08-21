@@ -11,7 +11,9 @@ def valid_page_in_book(arch):
 
 
 def valid_field_in_graph(arch):
-    """ Children of ``graph`` can only be ``field`` """
+    """A `graph` must have `string` attribute and an immediate node of `graph` view must be `field`."""
+    if arch.xpath('//graph[not (@string)]'):
+        return False
     for child in arch.xpath('/graph/child::*'):
         if child.tag != 'field':
             return False
@@ -19,7 +21,9 @@ def valid_field_in_graph(arch):
 
 
 def valid_field_in_tree(arch):
-    """ Children of ``tree`` view must be ``field`` or ``button``."""
+    """A `tree` must have `string` attribute and an immediate node of `tree` view must be `field` or `button`."""
+    if arch.xpath('//tree[not (@string)]'):
+        return False
     for child in arch.xpath('/tree/child::*'):
         if child.tag not in ('field', 'button'):
             return False
@@ -27,13 +31,13 @@ def valid_field_in_tree(arch):
 
 
 def valid_att_in_field(arch):
-    """ ``field`` nodes must all have a ``@name`` """
-    return not arch.xpath('//field[not(@name)]')
+    """A `name` attribute must be in a `field` node."""
+    return not arch.xpath('//field[not (@name)]')
 
 
 def valid_att_in_label(arch):
-    """ ``label`` nodes must have a ``@for`` or a ``@string`` """
-    return not arch.xpath('//label[not(@for or @string)]')
+    """A `for` and `string` attribute must be on a `label` node."""
+    return not arch.xpath('//label[not ((@for) or (@string))]')
 
 
 def valid_att_in_form(arch):

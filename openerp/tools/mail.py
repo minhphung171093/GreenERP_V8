@@ -33,7 +33,6 @@ from email.utils import getaddresses
 
 import openerp
 from openerp.loglevels import ustr
-from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -54,7 +53,7 @@ safe_attrs = clean.defs.safe_attrs | frozenset(
      ])
 
 
-def html_sanitize(src, silent=True, strict=False, strip_style=False):
+def html_sanitize(src, silent=True, strict=False):
     if not src:
         return src
     src = ustr(src, errors='replace')
@@ -64,18 +63,15 @@ def html_sanitize(src, silent=True, strict=False, strip_style=False):
     # html encode email tags
     part = re.compile(r"(<(([^a<>]|a[^<>\s])[^<>]*)@[^<>]+>)", re.IGNORECASE | re.DOTALL)
     src = part.sub(lambda m: cgi.escape(m.group(1)), src)
-    # html encode mako tags <% ... %> to decode them later and keep them alive, otherwise they are stripped by the cleaner
-    src = src.replace('<%', cgi.escape('<%'))
-    src = src.replace('%>', cgi.escape('%>'))
 
     kwargs = {
         'page_structure': True,
-        'style': strip_style,       # True = remove style tags/attrs
+        'style': False,             # do not remove style attributes
         'forms': True,              # remove form tags
         'remove_unknown_tags': False,
         'allow_tags': allowed_tags,
         'comments': False,
-        'processing_instructions': False
+        'processing_instructions' : False
     }
     if etree.LXML_VERSION >= (2, 3, 1):
         # kill_tags attribute has been added in version 2.3.1
@@ -108,8 +104,6 @@ def html_sanitize(src, silent=True, strict=False, strip_style=False):
         cleaned = cleaned.replace('%20', ' ')
         cleaned = cleaned.replace('%5B', '[')
         cleaned = cleaned.replace('%5D', ']')
-        cleaned = cleaned.replace('&lt;%', '<%')
-        cleaned = cleaned.replace('%&gt;', '%>')
     except etree.ParserError, e:
         if 'empty' in str(e):
             return ""
@@ -282,7 +276,7 @@ def html_email_clean(html, remove=False, shorten=False, max_length=300, expand_o
             read_more_node.append(read_more_separator_node)
         read_more_link_node = _create_node(
             'a',
-            expand_options.get('oe_expand_a_content', _('read more')),
+            expand_options.get('oe_expand_a_content', 'read more'),
             None,
             {
                 'href': expand_options.get('oe_expand_a_href', '#'),
@@ -387,11 +381,6 @@ def html_email_clean(html, remove=False, shorten=False, max_length=300, expand_o
             node.set('in_quote', '1')
             node.set('tail_remove', '1')
         if node.tag == 'blockquote' or node.get('text_quote') or node.get('text_signature'):
-            # here no quote_begin because we want to be able to remove some quoted
-            # text without removing all the remaining context
-            node.set('in_quote', '1')
-        if node.getparent() is not None and node.getparent().get('in_quote'):
-            # inside a block of removed text but not in quote_begin (see above)
             node.set('in_quote', '1')
 
         # shorten:
@@ -509,9 +498,6 @@ def html2plaintext(html, body_id=None, encoding='utf-8'):
     html = re.sub('<br\s*/?>', '\n', html)
     html = re.sub('<.*?>', ' ', html)
     html = html.replace(' ' * 2, ' ')
-    html = html.replace('&gt;', '>')
-    html = html.replace('&lt;', '<')
-    html = html.replace('&amp;', '&')
 
     # strip all lines
     html = '\n'.join([x.strip() for x in html.splitlines()])
@@ -580,7 +566,7 @@ def append_content_to_html(html, content, plaintext=True, preserve=False, contai
     elif plaintext:
         content = '\n%s\n' % plaintext2html(content, container_tag)
     else:
-        content = re.sub(r'(?i)(</?(?:html|body|head|!\s*DOCTYPE)[^>]*>)', '', content)
+        content = re.sub(r'(?i)(</?html.*>|</?body.*>|<!\W*DOCTYPE.*>)', '', content)
         content = u'\n%s\n' % ustr(content)
     # Force all tags to lowercase
     html = re.sub(r'(</?)\W*(\w+)([ >])',
@@ -608,8 +594,12 @@ command_re = re.compile("^Set-([a-z]+) *: *(.+)$", re.I + re.UNICODE)
 # Updated in 7.0 to match the model name as well
 # Typical form of references is <timestamp-openerp-record_id-model_name@domain>
 # group(1) = the record ID ; group(2) = the model (if any) ; group(3) = the domain
-reference_re = re.compile("<.*-open(?:object|erp)-(\\d+)(?:-([\w.]+))?[^>]*@([^>]*)>", re.UNICODE)
+reference_re = re.compile("<.*-open(?:object|erp)-(\\d+)(?:-([\w.]+))?.*@(.*)>", re.UNICODE)
 
+# Bounce regex
+# Typical form of bounce is bounce-128-crm.lead-34@domain
+# group(1) = the mail ID; group(2) = the model (if any); group(3) = the record ID
+bounce_re = re.compile("[\w]+-(\d+)-?([\w.]+)?-?(\d+)?", re.UNICODE)
 
 def generate_tracking_message_id(res_id):
     """Returns a string that can be used in the Message-ID RFC822 header field

@@ -20,7 +20,7 @@
 #
 ##############################################################################
 
-__all__ = ['synchronized', 'lazy_property', 'classproperty']
+__all__ = ['synchronized', 'lazy_property']
 
 from functools import wraps
 from inspect import getsourcefile
@@ -34,23 +34,20 @@ class lazy_property(object):
     """
     def __init__(self, fget):
         self.fget = fget
+        self.name = fget.__name__
 
     def __get__(self, obj, cls):
         if obj is None:
             return self
         value = self.fget(obj)
-        setattr(obj, self.fget.__name__, value)
+        setattr(obj, self.name, value)
         return value
-
-    @property
-    def __doc__(self):
-        return self.fget.__doc__
 
     @staticmethod
     def reset_all(obj):
         """ Reset all lazy properties on the instance `obj`. """
         cls = type(obj)
-        obj_dict = vars(obj)
+        obj_dict = obj.__dict__
         for name in obj_dict.keys():
             if isinstance(getattr(cls, name, None), lazy_property):
                 obj_dict.pop(name)
@@ -102,13 +99,5 @@ def compose(a, b):
     def wrapper(*args, **kwargs):
         return a(b(*args, **kwargs))
     return wrapper
-
-
-class _ClassProperty(property):
-    def __get__(self, cls, owner):
-        return self.fget.__get__(None, owner)()
-
-def classproperty(func):
-    return _ClassProperty(classmethod(func))
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

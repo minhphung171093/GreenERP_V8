@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	
+    	<menuitem
+            id="menu_main_qlduandautu"
+            name="Quản lý Dự Án Đầu Tư"
+            sequence="20"
+            groups="group_duan_dautu_nv_nhap_duan_dautu,group_duan_dautu_nhap_baocao"/>
+            
+            <menuitem
+	            id="menu_duandautu"
+	            name="Dự Án Đầu Tư"
+	            parent="menu_main_qlduandautu"
+	            sequence="1"
+	            groups="group_duan_dautu_nv_nhap_duan_dautu"/>
+    			
+    			<menuitem action="action_duandautu_nhadautu"
+		        	name="Danh sách Chủ đầu tư"
+		            id="menu_action_duandautu_nhadautu"
+		            parent="menu_duandautu" sequence="0"/>
+            
+    			<menuitem action="action_duan_dautu"
+			    	name='Danh sách dự án'
+			    	id="menu_action_duan_dautu" 
+			    	parent="menu_duandautu" sequence="1"
+			    	groups="group_duan_dautu_nv_nhap_duan_dautu"/>
+		    	
+		    	<!--<menuitem action="action_nhaplieu_duan"
+			    	name='Nhập thông tin dự án'
+			    	id="menu_action_nhaplieu_duan" 
+			    	parent="menu_duandautu" sequence="5"/>
+			    
+			    <menuitem action="action_nhaplieu_quyetdinh_dautu"
+			    	name='Nhập QĐ Đầu tư'
+			    	id="menu_action_nhaplieu_quyetdinh_dautu" 
+			    	parent="menu_duandautu" sequence="10"/>
+			    
+			    <menuitem action="action_nhaplieu_quyetdinh_pheduyet_TKKT_TDT"
+			    	name='Nhập QĐ PD TKKT-TDT'
+			    	id="menu_action_nhaplieu_quyetdinh_pheduyet_TKKT_TDT" 
+			    	parent="menu_duandautu" sequence="11"/>
+			    
+			    <menuitem action="action_nhaplieu_quyetdinh_pheduyet_KQDT"
+			    	name='Nhập QĐ PD KQDT'
+			    	id="menu_action_nhaplieu_quyetdinh_pheduyet_KQDT" 
+			    	parent="menu_duandautu" sequence="12"/>-->
+			    
+    		<menuitem
+	            id="menu_quanlyvon"
+	            name="Quản lý vốn"
+	            parent="menu_main_qlduandautu"
+	            sequence="10"
+	            groups="group_duan_dautu_nv_nhap_nguonvon"/>
+    			
+    			<menuitem action="action_xem_cay_nguonvon"
+			    	name='Cây nguồn vốn'
+			    	id="menu_action_xem_cay_nguonvon" 
+			    	parent="menu_quanlyvon" sequence="0"
+			    	groups="group_duan_dautu_tp"/>
+			    	
+			    <menuitem action="action_nhap_lieu_ke_hoach_von"
+			    	name='Kế hoạch vốn'
+			    	id="menu_action_nhap_lieu_ke_hoach_von" 
+			    	parent="menu_quanlyvon" sequence="15"/>
+			    	
+			    <menuitem action="action_xem_ke_hoach_von"
+			    	name='Xem kế hoạch vốn'
+			    	id="menu_action_xem_ke_hoach_von" 
+			    	parent="menu_quanlyvon" sequence="16"/>
+			    	
+			    <menuitem action="action_nhap_lieu_chitiet_von"
+			    	name='Chi tiết cấp phát'
+			    	id="menu_action_nhap_lieu_chitiet_von" 
+			    	parent="menu_quanlyvon" sequence="17"/>
+    			
+    			<menuitem action="action_danhmuc_nguonvon_nhomtheonam"
+			    	name='Nguồn vốn hàng năm'
+			    	id="menu_action_danhmuc_nguonvon_nhomtheonam" 
+			    	parent="menu_quanlyvon" sequence="18"/>
+			<menuitem name="Báo cáo"
+				id="duan_dautu_report"
+				parent="menu_main_qlduandautu"
+				sequence="30"
+				groups="group_duan_dautu_nhap_baocao"/>
+					<menuitem name="Kế hoạch đầu tư"
+						action="action_kehoach_dautu_report"
+						id="menu_action_kehoach_dautu_report"
+						parent="duan_dautu_report" sequence="10"
+						groups="group_duan_dautu_nhap_baocao"/>
+					<menuitem name="Kế hoạch đầu tư theo năm"
+						action="action_kehoach_dautu_theonam_report"
+						id="menu_action_kehoach_dautu_theonam_report"
+						parent="duan_dautu_report" sequence="15"
+						groups="group_duan_dautu_nhap_baocao"/>
+		    		<menuitem
+		    			name="Nhập báo cáo giám sát"
+		    			action="action_baocao_giamsat"
+		    			id="menu_action_baocao_giamsat"
+		    			parent="duan_dautu_report"
+		    			sequence="20"
+						groups="group_duan_dautu_nhap_baocao"/>
+					<menuitem
+		    			name="Báo cáo giám sát"
+		    			action="action_print_baocao_giamsat"
+		    			id="menu_action_print_baocao_giamsat"
+		    			parent="duan_dautu_report"
+		    			sequence="30"
+						groups="group_duan_dautu_nhap_baocao"/>
+					<menuitem
+		    			name="Nhập báo cáo đấu thầu"
+		    			action="action_baocao_dauthau"
+		    			id="menu_action_baocao_dauthau"
+		    			parent="duan_dautu_report"
+		    			sequence="20"
+						groups="group_duan_dautu_nhap_baocao"/>
+					<menuitem
+		    			name="Báo cáo đấu thầu"
+		    			action="action_print_baocao_dauthau"
+		    			id="menu_action_print_baocao_dauthau"
+		    			parent="duan_dautu_report"
+		    			sequence="30"
+						groups="group_duan_dautu_nhap_baocao"/>
+					
+					<!--<menuitem name="Báo cáo đấu thầu" action="action_baocao_dauthau_report" id="menu_action_baocao_dauthau_report" parent="duan_dautu_report" sequence="40" groups="group_duan_dautu_nhap_baocao"/>-->
+    		<menuitem
+	            id="menu_duandautu_cauhinh"
+	            name="Cấu hình"
+	            parent="menu_main_qlduandautu"
+	            sequence="100"
+	            groups="group_duan_dautu_cauhinh"/>
+	    		
+				<menuitem action="action_nguon_von"
+			    	name='Nguồn vốn'
+			    	id="menu_action_nguon_von" 
+			    	parent="menu_duandautu_cauhinh" sequence="0"/>	    		
+	    		
+		    	<menuitem action="action_duan_danhmuc"
+			    	name='Danh muc đầu tư'
+			    	id="menu_action_duan_danhmuc" 
+			    	parent="menu_duandautu_cauhinh" sequence="1"/>
+			    	
+			   	<menuitem action="action_duan_nhom"
+			    	name='Nhóm đầu tư'
+			    	id="menu_action_duan_nhom" 
+			    	parent="menu_duandautu_cauhinh" sequence="2"/>
+			    	
+		    	<menuitem action="action_duan_nanglucthietke"
+			    	name='Năng lực thiết kế'
+			    	id="menu_action_duan_nanglucthietke" 
+			    	parent="menu_duandautu_cauhinh" sequence="2"/>
+			    
+			    <menuitem action="action_duan_giaidoan"
+			    	name='Giai đoạn'
+			    	id="menu_action_duan_giaidoan" 
+			    	parent="menu_duandautu_cauhinh" sequence="3"/>
+		       
+		       <menuitem action="action_hinhthuc_dautu"
+			    	name='Hình thức đầu tư'
+			    	id="menu_action_hinhthuc_dautu" 
+			    	parent="menu_duandautu_cauhinh" sequence="6"/>
+			   
+			   <menuitem action="action_phuongthuc_dautu"
+			    	name='Phương thức đầu tư'
+			    	id="menu_action_phuongthuc_dautu" 
+			    	parent="menu_duandautu_cauhinh" sequence="6"/>
+			    	
+			   <menuitem action="action_mau_baocao_giamsat"
+			    	name='Mẫu báo cáo giám sát'
+			    	id="menu_action_mau_baocao_giamsat" 
+			    	parent="menu_duandautu_cauhinh" sequence="7"/>
+		       
+		       <menuitem action="action_cocau_dautu"
+			    	name='Cơ cấu đầu tư'
+			    	id="menu_action_cocau_dautu" 
+			    	parent="menu_duandautu_cauhinh" sequence="8"/>
+		       
+		       <menuitem action="action_linhvuc_dauthau"
+			    	name='Lĩnh vực đấu thầu'
+			    	id="menu_action_linhvuc_dauthau" 
+			    	parent="menu_duandautu_cauhinh" sequence="9"/>
+		       
+		       <menuitem action="action_hinhthuc_luachon_nhathau"
+			    	name='Hình thức lựa chọn nhà thầu'
+			    	id="menu_action_hinhthuc_luachon_nhathau" 
+			    	parent="menu_duandautu_cauhinh" sequence="10"/>
+			    	
+		    	<menuitem action="action_khdt_nam"
+			    	name='Năm'
+			    	id="menu_action_khdt_nam" 
+			    	parent="menu_duandautu_cauhinh" sequence="1000"/>
+		       
+    </data>
+</openerp>

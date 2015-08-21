@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+		<menuitem id="ql_vanban" name="Quản lý văn bản" sequence="11" />
+        <menuitem id="ql_vanban_cauhinh" name="Cấu hình" parent="ql_vanban" sequence="100" groups="group_vanban_tp"/>
+        
+        <!--Cơ quan-->
+        <record id="co_quan_tree_view" model="ir.ui.view">
+            <field name="name">res.company.tree</field>
+            <field name="model">res.company</field>
+            <field eval="50" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Cơ quan">
+                	<field name="nguoi_lanh_dao_id" />
+                	<field name="ma" />
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="co_quan_form_view" model="ir.ui.view">
+            <field name="name">res.company.form</field>
+            <field name="model">res.company</field>
+            <field eval="50" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Cơ quan" version="7.0">
+                  <sheet>
+                    <div>
+                        <field name="logo" widget="image"  class="oe_avatar oe_left"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <div attrs="{'invisible' : [('logo','!=',False)]}" class="oe_view_nocontent oe_clear">
+                        <p class="oe_view_nocontent_create oe_edit_only">
+                            Click to set your company logo.
+                        </p>
+                    </div>
+                    <group col="4">
+                        <field name="parent_id"  groups="base.group_multi_company"/>
+                    </group>
+                    <group col="4">
+                        <field name="nguoi_lanh_dao_id"/>
+                		<field name="ma" required="1"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="General Information">
+                            <group>
+                                <group>
+                                    <field name="partner_id" readonly="1" required="0" groups="base.group_no_one"/>
+                                    <label for="street" string="Address"/>
+                                    <div>
+                                        <field name="street" placeholder="Street..."/>
+                                        <field name="street2"/>
+                                        <div>
+                                            <field name="city" placeholder="City" style="width: 40%%"/>
+                                            <field name="state_id" class="oe_no_button" placeholder="State" on_change="onchange_state(state_id)" style="width: 24%%" options='{"no_open": True}'/>
+                                            <field name="zip" placeholder="ZIP" style="width: 34%%"/>
+                                        </div>
+                                        <field name="country_id" placeholder="Country" class="oe_no_button" options='{"no_open": True}' on_change="on_change_country(country_id)"/>
+                                    </div>
+                                    <label for="rml_header1"/>
+                                    <div>
+                                        <field name="rml_header1" placeholder="e.g. Global Business Solutions"/>
+                                    </div>
+                                    <field name="website" widget="url" placeholder="e.g. www.openerp.com"
+                                        on_change="onchange_footer(custom_footer, phone, fax, email, website, vat, company_registry, bank_ids)"/>
+                                </group>
+                                <group>
+                                    <field name="phone" on_change="onchange_footer(custom_footer, phone, fax, email, website, vat, company_registry, bank_ids)"/>
+                                    <field name="fax" on_change="onchange_footer(custom_footer, phone, fax, email, website, vat, company_registry, bank_ids)"/>
+                                    <field name="email" on_change="onchange_footer(custom_footer, phone, fax, email, website, vat, company_registry, bank_ids)"/>
+                                    <field name="vat" on_change="onchange_footer(custom_footer, phone, fax, email, website, vat, company_registry, bank_ids)"/>
+                                    <field name="company_registry" on_change="onchange_footer(custom_footer, phone, fax, email, website, vat, company_registry, bank_ids)"/>
+                                </group>
+                            </group>
+                            <group string="Bank Accounts">
+                                <field name="bank_ids" nolabel="1" context="{'default_company_id': active_id, 'footer_hide': False}"
+                                    on_change="onchange_footer(custom_footer, phone, fax, email, website, vat, company_registry, bank_ids)"/>
+                            </group>
+                        </page>
+                        <page string="Configuration">
+                            <group>
+                                <group name="account_grp" string="Accounting">
+                                    <field name="currency_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_co_quan_form" model="ir.actions.act_window">
+            <field name="name">Cơ quan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.company</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="co_quan_tree_view"/>
+        </record>
+        
+        <record id="action_co_quan_form1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="co_quan_tree_view"/>
+            <field name="act_window_id" ref="action_co_quan_form"/>
+        </record>
+        
+        <record id="action_co_quan_form2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="co_quan_form_view"/>
+            <field name="act_window_id" ref="action_co_quan_form"/>
+        </record>
+        
+        <menuitem action="action_co_quan_form"
+            id="menu_action_co_quan_form"
+            parent="ql_vanban_cauhinh" sequence="1"/>
+        
+        <!--Cấp gởi-->
+        <record id="cap_goi_tree_view" model="ir.ui.view">
+            <field name="name">cap.goi.tree</field>
+            <field name="model">cap.goi</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Cấp gởi" editable='top'>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="cap_goi_form_view" model="ir.ui.view">
+            <field name="name">cap.goi.form</field>
+            <field name="model">cap.goi</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Cấp gởi">
+                	<group>
+                    	<field name="name" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_cap_goi_form" model="ir.actions.act_window">
+            <field name="name">Cấp gởi</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cap.goi</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="cap_goi_tree_view"/>
+        </record>
+        
+        <menuitem action="action_cap_goi_form"
+            id="menu_action_cap_goi_form"
+            parent="ql_vanban_cauhinh" sequence="10"/>
+        
+        <!--Nơi phát hành-->
+        <record id="noi_phathanh_tree_view" model="ir.ui.view">
+            <field name="name">noi.phathanh.tree</field>
+            <field name="model">noi.phathanh</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Nơi phát hành" editable='top'>
+                    <field name="name" />
+                    <field name="ky_hieu" />
+                    <field name="ghi_chu" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="noi_phathanh_form_view" model="ir.ui.view">
+            <field name="name">noi.phathanh.form</field>
+            <field name="model">noi.phathanh</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Nơi phát hành">
+                	<group>
+                    	<field name="name" />
+                    	<field name="ky_hieu" />
+                    	<field name="ghi_chu" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_noi_phathanh_form" model="ir.actions.act_window">
+            <field name="name">Nơi phát hành</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">noi.phathanh</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="noi_phathanh_tree_view"/>
+        </record>
+        
+        <menuitem action="action_noi_phathanh_form"
+            id="menu_action_noi_phathanh_form"
+            parent="ql_vanban_cauhinh" sequence="20"/>
+            
+        <!--Loại sổ văn bản-->
+        <record id="loai_sovanban_tree_view" model="ir.ui.view">
+            <field name="name">loai.sovanban.tree</field>
+            <field name="model">loai.sovanban</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Loại sổ văn bản" editable='top'>
+                    <field name="name" />
+                    <field name="ky_hieu" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="loai_sovanban_form_view" model="ir.ui.view">
+            <field name="name">loai.sovanban.form</field>
+            <field name="model">loai.sovanban</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Loại sổ văn bản">
+                	<group>
+                    	<field name="name" />
+                    	<field name="ky_hieu" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_loai_sovanban_form" model="ir.actions.act_window">
+            <field name="name">Loại sổ văn bản</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">loai.sovanban</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="loai_sovanban_tree_view"/>
+        </record>
+        
+        <menuitem action="action_loai_sovanban_form"
+            id="menu_action_loai_sovanban_form"
+            parent="ql_vanban_cauhinh" sequence="30"/>
+        
+        <!--Sổ văn bản-->
+        <record id="so_vanban_tree_view" model="ir.ui.view">
+            <field name="name">so.vanban.tree</field>
+            <field name="model">so.vanban</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Sổ văn bản" editable='top'>
+                    <field name="name" />
+                    <field name="co_quan_id" />
+                	<field name="ngay_tao" />
+                	<field name="nam" />
+                	<field name="so_hien_tai" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="so_vanban_form_view" model="ir.ui.view">
+            <field name="name">so.vanban.form</field>
+            <field name="model">so.vanban</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Sổ văn bản">
+                	<group>
+                    	<field name="name" />
+                    	<field name="co_quan_id" />
+                    	<field name="ngay_tao" />
+                    	<field name="nam" />
+                    	<field name="so_hien_tai" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_so_vanban_form" model="ir.actions.act_window">
+            <field name="name">Sổ văn bản</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">so.vanban</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="so_vanban_tree_view"/>
+        </record>
+        
+		<menuitem action="action_so_vanban_form"
+            id="menu_action_so_vanban_form"
+            parent="ql_vanban_cauhinh" sequence="40"/>
+		
+		<!--Loại văn bản-->
+        <record id="loai_vanban_tree_view" model="ir.ui.view">
+            <field name="name">loai.vanban.tree</field>
+            <field name="model">loai.vanban</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Loại văn bản" editable='top'>
+                    <field name="name" />
+                    <field name="ky_hieu" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="loai_vanban_form_view" model="ir.ui.view">
+            <field name="name">loai.vanban.form</field>
+            <field name="model">loai.vanban</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Loại văn bản">
+                	<group>
+                    	<field name="name" />
+                    	<field name="ky_hieu" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_loai_vanban_form" model="ir.actions.act_window">
+            <field name="name">Loại văn bản</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">loai.vanban</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="loai_vanban_tree_view"/>
+        </record>
+        
+        <menuitem action="action_loai_vanban_form"
+            id="menu_action_loai_vanban_form"
+            parent="ql_vanban_cauhinh" sequence="50"/>
+		
+		<!--Độ mật-->
+        <record id="do_mat_tree_view" model="ir.ui.view">
+            <field name="name">do.mat.tree</field>
+            <field name="model">do.mat</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Độ mật" editable='top'>
+                    <field name="name" />
+                    <field name="ma" />
+                    <field name="thu_tu" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="do_mat_form_view" model="ir.ui.view">
+            <field name="name">do.mat.form</field>
+            <field name="model">do.mat</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Độ mật">
+                	<group>
+                    	<field name="name" />
+                    	<field name="ma" />
+                    	<field name="thu_tu" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_do_mat_form" model="ir.actions.act_window">
+            <field name="name">Độ mật</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">do.mat</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="do_mat_tree_view"/>
+        </record>
+        
+        <menuitem action="action_do_mat_form"
+            id="menu_action_do_mat_form"
+            parent="ql_vanban_cauhinh" sequence="60"/>
+		
+        <!--Độ khẩn-->
+        <record id="do_khan_tree_view" model="ir.ui.view">
+            <field name="name">do.khan.tree</field>
+            <field name="model">do.khan</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Độ khẩn" editable='top'>
+                    <field name="name" />
+                    <field name="ma" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="do_khan_form_view" model="ir.ui.view">
+            <field name="name">do.khan.form</field>
+            <field name="model">do.khan</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Độ khẩn">
+                	<group>
+                    	<field name="name" />
+                    	<field name="ma" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_do_khan_form" model="ir.actions.act_window">
+            <field name="name">Độ khẩn</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">do.khan</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="do_khan_tree_view"/>
+        </record>
+        
+        <menuitem action="action_do_khan_form"
+            id="menu_action_do_khan_form"
+            parent="ql_vanban_cauhinh" sequence="70"/>
+        
+        <!--Danh mục phòng ban-->
+        <record id="action_phong_ban_form" model="ir.actions.act_window">
+            <field name="name">Danh mục phòng ban</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.department</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="hr.view_department_tree"/>
+        </record>
+        
+        <record id="action_phong_ban_form1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="hr.view_department_tree"/>
+            <field name="act_window_id" ref="action_phong_ban_form"/>
+        </record>
+        
+        <record id="action_phong_ban_form2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="hr.view_department_form"/>
+            <field name="act_window_id" ref="action_phong_ban_form"/>
+        </record>
+        
+        <menuitem action="action_phong_ban_form"
+            id="menu_action_phong_ban_form"
+            parent="ql_vanban_cauhinh" sequence="80"/>
+            
+        <!--Danh mục người dùng-->
+        <record id="action_nguoi_dung_form" model="ir.actions.act_window">
+            <field name="name">Danh mục người dùng</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="hr.view_employee_tree"/>
+        </record>
+        
+        <record id="action_phong_ban_form1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="hr.view_employee_tree"/>
+            <field name="act_window_id" ref="action_nguoi_dung_form"/>
+        </record>
+        
+        <record id="action_phong_ban_form2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="hr.view_employee_form"/>
+            <field name="act_window_id" ref="action_nguoi_dung_form"/>
+        </record>
+        
+        <menuitem action="action_nguoi_dung_form"
+            id="menu_action_nguoi_dung_form"
+            parent="ql_vanban_cauhinh" sequence="90"/>
+        
+        <!--Chức vụ-->
+        <record id="chuc_vu_tree_view" model="ir.ui.view">
+            <field name="name">hr.employee.category.tree</field>
+            <field name="model">hr.employee.category</field>
+            <field eval="50" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Chức vụ" editable='top'>
+                    <field name="ma" required="1"/>
+                    <field name="name" />
+                    <field name="mota" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="chuc_vu_form_view" model="ir.ui.view">
+            <field name="name">hr.employee.category.form</field>
+            <field name="model">hr.employee.category</field>
+            <field eval="50" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Chức vụ">
+                	<group>
+                    	<field name="ma" />
+	                    <field name="name" />
+	                    <field name="mota" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_chuc_vu_form" model="ir.actions.act_window">
+            <field name="name">Chức vụ</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.employee.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="chuc_vu_tree_view"/>
+        </record>
+        
+        <record id="action_chuc_vu_form1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="chuc_vu_tree_view"/>
+            <field name="act_window_id" ref="action_chuc_vu_form"/>
+        </record>
+        
+        <record id="action_chuc_vu_form2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="chuc_vu_form_view"/>
+            <field name="act_window_id" ref="action_chuc_vu_form"/>
+        </record>
+        
+        <menuitem action="action_chuc_vu_form"
+            id="menu_action_chuc_vu_form"
+            parent="ql_vanban_cauhinh" sequence="100"/>
+        
+        <!--Lĩnh vực-->
+        <record id="linh_vuc_tree_view" model="ir.ui.view">
+            <field name="name">linh.vuc.tree</field>
+            <field name="model">linh.vuc</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Lĩnh vực" editable='top'>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="linh_vuc_form_view" model="ir.ui.view">
+            <field name="name">linh.vuc.form</field>
+            <field name="model">linh.vuc</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Lĩnh vực">
+                	<group>
+                    	<field name="name" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_linh_vuc_form" model="ir.actions.act_window">
+            <field name="name">Lĩnh vực</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">linh.vuc</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="linh_vuc_tree_view"/>
+        </record>
+        
+        <menuitem action="action_linh_vuc_form"
+            id="menu_action_linh_vuc_form"
+            parent="ql_vanban_cauhinh" sequence="110"/>
+        
+        <!--Sổ văn bản nội bộ-->
+        <record id="so_vanban_noibo_tree_view" model="ir.ui.view">
+            <field name="name">so.vanban.noibo.tree</field>
+            <field name="model">so.vanban.noibo</field>
+            <field eval="1" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Sổ văn bản nội bộ" >
+                    <field name="ky_hieu"/>
+                    <field name="name" />
+                    <field name="mota" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="so_vanban_noibo_form_view" model="ir.ui.view">
+            <field name="name">so.vanban.noibo.form</field>
+            <field name="model">so.vanban.noibo</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Sổ văn bản nội bộ">
+                	<group>
+                    	<field name="ky_hieu" />
+	                    <field name="name" />
+	                    <field name="mota" />
+	                    <field name="loai_vb_nb_ids" />
+	                    <field name="phong_ban_ids" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_so_vanban_noibo_form" model="ir.actions.act_window">
+            <field name="name">Sổ văn bản nội bộ</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">so.vanban.noibo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="so_vanban_noibo_tree_view"/>
+        </record>
+        
+        <menuitem action="action_so_vanban_noibo_form"
+            id="menu_action_so_vanban_noibo_form"
+            parent="ql_vanban_cauhinh" sequence="120"/>
+        
+        <!--Loại văn bản nội bộ-->
+        <record id="loai_vanban_noibo_tree_view" model="ir.ui.view">
+            <field name="name">loai.vanban.noibo.tree</field>
+            <field name="model">loai.vanban.noibo</field>
+            <field eval="1" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Loại văn bản nội bộ" editable='top'>
+                    <field name="ky_hieu"/>
+                    <field name="name" />
+                    <field name="mota" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="loai_vanban_noibo_form_view" model="ir.ui.view">
+            <field name="name">loai.vanban.noibo.form</field>
+            <field name="model">loai.vanban.noibo</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Loại văn bản nội bộ">
+                	<group>
+                    	<field name="ky_hieu" />
+	                    <field name="name" />
+	                    <field name="mota" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_loai_vanban_noibo_form" model="ir.actions.act_window">
+            <field name="name">Loại văn bản nội bộ</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">loai.vanban.noibo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="loai_vanban_noibo_tree_view"/>
+        </record>
+        
+        <menuitem action="action_loai_vanban_noibo_form"
+            id="menu_action_loai_vanban_noibo_form"
+            parent="ql_vanban_cauhinh" sequence="130"/>
+        
+        <menuitem id="ql_vanban_den" name="Văn bản đến" parent="ql_vanban" sequence="10" groups="group_vanban_nv"/>
+		
+		<!--Tiếp nhận văn bản-->
+        <record id="tiepnhan_vanban_tree_view" model="ir.ui.view">
+            <field name="name">vanban.den.tree</field>
+            <field name="model">vanban.den</field>
+            <field eval="1" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Tiếp nhận văn bản" >
+                	<field name="name" />
+                    <field name="loai_vanban_id" />
+                    <field name="so_den_theo_so" />
+                    <field name="linh_vuc_id" invisible='1'/>
+                    <field name="ngay_den" invisible='1'/>
+                    <field name="ngay_phat_hanh" />
+                    <field name="donvi_saoy" />
+                    <field name="trich_yeu" />
+                    <field name="nguoi_ky_id" invisible='1'/>
+                    <field name="do_khan_id" invisible='1'/>
+                    <field name="so_to" invisible='1'/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="tiepnhan_vanban_form_view" model="ir.ui.view">
+            <field name="name">vanban.den.form</field>
+            <field name="model">vanban.den</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Tiếp nhận văn bản" version="7.0">
+                	<header>
+                        <field name="state" widget="statusbar" statusbar_visible="moitao,dangxuly,daxuly" statusbar_colors='{"moitao":"blue"}'/>
+                	</header>
+                	<sheet>
+                		<h1>
+	                        <label string="Số ký hiệu gốc: "/>
+	                        <field name="name" class="oe_inline"/>
+	                    </h1>
+                		<group>
+		                	<group>
+		                    	<field name="so_vanban_id" options='{"no_create":True}'/>
+			                    <field name="so_den_theo_so" />
+			                    <field name="linh_vuc_id" options='{"no_create":True}'/>
+			                    <field name="ngay_den" />
+			                    <field name="ngay_phat_hanh" />
+			                    <field name="donvi_saoy" />
+			                    <field name="nguoi_ky_id" options='{"no_create":True}'/>
+			                    <field name="do_khan_id" options='{"no_create":True}'/>
+		                    </group>
+		                    <group>
+		                    	<field name="loai_vanban_id" options='{"no_create":True}'/>
+			                    <field name="vanban_qppl" />
+			                    <field name="cap_goi_id" options='{"no_create":True}'/>
+			                    <field name="noi_phathanh_id" options='{"no_create":True}'/>
+			                    <field name="khac" />
+			                    <field name="so_vanban_di_phucdap" />
+			                    <field name="do_mat_id" options='{"no_create":True}'/>
+			                    <field name="so_to" />
+		                    </group>
+		            	</group>
+		            	<group>
+		                    <field name="trich_yeu" />
+		            	</group>
+		            	<group>
+		                    <field name="hoso_lines" context="{'default_res_model': 'vanban.den'}">
+		                    	<tree>
+		                    		<field name="name" />
+		                    		<field name="datas" />
+		                    		<field name="res_model"/>
+		                    		<field name="user_id" options='{"no_create":True}' string="Người thực hiện"/>
+		                    	</tree>
+		                    	<form>
+		                    		<field name="name" />
+		                    		<field name="datas_fname" />
+		                    		<field name="datas" file_name="datas_fname"/>
+		                    		<field name="res_model"/>
+		                    		<field name="user_id" options='{"no_create":True}' string="Người thực hiện"/>
+		                    	</form>
+		                    </field>
+		            	</group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_tiepnhan_vanban_form" model="ir.actions.act_window">
+            <field name="name">Tiếp nhận văn bản</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">vanban.den</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="tiepnhan_vanban_tree_view"/>
+        </record>
+        
+        <menuitem action="action_tiepnhan_vanban_form"
+            id="menu_action_tiepnhan_vanban_form"
+            parent="ql_vanban_den" sequence="120"/>
+		
+    </data>
+</openerp>

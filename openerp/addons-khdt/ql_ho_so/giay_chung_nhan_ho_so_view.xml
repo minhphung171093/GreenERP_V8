@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+		<menuitem id="ql_ho_so" name="Hồ Sơ Đầu Tư" sequence="15" groups="group_hoso_nv"/>
+        <menuitem id="ql_ho_so_cau_hinh" name="Cấu hình" parent="ql_ho_so" sequence="20" groups="group_hoso_tp"/>
+        
+        <!--Loại Hồ Sơ-->
+        <record id="loai_ho_so_tree_view" model="ir.ui.view">
+            <field name="name">loai.ho.so.tree</field>
+            <field name="model">loai.ho.so</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Loại Hồ Sơ" editable='top'>
+                    <field name="name" />
+                    <field name="ma" />
+                    <field name="dodai_ma" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="loai_ho_so_form_view" model="ir.ui.view">
+            <field name="name">loai.ho.so.form</field>
+            <field name="model">loai.ho.so</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Loại Hồ Sơ">
+                	<group>
+                    	<field name="name" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_loai_ho_so_form" model="ir.actions.act_window">
+            <field name="name">Loại Hồ Sơ</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">loai.ho.so</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="loai_ho_so_tree_view"/>
+        </record>
+        
+        <menuitem action="action_loai_ho_so_form"
+            id="menu_action_loai_ho_so_form"
+            parent="ql_ho_so_cau_hinh" sequence="10"/>
+        
+        <!--Hình Thức Đầu Tư-->
+        <record id="hinh_thuc_dau_tu_tree_view" model="ir.ui.view">
+            <field name="name">hinh.thuc.dau.tu.tree</field>
+            <field name="model">hinh.thuc.dau.tu</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Hình Thức Đầu Tư" editable='top'>
+                    <field name="name" />
+                    <field name="ma" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="hinh_thuc_dau_tu_form_view" model="ir.ui.view">
+            <field name="name">hinh.thuc.dau.tu.form</field>
+            <field name="model">hinh.thuc.dau.tu</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Hình Thức Đầu Tư">
+                	<group>
+                    	<field name="name" />
+                    	<field name="ma" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_hinh_thuc_dau_tu_form" model="ir.actions.act_window">
+            <field name="name">Hình Thức Đầu Tư</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hinh.thuc.dau.tu</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="hinh_thuc_dau_tu_tree_view"/>
+        </record>
+        
+        <menuitem action="action_hinh_thuc_dau_tu_form"
+            id="menu_action_hinh_thuc_dau_tu_form"
+            parent="ql_ho_so_cau_hinh" sequence="20"/>
+            
+        <!--Ngành nghề-->
+        <record id="nganh_nghe_tree_view" model="ir.ui.view">
+            <field name="name">nganh.nghe.tree</field>
+            <field name="model">nganh.nghe</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Ngành nghề" editable='top'>
+                    <field name="name" />
+                    <field name="ma_nganh" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="nganh_nghe_form_view" model="ir.ui.view">
+            <field name="name">nganh.nghe.form</field>
+            <field name="model">nganh.nghe</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Ngành nghề">
+                	<group>
+	                    <field name="name" />
+	                    <field name="ma_nganh" />
+                	</group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_nganh_nghe_form" model="ir.actions.act_window">
+            <field name="name">Ngành nghề</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">nganh.nghe</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="nganh_nghe_tree_view"/>
+        </record>
+        
+        <menuitem action="action_nganh_nghe_form"
+            id="menu_action_nganh_nghe_form"
+            parent="ql_ho_so_cau_hinh" sequence="30"/>
+        
+        <!--Loại hình doanh nghiệp-->
+        <record id="loai_hinh_doanh_nghiep_tree_view" model="ir.ui.view">
+            <field name="name">res.partner.category.tree</field>
+            <field name="model">res.partner.category</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Loại hình doanh nghiệp" editable='top'>
+                    <field name="name" />
+                    <field name="ma" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="loai_hinh_doanh_nghiep_form_view" model="ir.ui.view">
+            <field name="name">res.partner.category.form</field>
+            <field name="model">res.partner.category</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Loại hình doanh nghiệp">
+                	<group>
+                    	<field name="name" />
+                    	<field name="ma" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_loai_hinh_doanh_nghiep_form" model="ir.actions.act_window">
+            <field name="name">Loại hình doanh nghiệp</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="loai_hinh_doanh_nghiep_tree_view"/>
+        </record>
+
+        <menuitem action="action_loai_hinh_doanh_nghiep_form"
+            id="menu_action_loai_hinh_doanh_nghiep_form"
+            parent="ql_ho_so_cau_hinh" sequence="40"/>
+        
+		<!--Khu vực-->
+        <record id="khu_vuc_tree_view" model="ir.ui.view">
+            <field name="name">khu.vuc.tree</field>
+            <field name="model">khu.vuc</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Khu vực" editable='top'>
+                    <field name="name" />
+                    <field name="country_id" />
+                    <field name="tinh_tp_id" />
+                </tree>
+            </field>
+        </record>
+        
+        <record id="khu_vuc_form_view" model="ir.ui.view">
+            <field name="name">khu.vuc.form</field>
+            <field name="model">khu.vuc</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Khu vực">
+                	<group>
+                    	<field name="name" />
+                    	<field name="country_id" />
+                    	<field name="tinh_tp_id" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_khu_vuc_form" model="ir.actions.act_window">
+            <field name="name">Khu vực</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">khu.vuc</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="khu_vuc_tree_view"/>
+        </record>
+        
+        <menuitem action="action_khu_vuc_form"
+            id="menu_action_khu_vuc_form"
+            parent="ql_ho_so_cau_hinh" sequence="45"/>
+            
+        <!--Tỉnh/TP-->
+        <record id="dia_ban_tree_view" model="ir.ui.view">
+            <field name="name">res.country.state.tree</field>
+            <field name="model">res.country.state</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Tỉnh/TP">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="country_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="dia_ban_form_view" model="ir.ui.view">
+            <field name="name">res.country.state.form</field>
+            <field name="model">res.country.state</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Tỉnh/TP">
+                	<group>
+	                    <field name="name"/>
+	                    <field name="code"/>
+	                    <field name="country_id" options="{&quot;no_open&quot;: True}"/>
+	                    <field name="quan_huyen_lines"/>
+                	</group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="dia_ban_search_view" model="ir.ui.view">
+	        <field name="name">res.country.state.search</field>
+	        <field name="model">res.country.state</field>
+	        <field name="arch" type="xml">
+	            <search string="Tỉnh/TP">
+	            	<field name="name"/>
+                    <field name="code"/>
+                    <field name="country_id"/>
+                    
+                    <filter name="search_vn" string="Việt Nam" domain="[('country_id.code','=','VN')]"/>
+	            </search>
+	        </field>
+	    </record>
+        
+        <record id="action_dia_ban_form" model="ir.actions.act_window">
+            <field name="name">Tỉnh/TP</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.country.state</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_search_vn':1}</field>
+            <field name="view_id" ref="dia_ban_tree_view"/>
+            <field name="search_view_id" ref="dia_ban_search_view"/>
+        </record>
+        
+        <menuitem action="action_dia_ban_form"
+            id="menu_action_dia_ban_form"
+            parent="ql_ho_so_cau_hinh" sequence="50"/>
+        
+        <!--Quốc gia-->
+        <record id="quoc_gia_tree_view" model="ir.ui.view">
+            <field name="name">res.country.tree</field>
+            <field name="model">res.country</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Quốc gia" editable='top'>
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="quoc_gia_form_view" model="ir.ui.view">
+            <field name="name">res.country.form</field>
+            <field name="model">res.country</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Quốc gia">
+                	<group>
+	                    <field name="name"/>
+	                    <field name="code"/>
+                	</group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_quoc_gia_form" model="ir.actions.act_window">
+            <field name="name">Quốc gia</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.country</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="quoc_gia_tree_view"/>
+        </record>
+        
+        <record id="action_quoc_gia_form3" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="base.view_country_form"/>
+            <field name="act_window_id" ref="base.action_country"/>
+        </record>
+        
+        <menuitem action="action_quoc_gia_form"
+            id="menu_action_quoc_gia_form"
+            parent="ql_ho_so_cau_hinh" sequence="60"/>
+        
+        <!--Giấy chứng nhận-->
+        <record id="giay_chung_nhan_tree_view" model="ir.ui.view">
+            <field name="name">giay.chung.nhan.tree</field>
+            <field name="model">giay.chung.nhan</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Giấy chứng nhận" editable='top'>
+                    <field name="name"/>
+                    <field name="ma"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="giay_chung_nhan_form_view" model="ir.ui.view">
+            <field name="name">giay.chung.nhan.form</field>
+            <field name="model">giay.chung.nhan</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Giấy chứng nhận">
+                	<group>
+	                    <field name="name"/>
+                	</group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_giay_chung_nhan_form" model="ir.actions.act_window">
+            <field name="name">Giấy chứng nhận</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">giay.chung.nhan</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="giay_chung_nhan_tree_view"/>
+        </record>
+        
+        <menuitem action="action_giay_chung_nhan_form"
+            id="menu_action_giay_chung_nhan_form"
+            parent="ql_ho_so_cau_hinh" sequence="65"/>
+        
+        <!--Căn cứ luật-->
+        <record id="can_cu_luat_tree_view" model="ir.ui.view">
+            <field name="name">can.cu.luat.tree</field>
+            <field name="model">can.cu.luat</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Căn cứ luật" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_can_cu_luat_form" model="ir.actions.act_window">
+            <field name="name">Căn cứ luật</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">can.cu.luat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="can_cu_luat_tree_view"/>
+        </record>
+        
+        <menuitem action="action_can_cu_luat_form"
+            id="menu_action_can_cu_luat_form"
+            parent="ql_ho_so_cau_hinh" sequence="70"/>
+        
+        <!--Nghĩa vụ của nhà đầu tư-->
+        <record id="nghiavu_nhadautu_tree_view" model="ir.ui.view">
+            <field name="name">nghiavu.nhadautu.tree</field>
+            <field name="model">nghiavu.nhadautu</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Nghĩa vụ của nhà đầu tư" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_nghiavu_nhadautu_form" model="ir.actions.act_window">
+            <field name="name">Nghĩa vụ của nhà đầu tư</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">nghiavu.nhadautu</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="nghiavu_nhadautu_tree_view"/>
+        </record>
+        
+        <menuitem action="action_nghiavu_nhadautu_form"
+            id="menu_action_nghiavu_nhadautu_form"
+            parent="ql_ho_so_cau_hinh" sequence="75"/>
+        
+        <!-- Xưng hô -->
+        <record id="action_xungho" model="ir.actions.act_window">
+            <field name="name">Xưng hô</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner.title</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+        </record>
+        
+        <menuitem action="action_xungho"
+            id="menu_action_xungho"
+            parent="ql_ho_so_cau_hinh" sequence="80"/>
+        
+        <!--Giấy thành lập-->
+        <record id="giay_thanhlap_tree_view" model="ir.ui.view">
+            <field name="name">giay.thanhlap.tree</field>
+            <field name="model">giay.thanhlap</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Giấy thành lập" editable='top'>
+                    <field name="name"/>
+                    <field name="so"/>
+                    <field name="ngay_cap"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_giay_thanhlap_form" model="ir.actions.act_window">
+            <field name="name">Giấy thành lập</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">giay.thanhlap</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="view_id" ref="giay_thanhlap_tree_view"/>
+        </record>
+        
+        <menuitem action="action_giay_thanhlap_form"
+            id="menu_action_giay_thanhlap_form"
+            parent="ql_ho_so_cau_hinh" sequence="85"/>
+        
+        <!--Nhà đầu tư-->
+        <record id="nha_dau_tu_tree_view" model="ir.ui.view">
+            <field name="name">nha.dau.tu.tree</field>
+            <field name="model">res.partner</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Nhà đầu tư">
+                	<field name="is_company" string="Là Tổ Chức?"/>
+                    <field name="name"/>
+                    <field name="noi_cap_phep_thanh_lap" attrs="{'invisible': [('is_company','=',True)]}"/>
+                    
+                    <field name="ngay_sinh" attrs="{'invisible': [('is_company','=',0)]}"/>
+                    <field name="quoc_tich" options='{"no_create":True}' attrs="{'invisible': [('is_company','=',0)]}"/>
+                    <field name="cmnd_ho_chieu" attrs="{'invisible': [('is_company','=',0)]}"/>
+                    <field name="so_cmnd_hochieu" attrs="{'invisible': [('is_company','=',0)]}"/>
+                    <field name="ngay_cap_cmnd_hc" attrs="{'invisible': [('is_company','=',0)]}"/>
+                    <field name="noi_cap_cmnd_hc" attrs="{'invisible': [('is_company','=',0)]}"/>
+                    
+                    <field name="street" string='Địa chỉ hiện tại'/>
+                    <field name="state_id" options='{"no_create":True}'/>
+                    <field name="country_id" options='{"no_create":True}'/>
+                    <field name="phan_he" invisible='1'/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="nha_dau_tu_form_view" model="ir.ui.view">
+            <field name="name">nha.dau.tu.form</field>
+            <field name="model">res.partner</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Nhà đầu tư" version="7.0">
+                	<sheet>
+	                    <field name="image" widget='image' class="oe_left oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+	                    <div class="oe_title">
+	                        <div class="oe_edit_only">
+	                            <label for="name"/> (
+	                            <field name="is_company" on_change="onchange_type(is_company)" class="oe_inline"/> <label for="is_company" string="Là Tổ Chức?"/>)
+	                        </div>
+	                        <h1>
+	                            <field name="name" default_focus="1" placeholder="Name" />
+	                        </h1>
+	                    </div>
+	                    <group attrs="{'invisible': [('is_company','=',True)]}">
+	                    	<field name="title" string="Xưng hô" options='{"no_create":True}'/>
+	                    	<field name="function" string="Chức vụ"/>
+	                    	<field name="ngay_sinh"/>
+	                    	<field name="gioitinh"/>
+		                    <field name="quoc_tich"/>
+		                    <field name="cmnd_ho_chieu"/>
+		                    <field name="so_cmnd_hochieu"/>
+		                    <field name="ngay_cap_cmnd_hc"/>
+		                    <field name="noi_cap_cmnd_hc"/>
+		                    <field name="dia_chi_thuong_tru"/>
+	                    </group>
+	                    <field name="giay_thanhlap_id" nolabel='1' attrs="{'invisible': [('is_company','=',False)]}">
+                    		<tree editable='top'>
+	                    		<field name="name"/>
+			                    <field name="so"/>
+			                    <field name="ngay_cap"/>
+		                    </tree>
+                    	</field>
+	                    <group attrs="{'invisible': [('is_company','=',False)]}">
+		                    <field name="noi_cap_phep_thanh_lap"/>
+		                    <field name="phan_he" invisible='1'/>
+	                    </group>
+	                    <group>
+	                    	<field name="ten_viet_tat"/>
+		                    <label for="street" string="Địa chỉ hiện tại"/>
+	                        <div>
+	                            <field name="street" placeholder="Đường/Khu Phố..."/>
+	                            <div class="address_format">
+	                            	<field name="country_id" placeholder="Quốc gia" class="oe_no_button" options='{"no_open": True}'/>
+	                                <field name="state_id" class="oe_no_button" placeholder="Tỉnh thành" style="width: 37%%" options='{"no_open": True}' domain="[('country_id','=',country_id)]"/>
+	                            </div>
+	                        </div>
+                        </group>
+	                    <group string='Đại Diện Bởi' attrs="{'invisible': [('is_company','=',False)]}">
+	                    	<field name="child_ids" nolabel='1' context="{'default_is_company':False,'default_parent_id': active_id, 'default_street': street, 'default_state_id': state_id, 'default_country_id': country_id}">
+                                <tree string="Người Đại Diện">
+				                    <field name="name"/>
+				                    <field name="ngay_sinh"/>
+				                    <field name="quoc_tich"/>
+				                    <field name="cmnd_ho_chieu"/>
+				                    <field name="so_cmnd_hochieu"/>
+				                    <field name="ngay_cap_cmnd_hc"/>
+				                    <field name="noi_cap_cmnd_hc"/>
+				                    
+				                    <field name="street" string='Địa chỉ hiện tại'/>
+				                    <field name="state_id"/>
+				                    <field name="country_id"/>
+				                </tree>
+                                <form string="Người Đại Diện" version="7.0">
+                                    <sheet>
+					                    <field name="image" widget='image' class="oe_left oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+					                    <div class="oe_title">
+					                        <div class="oe_edit_only">
+					                            <label for="name"/>
+					                            <field name="is_company" on_change="onchange_type(is_company)" class="oe_inline" invisible='1'/>
+					                        </div>
+					                        <h1>
+					                            <field name="name" default_focus="1" placeholder="Name" />
+					                        </h1>
+					                    </div>
+					                    <group>
+					                    	<field name="title" string="Xưng hô" options='{"no_create":True}'/>
+					                    	<field name="function" string="Chức vụ"/>
+					                    	<field name="country_id"/>
+					                    </group>
+					                    <group>
+					                    	<field name="ngay_sinh"/>
+						                    <field name="quoc_tich"/>
+						                    <field name="cmnd_ho_chieu"/>
+						                    <field name="so_cmnd_hochieu"/>
+						                    <field name="ngay_cap_cmnd_hc"/>
+						                    <field name="noi_cap_cmnd_hc"/>
+						                    <field name="dia_chi_thuong_tru"/>
+						                    <label for="street" string="Địa chỉ hiện tại"/>
+					                        <div>
+					                            <field name="street" placeholder="Đường/Khu Phố..."/>
+					                            <div class="address_format">
+					                            	<field name="country_id" placeholder="Quốc gia" class="oe_no_button" options='{"no_open": True}'/>
+					                                <field name="state_id" class="oe_no_button" placeholder="Tỉnh thành" style="width: 37%%" options='{"no_open": True}' domain="[('country_id','=',country_id)]"/>
+					                            </div>
+					                        </div>
+					                    </group>
+                                    </sheet>
+                                </form>
+                            </field>
+	                    </group>
+	            	</sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_nha_dau_tu_form" model="ir.actions.act_window">
+            <field name="name">Nhà đầu tư</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('phan_he','=','hosodautu')]</field>
+            <field name="context">{'default_phan_he':'hosodautu'}</field>
+            <field name="filter" eval="True"/>
+            <field name="view_id" ref="nha_dau_tu_tree_view"/>
+        </record>
+        
+        <record id="action_nha_dau_tu_form1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="nha_dau_tu_tree_view"/>
+            <field name="act_window_id" ref="action_nha_dau_tu_form"/>
+        </record>
+        
+        <record id="action_nha_dau_tu_form2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="nha_dau_tu_form_view"/>
+            <field name="act_window_id" ref="action_nha_dau_tu_form"/>
+        </record>
+        
+        <menuitem id="giay_chung_nhan_dau_tu" name="Giấy chứng nhận đầu tư" parent="ql_ho_so" sequence="10"/>
+        
+        <menuitem action="action_nha_dau_tu_form"
+        	name="Danh sách Nhà đầu tư"
+            id="menu_action_nha_dau_tu_form"
+            parent="giay_chung_nhan_dau_tu" sequence="10"/>
+            
+        <!--Lịch sử điều chỉnh-->
+        <record id="gcndt_lich_su_tree_view" model="ir.ui.view">
+            <field name="name">gcndt.lich.su.tree</field>
+            <field name="model">gcndt.lich.su</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Lịch sử điều chỉnh">
+                    <field name="ma_so"/>
+        			<field name="ten_tieng_viet"/>
+        			<field name="chung_nhan_lan_dau"/>
+        			<field name="so_lan_thay_doi"/>
+        			<field name="write_date"/>
+        			<field name="write_uid"/>
+        			<field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_gcndt_lich_su_form" model="ir.actions.act_window">
+            <field name="name">Lịch sử điều chỉnh</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gcndt.lich.su</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="domain">[('gcndt_id','=',active_id)]</field>
+            <field name="filter" eval="True"/>
+            <field name="view_id" ref="gcndt_lich_su_tree_view"/>
+        </record>
+        
+        <!--Giấy Chứng Nhận Đầu Tư-->
+        <record id="giay_chung_nhan_dau_tu_tree_view" model="ir.ui.view">
+            <field name="name">giay.chung.nhan.dau.tu.tree</field>
+            <field name="model">giay.chung.nhan.dau.tu</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Giấy Chứng Nhận Đầu Tư">
+                    <field name="ma_so" />
+                    <field name="ten_tieng_viet" />
+                    <field name="chung_nhan_lan_dau" />
+                    <field name="so_lan_thay_doi" />
+                    <field name="write_date" />
+                    <field name="write_uid" />
+                    <field name="state"/>
+                    <button name="xem_dieu_chinh" string="Xem các lần điều chỉnh" type="object" icon="gtk-edit" class="oe_highlight" attrs="{'invisible': ['|',('parent_id','!=',False),('state','!=','done')]}"/>
+                    <button name="cap" string="Cấp" type="object" class="oe_highlight" attrs="{'invisible': ['|',('parent_id','!=',False),('state','!=','draft')]}"/>
+                    <button name="thu_hoi" string="Thu Hồi" icon="gtk-cancel" type="object" class="oe_highlight" attrs="{'invisible': ['|',('parent_id','!=',False),('state','!=','done')]}"/>
+                    <field name="parent_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="giay_chung_nhan_dau_tu_form_view" model="ir.ui.view">
+            <field name="name">giay.chung.nhan.dau.tu.form</field>
+            <field name="model">giay.chung.nhan.dau.tu</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Giấy Chứng Nhận Đầu Tư" version="7.0">
+                	<header>
+                		<button name="print_gcndt_khonggan" string="In GCNĐT" type="object" class="oe_highlight" attrs="{'invisible': [('check_loai_ho_so','==',False)]}"/>
+                		<button name="print_gcndt_gan" string="In GCNĐT" type="object" class="oe_highlight" attrs="{'invisible': [('check_loai_ho_so','==',True)]}"/>
+                		<button name="print_to_trinh" string="In Tờ Trình" type="object" class="oe_highlight"/>
+                		<button name="cap" string="Cấp" type="object" class="oe_highlight" attrs="{'invisible': ['|',('parent_id','!=',False),('state','!=','draft')]}"/>
+                		<button name="dieu_chinh" string="Điều chỉnh" type="object" class="oe_highlight" attrs="{'invisible': ['|',('parent_id','!=',False),('state','!=','done')]}"/>
+                		<button name="thu_hoi" string="Thu Hồi" type="object" class="oe_highlight" attrs="{'invisible': ['|',('parent_id','!=',False),('state','!=','done')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"cancel":"red","draft":"blue"}'/>
+                        <field name="check_loai_ho_so" invisible="1"/>
+                	</header>
+                	<sheet>
+                		<h1>
+	                        <label string="Mã số "/>
+	                        <field name="ma_so" class="oe_inline"/>
+	                    </h1>
+	                    <group>
+		                   	<group>
+		                   		<field name="parent_id" invisible="1"/>
+		                   		<field name="quoc_gia" options='{"no_create":True}'/>
+		            			<field name="tinh_tp_id" options='{"no_create":True}'/>
+		                   	</group>
+		                   	<group>
+		                   		<field name="quan_huyen_id" options='{"no_create":True}'/>
+		            			<field name="khu_vuc_id" options='{"no_create":True}'/>
+		                   	</group>
+	                   	</group>
+	                   	<group>
+	                   		<field name="dia_chi"/>
+	                   	</group>
+	                	<notebook>
+                			<page string="Thông tin chung">
+                				<group>
+				                	<group>
+					                    <field name="loai_ho_so" options='{"no_create":True}' on_change="onchange_loaihoso(loai_ho_so)"/>
+					                    <field name="loai_hinh_doanh_nghiep" options='{"no_create":True}'/>
+					                    <field name="hinh_thuc_dau_tu_id" options='{"no_create":True}'/>
+					                    <field name="giay_chung_nhan_id" options='{"no_create":True}'/>
+				                	</group>
+				                	<group>
+				                		<field name="chung_nhan_lan_dau" />
+					                    <field name="dinh_dang_cu"/>
+					                    <field name="nganh_nghe_khac" options='{"no_create":True}'/>
+				                	</group>
+			                	</group>
+			                	<group string='Căn cứ pháp lý'>
+			                		<field name="can_cu_luat_ids" nolabel='1'/>
+			                	</group>
+			                	<group string='Nhà Đầu Tư'>
+			                		<field name="nha_dau_tu" context="{'default_phan_he':'hosodautu','form_view_ref':'ql_ho_so.nha_dau_tu_form_view','tree_view_ref':'ql_ho_so.nha_dau_tu_tree_view'}" nolabel='1'/>
+			                	</group>
+                			</page>
+	                        <page string="Điều 1" attrs="{'invisible': [('check_loai_ho_so','==',True)]}">
+	                        	<h2>
+			            			<label string="Điều 1: Nội dung đăng ký kinh doanh:"/>
+			            		</h2>
+			            		<h3>
+			            			<label string="1. Tên doanh nghiệp:"/>
+			            		</h3>
+			            		<group>
+			            			<field name="ten_tieng_viet"/>
+	                				<field name="ten_tieng_anh"/>
+	                				<field name="ten_viet_tat"/>
+			            		</group>
+			            		<h3>
+			            			<label string="2. Ngành, nghề kinh doanh"/>
+			            		</h3>
+			            		<field name="nganh_nghe_ids" nolabel='1'/>
+			            		<h3>
+			            			<label string="3. Vốn điều lệ"/>
+			            		</h3>
+			            		<div><field name="von_dieu_le_vn" class="oe_inline"/> (<field name="von_dieu_le_vn_chu" style="width: 30em"/>) đồng Việt Nam</div>
+			            		<label string="Tương đương:"/>
+			            		<div><field name="von_dieu_le_us" class="oe_inline"/> (<field name="von_dieu_le_us_chu" style="width: 30em"/>) đô la Mỹ</div>
+			            		<h3>
+			            			<label string="4. Vốn pháp định"/>
+			            		</h3>
+			            		<div><field name="von_phapdinh_vn" class="oe_inline"/> (<field name="von_phapdinh_vn_chu" style="width: 30em"/>) đồng Việt Nam</div>
+			            		<label string="Tương đương:"/>
+			            		<div><field name="von_phapdinh_us" class="oe_inline"/> (<field name="von_phapdinh_us_chu" style="width: 30em"/>) đô la Mỹ</div>
+	                        	<h3>
+			            			<label string="5. Người đại điện theo pháp luật của doanh nghiệp:"/>
+			            		</h3>
+			            		<field name="nguoi_dai_dien_id" nolabel="1" context="{'default_phan_he':'hosodautu','form_view_ref':'ql_ho_so.nha_dau_tu_form_view','tree_view_ref':'ql_ho_so.nha_dau_tu_tree_view'}"/>
+	                        </page>
+	                        <page string="Điều 2" attrs="{'invisible': [('check_loai_ho_so','==',True)]}">
+	                        	<h2>
+			            			<label string="Điều 2: Nội dung dự án đầu tư:"/>
+			            		</h2>
+			            		<h3>
+			            			<label string="1. Tên dự án đầu tư:"/>
+			            		</h3>
+			            		<field name="ten_du_an" nolabel="1"/>
+			            		<h3>
+			            			<label string="2. Địa điểm hiện thực dự án"/>
+			            		</h3>
+			            		<group>
+			            			<field name="dia_chi_du_an"/>
+			            		</group>
+			            		<div>Diện tích đất sử dụng <field name="dien_tich_dat_su_dung" class="oe_inline"/>m2</div>
+			            		<h3>
+			            			<label string="3. Mục tiêu và quy mô dự án:"/>
+			            		</h3>
+			            		<group>
+				            		<field name="muc_tieu_du_an"/>
+				            		<field name="quy_mo_du_an"/>
+				            	</group>
+			            		<h3>
+			            			<label string="4. Tổng vốn đầu tư"/>
+			            		</h3>
+			            		<div><field name="von_dau_tu_vn" class="oe_inline"/> (<field name="von_dau_tu_vn_chu" style="width: 30em"/>) đồng Việt Nam</div>
+			            		<label string="Tương đương:"/>
+			            		<div><field name="von_dau_tu_us" class="oe_inline"/> (<field name="von_dau_tu_us_chu" style="width: 30em"/>) đô la Mỹ</div>
+			            		<label string="Trong đó vốn góp để hiện thực dự án:"/>
+			            		<div><field name="von_thuc_hien_vn" class="oe_inline"/> (<field name="von_thuc_hien_vn_chu" style="width: 30em"/>) đồng Việt Nam</div>
+			            		<label string="Tương đương:"/>
+			            		<div><field name="von_thuc_hien_us" class="oe_inline"/> (<field name="von_thuc_hien_us_chu" style="width: 30em"/>) đô la Mỹ</div>
+			            		<group>
+			            			<field name="tien_do"/>
+			            		</group>
+			            		<h3>
+			            			<label string="5. Thời hạn hoạt động của dự án:"/>
+			            		</h3>
+			            		<div>Thời hạn hoạt động của dự án: <field name="thoi_han_hoat_dong" style="width: 15em"/> năm, kể từ ngày được cấp Giấy chứng nhận đầu tư.</div>
+			            		<div>Thời hạn thuê nhà xưởng để thực hiện dự án: <field name="thoi_han_thue_nha_xuong" style="width: 15em"/> năm, kể từ ngày được cấp Giấy chứng nhận đầu tư.</div>
+			            		<h3>
+			            			<label string="6. Tiến độ thực hiện dự án:"/>
+			            		</h3>
+			            		<field name="tien_do_thuc_hien" nolabel="1"/>
+			            		<h3>
+			            			<label for="dieu7"/>
+			            			<field name="dieu7"/>
+			            		</h3>
+			            		<field name="nghiavu_nhadautu_ids" nolabel="1"/>
+	                        </page>
+	                        <page string="Điều 1" attrs="{'invisible': [('check_loai_ho_so','==',False)]}">
+	                        	<h2>
+			            			<label string="Điều 1: Tên dự án đầu tư:"/>
+			            		</h2>
+			            		<field name="ten_du_an" nolabel="1"/>
+	                        </page>
+	                        <page string="Điều 2" attrs="{'invisible': [('check_loai_ho_so','==',False)]}">
+	                        	<h2>
+			            			<label string="Điều 2: Nội dung dự án đầu tư:"/>
+			            		</h2>
+			            		<h3>
+			            			<label string="1. Địa điểm hiện thực dự án"/>
+			            		</h3>
+			            		<group>
+			            			<field name="dia_chi_du_an"/>
+			            		</group>
+			            		<div>Diện tích đất sử dụng <field name="dien_tich_dat_su_dung" class="oe_inline"/>m2</div>
+			            		<h3>
+			            			<label string="2. Mục tiêu và quy mô dự án:"/>
+			            		</h3>
+			            		<group>
+				            		<field name="muc_tieu_du_an"/>
+				            		<field name="quy_mo_du_an"/>
+				            	</group>
+			            		<h3>
+			            			<label string="3. Tổng vốn đầu tư"/>
+			            		</h3>
+			            		<div><field name="von_dau_tu_vn" class="oe_inline"/> (<field name="von_dau_tu_vn_chu" style="width: 30em"/>) đồng Việt Nam</div>
+			            		<label string="Tương đương:"/>
+			            		<div><field name="von_dau_tu_us" class="oe_inline"/> (<field name="von_dau_tu_us_chu" style="width: 30em"/>) đô la Mỹ</div>
+			            		<label string="Trong đó vốn góp để hiện thực dự án:"/>
+			            		<div><field name="von_thuc_hien_vn" class="oe_inline"/> (<field name="von_thuc_hien_vn_chu" style="width: 30em"/>) đồng Việt Nam</div>
+			            		<label string="Tương đương:"/>
+			            		<div><field name="von_thuc_hien_us" class="oe_inline"/> (<field name="von_thuc_hien_us_chu" style="width: 30em"/>) đô la Mỹ</div>
+			            		<group>
+			            			<field name="tien_do"/>
+			            		</group>
+			            		<h3>
+			            			<label string="4. Thời hạn hoạt động của dự án:"/>
+			            		</h3>
+			            		<div>Thời hạn hoạt động của dự án: <field name="thoi_han_hoat_dong" style="width: 15em"/> năm, kể từ ngày được cấp Giấy chứng nhận đầu tư.</div>
+			            		<div>Thời hạn thuê nhà xưởng để thực hiện dự án: <field name="thoi_han_thue_nha_xuong" style="width: 15em"/> năm, kể từ ngày được cấp Giấy chứng nhận đầu tư.</div>
+			            		<h3>
+			            			<label string="5. Tiến độ thực hiện dự án:"/>
+			            		</h3>
+			            		<field name="tien_do_thuc_hien" nolabel="1"/>
+			            		<h3>
+			            			<label string="6."/>
+			            			<field name="dieu7"/>
+			            		</h3>
+			            		<field name="nghiavu_nhadautu_ids" nolabel="1"/>
+	                        </page>
+	                        <page string="Điều 3">
+	                        	<h2>
+			            			<label string="Điều 3"/>
+			            		</h2>
+			            		<field name="dieu3" nolabel="1"/>
+	                        </page>
+	                        <page string="Điều 4">
+	                        	<h2>
+			            			<label string="Điều 4:"/>
+			            		</h2>
+			            		<field name="dieu4" nolabel="1"/>
+	                        </page>
+	                        <page string="Văn bản đầu tư">
+			            		<field name="vanban_dautu_ids" nolabel="1"/>
+	                        </page>
+	                        <page string="Lịch sử thay đổi" attrs="{'invisible': [('parent_id','!=',False)]}">
+	                        	<group>
+	            					<field name="so_lan_thay_doi" />
+				                    <field name="write_date" />
+				                    <field name="write_uid" />
+			                    </group>
+	                        	<group>
+			            			<field name="lich_su" nolabel="1"/>
+			            		</group>
+	                        </page>
+	                        <page string="Lịch sử thu hồi">
+	                        	<group>
+			            			<field name="thu_hoi_lines" nolabel="1"/>
+			            		</group>
+	                        </page>
+                        </notebook>
+                	</sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_giay_chung_nhan_dau_tu_form" model="ir.actions.act_window">
+            <field name="name">Giấy Chứng Nhận Đầu Tư</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">giay.chung.nhan.dau.tu</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('parent_id','=',False)]</field>
+            <field name="view_id" ref="giay_chung_nhan_dau_tu_tree_view"/>
+        </record>
+        
+        <menuitem action="action_giay_chung_nhan_dau_tu_form"
+            id="menu_action_giay_chung_nhan_dau_tu_form"
+            parent="giay_chung_nhan_dau_tu" sequence="10"/>
+        
+        
+    </data>
+</openerp>

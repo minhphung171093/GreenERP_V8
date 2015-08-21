@@ -86,7 +86,7 @@ CREATE TABLE ir_module_module (
     summary character varying(256),
     name character varying(128) NOT NULL,
     author character varying(128),
-    icon varchar,
+    icon character varying(64),
     state character varying(16),
     latest_version character varying(64),
     shortdesc character varying(256),

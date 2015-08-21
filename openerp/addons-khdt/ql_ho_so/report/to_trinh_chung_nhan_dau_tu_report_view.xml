@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+    	<record id="to_trinh_chung_nhan_dau_tu_report" model="ir.actions.report.xml">
+	        <field name="name">to.trinh.chung.nhan.dau.tu.report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">giay.chung.nhan.dau.tu</field>
+	        <field name="report_name">Tờ trình chứng nhận đầu tư</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">ql_ho_so/report/to_trinh_chung_nhan_dau_tu_report.py</field>
+	        <field name="report_rml">ql_ho_so/report/to_trinh_chung_nhan_dau_tu.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="to_trinh_chung_nhan_dau_tu_report" 
+			model="giay.chung.nhan.dau.tu" 
+			name="to_trinh_chung_nhan_dau_tu_report"
+	        string="Tờ trình chứng nhận đầu tư"
+	        rml="ql_ho_so/report/to_trinh_chung_nhan_dau_tu.odt"/> 
+	        
+	</data>
+</openerp>

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import openerp.exceptions
-import openerp.osv.orm
-import openerp.osv.osv
-import openerp.tools.safe_eval
+import openerp
 
 class m(openerp.osv.osv.Model):
     """ This model exposes a few methods that will raise the different

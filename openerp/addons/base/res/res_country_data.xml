@@ -283,7 +283,7 @@
             <field name="name">Chile</field>
             <field name="code">cl</field>
             <field name="image" type="base64" file="base/static/img/country_flags/cl.png"></field>
-            <field name="currency_id" ref="CLP"/>
+            <field name="currency_id" ref="AUD"/>
         </record>
         <record id="cm" model="res.country">
             <field name="name">Cameroon</field>
@@ -428,7 +428,6 @@
             <field name="name">Finland</field>
             <field name="code">fi</field>
             <field name="image" type="base64" file="base/static/img/country_flags/fi.png"></field>
-            <field name="address_format" eval="'%(street)s\n%(street2)s\n%(zip)s %(city)s\n%(country_name)s'" />
             <field name="currency_id" ref="EUR"/>
         </record>
         <record id="fj" model="res.country">
@@ -800,7 +799,7 @@
             <field name="name">Lithuania</field>
             <field name="code">lt</field>
             <field name="image" type="base64" file="base/static/img/country_flags/lt.png"></field>
-            <field name="currency_id" ref="EUR"/>
+            <field name="currency_id" ref="LTL"/>
         </record>
         <record id="lu" model="res.country">
             <field name="name">Luxembourg</field>
@@ -812,7 +811,7 @@
             <field name="name">Latvia</field>
             <field name="code">lv</field>
             <field name="image" type="base64" file="base/static/img/country_flags/lv.png"></field>
-            <field name="currency_id" ref="EUR"/>
+            <field name="currency_id" ref="LVL"/>
         </record>
         <record id="ly" model="res.country">
             <field name="name">Libya</field>
@@ -949,7 +948,7 @@
             <field name="name">Malaysia</field>
             <field name="code">my</field>
             <field name="image" type="base64" file="base/static/img/country_flags/my.png"></field>
-            <field name="currency_id" ref="MYR"/>
+            <field name="currency_id" ref="MXN"/>
         </record>
         <record id="mz" model="res.country">
             <field name="name">Mozambique</field>
@@ -1081,8 +1080,7 @@
             <field name="name">Poland</field>
             <field name="code">pl</field>
             <field name="image" type="base64" file="base/static/img/country_flags/pl.png"></field>
-            <field name="address_format" eval="'%(street)s\n%(street2)s\n%(zip)s %(city)s\n%(country_name)s'" />
-            <field name="currency_id" ref="PLN"/>
+            <field name="currency_id" ref="PLZ"/>
         </record>
         <record id="pm" model="res.country">
             <field name="name">Saint Pierre and Miquelon</field>
@@ -1140,7 +1138,7 @@
             <field name="name">Romania</field>
             <field name="code">ro</field>
             <field name="image" type="base64" file="base/static/img/country_flags/ro.png"></field>
-            <field name="currency_id" ref="RON"/>
+            <field name="currency_id" ref="ROL"/>
         </record>
         <record id="rs" model="res.country">
             <field name="name">Serbia</field>
@@ -1355,7 +1353,7 @@
             <field name="name">Turkey</field>
             <field name="code">tr</field>
             <field name="image" type="base64" file="base/static/img/country_flags/tr.png"></field>
-            <field name="currency_id" ref="TRY"/>
+            <field name="currency_id" ref="TRL"/>
         </record>
         <record id="tt" model="res.country">
             <field name="name">Trinidad and Tobago</field>
@@ -1409,14 +1407,14 @@
             <field name="name">United States</field>
             <field name="code">us</field>
             <field name="image" type="base64" file="base/static/img/country_flags/us.png"></field>
-            <field name="address_format" eval="'%(street)s\n%(street2)s\n%(city)s %(state_code)s %(zip)s\n%(country_name)s'" />
+            <field name="address_format" eval="'%(street)s\n%(street2)s\n%(city)s, %(state_code)s %(zip)s\n%(country_name)s'" />
             <field name="currency_id" ref="USD"/>
         </record>
         <record id="uy" model="res.country">
             <field name="name">Uruguay</field>
             <field name="code">uy</field>
             <field name="image" type="base64" file="base/static/img/country_flags/uy.png"></field>
-            <field name="currency_id" ref="UYU"/>
+            <field name="currency_id" ref="UYP"/>
         </record>
         <record id="uz" model="res.country">
             <field name="name">Uzbekistan</field>
@@ -1517,19 +1515,6 @@
             <field name="code">zw</field>
             <field name="image" type="base64" file="base/static/img/country_flags/zw.png"></field>
             <field name="currency_id" ref="ZWD"/>
-        </record>
-
-
-
-        <record id="europe" model="res.country.group">
-            <field name="name">Europe</field>
-            <field name="country_ids" eval="[(6,0,[
-                ref('at'),ref('be'),ref('bg'),ref('hr'),ref('cy'),
-                ref('cz'),ref('dk'),ref('ee'),ref('fi'),ref('fr'),
-                ref('de'),ref('gr'),ref('hu'),ref('ie'),ref('it'),
-                ref('lv'),ref('lt'),ref('lu'),ref('mt'),ref('nl'),
-                ref('pl'),ref('pt'),ref('ro'),ref('sk'),ref('si'),
-                ref('es'),ref('se'),ref('uk')])]"/>
         </record>
     </data>
 </openerp>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+ <data>
+
+	<record model="ir.ui.menu" id="procurement.menu_stock_sched">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="stock.menu_stock_configuration">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+  </data>  
+</openerp>

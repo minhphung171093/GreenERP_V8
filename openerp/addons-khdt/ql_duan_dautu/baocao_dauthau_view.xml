@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>	
+	<data>
+        
+        <!-- Bao cao dau thau -->
+        <record id="view_baocao_dauthau_filter" model="ir.ui.view">
+            <field name="name">baocao.dauthau.filter</field>
+            <field name="model">baocao.dauthau</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Báo cáo đấu thầu">
+                	<field name="donvi_baocao_id"/>
+                    <field name="name"/>
+                    <field name="loai_baocao"/>
+                    <field name="user_id"/>
+                    <field name="state"/>
+                    <group expand="0" string="Group By...">
+                        <filter name="group_donvi_baocao" string="Đơn vị báo cáo" icon="terp-personal" domain="[]" context="{'group_by':'donvi_baocao_id'}"/>
+                        <filter name="group_name" string="Năm" icon="terp-personal" domain="[]" context="{'group_by':'name'}"/>
+                        <filter name="group_loai_baocao" string="Loại báo cáo" icon="terp-personal" domain="[]" context="{'group_by':'loai_baocao'}"/>
+                        <filter name="group_user_id" string="Người tạo" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter name="group_state" string="Trạng thái" icon="terp-personal" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <record id="view_baocao_dauthau_tree" model="ir.ui.view" >
+            <field name="name">baocao.dauthau.tree</field>
+            <field name="model">baocao.dauthau</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Báo cáo đấu thầu">
+                    <field name="donvi_baocao_id"/>
+                    <field name="name"/>
+                    <field name="loai_baocao"/>
+                    <field name="user_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+		
+		<record id="view_baocao_dauthau_form" model="ir.ui.view" >
+            <field name="name">baocao.dauthau.form</field>
+            <field name="model">baocao.dauthau</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form version="7.0" string="Báo cáo đấu thầu">
+                	<header>
+                		<button name="tao_baocao" string="Tạo báo cáo" type="object" class="oe_highlight" attrs="{'invisible': [('datao_baocao','=',True)]}"/>
+                		<field name="datao_baocao" invisible="1"/>
+                		<button name="baocao" string="Báo cáo" states='draft' type="object" class="oe_highlight"/>
+                		<field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+	                </header>
+                	<sheet>
+	                    <h1>
+	                    <label for="donvi_baocao_id" class="oe_edit_only" string="Đơn vị báo cáo: "/>
+	                        <field name="donvi_baocao_id" col="4" colspan="4"/>
+	                    </h1>
+	                    <group>
+	                        <group>
+	                        	<field name="name"/>
+	                        	<field name="kemtheo_baocao_id" options='{"no_create":True}'/>
+	                        </group>
+	                        <group>
+	                        	<field name="loai_baocao"/>
+	                        	<field name="user_id"/>
+	                        </group>
+	                    </group>
+	                    <notebook>
+	                    	<page string="DỰ ÁN NHÓM A">
+			                    <group col="4" colspan="4">
+		                			<field name="baocao_dauthau_a_line" nolabel='1'>
+		        						<tree editable='bottom' create='false' delete='false'>
+		        							<field name="sequence" invisible='1'/>
+		        							<field name="tieude"/>
+		        							<field name="name"/>
+		                    				<field name="tongso_goithau_a" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="tonggia_goithau_a" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="tonggia_trungthau_a" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="chenhlech_a"/>
+		        						</tree>
+		        					</field>
+			                    </group>
+		                    </page>
+		                    <page string="DỰ ÁN NHÓM B">
+			                    <group col="4" colspan="4">
+		                			<field name="baocao_dauthau_b_line" nolabel='1'>
+		        						<tree editable='bottom' create='false' delete='false'>
+		        							<field name="sequence" invisible='1'/>
+		        							<field name="tieude"/>
+		        							<field name="name"/>
+		                    				<field name="tongso_goithau_b" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="tonggia_goithau_b" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="tonggia_trungthau_b" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="chenhlech_b"/>
+		        						</tree>
+		        					</field>
+			                    </group>
+		                    </page>
+		                    <page string="DỰ ÁN NHÓM C">
+			                    <group col="4" colspan="4">
+		                			<field name="baocao_dauthau_c_line" nolabel='1'>
+		        						<tree editable='bottom' create='false' delete='false'>
+		        							<field name="sequence" invisible='1'/>
+		        							<field name="tieude"/>
+		        							<field name="name"/>
+		                    				<field name="tongso_goithau_c" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="tonggia_goithau_c" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="tonggia_trungthau_c" attrs="{'readonly': [('tieude','=',True)]}"/>
+		                    				<field name="chenhlech_c"/>
+		        						</tree>
+		        					</field>
+			                    </group>
+		                    </page>
+		                    <page string="CỘNG">
+			                    <group col="4" colspan="4">
+		                			<field name="baocao_dauthau_cong_line" nolabel='1'>
+		        						<tree editable='bottom' create='false' delete='false'>
+		        							<field name="sequence" invisible='1'/>
+		        							<field name="tieude"/>
+		        							<field name="name"/>
+		                    				<field name="tongso_goithau"/>
+		                    				<field name="tonggia_goithau"/>
+		                    				<field name="tonggia_trungthau"/>
+		                    				<field name="tong_chenhlech"/>
+		        						</tree>
+		        					</field>
+			                    </group>
+		                    </page>
+		            	</notebook>
+            		</sheet>
+                </form>
+            </field>
+        </record>
+		
+        <record id="action_baocao_dauthau" model="ir.actions.act_window">
+            <field name="name">Báo cáo đấu thầu</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">baocao.dauthau</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <record id="view_print_baocao_dauthau_form" model="ir.ui.view" >
+            <field name="name">print.baocao.dauthau.form</field>
+            <field name="model">print.baocao.dauthau</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form version="7.0" string="Báo cáo đấu thầu">
+                    <group>
+                        <group>
+                        	<field name="name"/>
+                        </group>
+                        <group>
+                        	<field name="loai_baocao"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+		
+        <record id="action_print_baocao_dauthau" model="ir.actions.act_window">
+            <field name="name">Báo cáo đấu thầu</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">print.baocao.dauthau</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+	</data>
+</openerp>

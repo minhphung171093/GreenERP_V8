@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+ <data>
+
+	<record model="ir.ui.menu" id="account_voucher.menu_action_sale_receipt">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account_voucher.menu_action_purchase_receipt">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account.menu_finance_bank_and_cash">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account_voucher.menu_encode_entries_by_voucher">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account.account_analytic_journal_entries">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account.menu_finance_configuration">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account.periodical_processing_journal_entries_validation">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account.periodical_processing_reconciliation">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account.menu_finance_recurrent_entries">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+  </data>  
+</openerp>

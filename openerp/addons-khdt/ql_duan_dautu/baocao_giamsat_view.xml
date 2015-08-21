@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>	
+	<data>
+		
+		<!-- Mau bao cao giam sat -->
+        <record id="view_mau_baocao_giamsat_tree" model="ir.ui.view" >
+            <field name="name">mau.baocao.giamsat.tree</field>
+            <field name="model">mau.baocao.giamsat</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Mẫu báo cáo giám sát" editable='top'>
+                    <field name="tieude"/>
+                    <field name="stt"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_mau_baocao_giamsat" model="ir.actions.act_window">
+            <field name="name">Mẫu báo cáo giám sát</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mau.baocao.giamsat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <!-- Bao cao giam sat -->
+        <record id="view_baocao_giamsat_filter" model="ir.ui.view">
+            <field name="name">baocao.giamsat.filter</field>
+            <field name="model">baocao.giamsat</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Báo cáo giám sát">
+                	<field name="donvi_baocao_id"/>
+                    <field name="name"/>
+                    <field name="loai_baocao"/>
+                    <field name="user_id"/>
+                    <field name="state"/>
+                    <group expand="0" string="Group By...">
+                        <filter name="group_donvi_baocao" string="Đơn vị báo cáo" icon="terp-personal" domain="[]" context="{'group_by':'donvi_baocao_id'}"/>
+                        <filter name="group_name" string="Năm" icon="terp-personal" domain="[]" context="{'group_by':'name'}"/>
+                        <filter name="group_loai_baocao" string="Loại báo cáo" icon="terp-personal" domain="[]" context="{'group_by':'loai_baocao'}"/>
+                        <filter name="group_user_id" string="Người tạo" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter name="group_state" string="Trạng thái" icon="terp-personal" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <record id="view_baocao_giamsat_tree" model="ir.ui.view" >
+            <field name="name">baocao.giamsat.tree</field>
+            <field name="model">baocao.giamsat</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Báo cáo giám sát">
+                    <field name="donvi_baocao_id"/>
+                    <field name="name"/>
+                    <field name="loai_baocao"/>
+                    <field name="user_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+		
+		<record id="view_baocao_giamsat_form" model="ir.ui.view" >
+            <field name="name">baocao.giamsat.form</field>
+            <field name="model">baocao.giamsat</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form version="7.0" string="Báo cáo giám sát">
+                	<header>
+                		<button name="tao_baocao" string="Tạo báo cáo" type="object" class="oe_highlight" attrs="{'invisible': [('datao_baocao','=',True)]}"/>
+                		<button name="baocao" string="Báo cáo" states='draft' type="object" class="oe_highlight"/>
+                		<field name="datao_baocao" invisible="1"/>
+                		<field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+	                </header>
+                	<sheet>
+	                    <h1>
+	                    <label for="donvi_baocao_id" class="oe_edit_only" string="Đơn vị báo cáo: "/>
+	                        <field name="donvi_baocao_id" col="4" colspan="4"/>
+	                    </h1>
+	                    <group>
+	                        <group>
+	                        	<field name="name"/>
+	                        	<field name="kemtheo_baocao_id" options='{"no_create":True}'/>
+	                        </group>
+	                        <group>
+	                        	<field name="loai_baocao"/>
+	                        	<field name="user_id"/>
+	                        </group>
+	                    </group>
+	                    <group col="4" colspan="4" string='Chi tiết'>
+                			<field name="baocao_giamsat_lines" nolabel='1'>
+        						<tree editable='top' create='false' delete='false'>
+        							<field name="sequence" invisible='1'/>
+        							<field name="tieude"/>
+        							<field name="stt"/>
+                    				<field name="name"/>
+                    				<field name="tongso"/>
+                    				<field name="nhom_a" attrs="{'readonly': [('tieude','=',True)]}"/>
+                    				<field name="nhom_b" attrs="{'readonly': [('tieude','=',True)]}"/>
+                    				<field name="nhom_c" attrs="{'readonly': [('tieude','=',True)]}"/>
+                    				<field name="ghichu"/>
+        						</tree>
+        					</field>
+	                    </group>
+            		</sheet>
+                </form>
+            </field>
+        </record>
+		
+        <record id="action_baocao_giamsat" model="ir.actions.act_window">
+            <field name="name">Báo cáo giám sát</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">baocao.giamsat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <record id="view_print_baocao_giamsat_form" model="ir.ui.view" >
+            <field name="name">print.baocao.giamsat.form</field>
+            <field name="model">print.baocao.giamsat</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form version="7.0" string="Báo cáo giám sát">
+                    <group>
+                        <group>
+                        	<field name="name"/>
+                        </group>
+                        <group>
+                        	<field name="loai_baocao"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+		
+        <record id="action_print_baocao_giamsat" model="ir.actions.act_window">
+            <field name="name">Báo cáo giám sát</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">print.baocao.giamsat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+	</data>
+</openerp>

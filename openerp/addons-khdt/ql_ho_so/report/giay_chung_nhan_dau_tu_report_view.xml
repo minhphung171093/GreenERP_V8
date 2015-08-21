@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+    	<record id="giay_chung_nhan_dau_tu_report" model="ir.actions.report.xml">
+	        <field name="name">giay.chung.nhan.dau.tu.report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">giay.chung.nhan.dau.tu</field>
+	        <field name="report_name">Giấy chứng nhận điều chỉnh</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">ql_ho_so/report/giay_chung_nhan_dau_tu_report.py</field>
+	        <field name="report_rml">ql_ho_so/report/giay_chung_nhan_dau_tu.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="giay_chung_nhan_dau_tu_report" 
+			model="giay.chung.nhan.dau.tu" 
+			name="giay_chung_nhan_dau_tu_report"
+	        string="Giấy chứng nhận đầu tư"
+	        rml="ql_ho_so/report/giay_chung_nhan_dau_tu.odt"/> 
+	    
+	    <record id="giay_chung_nhan_dau_tu_khong_gan_report" model="ir.actions.report.xml">
+	        <field name="name">giay.chung.nhan.dau.tu.khong.gan.report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">giay.chung.nhan.dau.tu</field>
+	        <field name="report_name">Giấy chứng nhận đầu tư</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">ql_ho_so/report/giay_chung_nhan_dau_tu_report.py</field>
+	        <field name="report_rml">ql_ho_so/report/giay_chung_nhan_dau_tu_khong_gan.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="giay_chung_nhan_dau_tu_khong_gan_report" 
+			model="giay.chung.nhan.dau.tu" 
+			name="giay_chung_nhan_dau_tu_khong_gan_report"
+	        string="Giấy chứng nhận đầu tư"
+	        rml="ql_ho_so/report/giay_chung_nhan_dau_tu_khong_gan.odt"/> 
+	        
+	    
+	</data>
+</openerp>

@@ -11,7 +11,7 @@ class test_uninstall_model(Model):
     _name = 'test_uninstall.model'
 
     _columns = {
-        'name': fields.char('Name'),
+        'name': fields.char('Name', size=64),
         'ref': fields.many2one('res.users', string='User'),
         'rel': fields.many2many('res.users', string='Users'),
     }

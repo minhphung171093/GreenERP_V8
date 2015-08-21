@@ -1,15 +1,18 @@
 # -*- encoding: utf-8 -*-
 import json
 import os
+import xml.dom.minidom
 import datetime
 
-from lxml import etree
+from werkzeug.utils import escape as e
 
 from openerp.tests import common
-from openerp.tools import html_escape as e
 from openerp.addons.base.ir import ir_qweb
 
 directory = os.path.dirname(__file__)
+
+impl = xml.dom.minidom.getDOMImplementation()
+doc = impl.createDocument(None, None, None)
 
 class TestExport(common.TransactionCase):
     _model = None
@@ -17,14 +20,15 @@ class TestExport(common.TransactionCase):
     def setUp(self):
         super(TestExport, self).setUp()
         self.Model = self.registry(self._model)
+        self.columns = self.Model._all_columns
 
-    def get_field(self, name):
-        return self.Model._fields[name]
+    def get_column(self, name):
+        return self.Model._all_columns[name].column
 
     def get_converter(self, name, type=None):
-        field = self.get_field(name)
+        column = self.get_column(name)
 
-        for postfix in type, field.type, '':
+        for postfix in type, column._type, '':
             fs = ['ir', 'qweb', 'field']
             if postfix is None: continue
             if postfix: fs.append(postfix)
@@ -35,7 +39,7 @@ class TestExport(common.TransactionCase):
             except KeyError: pass
 
         return lambda value, options=None, context=None: e(model.value_to_html(
-            self.cr, self.uid, value, field, options=options, context=context))
+            self.cr, self.uid, value, column, options=options, context=context))
 
 class TestBasicExport(TestExport):
     _model = 'test_converter.test_model'
@@ -111,7 +115,7 @@ class TestCurrencyExport(TestExport):
         context = dict(inherit_branding=True)
         converted = converter.to_html(
             self.cr, self.uid, 'value', obj, options,
-            etree.Element('span'),
+            doc.createElement('span'),
             {'field': 'obj.value', 'field-options': json.dumps(options)},
             '', ir_qweb.QWebContext(self.cr, self.uid, {'obj': obj, 'c2': dest, }),
             context=context,
@@ -130,10 +134,10 @@ class TestCurrencyExport(TestExport):
                   'data-oe-field="value" data-oe-type="monetary" '
                   'data-oe-expression="obj.value">'
                       '<span class="oe_currency_value">0.12</span>'
-                      u'\N{NO-BREAK SPACE}{symbol}</span>'.format(
+                      ' {symbol}</span>'.format(
                 obj=obj,
                 symbol=currency.symbol.encode('utf-8')
-            ).encode('utf-8'),)
+            ),)
 
     def test_currency_pre(self):
         currency = self.create(
@@ -147,12 +151,12 @@ class TestCurrencyExport(TestExport):
             '<span data-oe-model="{obj._model._name}" data-oe-id="{obj.id}" '
                   'data-oe-field="value" data-oe-type="monetary" '
                   'data-oe-expression="obj.value">'
-                      u'{symbol}\N{NO-BREAK SPACE}'
+                      '{symbol} '
                       '<span class="oe_currency_value">0.12</span>'
                       '</span>'.format(
                 obj=obj,
                 symbol=currency.symbol.encode('utf-8')
-            ).encode('utf-8'),)
+            ),)
 
     def test_currency_precision(self):
         """ Precision should be the currency's, not the float field's
@@ -168,10 +172,10 @@ class TestCurrencyExport(TestExport):
                   'data-oe-field="value" data-oe-type="monetary" '
                   'data-oe-expression="obj.value">'
                       '<span class="oe_currency_value">0.12</span>'
-                      u'\N{NO-BREAK SPACE}{symbol}</span>'.format(
+                      ' {symbol}</span>'.format(
                 obj=obj,
                 symbol=currency.symbol.encode('utf-8')
-            ).encode('utf-8'),)
+            ),)
 
 class TestTextExport(TestBasicExport):
     def test_text(self):
@@ -221,8 +225,11 @@ class TestMany2OneExport(TestBasicExport):
         })
 
         def converter(record):
+            column = self.get_column('many2one')
             model = self.registry('ir.qweb.field.many2one')
-            return e(model.record_to_html(self.cr, self.uid, 'many2one', record))
+
+            return e(model.record_to_html(
+                self.cr, self.uid, 'many2one', record, column))
 
         value = converter(self.Model.browse(self.cr, self.uid, id0))
         self.assertEqual(value, "Foo")
@@ -232,7 +239,7 @@ class TestMany2OneExport(TestBasicExport):
 
 class TestBinaryExport(TestBasicExport):
     def test_image(self):
-        field = self.get_field('binary')
+        column = self.get_column('binary')
         converter = self.registry('ir.qweb.field.image')
 
         with open(os.path.join(directory, 'test_vectors', 'image'), 'rb') as f:
@@ -240,7 +247,7 @@ class TestBinaryExport(TestBasicExport):
 
         encoded_content = content.encode('base64')
         value = e(converter.value_to_html(
-            self.cr, self.uid, encoded_content, field))
+            self.cr, self.uid, encoded_content, column))
         self.assertEqual(
             value, '<img src="data:image/jpeg;base64,%s">' % (
                 encoded_content
@@ -251,14 +258,14 @@ class TestBinaryExport(TestBasicExport):
 
         with self.assertRaises(ValueError):
             e(converter.value_to_html(
-                self.cr, self.uid, 'binary', content.encode('base64'), field))
+                self.cr, self.uid, 'binary', content.encode('base64'), column))
 
         with open(os.path.join(directory, 'test_vectors', 'pptx'), 'rb') as f:
             content = f.read()
 
         with self.assertRaises(ValueError):
             e(converter.value_to_html(
-                self.cr, self.uid, 'binary', content.encode('base64'), field))
+                self.cr, self.uid, 'binary', content.encode('base64'), column))
 
 class TestSelectionExport(TestBasicExport):
     def test_selection(self):
@@ -267,14 +274,18 @@ class TestSelectionExport(TestBasicExport):
             'selection_str': 'C',
         })])
 
+        column_name = 'selection'
+        column = self.get_column(column_name)
         converter = self.registry('ir.qweb.field.selection')
 
-        field_name = 'selection'
-        value = converter.record_to_html(self.cr, self.uid, field_name, record)
+        value = converter.record_to_html(
+            self.cr, self.uid, column_name, record, column)
         self.assertEqual(value, "réponse B")
 
-        field_name = 'selection_str'
-        value = converter.record_to_html(self.cr, self.uid, field_name, record)
+        column_name = 'selection_str'
+        column = self.get_column(column_name)
+        value = converter.record_to_html(
+            self.cr, self.uid, column_name, record, column)
         self.assertEqual(value, "Qu'est-ce qu'il fout ce maudit pancake, tabernacle ?")
 
 class TestHTMLExport(TestBasicExport):

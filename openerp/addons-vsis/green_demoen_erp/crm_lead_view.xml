@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+ <data>
+	
+	<record id="res_partner_opt_out_form_invisible" model="ir.ui.view">
+	    <field name="name">res.partner.opt_out.form.invisible</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="email_template.res_partner_opt_out_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <field name='opt_out' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	    </field>
+	</record>
+	
+	<record id="view_partner_property_form_invisible" model="ir.ui.view">
+	    <field name="name">res.partner.form.invisible</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="point_of_sale.view_partner_property_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <page string="Point of Sale" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	    </field>
+	</record>
+	
+	<record id="view_partner_form_invisible" model="ir.ui.view">
+	    <field name="name">res.partner.form.invisible</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="base.view_partner_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        
+	        <field name='active' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	        
+	        <field name='category_id' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	        
+	        <field name='website' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	        
+	        <label for="street" position="attributes">
+	        	<attribute name="string">Address 1</attribute>
+	        </label>
+	        
+	        <field name='website' position="after">
+	            <label for="street_2" string="Address 2" attrs="{'invisible': [('use_parent_address','=', True)]}"/>
+	            <div attrs="{'invisible': [('use_parent_address','=', True)]}" name="div_address">
+	                <field name="street_2" placeholder="Street..."/>
+	                <field name="street2_2"/>
+	                <div class="address_format">
+	                    <field name="city_2" placeholder="City" style="width: 40%"/>
+	                    <field name="state_id_2" class="oe_no_button" placeholder="State" style="width: 37%" options="{&quot;no_open&quot;: True}"/>
+	                    <field name="zip_2" placeholder="ZIP" style="width: 20%"/>
+	                </div>
+	                <field name="country_id_2" placeholder="Country" class="oe_no_button" options="{&quot;no_open&quot;: True}"/>
+	            </div>
+	        </field>
+	        
+	        <field name='title' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	        
+	        <field name='function' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	        
+	        <page string="Accounting" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	        
+	        <page string="Internal Notes" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	        
+	        <page string="Sales &amp; Purchases" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	        
+	    </field>
+	</record>
+	
+	<record id="view_emails_partner_info_form_invisible" model="ir.ui.view">
+	    <field name="name">res.partner.form.invisible</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="mail.view_emails_partner_info_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <field name='notification_email_send' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	    </field>
+	</record>
+	
+	<record id="sale_view_order_form_invisible" model="ir.ui.view">
+	    <field name="name">sale.order.form.invisible</field>
+	    <field name="model">sale.order</field>
+	    <field name="inherit_id" ref="sale.view_order_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <page string="Other Information" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	        <field name='amount_tax' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	    </field>
+	</record>
+	
+	<record id="view_category_property_form_invisible" model="ir.ui.view">
+	    <field name="name">product.category.form.invisible</field>
+	    <field name="model">product.category</field>
+	    <field name="inherit_id" ref="account.view_category_property_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <group string="Account Properties" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </group>
+	    </field>
+	</record>
+	
+	<record id="view_category_property_form2_invisible" model="ir.ui.view">
+	    <field name="name">product.category.form.invisible</field>
+	    <field name="model">product.category</field>
+	    <field name="inherit_id" ref="stock.view_category_property_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <group string="Account Stock Properties" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </group>
+	    </field>
+	</record>
+	
+	<record id="sale_view_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='tax_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//tree/field[@name='product_id']" position="before">
+                <field name="product_category_id"/>
+            </xpath>
+            
+            <xpath expr="//tree/field[@name='product_id']" position="attributes">
+                <attribute name="string">Name</attribute>
+                <attribute name="domain">[('categ_id','=',product_category_id)]</attribute>
+            </xpath>
+            
+        </field>
+    </record>
+        
+	<record id="product_normal_form_view_invisible" model="ir.ui.view">
+	    <field name="name">product.product.form.invisible</field>
+	    <field name="model">product.product</field>
+	    <field name="inherit_id" ref="product.product_normal_form_view"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	    	
+	    	<label for="public_categ_id" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </label>
+	    	
+	    	<field name='public_categ_id' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	        
+	        <div name="options" position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </div>
+	        
+	        <page string="Procurements" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	        
+	        <page string="Inventory" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	        
+	        <page string="Sales" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	        
+	        <page string="Accounting" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	    </field>
+	</record>
+	
+	<record model="ir.ui.menu" id="base.menu_invoiced">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account_analytic_analysis.menu_template_of_contract_action">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account_analytic_analysis.menu_action_account_analytic_overdue_all">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="product.menu_product_uom_categ_form_action">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="base.menu_config_address_book">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="calendar.menu_calendar_configuration">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="product.prod_config_main">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record id="action_product_manufacturer_attribute" model="ir.actions.act_window">
+        <field name="name">Product Attributes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.manufacturer.attribute</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+	
+	<menuitem action="action_product_manufacturer_attribute"
+    	name='Product Attributes'
+    	id="menu_action_product_manufacturer_attribute" 
+    	parent="base.menu_product" sequence="40"/>
+	
+  </data>  
+</openerp>

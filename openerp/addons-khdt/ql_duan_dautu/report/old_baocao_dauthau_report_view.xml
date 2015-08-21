@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+    	<record id="baocao_dauthau_report" model="ir.actions.report.xml">
+	        <field name="name">baocao.dauthau.report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">baocao.dauthau.report</field>
+	        <field name="report_name">Báo cáo đấu thầu</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">ql_duan_dautu/report/baocao_dauthau_report.py</field>
+	        <field name="report_rml">ql_duan_dautu/report/baocao_dauthau.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="baocao_dauthau_report" 
+			model="baocao.dauthau.report" 
+			name="baocao_dauthau_report"
+	        string="Báo cáo đấu thầu"
+	        rml="ql_duan_dautu/report/baocao_dauthau.ods"/> 	
+	</data>
+</openerp>

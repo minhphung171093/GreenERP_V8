@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+ <data>
+	<record id="view_crm_case_section_invisible" model="ir.ui.view">
+	    <field name="name">crm.case.section.form.invisible</field>
+	    <field name="model">crm.case.section</field>
+	    <field name="inherit_id" ref="crm.crm_case_section_view_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <field name='change_responsible' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	        
+	        <page string="Stages" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	    </field>
+	</record>
+	
+	<record id="view_crm_lead_invisible" model="ir.ui.view">
+	    <field name="name">crm.lead.form.invisible</field>
+	    <field name="model">crm.lead</field>
+	    <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <page string="Extra Info" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	    </field>
+	</record>
+	
+	<record id="res_partner_opt_out_form_invisible" model="ir.ui.view">
+	    <field name="name">res.partner.opt_out.form.invisible</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="email_template.res_partner_opt_out_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <field name='opt_out' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	    </field>
+	</record>
+	
+	<record id="view_partner_form_invisible" model="ir.ui.view">
+	    <field name="name">res.partner.form.invisible</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="base.view_partner_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        
+	        <field name='active' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	        
+	        <page string="Accounting" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	        
+	    </field>
+	</record>
+	
+	<record id="view_emails_partner_info_form_invisible" model="ir.ui.view">
+	    <field name="name">res.partner.form.invisible</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="mail.view_emails_partner_info_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <field name='notification_email_send' position="attributes">
+	            <attribute name="invisible">1</attribute>
+	        </field>
+	    </field>
+	</record>
+	
+	<record id="view_crm_case_form_view_oppor_invisible" model="ir.ui.view">
+	    <field name="name">crm.lead.form.invisible</field>
+	    <field name="model">crm.lead</field>
+	    <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <group string="Mailings" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </group>
+	        
+	        <group string="Misc" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </group>
+	        
+	        <group string="References" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </group>
+	    </field>
+	</record>
+	
+	<record id="sale_view_order_form_invisible" model="ir.ui.view">
+	    <field name="name">sale.order.form.invisible</field>
+	    <field name="model">sale.order</field>
+	    <field name="inherit_id" ref="sale.view_order_form"/>
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_semi_manager') ])]"/>
+	    <field name="arch" type="xml">
+	        <page string="Other Information" position="attributes">
+	        	<attribute name="invisible">1</attribute>
+	        </page>
+	    </field>
+	</record>
+	
+	<record model="ir.ui.menu" id="base.menu_invoiced">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account_analytic_analysis.menu_template_of_contract_action">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="account_analytic_analysis.menu_action_account_analytic_overdue_all">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="crm.menu_crm_segmentation-act">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="product.menu_product_uom_categ_form_action">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="base.menu_config_address_book">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="crm.menu_crm_config_phonecall">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="calendar.menu_calendar_configuration">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="product.prod_config_main">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="base.menu_crm_config_lead">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+	<record model="ir.ui.menu" id="crm.root_menu">
+	    <field name="groups_id" eval="[(6, 0, [ref('group_sale_see_menu')])]" />
+	</record>
+	
+  </data>  
+</openerp>

@@ -36,9 +36,6 @@ class test_base(common.TransactionCase):
         partner_id, dummy = self.res_partner.name_create(cr, uid, email)
         found_id = self.res_partner.find_or_create(cr, uid, email)
         self.assertEqual(partner_id, found_id, 'find_or_create failed')
-        partner_id2, dummy2 = self.res_partner.name_create(cr, uid, 'sarah.john@connor.com')
-        found_id2 = self.res_partner.find_or_create(cr, uid, 'john@connor.com')
-        self.assertNotEqual(partner_id2, found_id2, 'john@connor.com match sarah.john@connor.com')
         new_id = self.res_partner.find_or_create(cr, uid, self.samples[1][0])
         self.assertTrue(new_id > partner_id, 'find_or_create failed - should have created new one')
         new_id2 = self.res_partner.find_or_create(cr, uid, self.samples[2][0])
@@ -253,24 +250,20 @@ class test_base(common.TransactionCase):
                                                                        'parent_id': p1.id}))
         p2 = self.res_partner.browse(cr, uid, self.res_partner.search(cr, uid,
                                                                       [('email', '=', 'agr@sunhelm.com')])[0])
-        self.res_partner.write(cr, uid, sunhelm.id, {'child_ids': [(0, 0, {'name': 'Ulrik Greenthorn',
-                                                                           'email': 'ugr@sunhelm.com'})]})
-        p3 = self.res_partner.browse(cr, uid, self.res_partner.search(cr, uid,
-                                                                      [('email', '=', 'ugr@sunhelm.com')])[0])
 
-        for p in (p0, p1, p11, p2, p3):
+        for p in (p0, p1, p11, p2):
             p.refresh()
             self.assertEquals(p.commercial_partner_id, sunhelm, 'Incorrect commercial entity resolution')
             self.assertEquals(p.vat, sunhelm.vat, 'Commercial fields must be automatically synced')
         sunhelmvat = 'BE0123456789'
         sunhelm.write({'vat': sunhelmvat})
-        for p in (p0, p1, p11, p2, p3):
+        for p in (p0, p1, p11, p2):
             p.refresh()
             self.assertEquals(p.vat, sunhelmvat, 'Commercial fields must be automatically and recursively synced')
 
         p1vat = 'BE0987654321'
         p1.write({'vat': p1vat})
-        for p in (sunhelm, p0, p11, p2, p3):
+        for p in (sunhelm, p0, p11, p2):
             p.refresh()
             self.assertEquals(p.vat, sunhelmvat, 'Sync to children should only work downstream and on commercial entities')
 

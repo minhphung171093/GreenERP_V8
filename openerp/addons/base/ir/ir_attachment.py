@@ -30,8 +30,6 @@ from openerp.tools.translate import _
 from openerp.exceptions import AccessError
 from openerp.osv import fields,osv
 from openerp import SUPERUSER_ID
-from openerp.osv.orm import except_orm
-from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -58,12 +56,12 @@ class ir_attachment(osv.osv):
             if model_object and res_id:
                 model_pool = self.pool[model_object]
                 res = model_pool.name_get(cr,uid,[res_id],context)
-                res_name = res and res[0][1] or None
+                res_name = res and res[0][1] or False
                 if res_name:
                     field = self._columns.get('res_name',False)
                     if field and len(res_name) > field.size:
-                        res_name = res_name[:30] + '...' 
-                data[attachment.id] = res_name or False
+                        res_name = res_name[:field.size-3] + '...' 
+                data[attachment.id] = res_name
             else:
                 data[attachment.id] = False
         return data
@@ -71,6 +69,7 @@ class ir_attachment(osv.osv):
     def _storage(self, cr, uid, context=None):
         return self.pool['ir.config_parameter'].get_param(cr, SUPERUSER_ID, 'ir_attachment.location', 'file')
 
+    @tools.ormcache()
     def _filestore(self, cr, uid, context=None):
         return tools.config.filestore(cr.dbname)
 
@@ -124,7 +123,7 @@ class ir_attachment(osv.osv):
             else:
                 r = open(full_path,'rb').read().encode('base64')
         except IOError:
-            _logger.exception("_read_file reading %s", full_path)
+            _logger.error("_read_file reading %s",full_path)
         return r
 
     def _file_write(self, cr, uid, value):
@@ -135,22 +134,20 @@ class ir_attachment(osv.osv):
                 with open(full_path, 'wb') as fp:
                     fp.write(bin_value)
             except IOError:
-                _logger.exception("_file_write writing %s", full_path)
+                _logger.error("_file_write writing %s", full_path)
         return fname
 
     def _file_delete(self, cr, uid, fname):
-        # using SQL to include files hidden through unlink or due to record rules
-        cr.execute("SELECT COUNT(*) FROM ir_attachment WHERE store_fname = %s", (fname,))
-        count = cr.fetchone()[0]
+        count = self.search(cr, 1, [('store_fname','=',fname)], count=True)
         full_path = self._full_path(cr, uid, fname)
-        if not count and os.path.exists(full_path):
+        if count <= 1 and os.path.exists(full_path):
             try:
                 os.unlink(full_path)
             except OSError:
-                _logger.exception("_file_delete could not unlink %s", full_path)
+                _logger.error("_file_delete could not unlink %s",full_path)
             except IOError:
                 # Harmless and needed for race conditions
-                _logger.exception("_file_delete could not unlink %s", full_path)
+                _logger.error("_file_delete could not unlink %s",full_path)
 
     def _data_get(self, cr, uid, ids, name, arg, context=None):
         if context is None:
@@ -173,27 +170,23 @@ class ir_attachment(osv.osv):
         location = self._storage(cr, uid, context)
         file_size = len(value.decode('base64'))
         attach = self.browse(cr, uid, id, context=context)
-        fname_to_delete = attach.store_fname
+        if attach.store_fname:
+            self._file_delete(cr, uid, attach.store_fname)
         if location != 'db':
             fname = self._file_write(cr, uid, value)
             # SUPERUSER_ID as probably don't have write access, trigger during create
             super(ir_attachment, self).write(cr, SUPERUSER_ID, [id], {'store_fname': fname, 'file_size': file_size, 'db_datas': False}, context=context)
         else:
             super(ir_attachment, self).write(cr, SUPERUSER_ID, [id], {'db_datas': value, 'file_size': file_size, 'store_fname': False}, context=context)
-
-        # After de-referencing the file in the database, check whether we need
-        # to garbage-collect it on the filesystem
-        if fname_to_delete:
-            self._file_delete(cr, uid, fname_to_delete)
         return True
 
     _name = 'ir.attachment'
     _columns = {
-        'name': fields.char('Attachment Name', required=True),
-        'datas_fname': fields.char('File Name'),
+        'name': fields.char('Attachment Name',size=256, required=True),
+        'datas_fname': fields.char('File Name',size=256),
         'description': fields.text('Description'),
-        'res_name': fields.function(_name_get_resname, type='char', string='Resource Name', store=True),
-        'res_model': fields.char('Resource Model', readonly=True, help="The database object this attachment will be attached to"),
+        'res_name': fields.function(_name_get_resname, type='char', size=128, string='Resource Name', store=True),
+        'res_model': fields.char('Resource Model',size=64, readonly=True, help="The database object this attachment will be attached to"),
         'res_id': fields.integer('Resource ID', readonly=True, help="The record id this is attached to"),
         'create_date': fields.datetime('Date Created', readonly=True),
         'create_uid':  fields.many2one('res.users', 'Owner', readonly=True),
@@ -203,7 +196,7 @@ class ir_attachment(osv.osv):
         'url': fields.char('Url', size=1024),
         # al: We keep shitty field names for backward compatibility with document
         'datas': fields.function(_data_get, fnct_inv=_data_set, string='File Content', type="binary", nodrop=True),
-        'store_fname': fields.char('Stored Filename'),
+        'store_fname': fields.char('Stored Filename', size=256),
         'db_datas': fields.binary('Database Data'),
         'file_size': fields.integer('File Size'),
     }
@@ -227,15 +220,12 @@ class ir_attachment(osv.osv):
         more complex ones apply there.
         """
         res_ids = {}
-        require_employee = False
         if ids:
             if isinstance(ids, (int, long)):
                 ids = [ids]
-            cr.execute('SELECT DISTINCT res_model, res_id, create_uid FROM ir_attachment WHERE id = ANY (%s)', (ids,))
-            for rmod, rid, create_uid in cr.fetchall():
+            cr.execute('SELECT DISTINCT res_model, res_id FROM ir_attachment WHERE id = ANY (%s)', (ids,))
+            for rmod, rid in cr.fetchall():
                 if not (rmod and rid):
-                    if create_uid != uid:
-                        require_employee = True
                     continue
                 res_ids.setdefault(rmod,set()).add(rid)
         if values:
@@ -246,17 +236,9 @@ class ir_attachment(osv.osv):
         for model, mids in res_ids.items():
             # ignore attachments that are not attached to a resource anymore when checking access rights
             # (resource was deleted but attachment was not)
-            if not self.pool.get(model):
-                require_employee = True
-                continue
-            existing_ids = self.pool[model].exists(cr, uid, mids)
-            if len(existing_ids) != len(mids):
-                require_employee = True
+            mids = self.pool[model].exists(cr, uid, mids)
             ima.check(cr, uid, model, mode)
-            self.pool[model].check_access_rule(cr, uid, existing_ids, mode, context=context)
-        if require_employee:
-            if not uid == SUPERUSER_ID and not self.pool['res.users'].has_group(cr, uid, 'base.group_user'):
-                raise except_orm(_('Access Denied'), _("Sorry, you are not allowed to access this document."))
+            self.pool[model].check_access_rule(cr, uid, mids, mode, context=context)
 
     def _search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False, access_rights_uid=None):
         ids = super(ir_attachment, self)._search(cr, uid, args, offset=offset,
@@ -291,7 +273,7 @@ class ir_attachment(osv.osv):
         # performed in batch as much as possible.
         ima = self.pool.get('ir.model.access')
         for model, targets in model_attachments.iteritems():
-            if model not in self.pool:
+            if not self.pool.get(model):
                 continue
             if not ima.check(cr, uid, model, 'read', False):
                 # remove all corresponding attachment ids
@@ -315,7 +297,7 @@ class ir_attachment(osv.osv):
         if isinstance(ids, (int, long)):
             ids = [ids]
         self.check(cr, uid, ids, 'read', context=context)
-        return super(ir_attachment, self).read(cr, uid, ids, fields_to_read, context=context, load=load)
+        return super(ir_attachment, self).read(cr, uid, ids, fields_to_read, context, load)
 
     def write(self, cr, uid, ids, vals, context=None):
         if isinstance(ids, (int, long)):
@@ -333,19 +315,10 @@ class ir_attachment(osv.osv):
         if isinstance(ids, (int, long)):
             ids = [ids]
         self.check(cr, uid, ids, 'unlink', context=context)
-
-        # First delete in the database, *then* in the filesystem if the
-        # database allowed it. Helps avoid errors when concurrent transactions
-        # are deleting the same file, and some of the transactions are
-        # rolled back by PostgreSQL (due to concurrent updates detection).
-        to_delete = [a.store_fname
-                        for a in self.browse(cr, uid, ids, context=context)
-                            if a.store_fname]
-        res = super(ir_attachment, self).unlink(cr, uid, ids, context)
-        for file_path in to_delete:
-            self._file_delete(cr, uid, file_path)
-
-        return res
+        for attach in self.browse(cr, uid, ids, context=context):
+            if attach.store_fname:
+                self._file_delete(cr, uid, attach.store_fname)
+        return super(ir_attachment, self).unlink(cr, uid, ids, context)
 
     def create(self, cr, uid, values, context=None):
         self.check(cr, uid, [], mode='write', context=context, values=values)

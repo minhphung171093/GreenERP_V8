@@ -1,30 +1,12 @@
-include requirements.txt
+graft debian
+graft doc
+graft install
+graft openerp
+graft win32
+include README
 include LICENSE
-include README.md
-recursive-include openerp *.css
-recursive-include openerp *.csv
-recursive-include openerp *.gif
-recursive-include openerp *.html
-recursive-include openerp *.jpeg
-recursive-include openerp *.jpg
-recursive-include openerp *.js
-recursive-include openerp *.less
-recursive-include openerp *.md
-recursive-include openerp *.mp3
-recursive-include openerp *.ogg
-recursive-include openerp *.png
-recursive-include openerp *.po
-recursive-include openerp *.rml
-recursive-include openerp *.rng
-recursive-include openerp *.rst
-recursive-include openerp *.sass
-recursive-include openerp *.sql
-recursive-include openerp *.template
-recursive-include openerp *.txt
-recursive-include openerp *.ttf
-recursive-include openerp *.woff
-recursive-include openerp *.xsl
-recursive-include openerp *.xml
-recursive-include openerp *.yml
-recursive-exclude * *.py[co]
-recursive-exclude * *.hg*
+include MANIFEST.in
+include openerp-*
+include oe*
+include setup*
+global-exclude *pyc *~    # Exclude possible garbage from previous graft.

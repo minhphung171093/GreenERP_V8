@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.menu" id="base.menu_reporting">
+		    <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]" />
+		</record>
+		
+		<record model="ir.ui.menu" id="mail.mail_feeds_main">
+		    <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]" />
+		</record>
+		
+		<menuitem id="skhdt_quantri" name="Quản trị" sequence="100" groups="group_skhdt_quantri"/>
+		<menuitem id="menu_nguoidung" name="Người dùng" parent="skhdt_quantri" sequence="10" groups="group_skhdt_quantri"/>
+        <menuitem action="base.action_res_users" id="menu_action_res_users_nguoidung" name="Danh sách người dùng" parent="menu_nguoidung" sequence="10" groups="group_skhdt_quantri"/>
+		
+		<record id="view_users_form_inherit" model="ir.ui.view">
+            <field name="name">res.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//group[@string='Menus Customization']" position="attributes">
+                        <attribute name="groups">base.group_system</attribute>
+                    </xpath>
+                    
+                    <xpath expr="//group[@string='Messaging and Social']" position="attributes">
+                        <attribute name="groups">base.group_system</attribute>
+                    </xpath>
+                    
+                </data>
+            </field>
+        </record>
+		
+	</data>
+</openerp>

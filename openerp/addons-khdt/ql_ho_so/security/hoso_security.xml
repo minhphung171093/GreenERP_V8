@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		
+		<record model="ir.module.category" id="module_category_hoso">
+	        <field name="name">Hồ sơ dự án đầu tư</field>
+	        <field name="sequence">1</field>
+	    </record>
+	
+	    <record id="group_hoso_nv" model="res.groups">
+	        <field name="name">Nhập liệu hồ sơ đầu tư</field>
+	        <field name="skhdt">1</field>
+	        <field name="category_id" ref="module_category_hoso"/>
+	        <field name="implied_ids" eval="[(4, ref('ql_vanban.group_vanban_nv'))]"/>
+	    </record>
+	    
+	    <record id="group_hoso_cauhinh" model="res.groups">
+	        <field name="name">Cấu hình hồ sơ đầu tư</field>
+	        <field name="skhdt">1</field>
+	        <field name="category_id" ref="module_category_hoso"/>
+	        <field name="implied_ids" eval="[(4, ref('group_hoso_nv'))]"/>
+	    </record>
+	
+		<record id="group_hoso_tp" model="res.groups">
+	        <field name="name">Trưởng phòng hồ sơ đầu tư</field>
+	        <field name="skhdt">1</field>
+	        <field name="category_id" ref="module_category_hoso"/>
+	        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+	        <field name="implied_ids" eval="[(4, ref('group_hoso_cauhinh'))]"/>
+	    </record>
+	
+		<record id="skhdt_base.group_skhdt_quantri" model="res.groups">
+	        <field name="implied_ids" eval="[(4, ref('group_hoso_tp'))]"/>
+	    </record>
+		
+	</data>
+</openerp>

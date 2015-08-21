@@ -24,7 +24,7 @@ import openerp
 import openerp.tools as tools
 from openerp.tools.safe_eval import safe_eval
 import print_fnc
-from openerp.osv.orm import BaseModel
+from openerp.osv.orm import browse_null, browse_record
 
 class InheritDict(dict):
     # Might be usefull when we're doing name lookup for call or eval.
@@ -74,18 +74,26 @@ class document(object):
         value = browser
 
         for f in fields:
-            if isinstance(value, (BaseModel, list)):
-                if not value:
+            if isinstance(value, list):
+                if len(value)==0:
                     return ''
                 value = value[0]
-            value = value[f]
+            if isinstance(value, browse_null):
+                return ''
+            else:
+                value = value[f]
 
-        return value or ''
+        if isinstance(value, browse_null) or (type(value)==bool and not value):
+            return ''
+        else:
+            return value
 
     def get_value2(self, browser, field_path):
         value = self.get_value(browser, field_path)
-        if isinstance(value, BaseModel):
+        if isinstance(value, browse_record):
             return value.id
+        elif isinstance(value, browse_null):
+            return False
         else:
             return value
 
@@ -96,7 +104,7 @@ class document(object):
 # dictionary passed to eval
 
 #FIXME: it wont work if the data hasn't been fetched yet... this could
-# happen if the eval node is the first one using this Record
+# happen if the eval node is the first one using this browse_record
 # the next line is a workaround for the problem: it causes the resource to be loaded
 #Pinky: Why not this ? eval(expr, browser) ?
 #       name = browser.name
@@ -119,7 +127,11 @@ class document(object):
                             el.set(key, value)
 
                 elif attrs['type']=='attachment':
-                    model = browser._name
+                    if isinstance(browser, list):
+                        model = browser[0]._table_name
+                    else:
+                        model = browser._table_name
+
                     value = self.get_value(browser, attrs['name'])
 
                     ids = self.pool['ir.attachment'].search(self.cr, self.uid, [('res_model','=',model),('res_id','=',int(value))])
@@ -191,13 +203,19 @@ class document(object):
                     if 'model' in attrs:
                         obj = self.pool[attrs['model']]
                     else:
-                        obj = browser       # the record(set) is an instance of the model
+                        if isinstance(browser, list):
+                            obj = browser[0]._table
+                        else:
+                            obj = browser._table
 
                     # get the ids
                     if 'ids' in attrs:
                         ids = self.eval(browser, attrs['ids'])
                     else:
-                        ids = browse.ids
+                        if isinstance(browser, list):
+                            ids = [b.id for b in browser]
+                        else:
+                            ids = [browser.id]
 
                     # call the method itself
                     newdatas = getattr(obj, attrs['name'])(self.cr, self.uid, ids, *args)
@@ -215,7 +233,7 @@ class document(object):
                             else:
                                 for el_cld in node:
                                     parse_result_tree(el_cld, el, datas)
-                    if not isinstance(newdatas, (BaseModel, list)):
+                    if not isinstance(newdatas, list):
                         newdatas = [newdatas]
                     for newdata in newdatas:
                         parse_result_tree(node, parent, newdata)
@@ -223,7 +241,7 @@ class document(object):
                 elif attrs['type']=='zoom':
                     value = self.get_value(browser, attrs['name'])
                     if value:
-                        if not isinstance(value, (BaseModel, list)):
+                        if not isinstance(value, list):
                             v_list = [value]
                         else:
                             v_list = value

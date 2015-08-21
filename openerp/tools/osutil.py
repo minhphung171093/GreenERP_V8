@@ -73,12 +73,7 @@ def tempdir():
     finally:
         shutil.rmtree(tmpdir)
 
-def zip_dir(path, stream, include_dir=True, fnct_sort=None):      # TODO add ignore list
-    """
-    : param fnct_sort : Function to be passed to "key" parameter of built-in
-                        python sorted() to provide flexibility of sorting files
-                        inside ZIP archive according to specific requirements.
-    """
+def zip_dir(path, stream, include_dir=True):      # TODO add ignore list
     path = os.path.normpath(path)
     len_prefix = len(os.path.dirname(path)) if include_dir else len(path)
     if len_prefix:
@@ -86,7 +81,6 @@ def zip_dir(path, stream, include_dir=True, fnct_sort=None):      # TODO add ign
 
     with zipfile.ZipFile(stream, 'w', compression=zipfile.ZIP_DEFLATED, allowZip64=True) as zipf:
         for dirpath, dirnames, filenames in os.walk(path):
-            filenames = sorted(filenames, key=fnct_sort)
             for fname in filenames:
                 bname, ext = os.path.splitext(fname)
                 ext = ext or bname
@@ -145,13 +139,10 @@ else:
             finally:
                 ws.CloseServiceHandle(srv)
 
-        try:
-            with close_srv(ws.OpenSCManager(None, None, ws.SC_MANAGER_ALL_ACCESS)) as hscm:
-                with close_srv(wsu.SmartOpenService(hscm, nt_service_name, ws.SERVICE_ALL_ACCESS)) as hs:
-                    info = ws.QueryServiceStatusEx(hs)
-                    return info['ProcessId'] == getppid()
-        except Exception:
-            return False
+        with close_srv(ws.OpenSCManager(None, None, ws.SC_MANAGER_ALL_ACCESS)) as hscm:
+            with close_srv(wsu.SmartOpenService(hscm, nt_service_name, ws.SERVICE_ALL_ACCESS)) as hs:
+                info = ws.QueryServiceStatusEx(hs)
+                return info['ProcessId'] == getppid()
 
 if __name__ == '__main__':
     from pprint import pprint as pp

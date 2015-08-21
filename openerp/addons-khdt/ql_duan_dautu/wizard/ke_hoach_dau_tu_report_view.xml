@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_kehoach_dautu_report" model="ir.ui.view">
+            <field name="name">Kế hoạch đầu tư</field>
+            <field name="model">kehoach.dautu.report</field>
+            <field name="arch" type="xml">
+                <form string="kehoach.dautu.report" version="7.0">
+                    <group colspan="4" col="4" >
+	                    <field name="date_from"/>
+	                    <field name="date_to" invisible='1'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'type':'appointments'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_kehoach_dautu_report" model="ir.actions.act_window">
+            <field name="name">Kế hoạch đầu tư</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kehoach.dautu.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_kehoach_dautu_report"/>
+            <field name="target">new</field>
+        </record>
+        
+    </data>
+</openerp>
+

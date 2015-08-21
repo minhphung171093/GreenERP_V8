@@ -27,17 +27,17 @@ class Bank(osv.osv):
     _name = 'res.bank'
     _order = 'name'
     _columns = {
-        'name': fields.char('Name', required=True),
-        'street': fields.char('Street'),
-        'street2': fields.char('Street2'),
+        'name': fields.char('Name', size=128, required=True),
+        'street': fields.char('Street', size=128),
+        'street2': fields.char('Street2', size=128),
         'zip': fields.char('Zip', change_default=True, size=24),
-        'city': fields.char('City'),
+        'city': fields.char('City', size=128),
         'state': fields.many2one("res.country.state", 'Fed. State',
             domain="[('country_id', '=', country)]"),
         'country': fields.many2one('res.country', 'Country'),
-        'email': fields.char('Email'),
-        'phone': fields.char('Phone'),
-        'fax': fields.char('Fax'),
+        'email': fields.char('Email', size=64),
+        'phone': fields.char('Phone', size=64),
+        'fax': fields.char('Fax', size=64),
         'active': fields.boolean('Active'),
         'bic': fields.char('Bank Identifier Code', size=64,
             help="Sometimes called BIC or Swift."),
@@ -51,12 +51,15 @@ class Bank(osv.osv):
             result.append((bank.id, (bank.bic and (bank.bic + ' - ') or '') + bank.name))
         return result
 
+Bank()
+
+
 class res_partner_bank_type(osv.osv):
     _description='Bank Account Type'
     _name = 'res.partner.bank.type'
     _order = 'name'
     _columns = {
-        'name': fields.char('Name', required=True, translate=True),
+        'name': fields.char('Name', size=64, required=True, translate=True),
         'code': fields.char('Code', size=64, required=True),
         'field_ids': fields.one2many('res.partner.bank.type.field', 'bank_type_id', 'Type Fields'),
         'format_layout': fields.text('Format Layout', translate=True)
@@ -64,18 +67,21 @@ class res_partner_bank_type(osv.osv):
     _defaults = {
         'format_layout': lambda *args: "%(bank_name)s: %(acc_number)s"
     }
+res_partner_bank_type()
 
 class res_partner_bank_type_fields(osv.osv):
     _description='Bank type fields'
     _name = 'res.partner.bank.type.field'
     _order = 'name'
     _columns = {
-        'name': fields.char('Field Name', required=True, translate=True),
+        'name': fields.char('Field Name', size=64, required=True, translate=True),
         'bank_type_id': fields.many2one('res.partner.bank.type', 'Bank Type', required=True, ondelete='cascade'),
         'required': fields.boolean('Required'),
         'readonly': fields.boolean('Readonly'),
         'size': fields.integer('Max. Size'),
     }
+res_partner_bank_type_fields()
+
 
 class res_partner_bank(osv.osv):
     '''Bank Accounts'''
@@ -113,22 +119,23 @@ class res_partner_bank(osv.osv):
         return value
 
     _columns = {
-        'name': fields.char('Bank Account'), # to be removed in v6.2 ?
+        'name': fields.char('Bank Account', size=64), # to be removed in v6.2 ?
         'acc_number': fields.char('Account Number', size=64, required=True),
         'bank': fields.many2one('res.bank', 'Bank'),
         'bank_bic': fields.char('Bank Identifier Code', size=16),
-        'bank_name': fields.char('Bank Name'),
-        'owner_name': fields.char('Account Owner Name'),
-        'street': fields.char('Street'),
+        'bank_name': fields.char('Bank Name', size=32),
+        'owner_name': fields.char('Account Owner Name', size=128),
+        'street': fields.char('Street', size=128),
         'zip': fields.char('Zip', change_default=True, size=24),
-        'city': fields.char('City'),
+        'city': fields.char('City', size=128),
         'country_id': fields.many2one('res.country', 'Country',
             change_default=True),
         'state_id': fields.many2one("res.country.state", 'Fed. State',
             change_default=True, domain="[('country_id','=',country_id)]"),
         'company_id': fields.many2one('res.company', 'Company',
             ondelete='cascade', help="Only if this bank account belong to your company"),
-        'partner_id': fields.many2one('res.partner', 'Account Owner', ondelete='cascade', select=True, domain=['|',('is_company','=',True),('parent_id','=',False)]),
+        'partner_id': fields.many2one('res.partner', 'Account Owner', required=True,
+            ondelete='cascade', select=True),
         'state': fields.selection(_bank_type_get, 'Bank Account Type', required=True,
             change_default=True),
         'sequence': fields.integer('Sequence'),
@@ -151,8 +158,8 @@ class res_partner_bank(osv.osv):
         'name': '/'
     }
 
-    def fields_get(self, cr, uid, allfields=None, context=None, write_access=True, attributes=None):
-        res = super(res_partner_bank, self).fields_get(cr, uid, allfields=allfields, context=context, write_access=write_access, attributes=attributes)
+    def fields_get(self, cr, uid, allfields=None, context=None):
+        res = super(res_partner_bank, self).fields_get(cr, uid, allfields=allfields, context=context)
         bank_type_obj = self.pool.get('res.partner.bank.type')
         type_ids = bank_type_obj.search(cr, uid, [])
         types = bank_type_obj.browse(cr, uid, type_ids)
@@ -183,7 +190,6 @@ class res_partner_bank(osv.osv):
                 try:
                     if not data.get('bank_name'):
                         data['bank_name'] = _('BANK')
-                    data = dict((k, v or '') for (k, v) in data.iteritems())
                     name = bank_code_format[data['state']] % data
                 except Exception:
                     raise osv.except_osv(_("Formating Error"), _("Invalid Bank Account Type Name format."))
@@ -193,7 +199,7 @@ class res_partner_bank(osv.osv):
     def name_get(self, cr, uid, ids, context=None):
         if not len(ids):
             return []
-        bank_dicts = self.read(cr, uid, ids, self.fields_get_keys(cr, uid, context=context), context=context)
+        bank_dicts = self.read(cr, uid, ids, context=context)
         return self._prepare_name_get(cr, uid, bank_dicts, context=context)
 
     def onchange_company_id(self, cr, uid, ids, company_id, context=None):
@@ -216,11 +222,10 @@ class res_partner_bank(osv.osv):
         return {'value': result}
 
 
-    def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
+    def onchange_partner_id(self, cr, uid, id, partner_id, context=None):
         result = {}
-        if partner_id is not False:
-            # be careful: partner_id may be a NewId
-            part = self.pool['res.partner'].browse(cr, uid, [partner_id], context=context)
+        if partner_id:
+            part = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
             result['owner_name'] = part.name
             result['street'] = part.street or False
             result['city'] = part.city or False
@@ -228,5 +233,7 @@ class res_partner_bank(osv.osv):
             result['country_id'] =  part.country_id.id
             result['state_id'] = part.state_id.id
         return {'value': result}
+
+res_partner_bank()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

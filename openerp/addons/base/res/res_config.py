@@ -28,7 +28,6 @@ from openerp.osv import osv, fields
 from openerp.tools import ustr
 from openerp.tools.translate import _
 from openerp import exceptions
-from lxml import etree
 
 _logger = logging.getLogger(__name__)
 
@@ -222,10 +221,10 @@ class res_config_installer(osv.osv_memory, res_config_module_installation_mixin)
 
         _install_if = {
             ('sale','crm'): ['sale_crm'],
-            ('sale','project'): ['sale_service'],
+            ('sale','project'): ['project_mrp'],
         }
 
-    will install both ``sale_crm`` and ``sale_service`` if all of
+    will install both ``sale_crm`` and ``project_mrp`` if all of
     ``sale``, ``crm`` and ``project`` are selected for installation.
 
     Hook methods
@@ -294,10 +293,10 @@ class res_config_installer(osv.osv_memory, res_config_module_installation_mixin)
     def _already_installed(self, cr, uid, context=None):
         """ For each module (boolean fields in a res.config.installer),
         check if it's already installed (either 'to install', 'to upgrade'
-        or 'installed') and if it is return the module's record
+        or 'installed') and if it is return the module's browse_record
 
         :returns: a list of all installed modules in this installer
-        :rtype: recordset (collection of Record)
+        :rtype: [browse_record]
         """
         modules = self.pool['ir.module.module']
 
@@ -333,7 +332,7 @@ class res_config_installer(osv.osv_memory, res_config_module_installation_mixin)
                    for installer in self.read(cr, uid, ids, context=context)
                    for module_name, to_install in installer.iteritems()
                    if module_name != 'id'
-                   if type(self._columns.get(module_name)) is fields.boolean
+                   if type(self._columns[module_name]) is fields.boolean
                    if to_install)
 
         hooks_results = set()
@@ -362,13 +361,13 @@ class res_config_installer(osv.osv_memory, res_config_module_installation_mixin)
                         self.already_installed(cr, uid, context=context),
                         True))
 
-    def fields_get(self, cr, uid, fields=None, context=None, write_access=True, attributes=None):
+    def fields_get(self, cr, uid, fields=None, context=None, write_access=True):
         """ If an addon is already installed, set it to readonly as
         res.config.installer doesn't handle uninstallations of already
         installed addons
         """
         fields = super(res_config_installer, self).fields_get(
-            cr, uid, fields, context, write_access, attributes)
+            cr, uid, fields, context, write_access)
 
         for name in self.already_installed(cr, uid, context=context):
             if name not in fields:
@@ -434,45 +433,6 @@ class res_config_settings(osv.osv_memory, res_config_module_installation_mixin):
 
     def copy(self, cr, uid, id, values, context=None):
         raise osv.except_osv(_("Cannot duplicate configuration!"), "")
-
-    def fields_view_get(self, cr, user, view_id=None, view_type='form',
-                        context=None, toolbar=False, submenu=False):
-        ret_val = super(res_config_settings, self).fields_view_get(
-            cr, user, view_id=view_id, view_type=view_type, context=context,
-            toolbar=toolbar, submenu=submenu)
-
-        doc = etree.XML(ret_val['arch'])
-
-        for field in ret_val['fields']:
-            if not field.startswith("module_"):
-                continue
-            for node in doc.xpath("//field[@name='%s']" % field):
-                if 'on_change' not in node.attrib:
-                    node.set("on_change",
-                    "onchange_module(%s, '%s')" % (field, field))
-
-        ret_val['arch'] = etree.tostring(doc)
-        return ret_val
-
-    def onchange_module(self, cr, uid, ids, field_value, module_name, context={}):
-        module_pool = self.pool.get('ir.module.module')
-        module_ids = module_pool.search(
-            cr, uid, [('name', '=', module_name.replace("module_", '')),
-            ('state','in', ['to install', 'installed', 'to upgrade'])],
-            context=context)
-
-        if module_ids and not field_value:
-            dep_ids = module_pool.downstream_dependencies(cr, uid, module_ids, context=context)
-            dep_name = [x.shortdesc for x  in module_pool.browse(
-                cr, uid, dep_ids + module_ids, context=context)]
-            message = '\n'.join(dep_name)
-            return {
-                'warning': {
-                    'title': _('Warning!'),
-                    'message': _('Disabling this option will also uninstall the following modules \n%s') % message,
-                }
-            }
-        return {}
 
     def _get_classified_fields(self, cr, uid, context=None):
         """ return a dictionary with the fields classified by category::

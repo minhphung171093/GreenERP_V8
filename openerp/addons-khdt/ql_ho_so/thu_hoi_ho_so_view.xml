@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+ <data>
+ 
+ 		<record id="thu_hoi_ho_so_tree_view" model="ir.ui.view">
+            <field name="name">thu.hoi.ho.so.tree</field>
+            <field name="model">thu.hoi.ho.so</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Thu hồi hồ sơ" editable='top'>
+                	<field name="gcndt_id" invisible="1"/>
+        			<field name="ngay_quyet_dinh" />
+        			<field name="so_quyet_dinh" />
+        			<field name="nguyen_nhan" />
+                </tree>
+            </field>
+        </record>
+	
+   		<record id="thu_hoi_ho_so_view_form" model="ir.ui.view">
+            <field name="name">thu.hoi.ho.so.form</field>
+            <field name="model">thu.hoi.ho.so</field>
+            <field name="arch" type="xml">
+                <form string="Thu hồi hồ sơ" version="7.0">
+                	<sheet>
+                		<group>
+                			<field name="gcndt_id" invisible="1"/>
+                			<field name="ngay_quyet_dinh" />
+                			<field name="so_quyet_dinh" />
+                			<field name="nguyen_nhan" />
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="thu_hoi" string="Thu hồi" type="object" class="oe_highlight"/>
+                        hoặc
+                        <button string="Hủy" class="oe_link" special="cancel"/>
+        			</footer>
+                </form>
+            </field>
+        </record>
+		
+		<record id="action_thu_hoi_ho_so" model="ir.actions.act_window">
+            <field name="name">Thu hồi hồ sơ</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">thu.hoi.ho.so</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="thu_hoi_ho_so_view_form"/>
+            <field name="view_type">form</field>
+            <field name="target">new</field>
+        </record>
+		
+   </data>  
+</openerp>

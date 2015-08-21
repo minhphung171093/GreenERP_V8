@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="seq_type_name_gcndt" model="ir.sequence.type">
+            <field name="name">Giay Chung Nhan Dau Tu</field>
+            <field name="code">giay.chung.nhan.dau.tu</field>
+        </record>
+
+        <record id="seq_name_gcndt" model="ir.sequence">
+            <field name="name">Giay Chung Nhan Dau Tu</field>
+            <field name="code">giay.chung.nhan.dau.tu</field>
+            <field name="prefix"></field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

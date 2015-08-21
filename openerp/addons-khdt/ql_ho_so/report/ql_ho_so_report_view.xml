@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+	<menuitem id="ql_ho_so_bao_cao" name="Báo cáo" parent="ql_ho_so" sequence="15"  groups="group_hoso_tp"/>
+	
+	<!--Theo địa bàn-->
+	<record id="theo_dia_ban_report_tree_view" model="ir.ui.view">
+        <field name="name">theo.dia.ban.report.tree</field>
+        <field name="model">theo.dia.ban.report</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Theo địa bàn">
+            	<field name="khu_vuc_id" invisible="1"/>
+                <field name="tinh_tp_id" />
+                <field name="tong_so_du_an" sum="Tổng số dự án"/>
+                <field name="pt_du_an" sum="Tổng phần trăm dự án"/>
+                <field name="tong_so_von_dau_tu" sum="Tổng VĐT"/>
+                <field name="pt_von_dau_tu" sum="Tổng phần trăm VĐT"/>
+            </tree>
+        </field>
+    </record>
+	
+	<record id="theo_dia_ban_report_search_view" model="ir.ui.view">
+        <field name="name">theo.dia.ban.report.search</field>
+        <field name="model">theo.dia.ban.report</field>
+        <field name="arch" type="xml">
+            <search string="Theo địa bàn">
+                <group expand="1" string="Group By...">
+                    <filter string="Khu vực" icon="terp-personal" name="khuvuc" context="{'group_by':'khu_vuc_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_theo_dia_ban_report" model="ir.actions.act_window">
+        <field name="name">Theo địa bàn</field>
+        <field name="res_model">theo.dia.ban.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="theo_dia_ban_report_tree_view"/>
+        <field name="context">{'search_default_khuvuc':1,'group_by':[]}</field>
+        <field name="search_view_id" ref="theo_dia_ban_report_search_view"/>
+    </record>
+
+    <menuitem action="action_theo_dia_ban_report" id="menu_action_theo_dia_ban_report" parent="ql_ho_so_bao_cao" sequence="10"/>
+	
+	<!--Theo quốc gia-->
+	<record id="theo_quoc_gia_report_tree_view" model="ir.ui.view">
+        <field name="name">theo.quoc.gia.report.tree</field>
+        <field name="model">theo.quoc.gia.report</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Theo quốc gia">
+                <field name="quoc_gia_id" invisible="1"/>
+                <field name="tinh_tp_id" />
+                <field name="tong_so_du_an" sum="Tổng số dự án"/>
+                <field name="pt_du_an" sum="Tổng phần trăm dự án"/>
+                <field name="tong_so_von_dau_tu" sum="Tổng VĐT"/>
+                <field name="pt_von_dau_tu" sum="Tổng phần trăm VĐT"/>
+            </tree>
+        </field>
+    </record>
+	
+	<record id="theo_quoc_gia_report_search_view" model="ir.ui.view">
+        <field name="name">theo.quoc.gia.report.search</field>
+        <field name="model">theo.quoc.gia.report</field>
+        <field name="arch" type="xml">
+            <search string="Theo quốc gia">
+                <group expand="1" string="Group By...">
+                    <filter string="Quốc gia" icon="terp-personal" name="quocgia" context="{'group_by':'quoc_gia_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_theo_quoc_gia_report" model="ir.actions.act_window">
+        <field name="name">Theo quốc gia</field>
+        <field name="res_model">theo.quoc.gia.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="theo_quoc_gia_report_tree_view"/>
+        <field name="context">{'search_default_quocgia':1,'group_by':[]}</field>
+        <field name="search_view_id" ref="theo_quoc_gia_report_search_view"/>
+    </record>
+
+    <menuitem action="action_theo_quoc_gia_report" id="menu_action_theo_quoc_gia_report" parent="ql_ho_so_bao_cao" sequence="20"/>
+	
+	<!--Theo ngành nghề-->
+	<record id="theo_nganh_nghe_report_tree_view" model="ir.ui.view">
+        <field name="name">theo.nganh.nghe.report.tree</field>
+        <field name="model">theo.nganh.nghe.report</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Theo ngành nghề">
+                <field name="nganh_nghe_id" invisible="1"/>
+                <field name="tinh_tp_id" />
+                <field name="tong_so_du_an" sum="Tổng số dự án"/>
+                <field name="pt_du_an" sum="Tổng phần trăm dự án"/>
+                <field name="tong_so_von_dau_tu" sum="Tổng VĐT"/>
+                <field name="pt_von_dau_tu" sum="Tổng phần trăm VĐT"/>
+            </tree>
+        </field>
+    </record>
+	
+	<record id="theo_nganh_nghe_report_search_view" model="ir.ui.view">
+        <field name="name">theo.nganh.nghe.report.search</field>
+        <field name="model">theo.nganh.nghe.report</field>
+        <field name="arch" type="xml">
+            <search string="Theo ngành nghề">
+                <group expand="1" string="Group By...">
+                    <filter string="Ngành nghề" icon="terp-personal" name="nganhnghe" context="{'group_by':'nganh_nghe_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_theo_nganh_nghe_report" model="ir.actions.act_window">
+        <field name="name">Theo ngành nghề</field>
+        <field name="res_model">theo.nganh.nghe.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="theo_nganh_nghe_report_tree_view"/>
+        <field name="context">{'search_default_nganhnghe':1,'group_by':[]}</field>
+        <field name="search_view_id" ref="theo_nganh_nghe_report_search_view"/>
+    </record>
+
+    <menuitem action="action_theo_nganh_nghe_report" id="menu_action_theo_nganh_nghe_report" parent="ql_ho_so_bao_cao" sequence="30"/>
+	
+	<!--Theo loại hình doanh nghiệp-->
+	<record id="theo_loai_hinh_doanh_nghiep_report_tree_view" model="ir.ui.view">
+        <field name="name">theo.loai.hinh.doanh.nghiep.report.tree</field>
+        <field name="model">theo.loai.hinh.doanh.nghiep.report</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Theo loại hình doanh nghiệp">
+                <field name="loai_hinh_doanh_nghiep_id" invisible="1"/>
+                <field name="tinh_tp_id" />
+                <field name="tong_so_du_an" sum="Tổng số dự án"/>
+                <field name="pt_du_an" sum="Tổng phần trăm dự án"/>
+                <field name="tong_so_von_dau_tu" sum="Tổng VĐT"/>
+                <field name="pt_von_dau_tu" sum="Tổng phần trăm VĐT"/>
+            </tree>
+        </field>
+    </record>
+	
+	<record id="theo_loai_hinh_doanh_nghiep_report_search_view" model="ir.ui.view">
+        <field name="name">theo.loai.hinh.doanh.nghiep.report.search</field>
+        <field name="model">theo.loai.hinh.doanh.nghiep.report</field>
+        <field name="arch" type="xml">
+            <search string="Theo loại hình doanh nghiệp">
+                <group expand="1" string="Group By...">
+                    <filter string="Loại hình doanh nghiệp" icon="terp-personal" name="loaihinhdoanhnghiep" context="{'group_by':'loai_hinh_doanh_nghiep_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_theo_loai_hinh_doanh_nghiep_report" model="ir.actions.act_window">
+        <field name="name">Theo loại hình doanh nghiệp</field>
+        <field name="res_model">theo.loai.hinh.doanh.nghiep.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="theo_loai_hinh_doanh_nghiep_report_tree_view"/>
+        <field name="context">{'search_default_loaihinhdoanhnghiep':1,'group_by':[]}</field>
+        <field name="search_view_id" ref="theo_loai_hinh_doanh_nghiep_report_search_view"/>
+    </record>
+
+    <menuitem action="action_theo_loai_hinh_doanh_nghiep_report" id="menu_action_theo_loai_hinh_doanh_nghiep_report" parent="ql_ho_so_bao_cao" sequence="50"/>
+	
+	<!--Theo hình thức đầu tư-->
+	<record id="theo_hinh_thuc_dau_tu_report_tree_view" model="ir.ui.view">
+        <field name="name">theo.hinh.thuc.dau.tu.report.tree</field>
+        <field name="model">theo.hinh.thuc.dau.tu.report</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Theo hình thức đầu tư">
+                <field name="hinh_thuc_dau_tu_id" invisible="1"/>
+                <field name="tinh_tp_id" />
+                <field name="tong_so_du_an" sum="Tổng số dự án"/>
+                <field name="pt_du_an" sum="Tổng phần trăm dự án"/>
+                <field name="tong_so_von_dau_tu" sum="Tổng VĐT"/>
+                <field name="pt_von_dau_tu" sum="Tổng phần trăm VĐT"/>
+            </tree>
+        </field>
+    </record>
+	
+	<record id="theo_hinh_thuc_dau_tu_report_search_view" model="ir.ui.view">
+        <field name="name">theo.hinh.thuc.dau.tu.report.search</field>
+        <field name="model">theo.hinh.thuc.dau.tu.report</field>
+        <field name="arch" type="xml">
+            <search string="Theo hình thức đầu tư">
+                <group expand="1" string="Group By...">
+                    <filter string="Hình thức đầu tư" icon="terp-personal" name="hinhthucdautu" context="{'group_by':'hinh_thuc_dau_tu_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_theo_hinh_thuc_dau_tu_report" model="ir.actions.act_window">
+        <field name="name">Theo hình thức đầu tư</field>
+        <field name="res_model">theo.hinh.thuc.dau.tu.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="theo_hinh_thuc_dau_tu_report_tree_view"/>
+        <field name="context">{'search_default_hinhthucdautu':1,'group_by':[]}</field>
+        <field name="search_view_id" ref="theo_hinh_thuc_dau_tu_report_search_view"/>
+    </record>
+
+    <menuitem action="action_theo_hinh_thuc_dau_tu_report" id="menu_action_theo_hinh_thuc_dau_tu_report" parent="ql_ho_so_bao_cao" sequence="60"/>
+	
+	<!--Theo thời gian-->
+	<record id="theo_thoi_gian_report_tree_view" model="ir.ui.view">
+        <field name="name">theo.thoi.gian.report.tree</field>
+        <field name="model">theo.thoi.gian.report</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Theo thời gian">
+                <field name="nam" invisible="1"/>
+                <field name="tinh_tp_id" />
+                <field name="tong_so_du_an" sum="Tổng số dự án"/>
+                <field name="pt_du_an" sum="Tổng phần trăm dự án"/>
+                <field name="tong_so_von_dau_tu" sum="Tổng VĐT"/>
+                <field name="pt_von_dau_tu" sum="Tổng phần trăm VĐT"/>
+            </tree>
+        </field>
+    </record>
+	
+	<record id="theo_thoi_gian_report_search_view" model="ir.ui.view">
+        <field name="name">theo.thoi.gian.report.search</field>
+        <field name="model">theo.thoi.gian.report</field>
+        <field name="arch" type="xml">
+            <search string="Theo thời gian">
+                <group expand="1" string="Group By...">
+                    <filter string="Thời gian" icon="terp-personal" name="thoigian" context="{'group_by':'nam'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_theo_thoi_gian_report" model="ir.actions.act_window">
+        <field name="name">Theo thời gian</field>
+        <field name="res_model">theo.thoi.gian.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="theo_thoi_gian_report_tree_view"/>
+        <field name="context">{'search_default_thoigian':1,'group_by':[]}</field>
+        <field name="search_view_id" ref="theo_thoi_gian_report_search_view"/>
+    </record>
+
+    <menuitem action="action_theo_thoi_gian_report" id="menu_action_theo_thoi_gian_report" parent="ql_ho_so_bao_cao" sequence="40"/>
+	
+</data>
+</openerp>

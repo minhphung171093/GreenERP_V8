@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+    	<record id="kehoach_dautu_theonam_report" model="ir.actions.report.xml">
+	        <field name="name">kehoach.dautu.theonam.report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">kehoach.dautu.theonam.report</field>
+	        <field name="report_name">Kế hoạch đầu tư</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">ql_duan_dautu/report/ke_hoach_dau_tu_theonam_report.py</field>
+	        <field name="report_rml">ql_duan_dautu/report/kehoach_dautu_theonam.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="kehoach_dautu_theonam_report" 
+			model="kehoach.dautu.theonam.report" 
+			name="kehoach_dautu_theonam_report"
+	        string="Kế hoạch đầu tư theo năm"
+	        rml="ql_duan_dautu/report/kehoach_dautu_theonam.ods"/> 	
+	</data>
+</openerp>

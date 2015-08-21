@@ -22,15 +22,17 @@
 """ Models registries.
 
 """
-from collections import Mapping, defaultdict
+from collections import Mapping
+from contextlib import contextmanager
 import logging
-import os
 import threading
 
-import openerp
-from .. import SUPERUSER_ID
-from openerp.tools import assertion_report, lazy_property, classproperty, config
-from openerp.tools.lru import LRU
+import openerp.sql_db
+import openerp.osv.orm
+import openerp.tools
+import openerp.modules.db
+import openerp.tools.config
+from openerp.tools import assertion_report
 
 _logger = logging.getLogger(__name__)
 
@@ -47,11 +49,10 @@ class Registry(Mapping):
         self.models = {}    # model name/model instance mapping
         self._sql_error = {}
         self._store_function = {}
-        self._pure_function_fields = {}         # {model: [field, ...], ...}
         self._init = True
         self._init_parent = {}
         self._assertion_report = assertion_report.assertion_report()
-        self._fields_by_model = None
+        self.fields_by_model = None
 
         # modules fully loaded (maintained during init phase by `loading` module)
         self._init_modules = set()
@@ -73,7 +74,6 @@ class Registry(Mapping):
         self.base_registry_signaling_sequence = None
         self.base_cache_signaling_sequence = None
 
-        self.cache = LRU(8192)
         # Flag indicating if at least one model cache has been cleared.
         # Useful only in a multi-process context.
         self._any_cache_cleared = False
@@ -97,6 +97,10 @@ class Registry(Mapping):
         """ Return an iterator over all model names. """
         return iter(self.models)
 
+    def __contains__(self, model_name):
+        """ Test whether the model with the given name exists. """
+        return model_name in self.models
+
     def __getitem__(self, model_name):
         """ Return the model with the given name or raise KeyError if it doesn't exist."""
         return self.models[model_name]
@@ -104,30 +108,6 @@ class Registry(Mapping):
     def __call__(self, model_name):
         """ Same as ``self[model_name]``. """
         return self.models[model_name]
-
-    @lazy_property
-    def pure_function_fields(self):
-        """ Return the list of pure function fields (field objects) """
-        fields = []
-        for mname, fnames in self._pure_function_fields.iteritems():
-            model_fields = self[mname]._fields
-            for fname in fnames:
-                fields.append(model_fields[fname])
-        return fields
-
-    def clear_manual_fields(self):
-        """ Invalidate the cache for manual fields. """
-        self._fields_by_model = None
-
-    def get_manual_fields(self, cr, model_name):
-        """ Return the manual fields (as a dict) for the given model. """
-        if self._fields_by_model is None:
-            # Query manual fields for all models at once
-            self._fields_by_model = dic = defaultdict(dict)
-            cr.execute('SELECT * FROM ir_model_fields WHERE state=%s', ('manual',))
-            for field in cr.dictfetchall():
-                dic[field['model']][field['name']] = field
-        return self._fields_by_model[model_name]
 
     def do_parent_store(self, cr):
         for o in self._init_parent:
@@ -151,50 +131,16 @@ class Registry(Mapping):
         and registers them in the registry.
 
         """
-        from .. import models
-
         models_to_load = [] # need to preserve loading order
-        lazy_property.reset_all(self)
-
         # Instantiate registered classes (via the MetaModel automatic discovery
         # or via explicit constructor call), and add them to the pool.
-        for cls in models.MetaModel.module_to_models.get(module.name, []):
+        for cls in openerp.osv.orm.MetaModel.module_to_models.get(module.name, []):
             # models register themselves in self.models
-            model = cls._build_model(self, cr)
+            model = cls.create_instance(self, cr)
             if model._name not in models_to_load:
                 # avoid double-loading models whose declaration is split
                 models_to_load.append(model._name)
-
         return [self.models[m] for m in models_to_load]
-
-    def setup_models(self, cr, partial=False):
-        """ Complete the setup of models.
-            This must be called after loading modules and before using the ORM.
-
-            :param partial: ``True`` if all models have not been loaded yet.
-        """
-        lazy_property.reset_all(self)
-
-        # load custom models
-        ir_model = self['ir.model']
-        cr.execute('select model from ir_model where state=%s', ('manual',))
-        for (model_name,) in cr.fetchall():
-            ir_model.instanciate(cr, SUPERUSER_ID, model_name, {})
-
-        # prepare the setup on all models
-        for model in self.models.itervalues():
-            model._prepare_setup(cr, SUPERUSER_ID)
-
-        # do the actual setup from a clean state
-        self._m2m = {}
-        for model in self.models.itervalues():
-            model._setup_base(cr, SUPERUSER_ID, partial)
-
-        for model in self.models.itervalues():
-            model._setup_fields(cr, SUPERUSER_ID)
-
-        for model in self.models.itervalues():
-            model._setup_complete(cr, SUPERUSER_ID)
 
     def clear_caches(self):
         """ Clear the caches
@@ -205,7 +151,7 @@ class Registry(Mapping):
             model.clear_caches()
         # Special case for ir_ui_menu which does not use openerp.tools.ormcache.
         ir_ui_menu = self.models.get('ir.ui.menu')
-        if ir_ui_menu is not None:
+        if ir_ui_menu:
             ir_ui_menu.clear_cache()
 
 
@@ -289,27 +235,11 @@ class RegistryManager(object):
         registries (essentially database connection/model registry pairs).
 
     """
-    _registries = None
+    # Mapping between db name and model registry.
+    # Accessed through the methods below.
+    registries = {}
     _lock = threading.RLock()
     _saved_lock = None
-
-    @classproperty
-    def registries(cls):
-        if cls._registries is None:
-            size = config.get('registry_lru_size', None)
-            if not size:
-                # Size the LRU depending of the memory limits
-                if os.name != 'posix':
-                    # cannot specify the memory limit soft on windows...
-                    size = 42
-                else:
-                    # A registry takes 10MB of memory on average, so we reserve
-                    # 10Mb (registry) + 5Mb (working memory) per registry
-                    avgsz = 15 * 1024 * 1024
-                    size = int(config['limit_memory_soft'] / avgsz)
-
-            cls._registries = LRU(size)
-        return cls._registries
 
     @classmethod
     def lock(cls):
@@ -352,37 +282,36 @@ class RegistryManager(object):
         """
         import openerp.modules
         with cls.lock():
-            with openerp.api.Environment.manage():
-                registry = Registry(db_name)
+            registry = Registry(db_name)
 
-                # Initializing a registry will call general code which will in
-                # turn call registries.get (this object) to obtain the registry
-                # being initialized. Make it available in the registries
-                # dictionary then remove it if an exception is raised.
-                cls.delete(db_name)
-                cls.registries[db_name] = registry
-                try:
-                    with registry.cursor() as cr:
-                        seq_registry, seq_cache = Registry.setup_multi_process_signaling(cr)
-                        registry.base_registry_signaling_sequence = seq_registry
-                        registry.base_cache_signaling_sequence = seq_cache
-                    # This should be a method on Registry
-                    openerp.modules.load_modules(registry._db, force_demo, status, update_module)
-                except Exception:
-                    del cls.registries[db_name]
-                    raise
+            # Initializing a registry will call general code which will in turn
+            # call registries.get (this object) to obtain the registry being
+            # initialized. Make it available in the registries dictionary then
+            # remove it if an exception is raised.
+            cls.delete(db_name)
+            cls.registries[db_name] = registry
+            try:
+                with registry.cursor() as cr:
+                    seq_registry, seq_cache = Registry.setup_multi_process_signaling(cr)
+                    registry.base_registry_signaling_sequence = seq_registry
+                    registry.base_cache_signaling_sequence = seq_cache
+                # This should be a method on Registry
+                openerp.modules.load_modules(registry._db, force_demo, status, update_module)
+            except Exception:
+                del cls.registries[db_name]
+                raise
 
-                # load_modules() above can replace the registry by calling
-                # indirectly new() again (when modules have to be uninstalled).
-                # Yeah, crazy.
-                registry = cls.registries[db_name]
+            # load_modules() above can replace the registry by calling
+            # indirectly new() again (when modules have to be uninstalled).
+            # Yeah, crazy.
+            registry = cls.registries[db_name]
 
-                cr = registry.cursor()
-                try:
-                    registry.do_parent_store(cr)
-                    cr.commit()
-                finally:
-                    cr.close()
+            cr = registry.cursor()
+            try:
+                registry.do_parent_store(cr)
+                cr.commit()
+            finally:
+                cr.close()
 
         registry.ready = True
 
@@ -458,6 +387,13 @@ class RegistryManager(object):
                     _logger.info("Invalidating all model caches after database signaling.")
                     registry.clear_caches()
                     registry.reset_any_cache_cleared()
+                    # One possible reason caches have been invalidated is the
+                    # use of decimal_precision.write(), in which case we need
+                    # to refresh fields.float columns.
+                    for model in registry.models.values():
+                        for column in model._columns.values():
+                            if hasattr(column, 'digits_change'):
+                                column.digits_change(cr)
                 registry.base_registry_signaling_sequence = r
                 registry.base_cache_signaling_sequence = c
             finally:

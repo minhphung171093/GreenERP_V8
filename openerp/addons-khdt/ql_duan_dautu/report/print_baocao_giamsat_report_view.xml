@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+    	<record id="print_baocao_giamsat_report" model="ir.actions.report.xml">
+	        <field name="name">print.baocao.giamsat.report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">print.baocao.giamsat</field>
+	        <field name="report_name">Báo cáo giám sát</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">ql_duan_dautu/report/print_baocao_giamsat_report.py</field>
+	        <field name="report_rml">ql_duan_dautu/report/print_baocao_giamsat.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="print_baocao_giamsat_report" 
+			model="print.baocao.giamsat" 
+			name="print_baocao_giamsat_report"
+	        string="Báo cáo giám sát"
+	        rml="ql_duan_dautu/report/print_baocao_giamsat.odt"/> 
+	        
+	</data>
+</openerp>

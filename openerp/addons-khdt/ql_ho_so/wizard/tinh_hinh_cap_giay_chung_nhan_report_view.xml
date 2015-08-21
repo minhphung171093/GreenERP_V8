@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_tinh_hinh_cap_giay_chung_nhan_report" model="ir.ui.view">
+            <field name="name">tinh.hinh.cap.giay.chung.nhan.report</field>
+            <field name="model">tinh.hinh.cap.giay.chung.nhan.report</field>
+            <field name="arch" type="xml">
+                <form string="Tình hình cấp giấy chứng nhận" version="7.0">
+                    <group colspan="4" col="4" >
+	                    <field name="date_from"/>
+	                    <field name="date_to"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'type':'appointments'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_tinh_hinh_cap_giay_chung_nhan_report" model="ir.actions.act_window">
+            <field name="name">Tình hình cấp giấy chứng nhận</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tinh.hinh.cap.giay.chung.nhan.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_tinh_hinh_cap_giay_chung_nhan_report"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_tinh_hinh_cap_giay_chung_nhan_report" id="menu_action_tinh_hinh_cap_giay_chung_nhan_report" parent="ql_ho_so_bao_cao" sequence="70" />
+        
+        <record id="view_tinh_hinh_thu_hoi_giay_chung_nhan_report" model="ir.ui.view">
+            <field name="name">tinh.hinh.thu.hoi.giay.chung.nhan.report</field>
+            <field name="model">tinh.hinh.cap.giay.chung.nhan.report</field>
+            <field name="arch" type="xml">
+                <form string="Tình hình chấm dứt hoạt động dự án" version="7.0">
+                    <group colspan="4" col="4" >
+	                    <field name="date_from"/>
+	                    <field name="date_to"/>
+                    </group>
+                    <footer>
+                        <button name="print_thu_hoi" string="In" type="object" class="oe_highlight" context="{'type':'appointments'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_tinh_hinh_thu_hoi_giay_chung_nhan_report" model="ir.actions.act_window">
+            <field name="name">Tình hình chấm dứt hoạt động dự án</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tinh.hinh.cap.giay.chung.nhan.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_tinh_hinh_thu_hoi_giay_chung_nhan_report"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_tinh_hinh_thu_hoi_giay_chung_nhan_report" id="menu_action_tinh_hinh_thu_hoi_giay_chung_nhan_report" parent="ql_ho_so_bao_cao" sequence="90" />
+        
+    </data>
+</openerp>
+

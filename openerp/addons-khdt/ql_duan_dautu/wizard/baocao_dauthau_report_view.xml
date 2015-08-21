@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_baocao_dauthau_report" model="ir.ui.view">
+            <field name="name">baocao.dauthau.report</field>
+            <field name="model">baocao.dauthau.report</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo đấu thầu" version="7.0">
+                    <group colspan="4" col="4" >
+	                    <field name="date_from"/>
+	                    <field name="date_to"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'type':'appointments'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_baocao_dauthau_report" model="ir.actions.act_window">
+            <field name="name">Báo cáo đấu thầu</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">baocao.dauthau.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_kehoach_dautu_report"/>
+            <field name="target">new</field>
+        </record>
+        
+        
+    </data>
+</openerp>
+

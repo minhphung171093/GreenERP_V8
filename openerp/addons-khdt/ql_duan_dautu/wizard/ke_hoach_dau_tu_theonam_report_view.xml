@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_kehoach_dautu_theonam_report" model="ir.ui.view">
+            <field name="name">Kế hoạch đầu tư theo năm</field>
+            <field name="model">kehoach.dautu.theonam.report</field>
+            <field name="arch" type="xml">
+                <form string="kehoach.dautu.theonam.report" version="7.0">
+                	<sheet>
+	                    <group>
+		                    <field name="nam_ids" widget="many2many_tags" options='{"no_create":True}'/>
+		                    <field name="truong_dulieu_ids" options='{"no_create":True}' invisible='1'/>
+		                    <field name="date_from" invisible='1'/>
+		                    <field name="date_to" invisible='1'/>
+	                    </group>
+	                </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'type':'appointments'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_kehoach_dautu_theonam_report" model="ir.actions.act_window">
+            <field name="name">Kế hoạch đầu tư theo năm</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kehoach.dautu.theonam.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_kehoach_dautu_theonam_report"/>
+            <field name="target">new</field>
+        </record>
+        
+    </data>
+</openerp>
+

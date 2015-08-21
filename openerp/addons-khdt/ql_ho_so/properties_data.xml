@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+ <data>
+ 		
+ 		<record id="default_tinh_tp_gcndt" model="admin.property">
+            <field name="name">default_tinh_tp_gcndt</field>
+            <field name="value">Bình Dương</field>
+        </record>
+		
+		<record id="default_maso_gcndt" model="admin.property">
+            <field name="name">default_maso_gcndt</field>
+            <field name="value">461</field>
+        </record>
+		
+   </data>  
+</openerp>

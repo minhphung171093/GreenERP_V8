@@ -19,21 +19,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from collections import defaultdict
 import logging
 import re
 import time
 import types
 
 import openerp
+import openerp.modules.registry
 from openerp import SUPERUSER_ID
-from openerp import models, tools, api
-from openerp.modules.registry import RegistryManager
-from openerp.osv import fields, osv
-from openerp.osv.orm import BaseModel, Model, MAGIC_COLUMNS, except_orm
-from openerp.tools import config
+from openerp import tools
+from openerp.osv import fields,osv
+from openerp.osv.orm import Model, browse_null
 from openerp.tools.safe_eval import safe_eval as eval
+from openerp.tools import config
 from openerp.tools.translate import _
+from openerp.osv.orm import except_orm, browse_record, MAGIC_COLUMNS
 
 _logger = logging.getLogger(__name__)
 
@@ -61,13 +61,6 @@ def _in_modules(self, cr, uid, ids, field_name, arg, context=None):
     for k,v in xml_ids.iteritems():
         result[k] = ', '.join(sorted(installed_modules & set(xml_id.split('.')[0] for xml_id in v)))
     return result
-
-class unknown(models.AbstractModel):
-    """
-    Abstract model used as a substitute for relational fields with an unknown
-    comodel.
-    """
-    _name = '_unknown'
 
 class ir_model(osv.osv):
     _name = 'ir.model'
@@ -102,23 +95,12 @@ class ir_model(osv.osv):
             res[model.id] = self.pool["ir.ui.view"].search(cr, uid, [('model', '=', model.model)])
         return res
 
-    def _inherited_models(self, cr, uid, ids, field_name, arg, context=None):
-        res = {}
-        for model in self.browse(cr, uid, ids, context=context):
-            res[model.id] = []
-            inherited_models = [model_name for model_name in self.pool[model.model]._inherits]
-            if inherited_models:
-                res[model.id] = self.search(cr, uid, [('model', 'in', inherited_models)], context=context)
-        return res
-
     _columns = {
         'name': fields.char('Model Description', translate=True, required=True),
         'model': fields.char('Model', required=True, select=1),
         'info': fields.text('Information'),
-        'field_id': fields.one2many('ir.model.fields', 'model_id', 'Fields', required=True, copy=True),
-        'inherited_model_ids': fields.function(_inherited_models, type="many2many", obj="ir.model", string="Inherited models",
-            help="The list of models that extends the current model."),
-        'state': fields.selection([('manual','Custom Object'),('base','Base Object')],'Type', readonly=True),
+        'field_id': fields.one2many('ir.model.fields', 'model_id', 'Fields', required=True),
+        'state': fields.selection([('manual','Custom Object'),('base','Base Object')],'Type',readonly=True),
         'access_ids': fields.one2many('ir.model.access', 'model_id', 'Access'),
         'osv_memory': fields.function(_is_osv_memory, string='Transient Model', type='boolean',
             fnct_search=_search_osv_memory,
@@ -169,7 +151,7 @@ class ir_model(osv.osv):
             if result and result[0] == 'v':
                 cr.execute('DROP view %s' % (model_pool._table,))
             elif result and result[0] == 'r':
-                cr.execute('DROP TABLE %s CASCADE' % (model_pool._table,))
+                cr.execute('DROP TABLE %s' % (model_pool._table,))
         return True
 
     def unlink(self, cr, user, ids, context=None):
@@ -188,15 +170,13 @@ class ir_model(osv.osv):
             # only reload pool for normal unlink. For module uninstall the
             # reload is done independently in openerp.modules.loading
             cr.commit() # must be committed before reloading registry in new cursor
-            api.Environment.reset()
-            RegistryManager.new(cr.dbname)
-            RegistryManager.signal_registry_change(cr.dbname)
+            openerp.modules.registry.RegistryManager.new(cr.dbname)
+            openerp.modules.registry.RegistryManager.signal_registry_change(cr.dbname)
 
         return res
 
     def write(self, cr, user, ids, vals, context=None):
         if context:
-            context = dict(context)
             context.pop('__last_update', None)
         # Filter out operations 4 link from field id, because openerp-web
         # always write (4,id,False) even for non dirty items
@@ -211,31 +191,31 @@ class ir_model(osv.osv):
             vals['state']='manual'
         res = super(ir_model,self).create(cr, user, vals, context)
         if vals.get('state','base')=='manual':
-            # add model in registry
             self.instanciate(cr, user, vals['model'], context)
-            self.pool.setup_models(cr, partial=(not self.pool.ready))
-            # update database schema
-            model = self.pool[vals['model']]
             ctx = dict(context,
                 field_name=vals['name'],
                 field_state='manual',
                 select=vals.get('select_level', '0'),
                 update_custom_fields=True)
-            model._auto_init(cr, ctx)
-            model._auto_end(cr, ctx) # actually create FKs!
-            RegistryManager.signal_registry_change(cr.dbname)
+            self.pool[vals['model']]._auto_init(cr, ctx)
+            self.pool[vals['model']]._auto_end(cr, ctx) # actually create FKs!
+            openerp.modules.registry.RegistryManager.signal_registry_change(cr.dbname)
         return res
 
     def instanciate(self, cr, user, model, context=None):
-        if isinstance(model, unicode):
-            model = model.encode('utf-8')
-
-        class CustomModel(models.Model):
-            _name = model
-            _module = False
+        class x_custom_model(osv.osv):
             _custom = True
-
-        CustomModel._build_model(self.pool, cr)
+        x_custom_model._name = model
+        x_custom_model._module = False
+        a = x_custom_model.create_instance(self.pool, cr)
+        if not a._columns:
+            x_name = 'id'
+        elif 'x_name' in a._columns.keys():
+            x_name = 'x_name'
+        else:
+            x_name = a._columns.keys()[0]
+        x_custom_model._rec_name = x_name
+        a._rec_name = x_name
 
 class ir_model_fields(osv.osv):
     _name = 'ir.model.fields'
@@ -264,8 +244,7 @@ class ir_model_fields(osv.osv):
         'translate': fields.boolean('Translatable', help="Whether values for this field can be translated (enables the translation mechanism for that field)"),
         'size': fields.integer('Size'),
         'state': fields.selection([('manual','Custom Field'),('base','Base Field')],'Type', required=True, readonly=True, select=1),
-        'on_delete': fields.selection([('cascade', 'Cascade'), ('set null', 'Set NULL'), ('restrict', 'Restrict')],
-                                      'On Delete', help='On delete property for many2one fields'),
+        'on_delete': fields.selection([('cascade','Cascade'),('set null','Set NULL')], 'On Delete', help='On delete property for many2one fields'),
         'domain': fields.char('Domain', help="The optional domain to restrict possible values for relationship fields, "
             "specified as a Python expression defining a list of triplets. "
             "For example: [('color','=','red')]"),
@@ -332,15 +311,7 @@ class ir_model_fields(osv.osv):
             column_name = cr.fetchone()
             if column_name and (result and result[0] == 'r'):
                 cr.execute('ALTER table "%s" DROP column "%s" cascade' % (model._table, field.name))
-            # remove m2m relation table for custom fields
-            # we consider the m2m relation is only one way as it's not possible
-            # to specify the relation table in the interface for custom fields
-            # TODO master: maybe use ir.model.relations for custom fields
-            if field.state == 'manual' and field.ttype == 'many2many':
-                rel_name = model._fields[field.name].relation
-                cr.execute('DROP table "%s"' % (rel_name))
-            model._pop_field(field.name)
-
+            model._columns.pop(field.name, None)
         return True
 
     def unlink(self, cr, user, ids, context=None):
@@ -355,12 +326,8 @@ class ir_model_fields(osv.osv):
         self._drop_column(cr, user, ids, context)
         res = super(ir_model_fields, self).unlink(cr, user, ids, context)
         if not context.get(MODULE_UNINSTALL_FLAG):
-            # The field we just deleted might have be inherited, and registry is
-            # inconsistent in this case; therefore we reload the registry.
             cr.commit()
-            api.Environment.reset()
-            RegistryManager.new(cr.dbname)
-            RegistryManager.signal_registry_change(cr.dbname)
+            openerp.modules.registry.RegistryManager.signal_registry_change(cr.dbname)
         return res
 
     def create(self, cr, user, vals, context=None):
@@ -383,26 +350,19 @@ class ir_model_fields(osv.osv):
             if vals.get('relation',False) and not self.pool['ir.model'].search(cr, user, [('model','=',vals['relation'])]):
                 raise except_orm(_('Error'), _("Model %s does not exist!") % vals['relation'])
 
-            self.pool.clear_manual_fields()
-
             if vals['model'] in self.pool:
-                model = self.pool[vals['model']]
                 if vals['model'].startswith('x_') and vals['name'] == 'x_name':
-                    model._rec_name = 'x_name'
-
-                # re-initialize model in registry
-                model.__init__(self.pool, cr)
-                self.pool.setup_models(cr, partial=(not self.pool.ready))
-                # update database schema
-                model = self.pool[vals['model']]
+                    self.pool[vals['model']]._rec_name = 'x_name'
+                self.pool[vals['model']].__init__(self.pool, cr)
+                #Added context to _auto_init for special treatment to custom field for select_level
                 ctx = dict(context,
                     field_name=vals['name'],
                     field_state='manual',
                     select=vals.get('select_level', '0'),
                     update_custom_fields=True)
-                model._auto_init(cr, ctx)
-                model._auto_end(cr, ctx) # actually create FKs!
-                RegistryManager.signal_registry_change(cr.dbname)
+                self.pool[vals['model']]._auto_init(cr, ctx)
+                self.pool[vals['model']]._auto_end(cr, ctx) # actually create FKs!
+                openerp.modules.registry.RegistryManager.signal_registry_change(cr.dbname)
 
         return res
 
@@ -420,31 +380,29 @@ class ir_model_fields(osv.osv):
                 if field.serialization_field_id and (field.name != vals['name']):
                     raise except_orm(_('Error!'),  _('Renaming sparse field "%s" is not allowed')%field.name)
 
-        # if set, *one* column can be renamed here
-        column_rename = None
-
-        # field patches {model: {field_name: {prop_name: prop_value, ...}, ...}, ...}
-        patches = defaultdict(lambda: defaultdict(dict))
+        column_rename = None # if set, *one* column can be renamed here
+        models_patch = {}    # structs of (obj, [(field, prop, change_to),..])
+                             # data to be updated on the orm model
 
         # static table of properties
         model_props = [ # (our-name, fields.prop, set_fn)
             ('field_description', 'string', tools.ustr),
             ('required', 'required', bool),
             ('readonly', 'readonly', bool),
-            ('domain', 'domain', eval),
+            ('domain', '_domain', eval),
             ('size', 'size', int),
             ('on_delete', 'ondelete', str),
             ('translate', 'translate', bool),
-            ('select_level', 'index', lambda x: bool(int(x))),
+            ('selectable', 'selectable', bool),
+            ('select_level', 'select', int),
             ('selection', 'selection', eval),
-        ]
+            ]
 
         if vals and ids:
             checked_selection = False # need only check it once, so defer
 
             for item in self.browse(cr, user, ids, context=context):
                 obj = self.pool.get(item.model)
-                field = getattr(obj, '_fields', {}).get(item.name)
 
                 if item.state != 'manual':
                     raise except_orm(_('Error!'),
@@ -471,7 +429,7 @@ class ir_model_fields(osv.osv):
                     column_rename = (obj, (obj._table, item.name, vals['name']))
                     final_name = vals['name']
 
-                if 'model_id' in vals and vals['model_id'] != item.model_id.id:
+                if 'model_id' in vals and vals['model_id'] != item.model_id:
                     raise except_orm(_("Error!"), _("Changing the model of a field is forbidden!"))
 
                 if 'ttype' in vals and vals['ttype'] != item.ttype:
@@ -480,13 +438,15 @@ class ir_model_fields(osv.osv):
 
                 # We don't check the 'state', because it might come from the context
                 # (thus be set for multiple fields) and will be ignored anyway.
-                if obj is not None and field is not None:
+                if obj is not None:
+                    models_patch.setdefault(obj._name, (obj,[]))
                     # find out which properties (per model) we need to update
-                    for field_name, prop_name, func in model_props:
+                    for field_name, field_property, set_fn in model_props:
                         if field_name in vals:
-                            prop_value = func(vals[field_name])
-                            if getattr(field, prop_name) != prop_value:
-                                patches[obj][final_name][prop_name] = prop_value
+                            property_value = set_fn(vals[field_name])
+                            if getattr(obj._columns[item.name], field_property) != property_value:
+                                models_patch[obj._name][1].append((final_name, field_property, property_value))
+                        # our dict is ready here, but no properties are changed so far
 
         # These shall never be written (modified)
         for column_name in ('model_id', 'model', 'state'):
@@ -496,40 +456,28 @@ class ir_model_fields(osv.osv):
         res = super(ir_model_fields,self).write(cr, user, ids, vals, context=context)
 
         if column_rename:
-            obj, rename = column_rename
-            cr.execute('ALTER TABLE "%s" RENAME COLUMN "%s" TO "%s"' % rename)
+            cr.execute('ALTER TABLE "%s" RENAME COLUMN "%s" TO "%s"' % column_rename[1])
             # This is VERY risky, but let us have this feature:
-            # we want to change the key of field in obj._fields and obj._columns
-            field = obj._pop_field(rename[1])
-            obj._add_field(rename[2], field)
-            self.pool.setup_models(cr, partial=(not self.pool.ready))
+            # we want to change the key of column in obj._columns dict
+            col = column_rename[0]._columns.pop(column_rename[1][1]) # take object out, w/o copy
+            column_rename[0]._columns[column_rename[1][2]] = col
 
-        if patches:
+        if models_patch:
             # We have to update _columns of the model(s) and then call their
             # _auto_init to sync the db with the model. Hopefully, since write()
             # was called earlier, they will be in-sync before the _auto_init.
             # Anything we don't update in _columns now will be reset from
             # the model into ir.model.fields (db).
-            ctx = dict(context,
-                select=vals.get('select_level', '0'),
-                update_custom_fields=True,
-            )
+            ctx = dict(context, select=vals.get('select_level', '0'),
+                       update_custom_fields=True)
 
-            for obj, model_patches in patches.iteritems():
-                for field_name, field_patches in model_patches.iteritems():
-                    # update field properties, and adapt corresponding column
-                    field = obj._fields[field_name]
-                    attrs = dict(field._attrs, **field_patches)
-                    obj._add_field(field_name, field.new(**attrs))
-
-                # update database schema
-                self.pool.setup_models(cr, partial=(not self.pool.ready))
+            for __, patch_struct in models_patch.items():
+                obj = patch_struct[0]
+                for col_name, col_prop, val in patch_struct[1]:
+                    setattr(obj._columns[col_name], col_prop, val)
                 obj._auto_init(cr, ctx)
                 obj._auto_end(cr, ctx) # actually create FKs!
-
-        if column_rename or patches:
-            RegistryManager.signal_registry_change(cr.dbname)
-
+            openerp.modules.registry.RegistryManager.signal_registry_change(cr.dbname)
         return res
 
 class ir_model_constraint(Model):
@@ -681,8 +629,8 @@ class ir_model_access(osv.osv):
         """ Check if a specific group has the access mode to the specified model"""
         assert mode in ['read','write','create','unlink'], 'Invalid access mode'
 
-        if isinstance(model, BaseModel):
-            assert model._name == 'ir.model', 'Invalid model object'
+        if isinstance(model, browse_record):
+            assert model._table_name == 'ir.model', 'Invalid model object'
             model_name = model.name
         else:
             model_name = model
@@ -731,11 +679,7 @@ class ir_model_access(osv.osv):
                         a.perm_''' + access_mode, (model_name,))
         return [('%s/%s' % x) if x[0] else x[1] for x in cr.fetchall()]
 
-    # The context parameter is useful when the method translates error messages.
-    # But as the method raises an exception in that case,  the key 'lang' might
-    # not be really necessary as a cache key, unless the `ormcache_context`
-    # decorator catches the exception (it does not at the moment.)
-    @tools.ormcache_context(accepted_keys=('lang',))
+    @tools.ormcache()
     def check(self, cr, uid, model, mode='read', raise_exception=True, context=None):
         if uid==1:
             # User root have all accesses
@@ -744,8 +688,8 @@ class ir_model_access(osv.osv):
 
         assert mode in ['read','write','create','unlink'], 'Invalid access mode'
 
-        if isinstance(model, BaseModel):
-            assert model._name == 'ir.model', 'Invalid model object'
+        if isinstance(model, browse_record):
+            assert model._table_name == 'ir.model', 'Invalid model object'
             model_name = model.model
         else:
             model_name = model
@@ -798,7 +742,7 @@ class ir_model_access(osv.osv):
             _logger.warning('Access Denied by ACLs for operation: %s, uid: %s, model: %s', mode, uid, model_name)
             msg = '%s %s' % (msg_heads[mode], msg_tail)
             raise openerp.exceptions.AccessError(msg % msg_params)
-        return bool(r)
+        return r or False
 
     __cache_clearing_methods = []
 
@@ -813,7 +757,6 @@ class ir_model_access(osv.osv):
             pass
 
     def call_cache_clearing_methods(self, cr):
-        self.invalidate_cache(cr, SUPERUSER_ID)
         self.check.clear_cache(self)    # clear the cache of check function
         for model, method in self.__cache_clearing_methods:
             if model in self.pool:
@@ -822,19 +765,19 @@ class ir_model_access(osv.osv):
     #
     # Check rights on actions
     #
-    def write(self, cr, uid, ids, values, context=None):
+    def write(self, cr, uid, *args, **argv):
         self.call_cache_clearing_methods(cr)
-        res = super(ir_model_access, self).write(cr, uid, ids, values, context=context)
+        res = super(ir_model_access, self).write(cr, uid, *args, **argv)
         return res
 
-    def create(self, cr, uid, values, context=None):
+    def create(self, cr, uid, *args, **argv):
         self.call_cache_clearing_methods(cr)
-        res = super(ir_model_access, self).create(cr, uid, values, context=context)
+        res = super(ir_model_access, self).create(cr, uid, *args, **argv)
         return res
 
-    def unlink(self, cr, uid, ids, context=None):
+    def unlink(self, cr, uid, *args, **argv):
         self.call_cache_clearing_methods(cr)
-        res = super(ir_model_access, self).unlink(cr, uid, ids, context=context)
+        res = super(ir_model_access, self).unlink(cr, uid, *args, **argv)
         return res
 
 class ir_model_data(osv.osv):
@@ -850,26 +793,24 @@ class ir_model_data(osv.osv):
     """
     _name = 'ir.model.data'
     _order = 'module,model,name'
-
-    def name_get(self, cr, uid, ids, context=None):
-        bymodel = defaultdict(dict)
-        names = {}
-
+    def _display_name_get(self, cr, uid, ids, prop, unknow_none, context=None):
+        result = {}
+        result2 = {}
         for res in self.browse(cr, uid, ids, context=context):
-            bymodel[res.model][res.res_id] = res
-            names[res.id] = res.complete_name
-            #result[res.model][res.res_id] = res.id
+            if res.id:
+                result.setdefault(res.model, {})
+                result[res.model][res.res_id] = res.id
+            result2[res.id] = False
 
-        for model, id_map in bymodel.iteritems():
+        for model in result:
             try:
-                ng = dict(self.pool[model].name_get(cr, uid, id_map.keys(), context=context))
-            except Exception:
+                r = dict(self.pool[model].name_get(cr, uid, result[model].keys(), context=context))
+                for key,val in result[model].items():
+                    result2[val] = r.get(key, False)
+            except:
+                # some object have no valid name_get implemented, we accept this
                 pass
-            else:
-                for r in id_map.itervalues():
-                    names[r.id] = ng.get(r.res_id, r.complete_name)
-
-        return [(i, names[i]) for i in ids]
+        return result2
 
     def _complete_name_get(self, cr, uid, ids, prop, unknow_none, context=None):
         result = {}
@@ -882,6 +823,7 @@ class ir_model_data(osv.osv):
                             help="External Key/Identifier that can be used for "
                                  "data integration with third-party systems"),
         'complete_name': fields.function(_complete_name_get, type='char', string='Complete ID'),
+        'display_name': fields.function(_display_name_get, type='char', string='Record Name'),
         'model': fields.char('Model Name', required=True, select=1),
         'module': fields.char('Module', required=True, select=1),
         'res_id': fields.integer('Record ID', select=1,
@@ -891,8 +833,8 @@ class ir_model_data(osv.osv):
         'date_init': fields.datetime('Init Date')
     }
     _defaults = {
-        'date_init': fields.datetime.now,
-        'date_update': fields.datetime.now,
+        'date_init': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'date_update': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
         'noupdate': False,
         'module': ''
     }
@@ -902,11 +844,12 @@ class ir_model_data(osv.osv):
 
     def __init__(self, pool, cr):
         osv.osv.__init__(self, pool, cr)
+        self.doinit = True
         # also stored in pool to avoid being discarded along with this osv instance
         if getattr(pool, 'model_data_reference_ids', None) is None:
             self.pool.model_data_reference_ids = {}
-        # put loads on the class, in order to share it among all instances
-        type(self).loads = self.pool.model_data_reference_ids
+
+        self.loads = self.pool.model_data_reference_ids
 
     def _auto_init(self, cr, context=None):
         super(ir_model_data, self)._auto_init(cr, context)
@@ -945,7 +888,7 @@ class ir_model_data(osv.osv):
 
     def xmlid_to_object(self, cr, uid, xmlid, raise_if_not_found=False, context=None):
         """ Return a browse_record
-        if not found and raise_if_not_found is True return None
+        if not found and raise_if_not_found is True return the browse_null
         """ 
         t = self.xmlid_to_res_model_res_id(cr, uid, xmlid, raise_if_not_found)
         res_model, res_id = t
@@ -955,8 +898,8 @@ class ir_model_data(osv.osv):
             if record.exists():
                 return record
             if raise_if_not_found:
-                raise ValueError('No record found for unique ID %s. It may have been deleted.' % (xmlid))
-        return None
+                raise ValueError('No record found for unique ID %s. It may have been deleted.' % (xml_id))
+        return browse_null()
 
     # OLD API
     def _get_id(self, cr, uid, module, xml_id):
@@ -981,7 +924,7 @@ class ir_model_data(osv.osv):
 
     def get_object(self, cr, uid, module, xml_id, context=None):
         """ Returns a browsable record for the given module name and xml_id.
-            If not found, raise a ValueError or return None, depending
+            If not found, raise a ValueError or return a browse_null, depending
             on the value of `raise_exception`.
         """
         return self.xmlid_to_object(cr, uid, "%s.%s" % (module, xml_id), raise_if_not_found=True, context=context)
@@ -989,19 +932,11 @@ class ir_model_data(osv.osv):
     def _update_dummy(self,cr, uid, model, module, xml_id=False, store=True):
         if not xml_id:
             return False
-        id = False
         try:
-            # One step to check the ID is defined and the record actually exists
-            record = self.get_object(cr, uid, module, xml_id)
-            if record:
-                id = record.id
-                self.loads[(module,xml_id)] = (model,id)
-                for table, inherit_field in self.pool[model]._inherits.iteritems():
-                    parent_id = record[inherit_field].id
-                    parent_xid = '%s_%s' % (xml_id, table.replace('.', '_'))
-                    self.loads[(module, parent_xid)] = (table, parent_id)
-        except Exception:
-            pass
+            id = self.read(cr, uid, [self._get_id(cr, uid, module, xml_id)], ['res_id'])[0]['res_id']
+            self.loads[(module,xml_id)] = (model,id)
+        except:
+            id = False
         return id
 
     def clear_caches(self):
@@ -1026,6 +961,8 @@ class ir_model_data(osv.osv):
         if xml_id and ('.' in xml_id):
             assert len(xml_id.split('.'))==2, _("'%s' contains too many dots. XML ids should not contain dots ! These are used to refer to other modules data, as in module.reference_id") % xml_id
             module, xml_id = xml_id.split('.')
+        if (not xml_id) and (not self.doinit):
+            return False
         action_id = False
         if xml_id:
             cr.execute('''SELECT imd.id, imd.res_id, md.id, imd.model, imd.noupdate
@@ -1048,7 +985,7 @@ class ir_model_data(osv.osv):
 
         if action_id and res_id:
             model_obj.write(cr, uid, [res_id], values, context=context)
-            self.write(cr, SUPERUSER_ID, [action_id], {
+            self.write(cr, uid, [action_id], {
                 'date_update': time.strftime('%Y-%m-%d %H:%M:%S'),
                 },context=context)
         elif res_id:
@@ -1058,14 +995,14 @@ class ir_model_data(osv.osv):
                     for table in model_obj._inherits:
                         inherit_id = model_obj.browse(cr, uid,
                                 res_id,context=context)[model_obj._inherits[table]]
-                        self.create(cr, SUPERUSER_ID, {
+                        self.create(cr, uid, {
                             'name': xml_id + '_' + table.replace('.', '_'),
                             'model': table,
                             'module': module,
                             'res_id': inherit_id.id,
                             'noupdate': noupdate,
                             },context=context)
-                self.create(cr, SUPERUSER_ID, {
+                self.create(cr, uid, {
                     'name': xml_id,
                     'model': model,
                     'module':module,
@@ -1080,14 +1017,14 @@ class ir_model_data(osv.osv):
                         for table in model_obj._inherits:
                             inherit_id = model_obj.browse(cr, uid,
                                     res_id,context=context)[model_obj._inherits[table]]
-                            self.create(cr, SUPERUSER_ID, {
+                            self.create(cr, uid, {
                                 'name': xml_id + '_' + table.replace('.', '_'),
                                 'model': table,
                                 'module': module,
                                 'res_id': inherit_id.id,
                                 'noupdate': noupdate,
                                 },context=context)
-                    self.create(cr, SUPERUSER_ID, {
+                    self.create(cr, uid, {
                         'name': xml_id,
                         'model': model,
                         'module': module,
@@ -1097,8 +1034,8 @@ class ir_model_data(osv.osv):
         if xml_id and res_id:
             self.loads[(module, xml_id)] = (model, res_id)
             for table, inherit_field in model_obj._inherits.iteritems():
-                inherit_id = model_obj.read(cr, uid, [res_id],
-                        [inherit_field])[0][inherit_field]
+                inherit_id = model_obj.read(cr, uid, res_id,
+                        [inherit_field])[inherit_field]
                 self.loads[(module, xml_id + '_' + table.replace('.', '_'))] = (table, inherit_id)
         return res_id
 
@@ -1121,12 +1058,11 @@ class ir_model_data(osv.osv):
 
         cr.execute('select * from ir_values where model=%s and key=%s and name=%s'+where,(model, key, name))
         res = cr.fetchone()
-        ir_values_obj = openerp.registry(cr.dbname)['ir.values']
         if not res:
+            ir_values_obj = openerp.registry(cr.dbname)['ir.values']
             ir_values_obj.set(cr, uid, key, key2, name, models, value, replace, isobject, meta)
         elif xml_id:
             cr.execute('UPDATE ir_values set value=%s WHERE model=%s and key=%s and name=%s'+where,(value, model, key, name))
-            ir_values_obj.invalidate_cache(cr, uid, ['value'])
         return True
 
     def _module_data_uninstall(self, cr, uid, modules_to_remove, context=None):
@@ -1168,7 +1104,6 @@ class ir_model_data(osv.osv):
                 cr.execute('select res_type,res_id from wkf_instance where id IN (select inst_id from wkf_workitem where act_id=%s)', (res_id,))
                 wkf_todo.extend(cr.fetchall())
                 cr.execute("update wkf_transition set condition='True', group_id=NULL, signal=NULL,act_to=act_from,act_from=%s where act_to=%s", (res_id,res_id))
-                self.invalidate_cache(cr, uid, context=context)
 
         for model,res_id in wkf_todo:
             try:
@@ -1190,7 +1125,7 @@ class ir_model_data(osv.osv):
                         _logger.info('Deleting orphan external_ids %s', external_ids)
                         self.unlink(cr, uid, external_ids)
                         continue
-                    if field.name in openerp.models.LOG_ACCESS_COLUMNS and self.pool[field.model]._log_access:
+                    if field.name in openerp.osv.orm.LOG_ACCESS_COLUMNS and self.pool[field.model]._log_access:
                         continue
                     if field.name == 'id':
                         continue
@@ -1206,20 +1141,13 @@ class ir_model_data(osv.osv):
 
         # Remove non-model records first, then model fields, and finish with models
         unlink_if_refcount((model, res_id) for model, res_id in to_unlink
-                                if model not in ('ir.model','ir.model.fields','ir.model.constraint'))
-        unlink_if_refcount((model, res_id) for model, res_id in to_unlink
-                                if model == 'ir.model.constraint')
-
-        ir_module_module = self.pool['ir.module.module']
-        ir_model_constraint = self.pool['ir.model.constraint']
-        modules_to_remove_ids = ir_module_module.search(cr, uid, [('name', 'in', modules_to_remove)], context=context)
-        constraint_ids = ir_model_constraint.search(cr, uid, [('module', 'in', modules_to_remove_ids)], context=context)
-        ir_model_constraint._module_data_uninstall(cr, uid, constraint_ids, context)
-
+                                if model not in ('ir.model','ir.model.fields'))
         unlink_if_refcount((model, res_id) for model, res_id in to_unlink
                                 if model == 'ir.model.fields')
 
         ir_model_relation = self.pool['ir.model.relation']
+        ir_module_module = self.pool['ir.module.module']
+        modules_to_remove_ids = ir_module_module.search(cr, uid, [('name', 'in', modules_to_remove)])
         relation_ids = ir_model_relation.search(cr, uid, [('module', 'in', modules_to_remove_ids)])
         ir_model_relation._module_data_uninstall(cr, uid, relation_ids, context)
 
@@ -1238,31 +1166,26 @@ class ir_model_data(osv.osv):
         and a module in ir_model_data and noupdate set to false, but not
         present in self.loads.
         """
-        if not modules or config.get('import_partial'):
+        if not modules:
             return True
-
-        bad_imd_ids = []
-        context = {MODULE_UNINSTALL_FLAG: True}
+        to_unlink = []
         cr.execute("""SELECT id,name,model,res_id,module FROM ir_model_data
-                      WHERE module IN %s AND res_id IS NOT NULL AND noupdate=%s ORDER BY id DESC
-                   """, (tuple(modules), False))
+                      WHERE module IN %s AND res_id IS NOT NULL AND noupdate=%s ORDER BY id DESC""",
+                      (tuple(modules), False))
         for (id, name, model, res_id, module) in cr.fetchall():
-            if (module, name) not in self.loads:
+            if (module,name) not in self.loads:
+                to_unlink.append((model,res_id))
+        if not config.get('import_partial'):
+            for (model, res_id) in to_unlink:
                 if model in self.pool:
-                    _logger.info('Deleting %s@%s (%s.%s)', res_id, model, module, name)
-                    if self.pool[model].exists(cr, uid, [res_id], context=context):
-                        self.pool[model].unlink(cr, uid, [res_id], context=context)
-                    else:
-                        bad_imd_ids.append(id)
-        if bad_imd_ids:
-            self.unlink(cr, uid, bad_imd_ids, context=context)
-        self.loads.clear()
+                    _logger.info('Deleting %s@%s', res_id, model)
+                    self.pool[model].unlink(cr, uid, [res_id])
 
 class wizard_model_menu(osv.osv_memory):
     _name = 'wizard.ir.model.menu.create'
     _columns = {
         'menu_id': fields.many2one('ir.ui.menu', 'Parent Menu', required=True),
-        'name': fields.char('Menu Name', required=True),
+        'name': fields.char('Menu Name', size=64, required=True),
     }
 
     def menu_create(self, cr, uid, ids, context=None):

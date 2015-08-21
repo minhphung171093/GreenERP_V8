@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		
+		<record model="ir.module.category" id="module_category_duan_dautu">
+	        <field name="name">Dự án đầu tư</field>
+	        <field name="sequence">2</field>
+	    </record>
+	
+	    <record id="group_duan_dautu_nv_nhap_duan_dautu" model="res.groups">
+	        <field name="name">Nhập liệu dự án đầu tư</field>
+	        <field name="skhdt">1</field>
+	        <field name="category_id" ref="module_category_duan_dautu"/>
+	        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+	        <field name="implied_ids" eval="[(4, ref('ql_vanban.group_vanban_nv'))]"/>
+	    </record>
+	    
+	    <record id="group_duan_dautu_nv_nhap_nguonvon" model="res.groups">
+	        <field name="name">Nhân viên nhập liệu nguồn vốn</field>
+	        <field name="skhdt">1</field>
+	        <field name="category_id" ref="module_category_duan_dautu"/>
+	        <field name="implied_ids" eval="[(4, ref('group_duan_dautu_nv_nhap_duan_dautu'))]"/>
+	    </record>
+	
+		<record id="group_duan_dautu_cauhinh" model="res.groups">
+	        <field name="name">Cấu hình dự án đầu tư</field>
+	        <field name="skhdt">1</field>
+	        <field name="category_id" ref="module_category_duan_dautu"/>
+	        <field name="implied_ids" eval="[(4, ref('group_duan_dautu_nv_nhap_nguonvon'))]"/>
+	    </record>
+		
+		<record id="group_duan_dautu_nhap_baocao" model="res.groups">
+	        <field name="name">Nhập liệu báo cáo</field>
+	        <field name="skhdt">1</field>
+	        <field name="category_id" ref="module_category_duan_dautu"/>
+	        <field name="implied_ids" eval="[(4, ref('ql_vanban.group_vanban_nv'))]"/>
+	    </record>
+		
+		<record id="group_duan_dautu_tp" model="res.groups">
+	        <field name="name">Trưởng phòng dự án đầu tư</field>
+	        <field name="skhdt">1</field>
+	        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+	        <field name="category_id" ref="module_category_duan_dautu"/>
+	        <field name="implied_ids" eval="[(4, ref('group_duan_dautu_cauhinh')),(4, ref('group_duan_dautu_nhap_baocao'))]"/>
+	    </record>
+		
+		<record id="skhdt_base.group_skhdt_quantri" model="res.groups">
+	        <field name="implied_ids" eval="[(4, ref('group_duan_dautu_tp'))]"/>
+	    </record>
+		
+	</data>
+	
+	<data noupdate="1">
+
+    <record id="nguon_von_comp_rule" model="ir.rule">
+        <field name="name">Nguồn vốn multi company rule</field>
+        <field name="model_id" ref="model_nguon_von"/>
+        <field eval="True" name="global"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+    <record id="danhmuc_nguonvon_comp_rule" model="ir.rule">
+        <field name="name">Danh mục nguồn vốn multi company rule</field>
+        <field name="model_id" ref="model_danhmuc_nguonvon"/>
+        <field eval="True" name="global"/>
+        <field name="domain_force">['|',('nguon_von_id.company_id','=',False),('nguon_von_id.company_id','child_of',[user.company_id.id])]</field>
+    </record>
+    <record id="duan_dautu_comp_rule" model="ir.rule">
+        <field name="name">Dự án đầu tư multi company rule</field>
+        <field name="model_id" ref="model_duan_dautu"/>
+        <field eval="True" name="global"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+    <record id="duan_dautu_thuchien_comp_rule" model="ir.rule">
+        <field name="name">Kế hoạch vốn multi company rule</field>
+        <field name="model_id" ref="model_duan_dautu_thuchien"/>
+        <field eval="True" name="global"/>
+        <field name="domain_force">['|',('duan_dautu_id.company_id','=',False),('duan_dautu_id.company_id','child_of',[user.company_id.id])]</field>
+    </record>
+	
+	<record id="duan_dautu_thuchien_chitiet_comp_rule" model="ir.rule">
+        <field name="name">Chi tiết cấp phát multi company rule</field>
+        <field name="model_id" ref="model_duan_dautu_thuchien_chitiet"/>
+        <field eval="True" name="global"/>
+        <field name="domain_force">['|',('duan_dautu_thuchien_id.duan_dautu_id.company_id','=',False),('duan_dautu_thuchien_id.duan_dautu_id.company_id','child_of',[user.company_id.id])]</field>
+    </record>
+</data>
+</openerp>

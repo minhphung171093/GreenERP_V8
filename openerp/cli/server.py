@@ -30,7 +30,6 @@ GNU Public Licence.
 """
 
 import atexit
-import csv
 import logging
 import os
 import signal
@@ -113,13 +112,13 @@ def export_translation():
         config["translate_out"])
 
     fileformat = os.path.splitext(config["translate_out"])[-1][1:].lower()
-
-    with open(config["translate_out"], "w") as buf:
-        registry = openerp.modules.registry.RegistryManager.new(dbname)
-        with openerp.api.Environment.manage():
-            with registry.cursor() as cr:
-                openerp.tools.trans_export(config["language"],
-                    config["translate_modules"] or ["all"], buf, fileformat, cr)
+    buf = file(config["translate_out"], "w")
+    registry = openerp.modules.registry.RegistryManager.new(dbname)
+    cr = registry.cursor()
+    openerp.tools.trans_export(config["language"],
+        config["translate_modules"] or ["all"], buf, fileformat, cr)
+    cr.close()
+    buf.close()
 
     _logger.info('translation file written successfully')
 
@@ -129,11 +128,11 @@ def import_translation():
     dbname = config['db_name']
 
     registry = openerp.modules.registry.RegistryManager.new(dbname)
-    with openerp.api.Environment.manage():
-        with registry.cursor() as cr:
-            openerp.tools.trans_load(
-                cr, config["translate_in"], config["language"], context=context,
-            )
+    cr = registry.cursor()
+    openerp.tools.trans_load( cr, config["translate_in"], config["language"],
+        context=context)
+    cr.commit()
+    cr.close()
 
 def main(args):
     check_root_user()
@@ -142,11 +141,6 @@ def main(args):
     report_configuration()
 
     config = openerp.tools.config
-
-    # the default limit for CSV fields in the module is 128KiB, which is not
-    # quite sufficient to import images to store in attachment. 500MiB is a
-    # bit overkill, but better safe than sorry I guess
-    csv.field_size_limit(500 * 1024 * 1024)
 
     if config["test_file"]:
         config["test_enable"] = True
@@ -175,7 +169,6 @@ def main(args):
     sys.exit(rc)
 
 class Server(Command):
-    """Start the odoo server (default command)"""
     def run(self, args):
         main(args)
 

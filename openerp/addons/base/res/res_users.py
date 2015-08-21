@@ -19,26 +19,20 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import itertools
-import logging
 from functools import partial
-from itertools import repeat
-
+import logging
 from lxml import etree
 from lxml.builder import E
 
 import openerp
-from openerp import SUPERUSER_ID, models
+from openerp import SUPERUSER_ID
 from openerp import tools
 import openerp.exceptions
-from openerp.osv import fields, osv, expression
+from openerp.osv import fields,osv, expression
+from openerp.osv.orm import browse_record
 from openerp.tools.translate import _
-from openerp.http import request
 
 _logger = logging.getLogger(__name__)
-
-# Only users who can modify the user (incl. the user herself) see the real contents of these fields
-USER_PRIVATE_FIELDS = ['password']
 
 #----------------------------------------------------------
 # Basic res.groups and res.users
@@ -92,9 +86,9 @@ class res_groups(osv.osv):
         return where
 
     _columns = {
-        'name': fields.char('Name', required=True, translate=True),
+        'name': fields.char('Name', size=64, required=True, translate=True),
         'users': fields.many2many('res.users', 'res_groups_users_rel', 'gid', 'uid', 'Users'),
-        'model_access': fields.one2many('ir.model.access', 'group_id', 'Access Controls', copy=True),
+        'model_access': fields.one2many('ir.model.access', 'group_id', 'Access Controls'),
         'rule_groups': fields.many2many('ir.rule', 'rule_group_rel',
             'group_id', 'rule_group_id', 'Rules', domain=[('global', '=', False)]),
         'menu_access': fields.many2many('ir.ui.menu', 'ir_ui_menu_group_rel', 'gid', 'menu_id', 'Access Menu'),
@@ -130,7 +124,6 @@ class res_groups(osv.osv):
                         _('The name of the group can not start with "-"'))
         res = super(res_groups, self).write(cr, uid, ids, vals, context=context)
         self.pool['ir.model.access'].call_cache_clearing_methods(cr)
-        self.pool['res.users'].has_group.clear_cache(self.pool['res.users'])
         return res
 
 class res_users(osv.osv):
@@ -166,22 +159,23 @@ class res_users(osv.osv):
 
     _columns = {
         'id': fields.integer('ID'),
-        'login_date': fields.date('Latest connection', select=1, copy=False),
+        'login_date': fields.date('Latest connection', select=1),
         'partner_id': fields.many2one('res.partner', required=True,
             string='Related Partner', ondelete='restrict',
-            help='Partner-related data of the user', auto_join=True),
+            help='Partner-related data of the user'),
         'login': fields.char('Login', size=64, required=True,
             help="Used to log into the system"),
-        'password': fields.char('Password', size=64, invisible=True, copy=False,
+        'password': fields.char('Password', size=64, invisible=True,
             help="Keep empty if you don't want the user to be able to connect on the system."),
         'new_password': fields.function(_get_password, type='char', size=64,
             fnct_inv=_set_new_password, string='Set Password',
             help="Specify a value only when creating a user or if you're "\
                  "changing the user's password, otherwise leave empty. After "\
                  "a change of password, the user has to login again."),
-        'signature': fields.html('Signature'),
+        'signature': fields.text('Signature'),
         'active': fields.boolean('Active'),
-        'action_id': fields.many2one('ir.actions.actions', 'Home Action', help="If specified, this action will be opened at log on for this user, in addition to the standard menu."),
+        'action_id': fields.many2one('ir.actions.actions', 'Home Action', help="If specified, this action will be opened at logon for this user, in addition to the standard menu."),
+        'menu_id': fields.many2one('ir.actions.actions', 'Menu Action', help="If specified, the action will replace the standard menu for this user."),
         'groups_id': fields.many2many('res.groups', 'res_groups_users_rel', 'uid', 'gid', 'Groups'),
         # Special behavior for this field: res.company.search() will only return the companies
         # available to the current user (should be the user's companies?), when the user_preference
@@ -189,12 +183,10 @@ class res_users(osv.osv):
         'company_id': fields.many2one('res.company', 'Company', required=True,
             help='The company this user is currently working for.', context={'user_preference': True}),
         'company_ids':fields.many2many('res.company','res_company_users_rel','user_id','cid','Companies'),
+        # backward compatibility fields
+        'user_email': fields.related('email', type='char',
+            deprecated='Use the email field instead of user_email. This field will be removed with OpenERP 7.1.'),
     }
-
-    # overridden inherited fields to bypass access rights, in case you have
-    # access to the user but not its corresponding partner
-    name = openerp.fields.Char(related='partner_id.name', inherited=True)
-    email = openerp.fields.Char(related='partner_id.email', inherited=True)
 
     def on_change_login(self, cr, uid, ids, login, context=None):
         if login and tools.single_email_re.match(login):
@@ -235,20 +227,25 @@ class res_users(osv.osv):
     def _get_company(self,cr, uid, context=None, uid2=False):
         if not uid2:
             uid2 = uid
-        # Use read() to compute default company, and pass load=_classic_write to
-        # avoid useless name_get() calls. This will avoid prefetching fields
-        # while computing default values for new db columns, as the
-        # db backend may not be fully initialized yet.
-        user_data = self.pool['res.users'].read(cr, uid, uid2, ['company_id'],
-                                                context=context, load='_classic_write')
-        comp_id = user_data['company_id']
-        return comp_id or False
+        user = self.pool['res.users'].read(cr, uid, uid2, ['company_id'], context)
+        company_id = user.get('company_id', False)
+        return company_id and company_id[0] or False
 
     def _get_companies(self, cr, uid, context=None):
         c = self._get_company(cr, uid, context)
         if c:
             return [c]
         return False
+
+    def _get_menu(self,cr, uid, context=None):
+        dataobj = self.pool.get('ir.model.data')
+        try:
+            model, res_id = dataobj.get_object_reference(cr, uid, 'base', 'action_menu_admin')
+            if model != 'ir.actions.act_window':
+                return False
+            return res_id
+        except ValueError:
+            return False
 
     def _get_group(self,cr, uid, context=None):
         dataobj = self.pool.get('ir.model.data')
@@ -263,30 +260,26 @@ class res_users(osv.osv):
             pass
         return result
 
-    def _get_default_image(self, cr, uid, context=None):
-        return self.pool['res.partner']._get_default_image(cr, uid, False, colorize=True, context=context)
-
     _defaults = {
         'password': '',
         'active': True,
         'customer': False,
+        'menu_id': _get_menu,
         'company_id': _get_company,
         'company_ids': _get_companies,
         'groups_id': _get_group,
-        'image': _get_default_image,
+        'image': lambda self, cr, uid, ctx={}: self.pool['res.partner']._get_default_image(cr, uid, False, ctx, colorize=True),
     }
 
     # User can write on a few of his own fields (but not his groups for example)
     SELF_WRITEABLE_FIELDS = ['password', 'signature', 'action_id', 'company_id', 'email', 'name', 'image', 'image_medium', 'image_small', 'lang', 'tz']
     # User can read a few of his own fields
-    SELF_READABLE_FIELDS = ['signature', 'company_id', 'login', 'email', 'name', 'image', 'image_medium', 'image_small', 'lang', 'tz', 'tz_offset', 'groups_id', 'partner_id', '__last_update', 'action_id']
+    SELF_READABLE_FIELDS = ['signature', 'company_id', 'login', 'email', 'name', 'image', 'image_medium', 'image_small', 'lang', 'tz', 'tz_offset', 'groups_id', 'partner_id', '__last_update']
 
     def read(self, cr, uid, ids, fields=None, context=None, load='_classic_read'):
         def override_password(o):
-            if ('id' not in o or o['id'] != uid):
-                for f in USER_PRIVATE_FIELDS:
-                    if f in o:
-                        o[f] = '********'
+            if 'password' in o and ('id' not in o or o['id'] != uid):
+                o['password'] = '********'
             return o
 
         if fields and (ids == [uid] or ids == uid):
@@ -323,8 +316,7 @@ class res_users(osv.osv):
                     break
             else:
                 if 'company_id' in values:
-                    user = self.browse(cr, SUPERUSER_ID, uid, context=context)
-                    if not (values['company_id'] in user.company_ids.ids):
+                    if not (values['company_id'] in self.read(cr, SUPERUSER_ID, uid, ['company_ids'], context=context)['company_ids']):
                         del values['company_id']
                 uid = 1 # safe fields only, so we write as super-user to bypass access rights
 
@@ -334,8 +326,6 @@ class res_users(osv.osv):
                 # if partner is global we keep it that way
                 if user.partner_id.company_id and user.partner_id.company_id.id != values['company_id']: 
                     user.partner_id.write({'company_id': user.company_id.id})
-            # clear default ir values when company changes
-            self.pool['ir.values'].get_defaults_dict.clear_cache(self.pool['ir.values'])
         # clear caches linked to the users
         self.pool['ir.model.access'].call_cache_clearing_methods(cr)
         clear = partial(self.pool['ir.rule'].clear_cache, cr)
@@ -345,13 +335,12 @@ class res_users(osv.osv):
             for id in ids:
                 if id in self._uid_cache[db]:
                     del self._uid_cache[db][id]
-        self._context_get.clear_cache(self)
-        self.has_group.clear_cache(self)
+        self.context_get.clear_cache(self)
         return res
 
     def unlink(self, cr, uid, ids, context=None):
         if 1 in ids:
-            raise osv.except_osv(_('Can not remove root user!'), _('You can not remove the admin user as it is used internally for resources created by Odoo (updates, module installation, ...)'))
+            raise osv.except_osv(_('Can not remove root user!'), _('You can not remove the admin user as it is used internally for resources created by OpenERP (updates, module installation, ...)'))
         db = cr.dbname
         if db in self._uid_cache:
             for id in ids:
@@ -365,7 +354,7 @@ class res_users(osv.osv):
         if not context:
             context={}
         ids = []
-        if name and operator in ['=', 'ilike']:
+        if name:
             ids = self.search(cr, user, [('login','=',name)]+ args, limit=limit, context=context)
         if not ids:
             ids = self.search(cr, user, [('name',operator,name)]+ args, limit=limit, context=context)
@@ -381,10 +370,10 @@ class res_users(osv.osv):
         return super(res_users, self).copy(cr, uid, id, default, context)
 
     @tools.ormcache(skiparg=2)
-    def _context_get(self, cr, uid):
-        user = self.browse(cr, SUPERUSER_ID, uid)
+    def context_get(self, cr, uid, context=None):
+        user = self.browse(cr, SUPERUSER_ID, uid, context)
         result = {}
-        for k in self._fields:
+        for k in self._all_columns.keys():
             if k.startswith('context_'):
                 context_key = k[8:]
             elif k in ['lang', 'tz']:
@@ -392,14 +381,11 @@ class res_users(osv.osv):
             else:
                 context_key = False
             if context_key:
-                res = getattr(user, k) or False
-                if isinstance(res, models.BaseModel):
+                res = getattr(user,k) or False
+                if isinstance(res, browse_record):
                     res = res.id
                 result[context_key] = res or False
         return result
-
-    def context_get(self, cr, uid, context=None):
-        return self._context_get(cr, uid)
 
     def action_get(self, cr, uid, context=None):
         dataobj = self.pool['ir.model.data']
@@ -418,7 +404,7 @@ class res_users(osv.osv):
         if not res:
             raise openerp.exceptions.AccessDenied()
 
-    def _login(self, db, login, password):
+    def login(self, db, login, password):
         if not password:
             return False
         user_id = False
@@ -445,11 +431,8 @@ class res_users(osv.osv):
                 # prevent/delay login in that case. It will also have been logged
                 # as a SQL error, if anyone cares.
                 try:
-                    # NO KEY introduced in PostgreSQL 9.3 http://www.postgresql.org/docs/9.3/static/release-9-3.html#AEN115299
-                    update_clause = 'NO KEY UPDATE' if cr._cnx.server_version >= 90300 else 'UPDATE'
-                    cr.execute("SELECT id FROM res_users WHERE id=%%s FOR %s NOWAIT" % update_clause, (user_id,), log_exceptions=False)
+                    cr.execute("SELECT id FROM res_users WHERE id=%s FOR UPDATE NOWAIT", (user_id,), log_exceptions=False)
                     cr.execute("UPDATE res_users SET login_date = now() AT TIME ZONE 'UTC' WHERE id=%s", (user_id,))
-                    self.invalidate_cache(cr, user_id, ['login_date'], [user_id])
                 except Exception:
                     _logger.debug("Failed to update last_login for db:%s login:%s", db, login, exc_info=True)
         except openerp.exceptions.AccessDenied:
@@ -471,7 +454,7 @@ class res_users(osv.osv):
            :param dict user_agent_env: environment dictionary describing any
                relevant environment attributes
         """
-        uid = self._login(db, login, password)
+        uid = self.login(db, login, password)
         if uid == openerp.SUPERUSER_ID:
             # Successfully logged in as admin!
             # Attempt to guess the web base url...
@@ -524,7 +507,7 @@ class res_users(osv.osv):
     def preference_save(self, cr, uid, ids, context=None):
         return {
             'type': 'ir.actions.client',
-            'tag': 'reload_context',
+            'tag': 'reload',
         }
 
     def preference_change_password(self, cr, uid, ids, context=None):
@@ -534,7 +517,6 @@ class res_users(osv.osv):
             'target': 'new',
         }
 
-    @tools.ormcache(skiparg=2)
     def has_group(self, cr, uid, group_ext_id):
         """Checks whether user belongs to given group.
 
@@ -580,7 +562,12 @@ class cset(object):
     def __iter__(self):
         return iter(self.elements)
 
-concat = itertools.chain.from_iterable
+def concat(ls):
+    """ return the concatenation of a list of iterables """
+    res = []
+    for l in ls: res.extend(l)
+    return res
+
 
 class groups_implied(osv.osv):
     _inherit = 'res.groups'
@@ -644,7 +631,7 @@ class users_implied(osv.osv):
         if values.get('groups_id'):
             # add implied groups for all users
             for user in self.browse(cr, uid, ids):
-                gs = set(concat(g.trans_implied_ids for g in user.groups_id))
+                gs = set(concat([g.trans_implied_ids for g in user.groups_id]))
                 vals = {'groups_id': [(4, g.id) for g in gs]}
                 super(users_implied, self).write(cr, uid, [user.id], vals, context)
             self.pool['ir.ui.view'].clear_cache()
@@ -668,30 +655,25 @@ class users_implied(osv.osv):
 # Naming conventions for reified groups fields:
 # - boolean field 'in_group_ID' is True iff
 #       ID is in 'groups_id'
+# - boolean field 'in_groups_ID1_..._IDk' is True iff
+#       any of ID1, ..., IDk is in 'groups_id'
 # - selection field 'sel_groups_ID1_..._IDk' is ID iff
 #       ID is in 'groups_id' and ID is maximal in the set {ID1, ..., IDk}
 #----------------------------------------------------------
 
-def name_boolean_group(id):
-    return 'in_group_' + str(id)
+def name_boolean_group(id): return 'in_group_' + str(id)
+def name_boolean_groups(ids): return 'in_groups_' + '_'.join(map(str, ids))
+def name_selection_groups(ids): return 'sel_groups_' + '_'.join(map(str, ids))
 
-def name_selection_groups(ids):
-    return 'sel_groups_' + '_'.join(map(str, ids))
-
-def is_boolean_group(name):
-    return name.startswith('in_group_')
-
-def is_selection_groups(name):
-    return name.startswith('sel_groups_')
-
+def is_boolean_group(name): return name.startswith('in_group_')
+def is_boolean_groups(name): return name.startswith('in_groups_')
+def is_selection_groups(name): return name.startswith('sel_groups_')
 def is_reified_group(name):
-    return is_boolean_group(name) or is_selection_groups(name)
+    return is_boolean_group(name) or is_boolean_groups(name) or is_selection_groups(name)
 
-def get_boolean_group(name):
-    return int(name[9:])
-
-def get_selection_groups(name):
-    return map(int, name[11:].split('_'))
+def get_boolean_group(name): return int(name[9:])
+def get_boolean_groups(name): return map(int, name[10:].split('_'))
+def get_selection_groups(name): return map(int, name[11:].split('_'))
 
 def partition(f, xs):
     "return a pair equivalent to (filter(f, xs), filter(lambda x: not f(x), xs))"
@@ -699,21 +681,6 @@ def partition(f, xs):
     for x in xs:
         (yes if f(x) else nos).append(x)
     return yes, nos
-
-def parse_m2m(commands):
-    "return a list of ids corresponding to a many2many value"
-    ids = []
-    for command in commands:
-        if isinstance(command, (tuple, list)):
-            if command[0] in (1, 4):
-                ids.append(command[2])
-            elif command[0] == 5:
-                ids = []
-            elif command[0] == 6:
-                ids = list(command[2])
-        else:
-            ids.append(command)
-    return ids
 
 
 class groups_view(osv.osv):
@@ -739,12 +706,8 @@ class groups_view(osv.osv):
         # and introduces the reified group fields
         # we have to try-catch this, because at first init the view does not exist
         # but we are already creating some basic groups
-        if not context or context.get('install_mode'):
-            # use installation/admin language for translatable names in the view
-            context = dict(context or {})
-            context.update(self.pool['res.users'].context_get(cr, uid))
         view = self.pool['ir.model.data'].xmlid_to_object(cr, SUPERUSER_ID, 'base.user_groups_view', context=context)
-        if view and view.exists() and view._name == 'ir.ui.view':
+        if view and view.exists() and view._table_name == 'ir.ui.view':
             xml1, xml2 = [], []
             xml1.append(E.separator(string=_('Application'), colspan="4"))
             for app, kind, gs in self.get_groups_by_application(cr, uid, context):
@@ -816,39 +779,45 @@ class users_view(osv.osv):
     _inherit = 'res.users'
 
     def create(self, cr, uid, values, context=None):
-        values = self._remove_reified_groups(values)
+        self._set_reified_groups(values)
         return super(users_view, self).create(cr, uid, values, context)
 
     def write(self, cr, uid, ids, values, context=None):
-        values = self._remove_reified_groups(values)
+        self._set_reified_groups(values)
         return super(users_view, self).write(cr, uid, ids, values, context)
 
-    def _remove_reified_groups(self, values):
-        """ return `values` without reified group fields """
-        add, rem = [], []
-        values1 = {}
+    def _set_reified_groups(self, values):
+        """ reflect reified group fields in values['groups_id'] """
+        if 'groups_id' in values:
+            # groups are already given, ignore group fields
+            for f in filter(is_reified_group, values.iterkeys()):
+                del values[f]
+            return
 
-        for key, val in values.iteritems():
-            if is_boolean_group(key):
-                (add if val else rem).append(get_boolean_group(key))
-            elif is_selection_groups(key):
-                rem += get_selection_groups(key)
-                if val:
-                    add.append(val)
-            else:
-                values1[key] = val
-
-        if 'groups_id' not in values and (add or rem):
-            # remove group ids in `rem` and add group ids in `add`
-            values1['groups_id'] = zip(repeat(3), rem) + zip(repeat(4), add)
-
-        return values1
+        add, remove = [], []
+        for f in values.keys():
+            if is_boolean_group(f):
+                target = add if values.pop(f) else remove
+                target.append(get_boolean_group(f))
+            elif is_boolean_groups(f):
+                if not values.pop(f):
+                    remove.extend(get_boolean_groups(f))
+            elif is_selection_groups(f):
+                remove.extend(get_selection_groups(f))
+                selected = values.pop(f)
+                if selected:
+                    add.append(selected)
+        # update values *only* if groups are being modified, otherwise
+        # we introduce spurious changes that might break the super.write() call.
+        if add or remove:
+            # remove groups in 'remove' and add groups in 'add'
+            values['groups_id'] = [(3, id) for id in remove] + [(4, id) for id in add]
 
     def default_get(self, cr, uid, fields, context=None):
         group_fields, fields = partition(is_reified_group, fields)
         fields1 = (fields + ['groups_id']) if group_fields else fields
         values = super(users_view, self).default_get(cr, uid, fields1, context)
-        self._add_reified_groups(group_fields, values)
+        self._get_reified_groups(group_fields, values)
 
         # add "default_groups_ref" inside the context to set default value for group_id with xml values
         if 'groups_id' in fields and isinstance(context.get("default_groups_ref"), list):
@@ -867,44 +836,36 @@ class users_view(osv.osv):
         return values
 
     def read(self, cr, uid, ids, fields=None, context=None, load='_classic_read'):
-        # determine whether reified groups fields are required, and which ones
-        fields1 = fields or self.fields_get(cr, uid, context=context).keys()
-        group_fields, other_fields = partition(is_reified_group, fields1)
+        fields_get = fields if fields is not None else self.fields_get(cr, uid, context=context).keys()
+        group_fields, _ = partition(is_reified_group, fields_get)
 
-        # read regular fields (other_fields); add 'groups_id' if necessary
-        drop_groups_id = False
-        if group_fields and fields:
-            if 'groups_id' not in other_fields:
-                other_fields.append('groups_id')
-                drop_groups_id = True
-        else:
-            other_fields = fields
+        inject_groups_id = group_fields and fields and 'groups_id' not in fields
+        if inject_groups_id:
+            fields.append('groups_id')
+        res = super(users_view, self).read(cr, uid, ids, fields, context=context, load=load)
 
-        res = super(users_view, self).read(cr, uid, ids, other_fields, context=context, load=load)
-
-        # post-process result to add reified group fields
-        if group_fields:
+        if res and group_fields:
             for values in (res if isinstance(res, list) else [res]):
-                self._add_reified_groups(group_fields, values)
-                if drop_groups_id:
+                self._get_reified_groups(group_fields, values)
+                if inject_groups_id:
                     values.pop('groups_id', None)
         return res
 
-    def _add_reified_groups(self, fields, values):
-        """ add the given reified group fields into `values` """
-        gids = set(parse_m2m(values.get('groups_id') or []))
+    def _get_reified_groups(self, fields, values):
+        """ compute the given reified group fields from values['groups_id'] """
+        gids = set(values.get('groups_id') or [])
         for f in fields:
             if is_boolean_group(f):
                 values[f] = get_boolean_group(f) in gids
+            elif is_boolean_groups(f):
+                values[f] = not gids.isdisjoint(get_boolean_groups(f))
             elif is_selection_groups(f):
                 selected = [gid for gid in get_selection_groups(f) if gid in gids]
                 values[f] = selected and selected[-1] or False
 
-    def fields_get(self, cr, uid, allfields=None, context=None, write_access=True, attributes=None):
-        res = super(users_view, self).fields_get(cr, uid, allfields, context, write_access, attributes)
+    def fields_get(self, cr, uid, allfields=None, context=None, write_access=True):
+        res = super(users_view, self).fields_get(cr, uid, allfields, context, write_access)
         # add reified groups fields
-        if uid != SUPERUSER_ID and not self.pool['res.users'].has_group(cr, uid, 'base.group_erp_manager'):
-            return res
         for app, kind, gs in self.pool['res.groups'].get_groups_by_application(cr, uid, context):
             if kind == 'selection':
                 # selection group field
@@ -944,26 +905,29 @@ class change_password_wizard(osv.TransientModel):
         'user_ids': fields.one2many('change.password.user', 'wizard_id', string='Users'),
     }
 
-    def _default_user_ids(self, cr, uid, context=None):
-        if context is None:
+    def default_get(self, cr, uid, fields, context=None):
+        if context == None:
             context = {}
-        user_model = self.pool['res.users']
-        user_ids = context.get('active_model') == 'res.users' and context.get('active_ids') or []
-        return [
-            (0, 0, {'user_id': user.id, 'user_login': user.login})
-            for user in user_model.browse(cr, uid, user_ids, context=context)
-        ]
+        user_ids = context.get('active_ids', [])
+        wiz_id = context.get('active_id', None)
+        res = []
+        users = self.pool.get('res.users').browse(cr, uid, user_ids, context=context)
+        for user in users:
+            res.append((0, 0, {
+                'wizard_id': wiz_id,
+                'user_id': user.id,
+                'user_login': user.login,
+            }))
+        return {'user_ids': res}
 
-    _defaults = {
-        'user_ids': _default_user_ids,
-    }
-
-    def change_password_button(self, cr, uid, ids, context=None):
-        wizard = self.browse(cr, uid, ids, context=context)[0]
+    def change_password_button(self, cr, uid, id, context=None):
+        wizard = self.browse(cr, uid, id, context=context)[0]
         need_reload = any(uid == user.user_id.id for user in wizard.user_ids)
-
         line_ids = [user.id for user in wizard.user_ids]
+
         self.pool.get('change.password.user').change_password_button(cr, uid, line_ids, context=context)
+        # don't keep temporary password copies in the database longer than necessary
+        self.pool.get('change.password.user').write(cr, uid, line_ids, {'new_passwd': False}, context=context)
 
         if need_reload:
             return {
@@ -991,10 +955,8 @@ class change_password_user(osv.TransientModel):
     }
 
     def change_password_button(self, cr, uid, ids, context=None):
-        for line in self.browse(cr, uid, ids, context=context):
-            line.user_id.write({'password': line.new_passwd})
-        # don't keep temporary passwords in the database longer than necessary
-        self.write(cr, uid, ids, {'new_passwd': False}, context=context)
+        for user in self.browse(cr, uid, ids, context=context):
+            self.pool.get('res.users').write(cr, uid, user.user_id.id, {'password': user.new_passwd})
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

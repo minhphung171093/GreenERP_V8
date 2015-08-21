@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+ <data>
+ 		
+ 		<record id="default_phantram_sotien_cothe_botrivon" model="admin.property">
+            <field name="name">default_phantram_sotien_cothe_botrivon</field>
+            <field name="value">90</field>
+        </record>
+		
+   </data>  
+</openerp>

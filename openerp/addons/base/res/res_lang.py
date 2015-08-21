@@ -94,10 +94,6 @@ class lang(osv.osv):
                be 100% cross-platform we map to the directives required by
                the C standard (1989 version), always available on platforms
                with a C standard implementation."""
-            # For some locales, nl_langinfo returns a D_FMT/T_FMT that contains
-            # unsupported '%-' patterns, e.g. for cs_CZ
-            format = format.replace('%-', '%')
-
             for pattern, replacement in tools.DATETIME_FORMATS_MAP.iteritems():
                 format = format.replace(pattern, replacement)
             return str(format)
@@ -127,15 +123,6 @@ class lang(osv.osv):
                     return False
         return True
 
-    def _check_grouping(self, cr, uid, ids, context=None):
-        for lang in self.browse(cr, uid, ids, context=context):
-            try:
-                if not all(isinstance(x, int) for x in eval(lang.grouping)):
-                    return False
-            except Exception:
-                return False
-        return True
-
     def _get_default_date_format(self, cursor, user, context=None):
         return '%m/%d/%Y'
 
@@ -143,17 +130,17 @@ class lang(osv.osv):
         return '%H:%M:%S'
 
     _columns = {
-        'name': fields.char('Name', required=True),
+        'name': fields.char('Name', size=64, required=True),
         'code': fields.char('Locale Code', size=16, required=True, help='This field is used to set/get locales for user'),
         'iso_code': fields.char('ISO code', size=16, required=False, help='This ISO code is the name of po files to use for translations'),
         'translatable': fields.boolean('Translatable'),
         'active': fields.boolean('Active'),
-        'direction': fields.selection([('ltr', 'Left-to-Right'), ('rtl', 'Right-to-Left')], 'Direction', required=True),
-        'date_format':fields.char('Date Format', required=True),
-        'time_format':fields.char('Time Format', required=True),
-        'grouping':fields.char('Separator Format', required=True,help="The Separator Format should be like [,n] where 0 < n :starting from Unit digit.-1 will end the separation. e.g. [3,2,-1] will represent 106500 to be 1,06,500;[1,2,-1] will represent it to be 106,50,0;[3] will represent it as 106,500. Provided ',' as the thousand separator in each case."),
-        'decimal_point':fields.char('Decimal Separator', required=True),
-        'thousands_sep':fields.char('Thousands Separator'),
+        'direction': fields.selection([('ltr', 'Left-to-Right'), ('rtl', 'Right-to-Left')], 'Direction',required=True),
+        'date_format':fields.char('Date Format',size=64,required=True),
+        'time_format':fields.char('Time Format',size=64,required=True),
+        'grouping':fields.char('Separator Format',size=64,required=True,help="The Separator Format should be like [,n] where 0 < n :starting from Unit digit.-1 will end the separation. e.g. [3,2,-1] will represent 106500 to be 1,06,500;[1,2,-1] will represent it to be 106,50,0;[3] will represent it as 106,500. Provided ',' as the thousand separator in each case."),
+        'decimal_point':fields.char('Decimal Separator', size=64,required=True),
+        'thousands_sep':fields.char('Thousands Separator',size=64),
     }
     _defaults = {
         'active': 1,
@@ -171,8 +158,7 @@ class lang(osv.osv):
     ]
 
     _constraints = [
-        (_check_format, 'Invalid date/time format directive specified. Please refer to the list of allowed directives, displayed when you edit a language.', ['time_format', 'date_format']),
-        (_check_grouping, "The Separator Format should be like [,n] where 0 < n :starting from Unit digit.-1 will end the separation. e.g. [3,2,-1] will represent 106500 to be 1,06,500;[1,2,-1] will represent it to be 106,50,0;[3] will represent it as 106,500. Provided ',' as the thousand separator in each case.", ['grouping'])
+        (_check_format, 'Invalid date/time format directive specified. Please refer to the list of allowed directives, displayed when you edit a language.', ['time_format', 'date_format'])
     ]
 
     @tools.ormcache(skiparg=3)

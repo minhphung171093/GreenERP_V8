@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>	
+	<data>
+	
+		<!-- Danh muc Nguon Von -->
+        <record id="view_danhmuc_nguonvon_tree" model="ir.ui.view">
+            <field name="name">danhmuc.nguonvon.tree</field>
+            <field name="model">danhmuc.nguonvon</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Nguồn vốn" editable='top'>
+                    <field name="nam"/>
+                    <field name="sotien" sum="Tổng"/>
+                    <field name="kehoach_daunam" sum="Tổng"/>
+                    <field name="kehoach_dieuchinh" sum="Tổng"/>
+                    <field name="kehoach_dieuhoa" sum="Tổng"/>
+                    <field name="sotien_conlai" sum="Tổng"/>
+                    <field name="nguoithuchien_id" invisible="1"/>
+                    <field name="currency_id" invisible='1'/>
+                    <field name="ghichu" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="ngaybatdau" invisible="1"/>
+                    <field name="ngayketthuc" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+	    
+	    <record id="view_danhmuc_nguonvon_filter" model="ir.ui.view">
+            <field name="name">view.danhmuc.nguonvon.filter</field>
+            <field name="model">danhmuc.nguonvon</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Nguồn vốn">
+                	<field name="nam"/>
+                    <field name="nguon_von_id"/>
+                    <filter icon="terp-go-year" string="Năm hiện tại" name="year" domain="[('nam','=',time.strftime('%%Y'))]" />
+                    <group expand="0" string="Group By...">
+                        <filter name="nguonvon_id" string="Nguồn vốn" icon="terp-personal" domain="[]" context="{'group_by':'nguonvon_id'}"/>
+                        <filter name="group_nam" string="Năm" icon="terp-personal" domain="[]" context="{'group_by':'nam'}"/>
+                        <filter name="nguoithuchien_id" string="Người thực hiện" icon="terp-personal" domain="[]" context="{'group_by':'nguoithuchien_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+	    <record id="view_danhmuc_nguonvon_nhomtheonam_tree" model="ir.ui.view">
+            <field name="name">danhmuc.nguonvon.nhomtheonam.tree</field>
+            <field name="model">danhmuc.nguonvon</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Nguồn vốn" editable='top'>
+                    <field name="nam" invisible="0"/>
+                    <field name="nguon_von_id" options='{"no_create":True}'/>
+                    <field name="sotien" sum="Tổng"/>
+                    <field name="kehoach_daunam" sum="Tổng"/>
+                    <field name="kehoach_dieuchinh" sum="Tổng"/>
+                    <field name="kehoach_dieuhoa" sum="Tổng"/>
+                    <field name="sotien_conlai" sum="Tổng"/>
+                    <field name="nguoithuchien_id" options='{"no_create":True}' invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="ghichu" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="ngaybatdau" invisible="1"/>
+                    <field name="ngayketthuc" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_danhmuc_nguonvon_nhomtheonam" model="ir.actions.act_window">
+            <field name="name">Nguồn vốn hàng năm</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhmuc.nguonvon</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="context">{'search_default_group_nam':1}</field>
+            <field name="search_view_id" ref="view_danhmuc_nguonvon_filter"/>
+        </record>
+        
+        <record id="action_view_danhmuc_nguonvon_nhomtheonam_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_danhmuc_nguonvon_nhomtheonam_tree"/>
+            <field name="act_window_id" ref="action_danhmuc_nguonvon_nhomtheonam"/>
+        </record>
+        
+		<!--Cây nguồn vốn-->
+		<record id="view_cay_nguon_von_tree" model="ir.ui.view" >
+            <field name="name">nguon.von.tree</field>
+            <field name="model">nguon.von</field>
+            <field name="field_parent">child_id</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Nguồn vốn">
+                    <field name="name"/>
+                    <field name="sotien"/>
+                    <field name="kehoach_daunam"/>
+        			<field name="kehoach_dieuchinh"/>
+        			<field name="kehoach_dieuhoa"/>
+        			<field name="sotien_conlai"/>
+        			<field name="parent_id" invisible="1"/>
+        			<field name="nam" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+		<record id="action_cay_nguon_von" model="ir.actions.act_window">
+            <field name="name">Cây nguồn vốn</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">nguon.von</field>
+            <field name="view_type">tree</field>
+            <field name="view_mode">tree</field>
+            <field name="context">{}</field>
+            <field name="domain">[('parent_id','=',False)]</field>
+            <field name="view_id" ref="view_cay_nguon_von_tree"/>
+        </record>
+		
+        <!-- Enable drill-down from Cây nguồn vốn tree view -->
+        <act_window
+            id="action_kehoachvon"
+            name="Kế hoạch vốn"
+            context="{'search_nguonvon_id': active_id}"
+            res_model="duan.dautu.thuchien"
+            src_model="nguon.von"
+            key2="tree_but_open"/>
+		
+        <!-- Form Nhap Kế hoạch vốn -->
+        <record id="view_nhap_lieu_ke_hoach_von_filter" model="ir.ui.view">
+            <field name="name">duan.dautu.thuchien.filter</field>
+            <field name="model">duan.dautu.thuchien</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Chi tiết cấp phát">
+                	<field name="duan_dautu_id"/>
+                	<field name="linhvuc_id"/>
+                	<field name="danhmuc_id"/>
+                	<field name="nhom_id"/>
+                    <field name="nam"/>
+                    <field name="nguoithuchien_id"/>
+                    <field name="tinh_tp_id"/>
+                    <field name="quan_huyen_id"/>
+                    <field name="nguonvon_id"/>
+                    <filter icon="terp-go-year" string="Năm hiện tại" name="year" domain="[('nam','=',time.strftime('%%Y'))]" />
+                    <group expand="0" string="Group By...">
+                        <!--<filter name="duan_dautu_id" string="Dự án" icon="terp-personal" domain="[]" context="{'group_by':'duan_dautu_id'}"/>-->
+                        <filter name="group_nam" string="Năm" icon="terp-personal" domain="[]" context="{'group_by':'nam'}"/>
+                        <filter name="quan_huyen_id" string="Theo địa bàn" icon="terp-personal" domain="[]" context="{'group_by':'quan_huyen_id'}"/>
+                        <filter name="nha_dau_tu_id" string="Theo chủ đầu tư" icon="terp-personal" domain="[]" context="{'group_by':'nha_dau_tu_id'}"/>
+                        <!--<filter name="nguoithuchien_id" string="Người thực hiện" icon="terp-personal" domain="[]" context="{'group_by':'nguoithuchien_id'}"/>-->
+                        <filter name="group_linhvuc_id" string="Theo lĩnh vực" icon="terp-personal" domain="[]" context="{'group_by':'linhvuc_id'}"/>
+                        <filter name="group_danhmuc_id" string="Theo ngành" icon="terp-personal" domain="[]" context="{'group_by':'danhmuc_id'}"/>
+                        <filter name="group_giai_doan_cha" string="Theo giai đoạn thực hiện" icon="terp-personal" domain="[]" context="{'group_by':('giaidoan_cha','giai_doan_id')}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+	    <record id="view_nhap_lieu_ke_hoach_von_tree" model="ir.ui.view" >
+            <field name="name">nhaplieu.kehoachvon.duan.tree</field>
+            <field name="model">duan.dautu.thuchien</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Kế hoạch vốn">
+                	<field name="linhvuc_id" invisible='1'/>
+                	<field name="danhmuc_id" invisible='1'/>
+                	<field name="nhom_id" invisible='1'/>
+                	<field name="tinh_tp_id" invisible='1'/>
+                    <field name="quan_huyen_id" invisible='1'/>
+                    <field name="duan_dautu_id" required='1'/>
+                    <field name="quan_huyen_id" required='1'/>
+                    <field name="nha_dau_tu_id" invisible='1'/>
+                    <field name="ten_viet_tat" required='1'/>
+                    <field name="nam"/>
+                    <field name="giai_doan_id"/>
+                    <field name="tongmuc_dautu"/>
+                    <field name="tong_dutoan"/>
+                    <field name="luyke_capphat_namtruoc"/>
+                    <field name="kehoach_daunam"/>
+                    <field name="kehoach_daduyet_gannhat"/>
+                    <field name="khoiluong_thuchien"/>
+                    <field name="khoiluong_hoanthanh"/>
+                    <field name="khoiluong_nghiemthu" invisible='1'/>
+                    <field name="sotien_capphat"/>
+                    <field name="sotien_con_cothe_capphat"/>
+                    <field name="giaidoan_cha" invisible='1'/>
+                    <field name="nguonvon_id" invisible='1'/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_nhap_lieu_ke_hoach_von_form" model="ir.ui.view" >
+            <field name="name">nhaplieu.kehoachvon.duan.form</field>
+            <field name="model">duan.dautu.thuchien</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form version="7.0" string="Kế hoạch vốn">
+                	<sheet>
+	                    <group>
+	                        <group>
+	                        	<field name="duan_dautu_id" options='{"no_create":True}' required='1'/>
+	                        	<field name="nam"/>
+	                        	<field name="giai_doan_id" options='{"no_create":True}'/>
+	                        	<field name="currency_id" options='{"no_create":True}' required='1'/>
+	                        	<field name="nguoithuchien_id" options='{"no_create":True}' invisible="1"/>
+	                            <field name="chudautu_dexuat"/>
+	                            <field name="uoc_thuchien"/>
+                    			<field name="sotien_capphat" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="khoiluong_thuchien" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="khoiluong_hoanthanh" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="khoiluong_nghiemthu" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="tongmuc_dautu" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="tong_dutoan" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="sotien_con_cothe_capphat" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="kehoach_daduyet_gannhat" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="luyke_capphat_namtruoc" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                        </group>
+	                        <group>
+	                        	<field name="kehoach_daunam" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                        	<field name="duyet" invisible='1'/>
+	                            <field name="kehoach_thuchien_lines" nolabel='1' colspan="2" attrs="{'readonly':[('duyet', '=', True)]}">
+	                            	<tree editable='top'>
+			                    		<field name="nguonvon_id" options='{"no_create":True}'/>
+	                    				<field name="sotien" sum="Total"/>
+                    				</tree>
+                    			</field>
+			                    <field name="kehoach_dieuhoa" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                        </group>
+	                    </group>
+	                    <notebook>
+	                    	<page string="Chi tiết cấp phát">
+	                    		<group>
+	                    			<field name="tongmuc_dautu"/>
+				                    <field name="tong_dutoan"/>
+				                    <field name="luyke_capphat_namtruoc"/>
+				                    <field name="kehoach_daduyet_gannhat"/>
+				                    <field name="sotien_con_cothe_capphat"/>
+	                    		</group>	
+	                    		<group>
+			                    	<field name="thuchien_chitiet" nolabel='1'>
+		                            	<tree editable='top'>
+		                            		<field name="ngay"/>
+						                    <field name="khoiluong_thuchien"/>
+						                    <field name="khoiluong_hoanthanh"/>
+						                    <field name="khoiluong_nghiemthu" invisible='1'/>
+						                    <field name="sotien"/>
+						                    <field name="nguoithuchien_id" options='{"no_create":True}' invisible="1"/>
+						                    <field name="noidung"/>
+		                            	</tree>
+		                            </field>
+		                        </group>
+		                    </page>
+		                    <page string="Chuyển vốn đến dự án khác">
+		                    	<field name="chuyenvon_den_duan_khac_lines" nolabel='1' context="{'default_duan_thuhien_id':active_id,'duan_dautu_id':duan_dautu_id}">
+	                            	<tree editable='top'>
+	                            		<field name="ngay"/>
+	                            		<field name="duan_from_id" invisible="1"/>
+	                            		<field name="duan_thuhien_id" invisible="1"/>
+	                            		<field name="nguonvon_id" options='{"no_create":True}' context="{'search_nguonvon_of_duan_thuchien':duan_thuhien_id}"/>
+					                    <field name="duan_to_id"/>
+					                    <field name="duan_thuhien_den_id" options='{"no_create":True}' context="{'search_thuchien_den_of_duan':duan_to_id}"/>
+					                    <field name="sotien"/>
+					                    <field name="vanban_phaply_id" options='{"no_create":True}'/>
+	                            	</tree>
+	                            </field>
+		                    </page>
+		                    <page string="Vốn đến từ dự án khác">
+		                    	<field name="von_den_tu_duan_khac_lines" nolabel='1' context="{'duan_dautu_id':duan_dautu_id}" readonly="1">
+	                            	<tree>
+	                            		<field name="ngay"/>
+	                            		<field name="duan_from_id"/>
+					                    <field name="duan_to_id" invisible="1"/>
+					                    <field name="duan_thuhien_id"/>
+					                    <field name="sotien"/>
+					                    <field name="vanban_phaply_id"/>
+	                            	</tree>
+	                            </field>
+		                    </page>
+		                    <page string="Kế hoạch điều chỉnh" nolabel='1'>
+		                    	<field name="kehoach_dieuchinh_line" nolabel='1'>
+		                    		<tree>
+		                    			<field name="name"/>
+		                    			<field name="ngay"/>
+					                    <field name="kehoach_thuchien"/>
+					                    <field name="duyet" invisible='0'/>
+		                    		</tree>
+		                    		<form>
+            							<sheet>
+            								<header>
+            									<button name="duyet" string="Duyệt" type="object" attrs="{'invisible':[('duyet', '=', True)]}" class="oe_highlight"/>
+            								</header>
+            								<group col="4" colspan="4">
+		            							<field name="name"/>
+		            							<field name="ngay"/>
+		                        				<field name="kehoach_thuchien" readonly='1' widget='monetary' options="{'currency_field': 'von_oda_currency_id'}"/>
+	                        					<field name="kehoach_thuchien_line" nolabel='1' colspan="4">
+							                    	<tree editable='top'>
+							                    		<field name="nguonvon_id" options='{"no_create":True}' domain="[('loai','=','binhthuong')]"/>
+					                    				<field name="sotien" sum="Total"/>
+				                    				</tree>
+							                    </field>
+							                    <field name="duyet" invisible='1'/>
+	                        				</group>
+                        				</sheet>
+            						</form>
+		                    	</field>
+		                    </page>
+		                    <page string="Nội dung" nolabel='1'>
+		                    	<field name="noidung"/>
+		                    </page>
+		            	</notebook>
+            		</sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_nhap_lieu_ke_hoach_von" model="ir.actions.act_window">
+            <field name="name">Kế hoạch vốn</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">duan.dautu.thuchien</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_group_nam':1}</field>
+            <field name="view_id" ref="view_nhap_lieu_ke_hoach_von_tree"/>
+            <field name="search_view_id" ref="view_nhap_lieu_ke_hoach_von_filter"/>
+        </record>
+		
+		<record model="ir.actions.act_window.view" id="action_nhap_lieu_ke_hoach_von_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_nhap_lieu_ke_hoach_von_tree"/>
+            <field name="act_window_id" ref="action_nhap_lieu_ke_hoach_von"/>
+        </record>
+		
+		<record model="ir.actions.act_window.view" id="action_nhap_lieu_ke_hoach_von_form">
+            <field name="sequence" eval="5"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_nhap_lieu_ke_hoach_von_form"/>
+            <field name="act_window_id" ref="action_nhap_lieu_ke_hoach_von"/>
+        </record>
+		
+		<!-- xem ke hoach von -->
+		<record id="view_xem_ke_hoach_von_form" model="ir.ui.view" >
+            <field name="name">xem.kehoachvon.duan.form</field>
+            <field name="model">duan.dautu.thuchien</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form version="7.0" string="Kế hoạch vốn">
+                	<sheet>
+	                    <group readonly='1'>
+	                        <group>
+	                        	<field name="duan_dautu_id" options='{"no_create":True}' required='1' readonly='1'/>
+	                        	<field name="nam" readonly='1'/>
+	                        	<field name="giai_doan_id" options='{"no_create":True}' readonly='1'/>
+	                        	<field name="currency_id" options='{"no_create":True}' required='1' readonly='1'/>
+	                        	<field name="nguoithuchien_id" options='{"no_create":True}' invisible="1" readonly='1'/>
+	                            <field name="chudautu_dexuat" readonly='1'/>
+	                            <field name="uoc_thuchien" readonly='1'/>
+                    			<field name="sotien_capphat" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="khoiluong_thuchien" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="khoiluong_hoanthanh" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="khoiluong_nghiemthu" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="tongmuc_dautu" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="tong_dutoan" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="sotien_con_cothe_capphat" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="kehoach_daduyet_gannhat" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    			<field name="luyke_capphat_namtruoc" invisible="1" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                        </group>
+	                        <group>
+	                        	<field name="kehoach_daunam" widget='monetary' options="{'currency_field': 'currency_id'}" readonly='1'/>
+	                        	<field name="duyet" invisible='1'/>
+	                            <field name="kehoach_thuchien_lines" nolabel='1' colspan="2" attrs="{'readonly':[('duyet', '=', True)]}" readonly='1'>
+	                            	<tree editable='top'>
+			                    		<field name="nguonvon_id" options='{"no_create":True}'/>
+	                    				<field name="sotien" sum="Total"/>
+                    				</tree>
+                    			</field>
+			                    <field name="kehoach_dieuhoa" widget='monetary' options="{'currency_field': 'currency_id'}" readonly='1'/>
+	                        </group>
+	                    </group>
+	                    <notebook>
+	                    	<page string="Chi tiết cấp phát">
+	                    		<group>
+	                    			<field name="tongmuc_dautu"/>
+				                    <field name="tong_dutoan"/>
+				                    <field name="luyke_capphat_namtruoc"/>
+				                    <field name="kehoach_daduyet_gannhat"/>
+				                    <field name="sotien_con_cothe_capphat"/>
+	                    		</group>	
+	                    		<group>
+			                    	<field name="thuchien_chitiet" nolabel='1'>
+		                            	<tree editable='top'>
+		                            		<field name="ngay"/>
+						                    <field name="khoiluong_thuchien"/>
+						                    <field name="khoiluong_hoanthanh"/>
+						                    <field name="khoiluong_nghiemthu" invisible='1'/>
+						                    <field name="sotien"/>
+						                    <field name="nguoithuchien_id" options='{"no_create":True}' invisible="1"/>
+						                    <field name="noidung"/>
+		                            	</tree>
+		                            </field>
+		                        </group>
+		                    </page>
+		                    <page string="Chuyển vốn đến dự án khác">
+		                    	<field name="chuyenvon_den_duan_khac_lines" nolabel='1' context="{'default_duan_thuhien_id':active_id,'duan_dautu_id':duan_dautu_id}">
+	                            	<tree editable='top'>
+	                            		<field name="ngay"/>
+	                            		<field name="duan_from_id" invisible="1"/>
+	                            		<field name="duan_thuhien_id" invisible="1"/>
+	                            		<field name="nguonvon_id" options='{"no_create":True}' context="{'search_nguonvon_of_duan_thuchien':duan_thuhien_id}"/>
+					                    <field name="duan_to_id"/>
+					                    <field name="duan_thuhien_den_id" options='{"no_create":True}' context="{'search_thuchien_den_of_duan':duan_to_id}"/>
+					                    <field name="sotien"/>
+					                    <field name="vanban_phaply_id" options='{"no_create":True}'/>
+	                            	</tree>
+	                            </field>
+		                    </page>
+		                    <page string="Vốn đến từ dự án khác">
+		                    	<field name="von_den_tu_duan_khac_lines" nolabel='1' context="{'duan_dautu_id':duan_dautu_id}" readonly="1">
+	                            	<tree>
+	                            		<field name="ngay"/>
+	                            		<field name="duan_from_id"/>
+					                    <field name="duan_to_id" invisible="1"/>
+					                    <field name="duan_thuhien_id"/>
+					                    <field name="sotien"/>
+					                    <field name="vanban_phaply_id"/>
+	                            	</tree>
+	                            </field>
+		                    </page>
+		                    <page string="Kế hoạch điều chỉnh" nolabel='1'>
+		                    	<field name="kehoach_dieuchinh_line" nolabel='1'>
+		                    		<tree>
+		                    			<field name="name"/>
+		                    			<field name="ngay"/>
+					                    <field name="kehoach_thuchien"/>
+					                    <field name="duyet" invisible='0'/>
+		                    		</tree>
+		                    		<form>
+            							<sheet>
+            								<header>
+            									<button name="duyet" string="Duyệt" type="object" attrs="{'invisible':[('duyet', '=', True)]}" class="oe_highlight"/>
+            								</header>
+            								<group col="4" colspan="4">
+		            							<field name="name"/>
+		            							<field name="ngay"/>
+		                        				<field name="kehoach_thuchien" readonly='1' widget='monetary' options="{'currency_field': 'von_oda_currency_id'}"/>
+	                        					<field name="kehoach_thuchien_line" nolabel='1' colspan="4">
+							                    	<tree editable='top'>
+							                    		<field name="nguonvon_id" options='{"no_create":True}' domain="[('loai','=','binhthuong')]"/>
+					                    				<field name="sotien" sum="Total"/>
+				                    				</tree>
+							                    </field>
+							                    <field name="duyet" invisible='1'/>
+	                        				</group>
+                        				</sheet>
+            						</form>
+		                    	</field>
+		                    </page>
+		                    <page string="Nội dung" nolabel='1'>
+		                    	<field name="noidung"/>
+		                    </page>
+		            	</notebook>
+            		</sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_xem_ke_hoach_von" model="ir.actions.act_window">
+            <field name="name">Xem kế hoạch vốn</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">duan.dautu.thuchien</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_group_nam':1}</field>
+            <field name="view_id" ref="view_nhap_lieu_ke_hoach_von_tree"/>
+            <field name="search_view_id" ref="view_nhap_lieu_ke_hoach_von_filter"/>
+        </record>
+		
+		<record model="ir.actions.act_window.view" id="action_xem_ke_hoach_von_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_nhap_lieu_ke_hoach_von_tree"/>
+            <field name="act_window_id" ref="action_xem_ke_hoach_von"/>
+        </record>
+		
+		<record model="ir.actions.act_window.view" id="action_xem_ke_hoach_von_form">
+            <field name="sequence" eval="5"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_xem_ke_hoach_von_form"/>
+            <field name="act_window_id" ref="action_xem_ke_hoach_von"/>
+        </record>
+		
+		<!-- Nguồn vốn -->
+        <record id="view_nguon_von_filter" model="ir.ui.view">
+            <field name="name">nguon.von.filter</field>
+            <field name="model">nguon.von</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Nguồn vốn">
+                    <field name="name"/>
+                    <group expand="0" string="Group By...">
+                        <filter name="group_nguon_von_cha" string="Nguồn vốn cha" domain="[('parent_id','!=',False)]" context="{'group_by':'parent_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <record id="view_nguon_von_tree" model="ir.ui.view" >
+            <field name="name">nguon.von.tree</field>
+            <field name="model">nguon.von</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Nguồn vốn">
+                    <field name="name"/>
+                    <field name="parent_id"/>
+                    <field name="sotien"/>
+                    <field name="kehoach_daunam"/>
+        			<field name="kehoach_dieuchinh"/>
+        			<field name="kehoach_dieuhoa"/>
+        			<field name="sotien_conlai"/>
+        			<field name="nam" invisible="1"/>
+        			<button name="%(action_nhap_lieu_ke_hoach_von)d" string="Xem KHV" type="action" context="{'search_kehoachvon_theonguonvon':active_id}"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_nguonvon_form" model="ir.ui.view">
+            <field name="name">nguon.von.form</field>
+            <field name="model">nguon.von</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form version="7.0" string="Nguồn vốn">
+	                <sheet>
+	                	<group>
+	                		<group>
+	                			<field name="name"/>
+	                			<field name="loai"/>
+	                			<field name="sotien" invisible="1"/>
+	                		</group>
+	                		<group>
+	                			<field name="parent_id"/>
+	                			<field name="company_id"/>
+	                			<field name="kehoach_daunam" invisible="1"/>
+	                			<field name="kehoach_dieuchinh" invisible="1"/>
+	                			<field name="kehoach_dieuhoa" invisible="1"/>
+	                			<field name="sotien_conlai" invisible="1"/>
+	                		</group>
+	                    </group>
+	                    <group string="Chi tiết nguồn vốn" attrs="{'invisible': [('loai','=','xem')]}">
+		                    <field name="danhmuc_nguonvon_lines" nolabel='1' context="{'tree_view_ref':'ql_duan_dautu.view_danhmuc_nguonvon_tree','nguon_von_id':active_id}"/>
+	                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_nguon_von" model="ir.actions.act_window">
+            <field name="name">Nguồn vốn</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">nguon.von</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_nguon_von_filter"/>
+            <field name="view_id" ref="view_nguon_von_tree"/>
+        </record>
+        
+		<!-- Form Nhap Chi tiết nguồn vốn -->
+		
+		<record id="view_nhap_lieu_chitiet_von_filter" model="ir.ui.view">
+            <field name="name">duan.dautu.thuchien.chitiet.filter</field>
+            <field name="model">duan.dautu.thuchien.chitiet</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Chi tiết cấp phát">
+                    <field name="duan_dautu_id"/>
+                    <field name="duan_dautu_thuchien_id"/>
+                    <field name="ngay"/>
+                    <field name="nguoithuchien_id"/>
+                    <filter icon="terp-go-year" string="Năm hiện tại" name="year" domain="[('nam','=',time.strftime('%Y'))]"/>
+                    <group expand="0" string="Group By...">
+                        <filter name="duan_dautu_id" string="Dự án" icon="terp-personal" domain="[]" context="{'group_by':'duan_dautu_id'}"/>
+                        <filter name="nam" string="Năm" icon="terp-personal" domain="[]" context="{'group_by':'nam'}"/>
+                        <filter name="ngay" string="Tháng" icon="terp-personal" domain="[]" context="{'group_by':'ngay'}"/>
+                        <filter name="nguoithuchien_id" string="Người thực hiện" icon="terp-personal" domain="[]" context="{'group_by':'nguoithuchien_id'}"/>
+                        <filter name="group_linhvuc_id" string="Theo lĩnh vực" icon="terp-personal" domain="[]" context="{'group_by':'linhvuc_id'}"/>
+                        <filter name="group_danhmuc_id" string="Theo ngành" icon="terp-personal" domain="[]" context="{'group_by':'danhmuc_id'}"/>
+                        <filter name="group_giai_doan_id" string="Theo giai đoạn thực hiện" icon="terp-personal" domain="[]" context="{'group_by':'giai_doan_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+		
+	    <record id="view_nhap_lieu_chitiet_von_tree" model="ir.ui.view" >
+            <field name="name">nhaplieu.chitietnguonvon.duan.tree</field>
+            <field name="model">duan.dautu.thuchien.chitiet</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Chi tiết cấp phát" editable='top'>
+                    <field name="duan_dautu_id" required="1" options='{"no_create":True}'/>
+                    <field name="duan_dautu_thuchien_id" options='{"no_create":True}' context="{'search_thuchien_of_duan':duan_dautu_id}"/>
+                    <field name="ngay"/>
+                    <field name="khoiluong_thuchien" sum="Tổng cộng"/>
+                    <field name="khoiluong_hoanthanh" sum="Tổng cộng"/>
+                    <field name="khoiluong_nghiemthu" sum="Tổng cộng" invisible='1'/>
+                    <field name="sotien"/>
+                    <field name="nguoithuchien_id" invisible="1" options='{"no_create":True}'/>
+                    <field name="noidung"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_nhap_lieu_chitiet_von" model="ir.actions.act_window">
+            <field name="name">Chi tiết cấp phát</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">duan.dautu.thuchien.chitiet</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_nhap_lieu_chitiet_von_tree"/>
+            <field name="search_view_id" ref="view_nhap_lieu_chitiet_von_filter"/>
+        </record>
+
+	</data>
+</openerp>

@@ -22,16 +22,12 @@
 
 import functools
 import imp
-import importlib
-import inspect
 import itertools
 import logging
 import os
 import re
 import sys
-import time
 import unittest
-import threading
 from os.path import join as opj
 
 import unittest2
@@ -41,14 +37,10 @@ import openerp.tools as tools
 import openerp.release as release
 from openerp.tools.safe_eval import safe_eval as eval
 
-MANIFEST = '__openerp__.py'
-README = ['README.rst', 'README.md', 'README.txt']
-
 _logger = logging.getLogger(__name__)
 
 # addons path as a list
 ad_paths = []
-hooked = False
 
 # Modules already loaded
 loaded = []
@@ -91,25 +83,17 @@ def initialize_sys_path():
     PYTHONPATH.
     """
     global ad_paths
-    global hooked
+    if ad_paths:
+        return
 
-    dd = tools.config.addons_data_dir
-    if dd not in ad_paths:
-        ad_paths.append(dd)
-
-    for ad in tools.config['addons_path'].split(','):
-        ad = os.path.abspath(tools.ustr(ad.strip()))
-        if ad not in ad_paths:
-            ad_paths.append(ad)
+    ad_paths = [tools.config.addons_data_dir]
+    ad_paths += map(lambda m: os.path.abspath(tools.ustr(m.strip())), tools.config['addons_path'].split(','))
 
     # add base module path
     base_path = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'addons'))
-    if base_path not in ad_paths:
-        ad_paths.append(base_path)
+    ad_paths += [base_path]
 
-    if not hooked:
-        sys.meta_path.append(AddonsImportHook())
-        hooked = True
+    sys.meta_path.append(AddonsImportHook())
 
 def get_module_path(module, downloaded=False, display_warning=True):
     """Return the path of the given module.
@@ -185,33 +169,6 @@ def get_module_icon(module):
         return ('/' + module + '/') + '/'.join(iconpath)
     return '/base/'  + '/'.join(iconpath)
 
-def get_module_root(path):
-    """
-    Get closest module's root begining from path
-
-        # Given:
-        # /foo/bar/module_dir/static/src/...
-
-        get_module_root('/foo/bar/module_dir/static/')
-        # returns '/foo/bar/module_dir'
-
-        get_module_root('/foo/bar/module_dir/')
-        # returns '/foo/bar/module_dir'
-
-        get_module_root('/foo/bar')
-        # returns None
-
-    @param path: Path from which the lookup should start
-
-    @return:  Module root path or None if not found
-    """
-    while not os.path.exists(os.path.join(path, MANIFEST)):
-        new_path = os.path.abspath(os.path.join(path, os.pardir))
-        if path == new_path:
-            return None
-        path = new_path
-    return path
-
 def load_information_from_description_file(module, mod_path=None):
     """
     :param module: The name of the module (sale, purchase, ...)
@@ -220,7 +177,7 @@ def load_information_from_description_file(module, mod_path=None):
 
     if not mod_path:
         mod_path = get_module_path(module)
-    terp_file = mod_path and opj(mod_path, MANIFEST) or False
+    terp_file = mod_path and opj(mod_path, '__openerp__.py') or False
     if terp_file:
         info = {}
         if os.path.isfile(terp_file):
@@ -235,6 +192,7 @@ def load_information_from_description_file(module, mod_path=None):
                 'icon': get_module_icon(module),
                 'installable': True,
                 'license': 'AGPL-3',
+                'name': False,
                 'post_load': None,
                 'version': '1.0',
                 'web': False,
@@ -252,13 +210,6 @@ def load_information_from_description_file(module, mod_path=None):
             finally:
                 f.close()
 
-            if not info.get('description'):
-                readme_path = [opj(mod_path, x) for x in README
-                               if os.path.isfile(opj(mod_path, x))]
-                if readme_path:
-                    readme_text = tools.file_open(readme_path[0]).read()
-                    info['description'] = readme_text
-
             if 'active' in info:
                 # 'active' has been renamed 'auto_install'
                 info['auto_install'] = info['active']
@@ -268,7 +219,7 @@ def load_information_from_description_file(module, mod_path=None):
 
     #TODO: refactor the logger in this file to follow the logging guidelines
     #      for 6.0
-    _logger.debug('module %s: no %s file found.', module, MANIFEST)
+    _logger.debug('module %s: no __openerp__.py file found.', module)
     return {}
 
 def init_module_models(cr, module_name, obj_list):
@@ -292,7 +243,7 @@ def init_module_models(cr, module_name, obj_list):
     for obj in obj_list:
         obj._auto_end(cr, {'module': module_name})
         cr.commit()
-    todo.sort(key=lambda x: x[0])
+    todo.sort()
     for t in todo:
         t[1](cr, *t[2])
     cr.commit()
@@ -340,7 +291,7 @@ def get_modules():
             return name
 
         def is_really_module(name):
-            manifest_name = opj(dir, name, MANIFEST)
+            manifest_name = opj(dir, name, '__openerp__.py')
             zipfile_name = opj(dir, name)
             return os.path.isfile(manifest_name)
         return map(clean, filter(is_really_module, os.listdir(dir)))
@@ -369,26 +320,23 @@ def adapt_version(version):
     return version
 
 def get_test_modules(module):
-    """ Return a list of module for the addons potentially containing tests to
+    """ Return a list of module for the addons potentialy containing tests to
     feed unittest2.TestLoader.loadTestsFromModule() """
     # Try to import the module
-    modpath = 'openerp.addons.' + module
+    module = 'openerp.addons.' + module + '.tests'
     try:
-        mod = importlib.import_module('.tests', modpath)
+        __import__(module)
     except Exception, e:
         # If module has no `tests` sub-module, no problem.
         if str(e) != 'No module named tests':
             _logger.exception('Can not `import %s`.', module)
         return []
 
-    if hasattr(mod, 'fast_suite') or hasattr(mod, 'checks'):
-        _logger.warn(
-            "Found deprecated fast_suite or checks attribute in test module "
-            "%s. These have no effect in or after version 8.0.",
-            mod.__name__)
-
-    result = [mod_obj for name, mod_obj in inspect.getmembers(mod, inspect.ismodule)
-              if name.startswith('test_')]
+    # include submodules too
+    result = [mod_obj for name, mod_obj in sys.modules.iteritems()
+              if mod_obj # mod_obj can be None
+              if name.startswith(module)
+              if re.search(r'test_\w+$', name)]
     return result
 
 # Use a custom stream object to log the test executions.
@@ -402,12 +350,11 @@ class TestStream(object):
         if self.r.match(s):
             return
         first = True
-        level = logging.ERROR if s.startswith(('ERROR', 'FAIL', 'Traceback')) else logging.INFO
-        for c in s.splitlines():
+        for c in s.split('\n'):
             if not first:
                 c = '` ' + c
             first = False
-            self.logger.log(level, c)
+            self.logger.info(c)
 
 current_test = None
 
@@ -436,25 +383,19 @@ def run_unit_tests(module_name, dbname, position=runs_at_install):
     global current_test
     current_test = module_name
     mods = get_test_modules(module_name)
-    threading.currentThread().testing = True
     r = True
     for m in mods:
         tests = unwrap_suite(unittest2.TestLoader().loadTestsFromModule(m))
         suite = unittest2.TestSuite(itertools.ifilter(position, tests))
+        _logger.info('running %s tests.', m.__name__)
 
-        if suite.countTestCases():
-            t0 = time.time()
-            t0_sql = openerp.sql_db.sql_counter
-            _logger.info('%s running tests.', m.__name__)
-            result = unittest2.TextTestRunner(verbosity=2, stream=TestStream(m.__name__)).run(suite)
-            if time.time() - t0 > 5:
-                _logger.log(25, "%s tested in %.2fs, %s queries", m.__name__, time.time() - t0, openerp.sql_db.sql_counter - t0_sql)
-            if not result.wasSuccessful():
-                r = False
-                _logger.error("Module %s: %d failures, %d errors", module_name, len(result.failures), len(result.errors))
+        result = unittest2.TextTestRunner(verbosity=2, stream=TestStream(m.__name__)).run(suite)
 
+        if not result.wasSuccessful():
+            r = False
+            _logger.error("Module %s: %d failures, %d errors",
+                          module_name, len(result.failures), len(result.errors))
     current_test = None
-    threading.currentThread().testing = False
     return r
 
 def unwrap_suite(test):
