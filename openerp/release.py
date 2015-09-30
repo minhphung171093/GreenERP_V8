@@ -54,5 +54,5 @@ license = 'AGPL-3'
 nt_service_name = "odoo-server-" + series
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-version += '-20150730' 
-# hash = '030b157'
+version += '-20150812' 
+# hash = '02954ba'

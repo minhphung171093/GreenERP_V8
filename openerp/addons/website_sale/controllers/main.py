@@ -766,8 +766,8 @@ class website_sale(http.Controller):
                 message = '<p>%s</p>' % _('Your transaction is waiting confirmation.')
                 if tx.acquirer_id.post_msg:
                     message += tx.acquirer_id.post_msg
-            else:
-                message = '<p>%s</p>' % _('Your transaction is waiting confirmation.')
+            elif state == 'error':
+                message = '<p>%s</p>' % _('An error occured during the transaction.')
             validation = tx.acquirer_id.validation
 
         return {
@@ -812,6 +812,8 @@ class website_sale(http.Controller):
 
         # clean context and session, then redirect to the confirmation page
         request.website.sale_reset(context=context)
+        if tx and tx.state == 'draft':
+            return request.redirect('/shop')
 
         return request.redirect('/shop/confirmation')
 

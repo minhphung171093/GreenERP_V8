@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.menu" id="account.menu_action_invoice_tree3">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_finance_payables">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_finance_bank_and_cash">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_action_tax_code_tree">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_finance_periodical_processing">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_finance_reports">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.next_id_27">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_action_bank_tree">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.account_template_folder">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_account_reports">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_action_payment_term_form">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_action_account_statement_operation_template">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_email_templates">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_action_invoice_tree1">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account_voucher.menu_action_sale_receipt">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account_voucher.menu_action_vendor_receipt">
+			<field name="active" eval="False"/>
+		</record>
+		
+		<menuitem id="menu_action_thungan_bai_giaoca"
+			action="action_thungan_bai_giaoca"
+			name="Thu ngân bãi giao ca"
+			parent="account.menu_finance_configuration" sequence="1"/>
+			
+		<menuitem id="menu_action_dieuhanh_bai_giaoca"
+			action="action_dieuhanh_bai_giaoca"
+			name="Điều hành bãi giao ca"
+			parent="account.menu_finance_configuration" sequence="2"/>
+			
+		<menuitem id="menu_action_bai_giaoca"
+			action="action_bai_giaoca"
+			name="Bãi giao ca"
+			parent="account.menu_finance_configuration" sequence="3"/>
+			
+		<menuitem id="menu_action_loai_doi_tuong"
+			action="action_loai_doi_tuong"
+			name="Loại đối tượng"
+			parent="account.menu_finance_configuration" sequence="4"/>
+			
+		<menuitem id="menu_cong_no"
+			name="Công nợ"
+			parent="account.menu_finance" sequence="3"/>
+			
+			<menuitem id="menu_action_no_doanh_thu"
+				action="action_no_doanh_thu"
+				name="Nợ doanh thu"
+				parent="menu_cong_no" sequence="5"/>
+				
+			<menuitem id="menu_action_thu_no_xuong"
+				action="action_thu_no_xuong"
+				name="Thu nợ xưởng"
+				parent="menu_cong_no" sequence="10"/>
+				
+			<menuitem id="menu_action_thu_phi_thuong_hieu"
+				action="action_thu_phi_thuong_hieu"
+				name="Thu phí thương hiệu"
+				parent="menu_cong_no" sequence="15"/>
+				
+			<menuitem id="menu_action_tra_gop_xe"
+				action="action_tra_gop_xe"
+				name="Trả góp xe"
+				parent="menu_cong_no" sequence="20"/>
+				
+			<menuitem id="menu_action_tam_ung"
+				action="action_tam_ung"
+				name="Tạm ứng"
+				parent="menu_cong_no" sequence="25"/>
+		
+	</data>
+</openerp>

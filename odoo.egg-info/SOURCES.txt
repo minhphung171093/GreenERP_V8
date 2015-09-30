@@ -921,6 +921,8 @@ openerp/addons/account_cancel/i18n/uk.po
 openerp/addons/account_cancel/i18n/vi.po
 openerp/addons/account_cancel/i18n/zh_CN.po
 openerp/addons/account_cancel/i18n/zh_TW.po
+openerp/addons/account_cancel/models/__init__.py
+openerp/addons/account_cancel/models/account_bank_statement.py
 openerp/addons/account_chart/__init__.py
 openerp/addons/account_chart/__openerp__.py
 openerp/addons/account_chart/account_chart.xml
@@ -12414,8 +12416,6 @@ openerp/addons/web_tests/static/src/css/web_tests.css
 openerp/addons/web_tests/static/src/js/web_tests.js
 openerp/addons/web_tests/tests/__init__.py
 openerp/addons/web_tests/tests/test_ui.py
-openerp/addons/web_tests/tests/test_ui_hello.js
-openerp/addons/web_tests/tests/test_ui_load.js
 openerp/addons/web_tests/views/web_tests.xml
 openerp/addons/web_tests_demo/__init__.py
 openerp/addons/web_tests_demo/__openerp__.py
