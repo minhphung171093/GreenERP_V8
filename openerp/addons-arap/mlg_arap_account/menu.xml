@@ -49,85 +49,149 @@
 		<record model="ir.ui.menu" id="account_voucher.menu_action_vendor_receipt">
 			<field name="active" eval="True"/>
 		</record>
+		<record model="ir.ui.menu" id="account_voucher.menu_encode_entries_by_voucher">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account.menu_finance">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="base.menu_reporting">
+			<field name="active" eval="False"/>
+		</record>
 		
-		<menuitem id="menu_action_thungan_bai_giaoca"
-			action="action_thungan_bai_giaoca"
-			name="Thu ngân bãi giao ca"
-			parent="account.menu_finance_configuration" sequence="1"/>
+		<menuitem id="menu_root_doituong"
+			name="Đối Tượng" sequence="1"/>
 			
-		<menuitem id="menu_action_dieuhanh_bai_giaoca"
-			action="action_dieuhanh_bai_giaoca"
-			name="Điều hành bãi giao ca"
-			parent="account.menu_finance_configuration" sequence="2"/>
-			
-		<menuitem id="menu_action_bai_giaoca"
-			action="action_bai_giaoca"
-			name="Bãi giao ca"
-			parent="account.menu_finance_configuration" sequence="3"/>
-			
-		<menuitem id="menu_action_loai_doi_tuong"
-			action="action_loai_doi_tuong"
-			name="Loại đối tượng"
-			parent="account.menu_finance_configuration" sequence="4"/>
-			
-		<menuitem id="menu_action_loai_ky_quy"
-			action="action_loai_ky_quy"
-			name="Loại ký quỹ"
-			parent="account.menu_finance_configuration" sequence="5"/>
-			
-		<menuitem id="menu_action_loai_vi_pham"
-			action="action_loai_vi_pham"
-			name="Loại vi phạm"
-			parent="account.menu_finance_configuration" sequence="6"/>
-			
-		<menuitem id="menu_cong_no"
-			name="Công nợ"
-			parent="account.menu_finance" sequence="3"/>
-			
-			<menuitem id="menu_action_no_doanh_thu"
-				action="action_no_doanh_thu"
-				name="Nợ doanh thu"
-				parent="menu_cong_no" sequence="5"/>
+			<menuitem id="menu_doituong"
+				name="Đối tượng"
+				parent="menu_root_doituong" sequence="10"/>
 				
-			<menuitem id="menu_action_chi_ho_dien_thoai"
-				action="action_chi_ho_dien_thoai"
-				name="Chi hộ điện thoại"
-				parent="menu_cong_no" sequence="6"/>
+				<menuitem id="account.menu_account_customer"
+		            name="Đối tượng"
+		            parent="menu_doituong"
+		            action="base.action_partner_customer_form" sequence="10"/>
 				
-			<menuitem id="menu_action_phai_thu_bao_hiem"
-				action="action_phai_thu_bao_hiem"
-				name="Phải thu bảo hiểm"
-				parent="menu_cong_no" sequence="7"/>
-				
-			<menuitem id="menu_action_phai_tra_ky_quy"
-				action="action_phai_tra_ky_quy"
-				name="Phải trả ký quỹ"
-				parent="menu_cong_no" sequence="8"/>
-				
-			<menuitem id="menu_action_phat_vi_pham"
-				action="action_phat_vi_pham"
-				name="Phạt vi phạm"
-				parent="menu_cong_no" sequence="9"/>
-				
-			<menuitem id="menu_action_thu_no_xuong"
-				action="action_thu_no_xuong"
-				name="Thu nợ xưởng"
-				parent="menu_cong_no" sequence="10"/>
-				
-			<menuitem id="menu_action_thu_phi_thuong_hieu"
-				action="action_thu_phi_thuong_hieu"
-				name="Thu phí thương hiệu"
-				parent="menu_cong_no" sequence="15"/>
-				
-			<menuitem id="menu_action_tra_gop_xe"
-				action="action_tra_gop_xe"
-				name="Trả góp xe"
-				parent="menu_cong_no" sequence="20"/>
-				
-			<menuitem id="menu_action_tam_ung"
-				action="action_tam_ung"
-				name="Tạm ứng"
-				parent="menu_cong_no" sequence="25"/>
+				<menuitem action="account_voucher.action_vendor_receipt"
+					name="Thanh toán của đối tượng"
+					icon="STOCK_JUSTIFY_FILL" sequence="20"
+            		id="account_voucher.menu_action_vendor_receipt"  parent="menu_doituong"/>
 		
+		<menuitem id="menu_root_congno"
+			name="Công Nợ" sequence="2"/>
+			
+			<menuitem id="menu_cong_no"
+				name="Công Nợ"
+				parent="menu_root_congno" sequence="10"/>
+				
+				<menuitem id="menu_action_no_doanh_thu"
+					action="action_no_doanh_thu"
+					name="Nợ doanh thu"
+					parent="menu_cong_no" sequence="5"/>
+					
+				<menuitem id="menu_action_chi_ho_dien_thoai"
+					action="action_chi_ho_dien_thoai"
+					name="Chi hộ điện thoại"
+					parent="menu_cong_no" sequence="6"/>
+					
+				<menuitem id="menu_action_phai_thu_bao_hiem"
+					action="action_phai_thu_bao_hiem"
+					name="Phải thu bảo hiểm"
+					parent="menu_cong_no" sequence="7"/>
+					
+				<menuitem id="menu_action_phai_tra_ky_quy"
+					action="action_phai_tra_ky_quy"
+					name="Phải trả ký quỹ"
+					parent="menu_cong_no" sequence="8"/>
+					
+				<menuitem id="menu_action_phat_vi_pham"
+					action="action_phat_vi_pham"
+					name="Phạt vi phạm"
+					parent="menu_cong_no" sequence="9"/>
+					
+				<menuitem id="menu_action_thu_no_xuong"
+					action="action_thu_no_xuong"
+					name="Thu nợ xưởng"
+					parent="menu_cong_no" sequence="10"/>
+					
+				<menuitem id="menu_action_thu_phi_thuong_hieu"
+					action="action_thu_phi_thuong_hieu"
+					name="Thu phí thương hiệu"
+					parent="menu_cong_no" sequence="15"/>
+					
+				<menuitem id="menu_action_tra_gop_xe"
+					action="action_tra_gop_xe"
+					name="Trả góp xe"
+					parent="menu_cong_no" sequence="20"/>
+					
+				<menuitem id="menu_action_tam_ung"
+					action="action_tam_ung"
+					name="Tạm ứng"
+					parent="menu_cong_no" sequence="25"/>
+				
+			<menuitem id="account.menu_finance_entries"
+				name="Bút toán"
+				parent="menu_root_congno" sequence="20"/>
+			
+			<menuitem id="account.menu_finance_charts"
+				name="Cây biểu đồ"
+				parent="menu_root_congno" sequence="30"/>
+			
+		<menuitem id="menu_root_quanly"
+			name="Quản Lý" sequence="3"/>
+			
+			<menuitem id="menu_danhmuc_dungchung"
+				name="Danh mục dùng chung"
+				parent="menu_root_quanly" sequence="10"/>
+				
+				<menuitem id="menu_action_thungan_bai_giaoca"
+					action="action_thungan_bai_giaoca"
+					name="Thu ngân bãi giao ca"
+					parent="menu_danhmuc_dungchung" sequence="1"/>
+					
+				<menuitem id="menu_action_dieuhanh_bai_giaoca"
+					action="action_dieuhanh_bai_giaoca"
+					name="Điều hành bãi giao ca"
+					parent="menu_danhmuc_dungchung" sequence="2"/>
+					
+				<menuitem id="menu_action_bai_giaoca"
+					action="action_bai_giaoca"
+					name="Bãi giao ca"
+					parent="menu_danhmuc_dungchung" sequence="3"/>
+					
+				<menuitem id="menu_action_loai_doi_tuong"
+					action="action_loai_doi_tuong"
+					name="Loại đối tượng"
+					parent="menu_danhmuc_dungchung" sequence="4"/>
+					
+				<menuitem id="menu_action_loai_ky_quy"
+					action="action_loai_ky_quy"
+					name="Loại ký quỹ"
+					parent="menu_danhmuc_dungchung" sequence="5"/>
+					
+				<menuitem id="menu_action_loai_vi_pham"
+					action="action_loai_vi_pham"
+					name="Loại vi phạm"
+					parent="menu_danhmuc_dungchung" sequence="6"/>
+					
+			<menuitem id="menu_cauhinh"
+				name="Cấu hình"
+				parent="menu_root_quanly" sequence="20"/>
+				
+				<menuitem id="account.next_id_23"
+					name="Periods"
+					parent="menu_cauhinh" sequence="20"/>
+					
+				<menuitem id="account.menu_journals"
+					name="Journals"
+					parent="menu_cauhinh" sequence="30"/>
+					
+				<menuitem id="account.account_account_menu"
+					name="Accounts"
+					parent="menu_cauhinh" sequence="40"/>
+					
+				<menuitem id="account.menu_configuration_misc"
+					name="Miscellaneous"
+					parent="menu_cauhinh" sequence="50"/>
+					
 	</data>
 </openerp>
