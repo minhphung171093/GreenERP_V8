@@ -49,6 +49,7 @@ class loai_ky_quy(osv.osv):
     _name = "loai.ky.quy"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'description': fields.char('Mô tả', size=1024),
     }
 loai_ky_quy()
 
@@ -56,7 +57,7 @@ class loai_vi_pham(osv.osv):
     _name = "loai.vi.pham"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
-        'description': fields.char('Mô tả', size=1024, required=True),
+        'description': fields.char('Mô tả', size=1024),
     }
 loai_vi_pham()
 
