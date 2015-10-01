@@ -27,11 +27,14 @@
     'depends': ['web','account_accountant'],
     'data': [
         'ir_ui_menu_view.xml',
+        'views/webclient_templates.xml',
         'menu.xml',
     ],
     'css' : [
     ],
     'qweb': [
+    ],
+    'js': [
     ],
     'installable': True,
     'auto_install': False,
