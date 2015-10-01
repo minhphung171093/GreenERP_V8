@@ -60,6 +60,9 @@ class account_invoice(osv.osv):
     _inherit = "account.invoice"
     _columns = {
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+                                      ('chi_ho_dien_thoai','Chi hộ điện thoại'),
+                                      ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
+                                      ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('thu_no_xuong','Thu nợ xưởng'),
                                       ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
                                       ('tra_gop_xe','Trả góp xe'),
@@ -70,6 +73,8 @@ class account_invoice(osv.osv):
                                       domain="[('type', 'in', ['cash','bank']), ('company_id', '=', company_id)]"),
         'bien_so_xe': fields.char('Biển số xe', size=1024),
         'so_hop_dong': fields.char('Số hợp đồng HTKD', size=1024),
+        'loai_doituong_id': fields.many2one('loai.doi.tuong', 'Loại đối tượng'),
+        'so_hoa_don':fields.char('Số hóa đơn',size = 64),
     }
     
     _defaults = {
@@ -82,6 +87,7 @@ class account_invoice(osv.osv):
         if partner_id:
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
             vals = {'account_id': partner.property_account_receivable.id,
+                    'loai_doituong_id': partner.loai_doituong_id and partner.loai_doituong_id.id or False,
                     'bai_giaoca_id': partner.bai_giaoca_id and partner.bai_giaoca_id.id or False}
         return {'value': vals}
     

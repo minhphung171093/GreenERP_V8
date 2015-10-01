@@ -79,6 +79,21 @@
 				name="Nợ doanh thu"
 				parent="menu_cong_no" sequence="5"/>
 				
+			<menuitem id="menu_action_chi_ho_dien_thoai"
+				action="action_chi_ho_dien_thoai"
+				name="Chi hộ điện thoại"
+				parent="menu_cong_no" sequence="6"/>
+				
+			<menuitem id="menu_action_phai_thu_bao_hiem"
+				action="action_phai_thu_bao_hiem"
+				name="Phải thu bảo hiểm"
+				parent="menu_cong_no" sequence="7"/>
+				
+			<menuitem id="menu_action_phai_tra_ky_quy"
+				action="action_phai_tra_ky_quy"
+				name="Phải trả ký quỹ"
+				parent="menu_cong_no" sequence="8"/>
+				
 			<menuitem id="menu_action_thu_no_xuong"
 				action="action_thu_no_xuong"
 				name="Thu nợ xưởng"
