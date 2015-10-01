@@ -94,7 +94,7 @@ class account_invoice(osv.osv):
         'so_hoa_don':fields.char('Số hóa đơn',size = 64),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
-        'chinhanh_id': fields.many2one('account.account', 'Chi nhánh'),
+        'chinhanh_id': fields.related('account_id','parent_id',type='many2one',relation='account.account', string='Chi nhánh', readonly=True),
         'so_bien_ban_vi_pham':fields.char('Số biên bản vi phạm',size = 64),
     }
     
