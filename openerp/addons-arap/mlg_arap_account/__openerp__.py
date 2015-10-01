@@ -28,6 +28,7 @@
     'data': [
         'account_view.xml',
         'partner_view.xml',
+        'account_sequence.xml',
         'menu.xml',
     ],
     'css' : [
