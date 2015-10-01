@@ -208,7 +208,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
@@ -350,7 +350,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
@@ -494,7 +494,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
@@ -639,7 +639,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
@@ -782,7 +782,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
@@ -926,7 +926,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 	                    	<field name="bien_so_xe"/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
@@ -1070,7 +1070,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Nhà đầu tư" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
@@ -1212,7 +1212,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Nhà đầu tư" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
@@ -1354,7 +1354,7 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh" domain="[('parent_id.code','=','0')]" required='1'/>
+	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="account_id" string="Phòng ban/Đội xe" domain="[('type','!=','view')]"/>
