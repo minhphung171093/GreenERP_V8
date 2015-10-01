@@ -148,13 +148,13 @@
                     <field name="account_id" string="Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
-                    <field name="state"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="type" invisible='1'/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
