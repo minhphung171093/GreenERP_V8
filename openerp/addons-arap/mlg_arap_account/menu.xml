@@ -70,6 +70,16 @@
 			name="Loại đối tượng"
 			parent="account.menu_finance_configuration" sequence="4"/>
 			
+		<menuitem id="menu_action_loai_ky_quy"
+			action="action_loai_ky_quy"
+			name="Loại ký quỹ"
+			parent="account.menu_finance_configuration" sequence="5"/>
+			
+		<menuitem id="menu_action_loai_vi_pham"
+			action="action_loai_vi_pham"
+			name="Loại vi phạm"
+			parent="account.menu_finance_configuration" sequence="6"/>
+			
 		<menuitem id="menu_cong_no"
 			name="Công nợ"
 			parent="account.menu_finance" sequence="3"/>
@@ -93,6 +103,11 @@
 				action="action_phai_tra_ky_quy"
 				name="Phải trả ký quỹ"
 				parent="menu_cong_no" sequence="8"/>
+				
+			<menuitem id="menu_action_phat_vi_pham"
+				action="action_phat_vi_pham"
+				name="Phạt vi phạm"
+				parent="menu_cong_no" sequence="9"/>
 				
 			<menuitem id="menu_action_thu_no_xuong"
 				action="action_thu_no_xuong"

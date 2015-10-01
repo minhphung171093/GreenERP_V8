@@ -45,6 +45,21 @@ class loai_doi_tuong(osv.osv):
     }
 loai_doi_tuong()
 
+class loai_ky_quy(osv.osv):
+    _name = "loai.ky.quy"
+    _columns = {
+        'name': fields.char('Tên', size=1024, required=True),
+    }
+loai_ky_quy()
+
+class loai_vi_pham(osv.osv):
+    _name = "loai.vi.pham"
+    _columns = {
+        'name': fields.char('Tên', size=1024, required=True),
+        'description': fields.char('Mô tả', size=1024, required=True),
+    }
+loai_vi_pham()
+
 class bai_giaoca(osv.osv):
     _name = "bai.giaoca"
     _columns = {
@@ -63,6 +78,7 @@ class account_invoice(osv.osv):
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
+                                      ('phat_vi_pham','Phạt vi phạm'),
                                       ('thu_no_xuong','Thu nợ xưởng'),
                                       ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
                                       ('tra_gop_xe','Trả góp xe'),
@@ -75,6 +91,9 @@ class account_invoice(osv.osv):
         'so_hop_dong': fields.char('Số hợp đồng HTKD', size=1024),
         'loai_doituong_id': fields.many2one('loai.doi.tuong', 'Loại đối tượng'),
         'so_hoa_don':fields.char('Số hóa đơn',size = 64),
+        'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
+        'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
+        'so_bien_ban_vi_pham':fields.char('Số biên bản vi phạm',size = 64),
     }
     
     _defaults = {
