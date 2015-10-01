@@ -76,6 +76,44 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_loai_doi_tuong_tree"/>
         </record>
+        
+<!-- Loại ký quỹ -->    
+    	<record id="view_loai_ky_quy_tree" model="ir.ui.view">
+            <field name="name">loai.ky.quy.tree</field>
+            <field name="model">loai.ky.quy</field>
+            <field name="arch" type="xml">
+                <tree string="Loại ký quỹ" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_ky_quy" model="ir.actions.act_window">
+            <field name="name">Loại ký quỹ</field>
+            <field name="res_model">loai.ky.quy</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_ky_quy_tree"/>
+        </record>
+
+<!-- Loại vi phạm -->    
+    	<record id="view_loai_vi_pham_tree" model="ir.ui.view">
+            <field name="name">loai.vi.pham.tree</field>
+            <field name="model">loai.vi.pham</field>
+            <field name="arch" type="xml">
+                <tree string="Loại vi phạm" editable='top'>
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_vi_pham" model="ir.actions.act_window">
+            <field name="name">Loại vi phạm</field>
+            <field name="res_model">loai.vi.pham</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_vi_pham_tree"/>
+        </record>
+
 
 <!-- Nợ doanh thu -->
 		<record id="view_no_doanh_thu_filter" model="ir.ui.view">
@@ -454,7 +492,9 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
+                    <field name="bai_giaoca_id" string="Bãi giao ca"/>
                     <field name="bien_so_xe" string="Biển số xe"/>
+                    <field name="loai_kyquy_id" string="Loại ký quỹ"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
@@ -487,7 +527,9 @@
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
 		                    <field name="account_id" string="Tên Phòng ban/Đội xe" domain="[('type','!=','view')]"/>
+                    		<field name="bai_giaoca_id" string="Bãi giao ca"/>
                     		<field name="bien_so_xe" string="Biển số xe"/>
+                    		<field name="loai_kyquy_id" string="Loại ký quỹ"/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
 	                    </group>
 	                    <notebook>
@@ -539,6 +581,126 @@
             <field name="view_id" ref="view_phai_tra_ky_quy_form"/>
             <field name="act_window_id" ref="action_phai_tra_ky_quy"/>
         </record>
+        
+<!-- Phạt vi phạm-->
+		<record id="view_phat_vi_pham_filter" model="ir.ui.view">
+            <field name="name">phat.vi.pham.select</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <search string="Search Invoice">
+                    <field name="date_invoice" string="Ngày giao dịch"/>
+                    <field name="partner_id" string="Đối tượng"/>
+                    <field name="account_id" string="Tên Phòng ban/Đội xe"/>
+                    <field name="bien_so_xe"/>
+                    <field name="state"/>
+                    <group expand="0" string="Group By">
+                    	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
+                    	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
+                    	<filter name="group_by_account_id" string="Tên Phòng ban/Đội xe" context="{'group_by':'account_id'}"/>
+                    	<filter name="group_by_loai_vipham_id" string="Loại vi phạm" context="{'group_by':'loai_vipham_id'}"/>
+                    	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+    	<record id="view_phat_vi_pham_tree" model="ir.ui.view">
+            <field name="name">phat.vi.pham.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <tree string="Phạt vi phạm">
+                    <field name="date_invoice" string="Ngày giao dịch"/>
+                    <field name="partner_id" string="Đối tượng"/>
+                    <field name="account_id" string="Tên Phòng ban/Đội xe"/>
+                    <field name="bai_giaoca_id" string="Bãi giao ca"/>
+                    <field name="so_bien_ban_vi_pham" string="Số biên bản vi phạm"/>
+                    <field name="loai_vipham_id" string="Loại vi phạm"/>
+                    <field name="mlg_type" invisible='1'/>
+                    <field name="period_id" invisible='1'/>
+                    <field name="currency_id" invisible='1'/>
+                    <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="type" invisible='1'/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_phat_vi_pham_form" model="ir.ui.view">
+            <field name="name">phat.vi.pham.form</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <form string="Phạt vi phạm" version='7.0'>
+					<header>
+	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
+						<field name="mlg_type" invisible='1'/>
+                    	<field name="type" invisible='1'/>
+					</header>
+                	<sheet>
+	                    <group col="4" colspan="2">
+	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
+		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
+		                    <field name="loai_doituong_id" string="Loại đối tượng" />
+		                    <field name="account_id" string="Tên Phòng ban/Đội xe" domain="[('type','!=','view')]"/>
+                    		<field name="bai_giaoca_id" string="Bãi giao ca"/>
+                    		<field name="so_bien_ban_vi_pham" string="Số biên bản vi phạm"/>
+                    		<field name="loai_vipham_id" string="Loại vi phạm"/>
+		                    <field name="journal_id" string="Phương thức thanh toán"/>
+	                    </group>
+	                    <notebook>
+		                    <page string="Chi tiết công nợ">
+			                    <field name="invoice_line" context="{'journal_id': journal_id}">
+									<tree editable='bottom'>
+										<field name="name" string="Diễn giải"/>
+										<field name="account_id" invisible='1'/>
+										<field name="price_unit" string="Số tiền"/>
+									</tree>			                    
+			                    </field>
+			                    <field name="period_id" invisible='1'/>
+			                    <field name="company_id" invisible='1'/>
+			                    <field name="currency_id" invisible='1'/>
+			                    <group class="oe_subtotal_footer oe_right">
+	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                            </group>
+	                            <div class="oe_clear"/>
+		                    </page>
+	                    </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+		                <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+		                <field name="message_ids" widget="mail_thread"/>
+		            </div>
+                </form>
+            </field>
+        </record>
+        <record id="action_phat_vi_pham" model="ir.actions.act_window">
+            <field name="name">Phạt vi phạm</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_phat_vi_pham_tree"/>
+            <field name="search_view_id" ref="view_phat_vi_pham_filter"/>
+            <field name="domain">[('mlg_type','=','phat_vi_pham')]</field>
+            <field name="context">{'default_mlg_type': 'phat_vi_pham', 'default_type': 'out_invoice'}</field>
+        </record>
+		<record id="action_phat_vi_pham1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_phat_vi_pham_tree"/>
+            <field name="act_window_id" ref="action_phat_vi_pham"/>
+        </record>
+        <record id="action_phat_vi_pham2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_phat_vi_pham_form"/>
+            <field name="act_window_id" ref="action_phat_vi_pham"/>
+        </record>
+        
 
 <!-- Thu nợ xưởng -->
 		<record id="view_thu_no_xuong_filter" model="ir.ui.view">
