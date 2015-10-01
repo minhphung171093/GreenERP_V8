@@ -47,7 +47,7 @@
 			<field name="active" eval="False"/>
 		</record>
 		<record model="ir.ui.menu" id="account_voucher.menu_action_vendor_receipt">
-			<field name="active" eval="False"/>
+			<field name="active" eval="True"/>
 		</record>
 		
 		<menuitem id="menu_action_thungan_bai_giaoca"

@@ -101,6 +101,13 @@ class account_invoice(osv.osv):
         'journal_id': False,
     }
     
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
+        if vals.get('mlg_type') and (vals.get('name', '/') == '/' or 'name' not in vals):
+            vals['name'] = self.pool.get('ir.sequence').get(cr, uid, vals['mlg_type'], context=context) or '/'
+        return super(account_invoice, self).create(cr, uid, vals, context)
+    
     def onchange_doituong(self, cr, uid, ids, partner_id=False, context=None):
         vals = {}
         if partner_id:
