@@ -38,6 +38,7 @@ class res_partner(osv.osv):
             required=False),
         'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
         'loai_doituong_id': fields.many2one('loai.doi.tuong', 'Loại đối tượng'),
+        'ma_doi_tuong': fields.char('Mã đối tượng', size=1024),
     }
     
 res_partner()

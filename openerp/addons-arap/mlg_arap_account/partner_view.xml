@@ -19,5 +19,18 @@
             </field>
         </record>
         
+<!-- Thêm mã đối tượng --> 
+        <record id="view_partner_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.property.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="website" position="after">
+                	<field name="ma_doi_tuong"/>
+                </field>
+            </field>
+        </record>
+        
     </data>
 </openerp>

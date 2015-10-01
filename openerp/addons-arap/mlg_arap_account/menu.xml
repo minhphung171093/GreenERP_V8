@@ -193,5 +193,16 @@
 					name="Miscellaneous"
 					parent="menu_cauhinh" sequence="50"/>
 					
+		<menuitem id="menu_root_baocao"
+			name="Báo Cáo" sequence="4"/>
+			
+			<menuitem id="menu_danhsach_congno"
+				name="Danh sách công nợ"
+				parent="menu_root_baocao" sequence="10"/>
+				
+				<menuitem id="menu_action_no_doanh_thu_report"
+					name="DS nợ doanh thu"
+					action="action_no_doanh_thu_report"
+					parent="menu_danhsach_congno" sequence="10"/>
 	</data>
 </openerp>

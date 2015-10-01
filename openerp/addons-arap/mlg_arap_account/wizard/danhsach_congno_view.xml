@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+        <record id="view_no_doanh_thu_report" model="ir.ui.view">
+            <field name="name">no.doanh.thu.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Danh sách nợ doanh thu" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
+	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
+	                    	<field name='bai_giaoca_ids' widget="many2many_tags"/>
+	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'no_doanh_thu_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_no_doanh_thu_report" model="ir.actions.act_window">
+            <field name="name">Danh sách nợ doanh thu</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+    </data>
+</openerp>
+
