@@ -204,5 +204,15 @@
 					name="DS nợ doanh thu"
 					action="action_no_doanh_thu_report"
 					parent="menu_danhsach_congno" sequence="10"/>
+					
+				<menuitem id="menu_action_chi_ho_dien_thoai_report"
+					name="DS chi hộ điện thoại"
+					action="action_chi_ho_dien_thoai_report"
+					parent="menu_danhsach_congno" sequence="20"/>
+					
+				<menuitem id="menu_action_phai_thu_bao_hiem_report"
+					name="DS phải thu bảo hiểm"
+					action="action_phai_thu_bao_hiem_report"
+					parent="menu_danhsach_congno" sequence="30"/>
 	</data>
 </openerp>
