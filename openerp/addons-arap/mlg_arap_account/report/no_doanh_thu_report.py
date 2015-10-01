@@ -28,8 +28,8 @@ class Parser(report_sxw.rml_parse):
     
     def get_line(self):
         wizard_data = self.localcontext['data']['form']
-        date_from = wizard_data['date_from']
-        date_to = wizard_data['date_to']
+        from_date = wizard_data['from_date']
+        to_date = wizard_data['to_date']
         sql = '''
             select ai.name as ma_giaodich, ai.date_invoice as ngay_giaodich, rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, ldt.name as loai_doituong, dx.code as ma_doixe,
                 dx.name as ten_doixe, bgc.code as ma_baigiaoca, bgc.name as ten_baigiaoca, tnbgc.name as thungan_baigiaoca,
@@ -44,7 +44,7 @@ class Parser(report_sxw.rml_parse):
                 left join thungan_bai_giaoca tnbgc on bgc.thungan_id = tnbgc.id
                 left join dieuhanh_bai_giaoca dhbgc on bgc.dieuhanh_id = dhbgc.id
                 where date_invoice between '%s' and '%s' and mlg_type='no_doanh_thu' 
-        '''%(date_from,date_to)
+        '''%(from_date,to_date)
         
         partner_ids = wizard_data['partner_ids']
         if partner_ids:
