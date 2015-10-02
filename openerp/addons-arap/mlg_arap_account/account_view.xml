@@ -247,7 +247,7 @@
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Đội xe" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
 		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1'/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
 	                    </group>
@@ -389,7 +389,7 @@
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Tên Phòng ban/Đội xe" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
 		                    <field name="so_hoa_don" string="Số hóa đơn" />
 		                    <field name="journal_id" string="Loại giao dịch"/>
 	                    </group>
@@ -533,7 +533,7 @@
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Tên Phòng ban/Đội xe" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
 		                    <field name="so_hop_dong" string="Số hợp đồng"/>
                     		<field name="bien_so_xe" string="Biển số xe"/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
@@ -678,7 +678,7 @@
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Tên Phòng ban/Đội xe" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
                     		<field name="bai_giaoca_id" string="Bãi giao ca"/>
                     		<field name="bien_so_xe" string="Biển số xe"/>
                     		<field name="loai_kyquy_id" string="Loại ký quỹ"/>
@@ -821,7 +821,7 @@
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Tên Phòng ban/Đội xe" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
                     		<field name="so_bien_ban_vi_pham" string="Số biên bản vi phạm"/>
                     		<field name="loai_vipham_id" string="Loại vi phạm"/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
@@ -967,7 +967,7 @@
 	                    	<field name="bien_so_xe"/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Đội xe" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
 		                    <field name="so_hop_dong"/>
 	                    </group>
@@ -1110,7 +1110,7 @@
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Nhà đầu tư" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Đội kinh doanh" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Đội kinh doanh" readonly='1'/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
 		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
 	                    </group>
@@ -1252,7 +1252,7 @@
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Nhà đầu tư" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Đội kinh doanh" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Đội kinh doanh" readonly='1'/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
 		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
 	                    </group>
@@ -1393,7 +1393,7 @@
 	                    	<field name="chinhanh_id" string="Chi nhánh"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="account_id" string="Phòng ban/Đội xe" domain="[('type','!=','view')]"/>
+		                    <field name="account_id" string="Phòng ban/Đội xe" readonly='1'/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
 		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
 	                    </group>

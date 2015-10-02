@@ -85,12 +85,13 @@ class account_invoice(osv.osv):
                                       ('tra_gop_xe','Trả góp xe'),
                                       ('tam_ung','Tạm ứng')],'Loại'),
         'doi_xe_id': fields.many2one('account.account', 'Đội xe'),
-        'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
+        'bai_giaoca_id': fields.related('partner_id', 'bai_giaoca_id', type='many2one', relation='bai.giaoca', string='Bãi giao ca', readonly=True, store=True),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True, readonly=True, states={'draft':[('readonly',False)]},
                                       domain="[('type', 'in', ['cash','bank']), ('company_id', '=', company_id)]"),
+        'account_id': fields.related('partner_id', 'property_account_receivable', type='many2one', relation='account.account', string='Đội xe', readonly=True, store=True),
         'bien_so_xe': fields.char('Biển số xe', size=1024),
         'so_hop_dong': fields.char('Số hợp đồng', size=1024),
-        'loai_doituong_id': fields.many2one('loai.doi.tuong', 'Loại đối tượng'),
+        'loai_doituong_id': fields.related('partner_id', 'loai_doituong_id',type='many2one',relation='loai.doi.tuong',string='Loại đối tượng', readonly=True, store=True),
         'so_hoa_don':fields.char('Số hóa đơn',size = 64),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
@@ -117,7 +118,8 @@ class account_invoice(osv.osv):
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
             vals = {'account_id': partner.property_account_receivable.id,
                     'loai_doituong_id': partner.loai_doituong_id and partner.loai_doituong_id.id or False,
-                    'bai_giaoca_id': partner.bai_giaoca_id and partner.bai_giaoca_id.id or False}
+                    'bai_giaoca_id': partner.bai_giaoca_id and partner.bai_giaoca_id.id or False,
+                    'chinhanh_id': partner.property_account_receivable.parent_id.id}
         return {'value': vals}
     
     def action_move_create(self):
