@@ -76,6 +76,32 @@
 			name="phai_thu_bao_hiem_report"
 	        string="Danh sách phải thu bảo hiểm"
 	        rml="mlg_arap_account/report/phai_thu_bao_hiem_report.ods"/> 
+	       
+<!-- Danh sách phạt vi phạm -->
+    	<record id="phat_vi_pham_report" model="ir.actions.report.xml">
+	        <field name="name">phat_vi_pham_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">phat_vi_pham_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phat_vi_pham_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phat_vi_pham_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="phat_vi_pham_report" 
+			model="danhsach.congno" 
+			name="phat_vi_pham_report"
+	        string="Danh sách phạt vi phạm"
+	        rml="mlg_arap_account/report/phat_vi_pham_report.ods"/> 
+	        
 	        
 	</data>
 </openerp>
