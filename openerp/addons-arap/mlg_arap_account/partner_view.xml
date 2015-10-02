@@ -18,8 +18,62 @@
                 </field>
             </field>
         </record>
+        <record id="res_partner_kanban_view_inherit" model="ir.ui.view">
+            <field name="name">res.partner.kanban.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <field name="category_id" position="after">
+                	<field name="loai_doituong_id" invisible='1'/>
+                </field>
+            </field>
+        </record>
+        <record id="view_partner_tree_inherit" model="ir.ui.view">
+            <field name="name">res.partner.tree.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                	<field name="loai_doituong_id" invisible='1'/>
+                </field>
+            </field>
+        </record>
+
+<!-- action đối tượng -->
+        <record id="action_partner_taixe" model="ir.actions.act_window">
+            <field name="name">Tài xế</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('loai_doituong_id.name','=','Tài xế')]</field>
+            <field name="context">{'default_customer':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_taixe'}</field>
+            <field name="filter" eval="True"/>
+        </record>
+        <record id="action_partner_ndt" model="ir.actions.act_window">
+            <field name="name">Nhà đầu tư</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('loai_doituong_id.name','=','Nhà đầu tư')]</field>
+            <field name="context">{'default_customer':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_ndt'}</field>
+            <field name="filter" eval="True"/>
+        </record>
+        <record id="action_partner_nvvp" model="ir.actions.act_window">
+            <field name="name">Nhân viên văn phòng</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('loai_doituong_id.name','=','Nhân viên văn phòng')]</field>
+            <field name="context">{'default_customer':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_nvvp'}</field>
+            <field name="filter" eval="True"/>
+        </record>
         
-<!-- Thêm mã đối tượng --> 
+<!-- Thêm mã đối tượng và ẩn tags --> 
         <record id="view_partner_form_inherit" model="ir.ui.view">
             <field name="name">res.partner.property.form.inherit</field>
             <field name="model">res.partner</field>
@@ -28,6 +82,9 @@
             <field name="arch" type="xml">
                 <field name="website" position="after">
                 	<field name="ma_doi_tuong"/>
+                </field>
+                <field name="category_id" position="replace">
+                	<field name="category_id" widget="many2many_tags" placeholder="Tags..." invisible='1'/>
                 </field>
             </field>
         </record>

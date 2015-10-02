@@ -28,6 +28,20 @@ from openerp import api
 class res_partner(osv.osv):
     _inherit = 'res.partner'
 
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(res_partner, self).default_get(cr, uid, fields, context=context)
+        if context.get('default_loai_doituong', False):
+            sql = '''
+                select res_id from ir_model_data where module='mlg_arap_account' and name='%s'
+            '''%(context['default_loai_doituong'])
+            cr.execute(sql)
+            loai = cr.fetchone()
+            if loai:
+                res.update({'loai_doituong_id': loai[0]})
+        return res
+
     _columns = {
         'property_account_payable': fields.property(
             type='many2one',

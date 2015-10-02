@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+
+        <record id="loai_doi_tuong_taixe" model="loai.doi.tuong">
+            <field name="name">Tài xế</field>
+        </record>
+        
+        <record id="loai_doi_tuong_ndt" model="loai.doi.tuong">
+            <field name="name">Nhà đầu tư</field>
+        </record>
+        
+        <record id="loai_doi_tuong_nvvp" model="loai.doi.tuong">
+            <field name="name">Nhân viên văn phòng</field>
+        </record>
+        
+    </data>
+</openerp>

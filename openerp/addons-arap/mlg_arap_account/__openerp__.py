@@ -28,6 +28,7 @@
     'data': [
         'report/danhsach_congno_view.xml',
         'wizard/danhsach_congno_view.xml',
+        'account_data.xml',
         'account_view.xml',
         'partner_view.xml',
         'account_sequence.xml',
