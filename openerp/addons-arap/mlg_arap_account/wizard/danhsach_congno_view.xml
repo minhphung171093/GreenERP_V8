@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Danh sách nợ doanh thu -->
+        <record id="view_no_doanh_thu_report" model="ir.ui.view">
+            <field name="name">no.doanh.thu.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Danh sách nợ doanh thu" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
+	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
+	                    	<field name='bai_giaoca_ids' widget="many2many_tags"/>
+	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'no_doanh_thu_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_no_doanh_thu_report" model="ir.actions.act_window">
+            <field name="name">Danh sách nợ doanh thu</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_no_doanh_thu_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+<!-- Danh sách chi hộ điện thoại -->
+		<record id="view_chi_ho_dien_thoai_report" model="ir.ui.view">
+            <field name="name">chi.ho.dien.thoai.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Danh sách chi hộ điện thoại" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
+	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
+	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'chi_ho_dien_thoai_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_chi_ho_dien_thoai_report" model="ir.actions.act_window">
+            <field name="name">Danh sách chi hộ điện thoại</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_chi_ho_dien_thoai_report"/>
+            <field name="target">new</field>
+        </record>
+		
+<!-- Danh sách phải thu bảo hiểm -->
+		<record id="view_phai_thu_bao_hiem_report" model="ir.ui.view">
+            <field name="name">phai.thu.bao.hiem.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Danh sách phải thu bảo hiểm" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
+	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
+	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'phai_thu_bao_hiem_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_phai_thu_bao_hiem_report" model="ir.actions.act_window">
+            <field name="name">Danh sách phải thu bảo hiểm</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_phai_thu_bao_hiem_report"/>
+            <field name="target">new</field>
+        </record>
+		
+<!-- Danh sách phạt vi phạm -->
+		<record id="view_phat_vi_pham_report" model="ir.ui.view">
+            <field name="name">phat.vi.pham.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Danh sách phạt vi phạm" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
+	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
+	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'phat_vi_pham_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_phat_vi_pham_report" model="ir.actions.act_window">
+            <field name="name">Danh sách phạt vi phạm</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_phat_vi_pham_report"/>
+            <field name="target">new</field>
+        </record>
+		
+		
+    </data>
+</openerp>
+

@@ -24,8 +24,10 @@
     'version': '1.0',
     'category': 'ARAP',
     'sequence': 1,
-    'depends': ['mlg_arap_base','account_accountant','account_cancel'],
+    'depends': ['mlg_arap_base','account_accountant','account_cancel','report_aeroo_controller','report_aeroo'],
     'data': [
+        'report/danhsach_congno_view.xml',
+        'wizard/danhsach_congno_view.xml',
         'account_view.xml',
         'partner_view.xml',
         'account_sequence.xml',

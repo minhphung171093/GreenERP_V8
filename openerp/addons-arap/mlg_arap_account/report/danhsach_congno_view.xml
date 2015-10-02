@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+<!-- Danh sách nợ doanh thu -->
+    	<record id="no_doanh_thu_report" model="ir.actions.report.xml">
+	        <field name="name">no_doanh_thu_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">no_doanh_thu_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/no_doanh_thu_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/no_doanh_thu_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="no_doanh_thu_report" 
+			model="danhsach.congno" 
+			name="no_doanh_thu_report"
+	        string="Danh sách nợ doanh thu"
+	        rml="mlg_arap_account/report/no_doanh_thu_report.ods"/> 	
+	        
+<!-- Danh sách chi hộ điện thoại -->
+    	<record id="chi_ho_dien_thoai_report" model="ir.actions.report.xml">
+	        <field name="name">chi_ho_dien_thoai_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">chi_ho_dien_thoai_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/chi_ho_dien_thoai_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/chi_ho_dien_thoai_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="chi_ho_dien_thoai_report" 
+			model="danhsach.congno" 
+			name="chi_ho_dien_thoai_report"
+	        string="Danh sách chi hộ điện thoại"
+	        rml="mlg_arap_account/report/chi_ho_dien_thoai_report.ods"/>
+	        
+<!-- Danh sách phải thu bảo hiểm -->
+    	<record id="phai_thu_bao_hiem_report" model="ir.actions.report.xml">
+	        <field name="name">phai_thu_bao_hiem_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">phai_thu_bao_hiem_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phai_thu_bao_hiem_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phai_thu_bao_hiem_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="phai_thu_bao_hiem_report" 
+			model="danhsach.congno" 
+			name="phai_thu_bao_hiem_report"
+	        string="Danh sách phải thu bảo hiểm"
+	        rml="mlg_arap_account/report/phai_thu_bao_hiem_report.ods"/> 
+	       
+<!-- Danh sách phạt vi phạm -->
+    	<record id="phat_vi_pham_report" model="ir.actions.report.xml">
+	        <field name="name">phat_vi_pham_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">phat_vi_pham_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phat_vi_pham_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phat_vi_pham_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="phat_vi_pham_report" 
+			model="danhsach.congno" 
+			name="phat_vi_pham_report"
+	        string="Danh sách phạt vi phạm"
+	        rml="mlg_arap_account/report/phat_vi_pham_report.ods"/> 
+	        
+	        
+	</data>
+</openerp>

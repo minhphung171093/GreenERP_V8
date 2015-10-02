@@ -193,5 +193,33 @@
 					name="Miscellaneous"
 					parent="menu_cauhinh" sequence="50"/>
 					
+		<menuitem id="menu_root_baocao"
+			name="Báo Cáo" sequence="4"/>
+			
+			<menuitem id="menu_danhsach_congno"
+				name="Danh sách công nợ"
+				parent="menu_root_baocao" sequence="10"/>
+				
+				<menuitem id="menu_action_no_doanh_thu_report"
+					name="DS Nợ doanh thu"
+					action="action_no_doanh_thu_report"
+					parent="menu_danhsach_congno" sequence="10"/>
+					
+				<menuitem id="menu_action_chi_ho_dien_thoai_report"
+					name="DS Chi hộ điện thoại"
+					action="action_chi_ho_dien_thoai_report"
+					parent="menu_danhsach_congno" sequence="20"/>
+					
+				<menuitem id="menu_action_phai_thu_bao_hiem_report"
+					name="DS Phải thu bảo hiểm"
+					action="action_phai_thu_bao_hiem_report"
+					parent="menu_danhsach_congno" sequence="30"/>
+					
+					
+					
+				<menuitem id="menu_action_phat_vi_pham_report"
+					name="DS Phạt vi phạm"
+					action="action_phat_vi_pham_report"
+					parent="menu_danhsach_congno" sequence="40"/>
 	</data>
 </openerp>

@@ -825,6 +825,7 @@
                     		<field name="so_bien_ban_vi_pham" string="Số biên bản vi phạm"/>
                     		<field name="loai_vipham_id" string="Loại vi phạm"/>
 		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="ngay_vi_pham"/>
 	                    </group>
 	                    <notebook>
 		                    <page string="Chi tiết công nợ">
