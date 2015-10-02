@@ -47,7 +47,7 @@
 			<field name="active" eval="False"/>
 		</record>
 		<record model="ir.ui.menu" id="account_voucher.menu_action_vendor_receipt">
-			<field name="active" eval="True"/>
+			<field name="active" eval="False"/>
 		</record>
 		<record model="ir.ui.menu" id="account_voucher.menu_encode_entries_by_voucher">
 			<field name="active" eval="False"/>
@@ -58,6 +58,9 @@
 		<record model="ir.ui.menu" id="base.menu_reporting">
 			<field name="active" eval="False"/>
 		</record>
+		<record model="ir.ui.menu" id="account.menu_account_customer">
+			<field name="active" eval="False"/>
+		</record>
 		
 		<menuitem id="menu_root_doituong"
 			name="Đối Tượng" sequence="1"/>
@@ -66,16 +69,21 @@
 				name="Đối tượng"
 				parent="menu_root_doituong" sequence="10"/>
 				
-				<menuitem id="account.menu_account_customer"
-		            name="Đối tượng"
+				<menuitem id="menu_action_partner_taixe"
+		            name="Tài xế"
 		            parent="menu_doituong"
-		            action="base.action_partner_customer_form" sequence="10"/>
-				
-				<menuitem action="account_voucher.action_vendor_receipt"
-					name="Thanh toán của đối tượng"
-					icon="STOCK_JUSTIFY_FILL" sequence="20"
-            		id="account_voucher.menu_action_vendor_receipt"  parent="menu_doituong"/>
-		
+		            action="action_partner_taixe" sequence="10"/>
+		            
+	            <menuitem id="menu_action_partner_ndt"
+		            name="Nhà đầu tư"
+		            parent="menu_doituong"
+		            action="action_partner_ndt" sequence="20"/>
+		            
+	            <menuitem id="menu_action_partner_nvvp"
+		            name="Nhân viên văn phòng"
+		            parent="menu_doituong"
+		            action="action_partner_nvvp" sequence="30"/>
+	            
 		<menuitem id="menu_root_congno"
 			name="Công Nợ" sequence="2"/>
 			
@@ -158,10 +166,10 @@
 					name="Bãi giao ca"
 					parent="menu_danhmuc_dungchung" sequence="3"/>
 					
-				<menuitem id="menu_action_loai_doi_tuong"
+				<!-- <menuitem id="menu_action_loai_doi_tuong"
 					action="action_loai_doi_tuong"
 					name="Loại đối tượng"
-					parent="menu_danhmuc_dungchung" sequence="4"/>
+					parent="menu_danhmuc_dungchung" sequence="4"/> -->
 					
 				<menuitem id="menu_action_loai_ky_quy"
 					action="action_loai_ky_quy"
