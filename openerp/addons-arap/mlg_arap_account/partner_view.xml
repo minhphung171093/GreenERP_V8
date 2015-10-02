@@ -14,7 +14,7 @@
                 	<field name="bai_giaoca_id"/>
                 </field>
                 <field name="property_account_payable" position="after">
-                	<field name="loai_doituong_id"/>
+                	<field name="loai_doituong_id" invisible='1'/>
                 </field>
             </field>
         </record>
