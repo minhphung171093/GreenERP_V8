@@ -48,6 +48,7 @@
                     <field name="name"/>
                     <field name="thungan_id"/>
                     <field name="dieuhanh_id"/>
+                    <field name="account_id" domain="[('type','=','receivable')]"/>
                 </tree>
             </field>
         </record>
@@ -121,9 +122,16 @@
             <field name="priority">2</field>
             <field name="inherit_id" ref="account.view_account_move_line_filter"/>
             <field name="arch" type="xml">
-                <filter string="Period" position="after">
-                	<filter string="Bãi giao ca" icon="terp-go-month" domain="[]" context="{'group_by':'bai_giaoca_id'}"/>
+                <filter string="Account" position="replace">
                 </filter>
+                <filter string="Partner" position="replace">
+                	<filter name="doi_xe" string="Đội xe" icon="terp-folder-green" context="{'group_by':'account_id'}"/>
+                	<filter name="bai_giao_ca" string="Bãi giao ca" icon="terp-go-month" domain="[]" context="{'group_by':'bai_giaoca_id'}"/>
+                	<filter name="doi_tuong" string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                </filter>
+                <field name="partner_id" position="after">
+                	<field name="bai_giaoca_id"/>
+                </field>
             </field>
         </record>
         <record id="view_move_line_tree_inherit" model="ir.ui.view">
@@ -172,6 +180,15 @@
             </field>
         </record>
 
+<!-- Chỉnh sửa journal items -->
+		<act_window
+            id="account.action_account_items"
+            name="Journal Items"
+            context="{'search_default_account_id': [active_id], 'fiscalyear': context.get('fiscalyear'),'search_default_doi_xe': 1,'search_default_bai_giao_ca': 1,'search_default_doi_tuong': 1}"
+            res_model="account.move.line"
+            src_model="account.account"
+            key2="tree_but_open"/>
+		
 <!-- Nợ doanh thu -->
 		<record id="view_no_doanh_thu_filter" model="ir.ui.view">
             <field name="name">no.doanh.thu.select</field>
@@ -226,8 +243,8 @@
             <field name="arch" type="xml">
                 <form string="Nợ doanh thu" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -248,7 +265,7 @@
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
 		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
 	                    </group>
 	                    <notebook>
 		                    <page string="Chi tiết công nợ">
@@ -368,8 +385,8 @@
             <field name="arch" type="xml">
                 <form string="Chi hộ điện thoại" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -390,7 +407,7 @@
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
 		                    <field name="so_hoa_don" string="Số hóa đơn" />
-		                    <field name="journal_id" string="Loại giao dịch"/>
+		                    <field name="journal_id" string="Loại giao dịch" widget ="selection"/>
 	                    </group>
 	                    <notebook>
 		                    <page string="Chi tiết công nợ">
@@ -512,8 +529,8 @@
             <field name="arch" type="xml">
                 <form string="Phải thu bảo hiểm" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -535,7 +552,7 @@
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
 		                    <field name="so_hop_dong" string="Số hợp đồng"/>
                     		<field name="bien_so_xe" string="Biển số xe"/>
-		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
 	                    </group>
 	                    <notebook>
 		                    <page string="Chi tiết công nợ">
@@ -657,8 +674,8 @@
             <field name="arch" type="xml">
                 <form string="Phải trả ký quỹ" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -666,6 +683,7 @@
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="loai_doituong" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -679,9 +697,9 @@
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
                     		<field name="bai_giaoca_id" string="Bãi giao ca"/>
-                    		<field name="bien_so_xe" string="Biển số xe"/>
+                    		<field name="bien_so_xe" string="Biển số xe" attrs="{'invisible':[('loai_doituong','!=','Nhà đầu tư')]}"/>
                     		<field name="loai_kyquy_id" string="Loại ký quỹ"/>
-		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
 	                    </group>
 	                    <notebook>
 		                    <page string="Chi tiết công nợ">
@@ -800,8 +818,8 @@
             <field name="arch" type="xml">
                 <form string="Phạt vi phạm" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -823,7 +841,7 @@
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
                     		<field name="so_bien_ban_vi_pham" string="Số biên bản vi phạm"/>
                     		<field name="loai_vipham_id" string="Loại vi phạm"/>
-		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
 		                    <field name="ngay_vi_pham"/>
 	                    </group>
 	                    <notebook>
@@ -945,8 +963,8 @@
             <field name="arch" type="xml">
                 <form string="Thu nợ xưởng" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -967,7 +985,7 @@
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
 		                    <field name="so_hop_dong"/>
 	                    </group>
 	                    <notebook>
@@ -1089,8 +1107,8 @@
             <field name="arch" type="xml">
                 <form string="Thu phí thương hiệu" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -1110,7 +1128,7 @@
 		                    <field name="partner_id" string="Nhà đầu tư" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
 		                    <field name="account_id" string="Đội kinh doanh" readonly='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
 		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
 	                    </group>
 	                    <notebook>
@@ -1231,8 +1249,8 @@
             <field name="arch" type="xml">
                 <form string="Trả góp xe" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -1252,7 +1270,7 @@
 		                    <field name="partner_id" string="Nhà đầu tư" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="loai_doituong_id" string="Loại đối tượng" />
 		                    <field name="account_id" string="Đội kinh doanh" readonly='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
 		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
 	                    </group>
 	                    <notebook>
@@ -1373,8 +1391,8 @@
             <field name="arch" type="xml">
                 <form string="Tạm ứng" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Validate" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Validate" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
+	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
@@ -1393,7 +1411,7 @@
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
 		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
 		                    <field name="account_id" string="Phòng ban/Đội xe" readonly='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
 		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
 	                    </group>
 	                    <notebook>

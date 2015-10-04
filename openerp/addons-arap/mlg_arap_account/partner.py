@@ -32,10 +32,10 @@ class res_partner(osv.osv):
         if context is None:
             context = {}
         res = super(res_partner, self).default_get(cr, uid, fields, context=context)
-        if context.get('default_loai_doituong', False):
+        if context.get('loai_doituong', False):
             sql = '''
                 select res_id from ir_model_data where module='mlg_arap_account' and name='%s'
-            '''%(context['default_loai_doituong'])
+            '''%(context['loai_doituong'])
             cr.execute(sql)
             loai = cr.fetchone()
             if loai:
@@ -53,6 +53,8 @@ class res_partner(osv.osv):
         'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
         'loai_doituong_id': fields.many2one('loai.doi.tuong', 'Loại đối tượng'),
         'ma_doi_tuong': fields.char('Mã đối tượng', size=1024),
+        'bien_so_xe': fields.char('Biển số xe', size=1024),
+        'loai_doituong': fields.related('loai_doituong_id', 'name', type='char', string='Loại đối tượng', readonly=True, store=True),
     }
     
 res_partner()

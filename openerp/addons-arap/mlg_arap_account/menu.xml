@@ -88,7 +88,7 @@
 			name="Công Nợ" sequence="2"/>
 			
 			<menuitem id="menu_cong_no"
-				name="Công Nợ"
+				name="Công nợ thu"
 				parent="menu_root_congno" sequence="10"/>
 				
 				<menuitem id="menu_action_no_doanh_thu"
@@ -139,10 +139,6 @@
 			<menuitem id="account.menu_finance_entries"
 				name="Bút toán"
 				parent="menu_root_congno" sequence="20"/>
-			
-			<menuitem id="account.menu_finance_charts"
-				name="Cây biểu đồ"
-				parent="menu_root_congno" sequence="30"/>
 			
 		<menuitem id="menu_root_quanly"
 			name="Quản Lý" sequence="3"/>
@@ -201,8 +197,15 @@
 					name="Miscellaneous"
 					parent="menu_cauhinh" sequence="50"/>
 					
+		<menuitem id="menu_root_luocdo"
+			name="Lược Đồ" sequence="4"/>
+			
+			<menuitem id="account.menu_finance_charts"
+				name="Cây biểu đồ"
+				parent="menu_root_luocdo" sequence="10"/>
+					
 		<menuitem id="menu_root_baocao"
-			name="Báo Cáo" sequence="4"/>
+			name="Báo Cáo" sequence="5"/>
 			
 			<menuitem id="menu_danhsach_congno"
 				name="Danh sách công nợ"

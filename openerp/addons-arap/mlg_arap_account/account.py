@@ -67,6 +67,7 @@ class bai_giaoca(osv.osv):
         'code': fields.char('Mã bãi giao ca', size=1024, required=True),
         'thungan_id': fields.many2one('thungan.bai.giaoca', 'Thu ngân bãi giao ca', required=True),
         'dieuhanh_id': fields.many2one('dieuhanh.bai.giaoca', 'Điều hành bãi giao ca', required=True),
+        'account_id': fields.many2one('account.account', 'Đội xe', required=True),
     }
     
 bai_giaoca()
@@ -83,6 +84,20 @@ class account_invoice(osv.osv):
                                       ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
                                       ('tra_gop_xe','Trả góp xe'),
                                       ('tam_ung','Tạm ứng')],'Loại'),
+        'state': fields.selection([
+            ('draft','Pending'),
+            ('proforma','Pro-forma'),
+            ('proforma2','Pro-forma'),
+            ('open','Open'),
+            ('paid','Paid'),
+            ('cancel','Cancelled'),
+        ], string='Status', index=True, readonly=True, default='draft',
+        track_visibility='onchange', copy=False,
+        help=" * The 'Draft' status is used when a user is encoding a new and unconfirmed Invoice.\n"
+             " * The 'Pro-forma' when invoice is in Pro-forma status,invoice does not have an invoice number.\n"
+             " * The 'Open' status is used when user create invoice,a invoice number is generated.Its in open status till user does not pay invoice.\n"
+             " * The 'Paid' status is set automatically when the invoice is paid. Its related journal entries may or may not be reconciled.\n"
+             " * The 'Cancelled' status is used when user cancel invoice."),
         'doi_xe_id': fields.many2one('account.account', 'Đội xe'),
         'bai_giaoca_id': fields.related('partner_id', 'bai_giaoca_id', type='many2one', relation='bai.giaoca', string='Bãi giao ca', readonly=True, store=True),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True, readonly=True, states={'draft':[('readonly',False)]},
@@ -97,6 +112,7 @@ class account_invoice(osv.osv):
         'chinhanh_id': fields.related('account_id','parent_id',type='many2one',relation='account.account', string='Chi nhánh', readonly=True, store=True),
         'so_bien_ban_vi_pham':fields.char('Số biên bản vi phạm',size = 64),
         'ngay_vi_pham':fields.date('Ngày vi phạm'),
+        'loai_doituong': fields.related('loai_doituong_id', 'name', type='char', string='Loại đối tượng', readonly=True, store=True),
     }
     
     _defaults = {

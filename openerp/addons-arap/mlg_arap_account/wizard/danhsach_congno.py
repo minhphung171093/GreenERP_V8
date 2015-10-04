@@ -24,6 +24,24 @@ class danhsach_congno(osv.osv_memory):
         'to_date': lambda *a: str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
     }
     
+    def onchange_chinhanh(self, cr, uid, ids, chinhanh_ids=[], context=None):
+        domain = {}
+        if chinhanh_ids and chinhanh_ids[0] and chinhanh_ids[0][2]:
+            domain={
+                'doi_xe_ids': [('type','=','receivable'),('parent_id','child_of',chinhanh_ids[0][2])]
+            }
+        return {'value': {}, 'domain': domain}
+    
+    def onchange_doi_xe(self, cr, uid, ids, doi_xe_ids=[], context=None):
+        domain = {}
+        if doi_xe_ids and doi_xe_ids[0] and doi_xe_ids[0][2]:
+            partner_ids = self.pool.get('res.partner').search(cr, uid, [('property_account_receivable','=',doi_xe_ids[0][2])])
+            domain={
+                'partner_ids': [('customer','=',True),('id','in',partner_ids)],
+                'bai_giaoca_ids': [('account_id','child_of',doi_xe_ids[0][2])]
+            }
+        return {'value': {}, 'domain': domain}
+    
     def print_report(self, cr, uid, ids, context=None):
         if context is None:
             context = {}

@@ -12,10 +12,18 @@
 	                	<group col='4' colspan='2'>
 	                    	<field name='from_date'/>
 	                    	<field name='to_date'/>
-	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
-	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
-	                    	<field name='bai_giaoca_ids' widget="many2many_tags"/>
-	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+	                    <group colspan='4' string="Chi nhánh">
+	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
+                    	</group>
+                    	<group colspan='4' string="Đội xe">
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','receivable')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    </group>
+	                    <group colspan='4' string="Bãi giao ca">
+	                    	<field name='bai_giaoca_ids' nolabel='1'/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
 	                    </group>
                     </sheet>
                     <footer>
@@ -46,9 +54,15 @@
 	                	<group col='4' colspan='2'>
 	                    	<field name='from_date'/>
 	                    	<field name='to_date'/>
-	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
-	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
-	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+	                    <group colspan='4' string="Chi nhánh">
+	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
+                    	</group>
+                    	<group colspan='4' string="Đội xe">
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','receivable')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
 	                    </group>
                     </sheet>
                     <footer>
@@ -79,9 +93,15 @@
 	                	<group col='4' colspan='2'>
 	                    	<field name='from_date'/>
 	                    	<field name='to_date'/>
-	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
-	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
-	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+	                    <group colspan='4' string="Chi nhánh">
+	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
+                    	</group>
+                    	<group colspan='4' string="Đội xe">
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','receivable')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
 	                    </group>
                     </sheet>
                     <footer>
@@ -112,9 +132,15 @@
 	                	<group col='4' colspan='2'>
 	                    	<field name='from_date'/>
 	                    	<field name='to_date'/>
-	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
-	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','receivable')]"/>
-	                    	<field name='chinhanh_ids' widget="many2many_tags" domain="[('parent_id.code','=','1')]"/>
+	                    </group>
+	                    <group colspan='4' string="Chi nhánh">
+	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
+                    	</group>
+                    	<group colspan='4' string="Đội xe">
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','receivable')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
 	                    </group>
                     </sheet>
                     <footer>
