@@ -103,7 +103,7 @@ class account_invoice(osv.osv):
         'journal_id': fields.many2one('account.journal', 'Journal', required=True, readonly=True, states={'draft':[('readonly',False)]},
                                       domain="[('type', 'in', ['cash','bank']), ('company_id', '=', company_id)]"),
         'account_id': fields.related('partner_id', 'property_account_receivable', type='many2one', relation='account.account', string='Đội xe', readonly=True, store=True),
-        'bien_so_xe': fields.char('Biển số xe', size=1024),
+        'bien_so_xe': fields.related('partner_id', 'bien_so_xe', type='char', string='Biển số xe', readonly=True, store=True),
         'so_hop_dong': fields.char('Số hợp đồng', size=1024),
         'loai_doituong_id': fields.related('partner_id', 'loai_doituong_id',type='many2one',relation='loai.doi.tuong',string='Loại đối tượng', readonly=True, store=True),
         'so_hoa_don':fields.char('Số hóa đơn',size = 64),
@@ -134,7 +134,9 @@ class account_invoice(osv.osv):
             vals = {'account_id': partner.property_account_receivable.id,
                     'loai_doituong_id': partner.loai_doituong_id and partner.loai_doituong_id.id or False,
                     'bai_giaoca_id': partner.bai_giaoca_id and partner.bai_giaoca_id.id or False,
-                    'chinhanh_id': partner.property_account_receivable.parent_id.id}
+                    'chinhanh_id': partner.property_account_receivable.parent_id.id,
+                    'bien_so_xe': partner.bien_so_xe,
+                    'loai_doituong': partner.loai_doituong,}
         return {'value': vals}
     
     def action_move_create(self):

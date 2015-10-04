@@ -50,6 +50,13 @@ class res_partner(osv.osv):
             domain="[('type', '=', 'payable')]",
             help="This account will be used instead of the default one as the payable account for the current partner",
             required=False),
+        'property_account_receivable': fields.property(
+            type='many2one',
+            relation='account.account',
+            string="Account Receivable",
+            domain="[('type', '=', 'receivable')]",
+            help="This account will be used instead of the default one as the receivable account for the current partner",
+            required=False),
         'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
         'loai_doituong_id': fields.many2one('loai.doi.tuong', 'Loại đối tượng'),
         'ma_doi_tuong': fields.char('Mã đối tượng', size=1024),
