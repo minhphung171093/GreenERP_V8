@@ -85,10 +85,10 @@
 		            action="action_partner_nvvp" sequence="30"/>
 	            
 		<menuitem id="menu_root_congno"
-			name="Công Nợ" sequence="2"/>
+			name="Công Nợ Thu" sequence="2"/>
 			
 			<menuitem id="menu_cong_no"
-				name="Công Nợ"
+				name="Công nợ thu"
 				parent="menu_root_congno" sequence="10"/>
 				
 				<menuitem id="menu_action_no_doanh_thu"
@@ -139,13 +139,24 @@
 			<menuitem id="account.menu_finance_entries"
 				name="Bút toán"
 				parent="menu_root_congno" sequence="20"/>
+		
+		<menuitem id="menu_root_congno_chi"
+			name="Công Nợ Chi" sequence="3"/>
 			
-			<menuitem id="account.menu_finance_charts"
-				name="Cây biểu đồ"
-				parent="menu_root_congno" sequence="30"/>
-			
+			<menuitem id="menu_congno_chi"
+				name="Công nợ chi"
+				parent="menu_root_congno_chi" sequence="3"/>
+				
+				<menuitem id="account.menu_action_invoice_tree2"
+					name="Supplier Invoices"
+					parent="menu_congno_chi" sequence="10"/>
+					
+				<menuitem id="account_voucher.menu_action_vendor_payment"
+					name="Supplier Payments"
+					parent="menu_congno_chi" sequence="20"/>
+		
 		<menuitem id="menu_root_quanly"
-			name="Quản Lý" sequence="3"/>
+			name="Quản Lý" sequence="4"/>
 			
 			<menuitem id="menu_danhmuc_dungchung"
 				name="Danh mục dùng chung"
@@ -181,6 +192,10 @@
 					name="Loại vi phạm"
 					parent="menu_danhmuc_dungchung" sequence="6"/>
 					
+				<menuitem id="account.menu_account_supplier"
+					name="Suppliers"
+					parent="menu_danhmuc_dungchung" sequence="7"/>
+					
 			<menuitem id="menu_cauhinh"
 				name="Cấu hình"
 				parent="menu_root_quanly" sequence="20"/>
@@ -201,8 +216,15 @@
 					name="Miscellaneous"
 					parent="menu_cauhinh" sequence="50"/>
 					
+		<menuitem id="menu_root_luocdo"
+			name="Lược Đồ" sequence="5"/>
+			
+			<menuitem id="account.menu_finance_charts"
+				name="Cây biểu đồ"
+				parent="menu_root_luocdo" sequence="10"/>
+					
 		<menuitem id="menu_root_baocao"
-			name="Báo Cáo" sequence="4"/>
+			name="Báo Cáo" sequence="6"/>
 			
 			<menuitem id="menu_danhsach_congno"
 				name="Danh sách công nợ"

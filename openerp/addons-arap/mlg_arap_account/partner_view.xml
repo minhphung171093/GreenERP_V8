@@ -10,10 +10,12 @@
             <field name="inherit_id" ref="account.view_partner_property_form"/>
             <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
             <field name="arch" type="xml">
-                <field name="property_account_receivable" position="after">
+                <field name="property_account_receivable" position="replace">
+                	<field name="property_account_receivable" attrs="{'required':[('customer','=',True)]}"/>
                 	<field name="bai_giaoca_id"/>
                 </field>
-                <field name="property_account_payable" position="after">
+                <field name="property_account_payable" position="replace">
+                	<field name="property_account_payable" attrs="{'required':[('supplier','=',True)]}"/>
                 	<field name="loai_doituong_id" invisible='1'/>
                 </field>
             </field>
@@ -59,7 +61,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('loai_doituong_id.name','=','Nhà đầu tư')]</field>
-            <field name="context">{'default_customer':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_ndt'}</field>
+            <field name="context">{'default_customer':1, 'search_default_customer':1,'loai_doituong':'loai_doi_tuong_ndt','default_loai_doituong':'Nhà đầu tư'}</field>
             <field name="filter" eval="True"/>
         </record>
         <record id="action_partner_nvvp" model="ir.actions.act_window">
@@ -82,6 +84,8 @@
             <field name="arch" type="xml">
                 <field name="website" position="after">
                 	<field name="ma_doi_tuong"/>
+                	<field name="bien_so_xe" attrs="{'invisible':[('loai_doituong','!=','Nhà đầu tư')]}"/>
+                	<field name="loai_doituong" invisible='1'/>
                 </field>
                 <field name="category_id" position="replace">
                 	<field name="category_id" widget="many2many_tags" placeholder="Tags..." invisible='1'/>
