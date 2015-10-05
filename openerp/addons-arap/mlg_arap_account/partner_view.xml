@@ -44,15 +44,207 @@
         </record>
 
 <!-- action đối tượng -->
+		<record id="view_tai_xe_tree" model="ir.ui.view">
+            <field name="name">tai.xe.tree</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Tài xế">
+                    <field name="ma_doi_tuong" string="Mã tài xế"/>
+                    <field name="display_name" string="Tên tài xế"/>
+                    <field name="function" invisible="1"/>
+                    <field name="phone" string="Điện thoại"/>
+                    <field name="bai_giaoca_id"/>
+                    <field name="email"/>
+                    <field name="user_id" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <field name="country_id" invisible="1"/>
+                    <field name="parent_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_tai_xe_form" model="ir.ui.view">
+            <field name="name">tai.xe.form</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form string="Tài xế">
+	                <sheet>
+	                    <field name="image" widget="image" class="oe_left oe_avatar" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+	                    <div class="oe_title oe_left">
+	                        <h1>
+	                            <field name="name" default_focus="1" placeholder="Name"/>
+	                        </h1>
+	                    </div>
+	                    <div class="oe_right oe_button_box" name="buttons"> </div>
+	
+	                    <group>
+	                        <group>
+	                        	<field name="ma_doi_tuong" string="Mã tài xế" required='1'/>
+	                        	<label for="street" string="Address" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                            <div attrs="{'invisible':[('nhadautu','=',False)]}">
+	                                <field name="street" placeholder="Street..."/>
+	                                <field name="street2"/>
+	                                <div class="address_format">
+	                                    <field name="city" placeholder="City" style="width: 40%"/>
+	                                    <field name="state_id" class="oe_no_button" placeholder="State" style="width: 37%" options="{&quot;no_open&quot;: True}" on_change="onchange_state(state_id)"/>
+	                                    <field name="zip" placeholder="ZIP" style="width: 20%"/>
+	                                </div>
+	                                <field name="country_id" placeholder="Country" class="oe_no_button" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+	                            </div>
+	                        </group>
+	                        <group>
+	                        	<field name="cmnd" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="phone" string="Điện thoại"/>
+			                    <field name="email"/>
+	                        </group>
+	                    </group>
+	
+	                    <notebook colspan="4">
+	                    	<page string="Accounting">
+								<group>
+									<group>
+			                        	<field name="property_account_receivable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
+			                        	<field name="property_account_payable" attrs="{'invisible':[('supplier','=',False)],'required':[('supplier','=',True)]}"/>
+			                        </group>
+			                        <group>
+			                        	<field name="customer"/>
+					                    <field name="supplier"/>
+					                    <field name="taixe"/>
+					                    <field name="nhadautu"/>
+					                    <field name="nhanvienvanphong"/>
+			                        </group>
+								</group>	                    		
+	                        </page>
+	                        <page string="Chi nhánh" attrs="{'invisible':[('nhadautu','=',False)]}">
+	                        	<field name="chinhanh_line" nolabel='1'>
+				                    <tree editable='bottom'>
+					                    <field name="chinhanh_id" domain="[('parent_id.code','=','1')]"/>
+					                    <field name="nhom_chinhanh_id" domain="[('parent_id','=',chinhanh_id)]"/>
+					                    <field name="bien_so_xe_ids" widget="many2many_tags"/>
+				                    </tree>
+								</field>	                    		
+	                        </page>
+	                    </notebook>
+	                </sheet>
+                </form>
+            </field>
+        </record>
         <record id="action_partner_taixe" model="ir.actions.act_window">
             <field name="name">Tài xế</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
-            <field name="domain">[('loai_doituong_id.name','=','Tài xế')]</field>
-            <field name="context">{'default_customer':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_taixe'}</field>
+            <field name="domain">[('taixe','=',True)]</field>
+            <field name="context">{'default_customer':1,'default_taixe':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_taixe'}</field>
             <field name="filter" eval="True"/>
+        </record>
+        <record id="action_partner_taixe0" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="base.res_partner_kanban_view"/>
+            <field name="act_window_id" ref="action_partner_taixe"/>
+        </record>
+        <record id="action_partner_taixe1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tai_xe_tree"/>
+            <field name="act_window_id" ref="action_partner_taixe"/>
+        </record>
+        <record id="action_partner_taixe2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_tai_xe_form"/>
+            <field name="act_window_id" ref="action_partner_taixe"/>
+        </record>
+        
+        <record id="view_nha_dau_tu_tree" model="ir.ui.view">
+            <field name="name">nha.dau.tu.tree</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Nhà đầu tư">
+                    <field name="ma_doi_tuong" string="Mã nhà đầu tư"/>
+                    <field name="display_name" string="Tên nhà đầu tư"/>
+                    <field name="function" invisible="1"/>
+                    <field name="phone" string="Điện thoại"/>
+                    <field name="email"/>
+                    <field name="user_id" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <field name="country_id" invisible="1"/>
+                    <field name="parent_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_nha_dau_tu_form" model="ir.ui.view">
+            <field name="name">nha.dau.tu.form</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form string="Nhà đầu tư">
+	                <sheet>
+	                    <field name="image" widget="image" class="oe_left oe_avatar" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+	                    <div class="oe_title oe_left">
+	                        <h1>
+	                            <field name="name" default_focus="1" placeholder="Name"/>
+	                        </h1>
+	                    </div>
+	                    <div class="oe_right oe_button_box" name="buttons"> </div>
+	
+	                    <group>
+	                        <group>
+	                        	<field name="ma_doi_tuong" string="Mã nhà đầu tư" required='1'/>
+	                        	<label for="street" string="Address" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                            <div attrs="{'invisible':[('nhadautu','=',False)]}">
+	                                <field name="street" placeholder="Street..."/>
+	                                <field name="street2"/>
+	                                <div class="address_format">
+	                                    <field name="city" placeholder="City" style="width: 40%"/>
+	                                    <field name="state_id" class="oe_no_button" placeholder="State" style="width: 37%" options="{&quot;no_open&quot;: True}" on_change="onchange_state(state_id)"/>
+	                                    <field name="zip" placeholder="ZIP" style="width: 20%"/>
+	                                </div>
+	                                <field name="country_id" placeholder="Country" class="oe_no_button" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+	                            </div>
+	                        </group>
+	                        <group>
+	                        	<field name="cmnd" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="phone" string="Điện thoại"/>
+			                    <field name="email"/>
+	                        </group>
+	                    </group>
+	
+	                    <notebook colspan="4">
+	                    	<page string="Accounting">
+								<group>
+									<group>
+			                        	<field name="property_account_receivable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
+			                        	<field name="property_account_payable" attrs="{'invisible':[('supplier','=',False)],'required':[('supplier','=',True)]}"/>
+			                        </group>
+			                        <group>
+			                        	<field name="customer"/>
+					                    <field name="supplier"/>
+					                    <field name="taixe"/>
+					                    <field name="nhadautu"/>
+					                    <field name="nhanvienvanphong"/>
+			                        </group>
+								</group>	                    		
+	                        </page>
+	                        <page string="Chi nhánh" attrs="{'invisible':[('nhadautu','=',False)]}">
+	                        	<field name="chinhanh_line" nolabel='1'>
+				                    <tree editable='bottom'>
+					                    <field name="chinhanh_id" domain="[('parent_id.code','=','1')]"/>
+					                    <field name="nhom_chinhanh_id" domain="[('parent_id','=',chinhanh_id)]"/>
+					                    <field name="bien_so_xe_ids" widget="many2many_tags"/>
+				                    </tree>
+								</field>	                    		
+	                        </page>
+	                    </notebook>
+	                </sheet>
+                </form>
+            </field>
         </record>
         <record id="action_partner_ndt" model="ir.actions.act_window">
             <field name="name">Nhà đầu tư</field>
@@ -60,9 +252,115 @@
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
-            <field name="domain">[('loai_doituong_id.name','=','Nhà đầu tư')]</field>
-            <field name="context">{'default_customer':1, 'search_default_customer':1,'loai_doituong':'loai_doi_tuong_ndt','default_loai_doituong':'Nhà đầu tư'}</field>
+            <field name="domain">[('nhadautu','=',True)]</field>
+            <field name="context">{'default_customer':1,'default_nhadautu':1, 'search_default_customer':1,'loai_doituong':'loai_doi_tuong_ndt','default_loai_doituong':'Nhà đầu tư'}</field>
             <field name="filter" eval="True"/>
+        </record>
+        <record id="action_partner_ndt0" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="base.res_partner_kanban_view"/>
+            <field name="act_window_id" ref="action_partner_ndt"/>
+        </record>
+        <record id="action_partner_ndt1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_nha_dau_tu_tree"/>
+            <field name="act_window_id" ref="action_partner_ndt"/>
+        </record>
+        <record id="action_partner_ndt2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_nha_dau_tu_form"/>
+            <field name="act_window_id" ref="action_partner_ndt"/>
+        </record>
+        
+        <record id="view_nhanvienvanphong_tree" model="ir.ui.view">
+            <field name="name">nhanvienvanphong.tree</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Nhân viên văn phòng">
+                    <field name="ma_doi_tuong" string="Mã tài xế"/>
+                    <field name="display_name" string="Tên tài xế"/>
+                    <field name="function" invisible="1"/>
+                    <field name="phone" string="Điện thoại"/>
+                    <field name="bai_giaoca_id"/>
+                    <field name="email"/>
+                    <field name="user_id" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <field name="country_id" invisible="1"/>
+                    <field name="parent_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_nhanvienvanphong_form" model="ir.ui.view">
+            <field name="name">nhanvienvanphong.form</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form string="Nhân viên văn phòng">
+	                <sheet>
+	                    <field name="image" widget="image" class="oe_left oe_avatar" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+	                    <div class="oe_title oe_left">
+	                        <h1>
+	                            <field name="name" default_focus="1" placeholder="Name"/>
+	                        </h1>
+	                    </div>
+	                    <div class="oe_right oe_button_box" name="buttons"> </div>
+	
+	                    <group>
+	                        <group>
+	                        	<field name="ma_doi_tuong" string="Mã nhân viên văn phòng" required='1'/>
+	                        	<label for="street" string="Address" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                            <div attrs="{'invisible':[('nhadautu','=',False)]}">
+	                                <field name="street" placeholder="Street..."/>
+	                                <field name="street2"/>
+	                                <div class="address_format">
+	                                    <field name="city" placeholder="City" style="width: 40%"/>
+	                                    <field name="state_id" class="oe_no_button" placeholder="State" style="width: 37%" options="{&quot;no_open&quot;: True}" on_change="onchange_state(state_id)"/>
+	                                    <field name="zip" placeholder="ZIP" style="width: 20%"/>
+	                                </div>
+	                                <field name="country_id" placeholder="Country" class="oe_no_button" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+	                            </div>
+	                        </group>
+	                        <group>
+	                        	<field name="cmnd" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="phone" string="Điện thoại"/>
+			                    <field name="email"/>
+	                        </group>
+	                    </group>
+	
+	                    <notebook colspan="4">
+	                    	<page string="Accounting">
+								<group>
+									<group>
+			                        	<field name="property_account_receivable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
+			                        	<field name="property_account_payable" attrs="{'invisible':[('supplier','=',False)],'required':[('supplier','=',True)]}"/>
+			                        </group>
+			                        <group>
+			                        	<field name="customer"/>
+					                    <field name="supplier"/>
+					                    <field name="taixe"/>
+					                    <field name="nhadautu"/>
+					                    <field name="nhanvienvanphong"/>
+			                        </group>
+								</group>	                    		
+	                        </page>
+	                        <page string="Chi nhánh" attrs="{'invisible':[('nhadautu','=',False)]}">
+	                        	<field name="chinhanh_line" nolabel='1'>
+				                    <tree editable='bottom'>
+					                    <field name="chinhanh_id" domain="[('parent_id.code','=','1')]"/>
+					                    <field name="nhom_chinhanh_id" domain="[('parent_id','=',chinhanh_id)]"/>
+					                    <field name="bien_so_xe_ids" widget="many2many_tags"/>
+				                    </tree>
+								</field>	                    		
+	                        </page>
+	                    </notebook>
+	                </sheet>
+                </form>
+            </field>
         </record>
         <record id="action_partner_nvvp" model="ir.actions.act_window">
             <field name="name">Nhân viên văn phòng</field>
@@ -70,9 +368,27 @@
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
-            <field name="domain">[('loai_doituong_id.name','=','Nhân viên văn phòng')]</field>
-            <field name="context">{'default_customer':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_nvvp'}</field>
+            <field name="domain">[('nhanvienvanphong','=',True)]</field>
+            <field name="context">{'default_customer':1,'default_nhanvienvanphong':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_nvvp'}</field>
             <field name="filter" eval="True"/>
+        </record>
+        <record id="action_partner_nvvp0" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="base.res_partner_kanban_view"/>
+            <field name="act_window_id" ref="action_partner_nvvp"/>
+        </record>
+        <record id="action_partner_nvvp1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_nhanvienvanphong_tree"/>
+            <field name="act_window_id" ref="action_partner_nvvp"/>
+        </record>
+        <record id="action_partner_nvvp2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_nhanvienvanphong_form"/>
+            <field name="act_window_id" ref="action_partner_nvvp"/>
         </record>
         
 <!-- Thêm mã đối tượng và ẩn tags --> 

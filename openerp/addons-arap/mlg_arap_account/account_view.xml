@@ -180,6 +180,42 @@
             </field>
         </record>
 
+<!-- Biển số xe -->    
+    	<record id="view_bien_so_xe_tree" model="ir.ui.view">
+            <field name="name">bien.so.xe.tree</field>
+            <field name="model">bien.so.xe</field>
+            <field name="arch" type="xml">
+                <tree string="Biển số xe" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_bien_so_xe" model="ir.actions.act_window">
+            <field name="name">Biển số xe</field>
+            <field name="res_model">bien.so.xe</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_bien_so_xe_tree"/>
+        </record>
+
+<!-- Mã xưởng -->    
+    	<record id="view_ma_xuong_tree" model="ir.ui.view">
+            <field name="name">ma.xuong.tree</field>
+            <field name="model">ma.xuong</field>
+            <field name="arch" type="xml">
+                <tree string="Mã xưởng" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_ma_xuong" model="ir.actions.act_window">
+            <field name="name">Mã xưởng</field>
+            <field name="res_model">ma.xuong</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_ma_xuong_tree"/>
+        </record>
+
 <!-- Chỉnh sửa journal items -->
 		<act_window
             id="account.action_account_items"
@@ -259,20 +295,44 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="loai_doituong_id" string="Loại đối tượng" />
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
-		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="dien_giai" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
 										<field name="name" string="Diễn giải"/>
-										<field name="account_id" invisible='1'/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
 									</tree>			                    
 			                    </field>
@@ -285,21 +345,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -401,20 +446,45 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="loai_doituong_id" string="Loại đối tượng" />
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
-		                    <field name="so_hoa_don" string="Số hóa đơn" />
-		                    <field name="journal_id" string="Loại giao dịch" widget ="selection"/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="so_hoa_don"/>
+	                    		<field name="dien_giai" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
 										<field name="name" string="Diễn giải"/>
-										<field name="account_id" invisible='1'/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
 									</tree>			                    
 			                    </field>
@@ -427,21 +497,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -487,7 +542,6 @@
                     <field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="so_hop_dong"/>
-                    <field name="bien_so_xe"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -511,7 +565,6 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="so_hop_dong" string="Số hợp đồng"/>
-                    <field name="bien_so_xe" string="Biển số xe"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="period_id" invisible='1'/>
@@ -545,21 +598,45 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="loai_doituong_id" string="Loại đối tượng" />
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
-		                    <field name="so_hop_dong" string="Số hợp đồng"/>
-                    		<field name="bien_so_xe" string="Biển số xe"/>
-		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="so_hop_dong"/>
+	                    		<field name="dien_giai" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
 										<field name="name" string="Diễn giải"/>
-										<field name="account_id" invisible='1'/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
 									</tree>			                    
 			                    </field>
@@ -572,21 +649,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -631,7 +693,6 @@
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
-                    <field name="bien_so_xe"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -655,7 +716,6 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
-                    <field name="bien_so_xe" string="Biển số xe"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="loai_kyquy_id" string="Loại ký quỹ"/>
                     <field name="mlg_type" invisible='1'/>
@@ -691,22 +751,45 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="loai_doituong_id" string="Loại đối tượng" />
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
-                    		<field name="bai_giaoca_id" string="Bãi giao ca"/>
-                    		<field name="bien_so_xe" string="Biển số xe" attrs="{'invisible':[('loai_doituong','!=','Nhà đầu tư')]}"/>
-                    		<field name="loai_kyquy_id" string="Loại ký quỹ"/>
-		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="loai_kyquy_id"/>
+	                    		<field name="dien_giai" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
 										<field name="name" string="Diễn giải"/>
-										<field name="account_id" invisible='1'/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
 									</tree>			                    
 			                    </field>
@@ -719,21 +802,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -777,7 +845,6 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
-                    <field name="bien_so_xe"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -834,22 +901,47 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="loai_doituong_id" string="Loại đối tượng" />
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
-                    		<field name="so_bien_ban_vi_pham" string="Số biên bản vi phạm"/>
-                    		<field name="loai_vipham_id" string="Loại vi phạm"/>
-		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
-		                    <field name="ngay_vi_pham"/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="loai_vipham_id"/>
+	                    		<field name="ngay_vi_pham"/>
+	                    		<field name="so_bien_ban_vi_pham"/>
+	                    		<field name="dien_giai" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
 										<field name="name" string="Diễn giải"/>
-										<field name="account_id" invisible='1'/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
 									</tree>			                    
 			                    </field>
@@ -862,21 +954,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -942,7 +1019,6 @@
                 	<field name="name" string="Mã phiếu đề xuất"/>
                 	<field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="date_invoice" string="Ngày giao dịch"/>
-                    <field name="bien_so_xe"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
@@ -979,23 +1055,48 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-	                    	<field name="bien_so_xe"/>
-		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="loai_doituong_id" string="Loại đối tượng" />
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 		                    <field name="account_id" string="Đội xe" readonly='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
-		                    <field name="so_hop_dong"/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="so_hop_dong"/>
+	                    		<field name="dien_giai" string="Số hóa đơn chứng từ" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    		<field name="ma_bang_chiettinh_chiphi_sua"/>
+	                    		<field name="ma_xuong_id"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
-										<field name="name" string="Số hóa đơn chứng từ"/>
-										<field name="account_id" invisible='1'/>
+										<field name="name" string="Diễn giải"/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
-										<field name="ma_bang_chiettinh_chiphi_sua"/>
 									</tree>			                    
 			                    </field>
 			                    <field name="period_id" invisible='1'/>
@@ -1007,21 +1108,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -1086,7 +1172,6 @@
                 	<field name="name" string="Mã phiếu đề xuất"/>
                 	<field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="date_invoice" string="Ngày giao dịch"/>
-                    <field name="bien_so_xe"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
                     <field name="account_id" string="Đội kinh doanh"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
@@ -1123,20 +1208,45 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-		                    <field name="partner_id" string="Nhà đầu tư" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Đội kinh doanh" readonly='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
-		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="so_hop_dong"/>
+	                    		<field name="dien_giai" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
 										<field name="name" string="Diễn giải"/>
-										<field name="account_id" invisible='1'/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
 									</tree>			                    
 			                    </field>
@@ -1149,21 +1259,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -1228,7 +1323,6 @@
                 	<field name="name" string="Mã phiếu đề xuất"/>
                 	<field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="date_invoice" string="Ngày giao dịch"/>
-                    <field name="bien_so_xe"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
                     <field name="account_id" string="Đội kinh doanh"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
@@ -1265,20 +1359,45 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-		                    <field name="partner_id" string="Nhà đầu tư" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="loai_doituong_id" string="Loại đối tượng" />
-		                    <field name="account_id" string="Đội kinh doanh" readonly='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
-		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="so_hop_dong"/>
+	                    		<field name="dien_giai" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
 										<field name="name" string="Diễn giải"/>
-										<field name="account_id" invisible='1'/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
 									</tree>			                    
 			                    </field>
@@ -1291,21 +1410,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -1370,7 +1474,6 @@
                 	<field name="name" string="Mã phiếu đề xuất"/>
                 	<field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="date_invoice" string="Ngày giao dịch"/>
-                    <field name="bien_so_xe"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Phòng ban/Đội xe"/>
                     <field name="journal_id" string="Phương thức thanh toán"/>
@@ -1407,19 +1510,45 @@
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
-	                    	<field name="chinhanh_id" string="Chi nhánh"/>
+	                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
 	                    	<field name="date_invoice" string="Ngày giao dịch" required='1'/>
-		                    <field name="partner_id" string="Đối tượng" on_change="onchange_doituong(partner_id)" domain="[('customer','=',True)]"/>
-		                    <field name="account_id" string="Phòng ban/Đội xe" readonly='1'/>
-		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection"/>
-		                    <field name="so_hop_dong" string="Mã hợp đồng"/>
+	                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
+		                    <field name="partner_id" string="Đối tượng" context="{'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)" domain="[('customer','=',True)]"/>
+		                    <field name="chinhanh_ndt_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
+		                    <field name="account_id" string="Đội xe" readonly='1'/>
+		                    <field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+		                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+		                    <field name="journal_id" string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    </group>
+	                    <group>
+	                    	<group>
+	                    		<field name="so_hop_dong"/>
+	                    		<field name="dien_giai" string="Số hóa đơn chứng từ" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+	                    	</group>
+	                    	<group>
+		                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+		                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	</group>
 	                    </group>
 	                    <notebook>
-		                    <page string="Chi tiết công nợ">
+		                    <page string="Payments" groups="base.group_user">
+	                            <field name="payment_ids">
+	                                <tree string="Payments">
+	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="move_id" string="Bút toán"/>
+	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
+	                                    <field name="debit" string="Nợ"/>
+	                                    <field name="credit" string="Có"/>
+	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Chi tiết công nợ" invisible='1'>
 			                    <field name="invoice_line" context="{'journal_id': journal_id}">
 									<tree editable='bottom'>
-										<field name="name" string="Số hóa đơn chứng từ"/>
-										<field name="account_id" invisible='1'/>
+										<field name="name" string="Diễn giải"/>
+										<field name="account_id" invisible='0'/>
 										<field name="price_unit" string="Số tiền"/>
 									</tree>			                    
 			                    </field>
@@ -1432,21 +1561,6 @@
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
-		                    <page string="Payments" groups="base.group_user">
-	                            <field name="payment_ids">
-	                                <tree string="Payments">
-	                                    <field name="date"/>
-	                                    <field name="move_id"/>
-	                                    <field name="ref"/>
-	                                    <field name="name"/>
-	                                    <field name="journal_id" groups="base.group_user"/>
-	                                    <field name="debit"/>
-	                                    <field name="credit"/>
-	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
-	                                    <field name="currency_id" groups="base.group_multi_currency"/>
-	                                </tree>
-	                            </field>
-	                        </page>
 	                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
