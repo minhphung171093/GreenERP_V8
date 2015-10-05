@@ -73,6 +73,20 @@ class bai_giaoca(osv.osv):
     
 bai_giaoca()
 
+class bien_so_xe(osv.osv):
+    _name = "bien.so.xe"
+    _columns = {
+        'name': fields.char('Tên', size=1024, required=True),
+    }
+bien_so_xe()
+
+class ma_xuong(osv.osv):
+    _name = "ma.xuong"
+    _columns = {
+        'name': fields.char('Tên', size=1024, required=True),
+    }
+ma_xuong()
+
 class account_invoice(osv.osv):
     _inherit = "account.invoice"
     _columns = {
@@ -103,17 +117,24 @@ class account_invoice(osv.osv):
         'bai_giaoca_id': fields.related('partner_id', 'bai_giaoca_id', type='many2one', relation='bai.giaoca', string='Bãi giao ca', readonly=True, store=True),
         'journal_id': fields.many2one('account.journal', 'Journal', required=True, readonly=True, states={'draft':[('readonly',False)]},
                                       domain="[('type', 'in', ['cash','bank']), ('company_id', '=', company_id)]"),
-        'account_id': fields.related('partner_id', 'property_account_receivable', type='many2one', relation='account.account', string='Đội xe', readonly=True, store=True),
-        'bien_so_xe': fields.related('partner_id', 'bien_so_xe', type='char', string='Biển số xe', readonly=True, store=True),
+#         'account_id': fields.related('partner_id', 'property_account_receivable', type='many2one', relation='account.account', string='Đội xe', readonly=True, store=True),
+        'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
+        'ma_xuong_id': fields.many2one('ma.xuong','Mã xưởng'),
         'so_hop_dong': fields.char('Số hợp đồng', size=1024),
         'loai_doituong_id': fields.related('partner_id', 'loai_doituong_id',type='many2one',relation='loai.doi.tuong',string='Loại đối tượng', readonly=True, store=True),
         'so_hoa_don':fields.char('Số hóa đơn',size = 64),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
         'chinhanh_id': fields.related('account_id','parent_id',type='many2one',relation='account.account', string='Chi nhánh', readonly=True, store=True),
+        'chinhanh_ndt_id': fields.many2one('account.account','Chi nhánh'),
         'so_bien_ban_vi_pham':fields.char('Số biên bản vi phạm',size = 64),
         'ngay_vi_pham':fields.date('Ngày vi phạm'),
-        'loai_doituong': fields.related('loai_doituong_id', 'name', type='char', string='Loại đối tượng', readonly=True, store=True),
+        'dien_giai': fields.char('Diễn giải', size=1024),
+        'so_tien': fields.float('Số tiền'),
+        'ma_bang_chiettinh_chiphi_sua': fields.char('Mã bảng chiết tính chi phí sửa', size=1024),
+        'loai_doituong': fields.selection([('taixe','Tài xế'),
+                                           ('nhadautu','Nhà đầu tư'),
+                                           ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),
     }
     
     _defaults = {
@@ -126,19 +147,82 @@ class account_invoice(osv.osv):
             context = {}
         if vals.get('mlg_type') and (vals.get('name', '/') == '/' or 'name' not in vals):
             vals['name'] = self.pool.get('ir.sequence').get(cr, uid, vals['mlg_type'], context=context) or '/'
+        if vals.get('loai_doituong',False)=='nhadautu':
+            sql = '''
+                select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+            '''%(vals['chinhanh_ndt_id'],vals['partner_id'])
+            cr.execute(sql)
+            account_ids = [r[0] for r in cr.fetchall()]
+            account_id = account_ids and account_id[0] or False
+            vals.update({'account_id':account_id})
+        else:
+            partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
+            account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+            vals.update({'account_id':account_id})
         return super(account_invoice, self).create(cr, uid, vals, context)
     
-    def onchange_doituong(self, cr, uid, ids, partner_id=False, context=None):
+    def onchange_doituong(self, cr, uid, ids, partner_id=False,loai_doituong=False, context=None):
         vals = {}
+        domain = {}
         if partner_id:
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
-            vals = {'account_id': partner.property_account_receivable.id,
-                    'loai_doituong_id': partner.loai_doituong_id and partner.loai_doituong_id.id or False,
+            account_id = False
+            sql = '''
+                select chinhanh_id from chi_nhanh_line where partner_id=%s
+            '''%(partner_id)
+            cr.execute(sql)
+            chinhanh_ids = [r[0] for r in cr.fetchall()]
+            domain = {'chinhanh_ndt_id':[('id','in',chinhanh_ids)]}
+            if loai_doituong!='nhadautu':
+                account_id= partner.property_account_receivable.id
+            vals = {'account_id':account_id,
                     'bai_giaoca_id': partner.bai_giaoca_id and partner.bai_giaoca_id.id or False,
                     'chinhanh_id': partner.property_account_receivable.parent_id.id,
-                    'bien_so_xe': partner.bien_so_xe,
-                    'loai_doituong': partner.loai_doituong,}
+                    }
+        return {'value': vals,'domain': domain}
+    
+    def onchange_loaidoituong(self, cr, uid, ids, loai_doituong=False, context=None):
+        domain = {}
+        vals = {}
+        if loai_doituong=='taixe':
+            domain={'partner_id': [('taixe','=',True)]}
+        if loai_doituong=='nhadautu':
+            domain={'partner_id': [('nhadautu','=',True)]}
+        if loai_doituong=='nhanvienvanphong':
+            domain={'partner_id': [('nhanvienvanphong','=',True)]}
+        vals = {'partner_id':False,'account_id':False}
+        return {'value': vals, 'domain': domain}
+    
+    def onchange_dien_giai_st(self, cr, uid, ids, dien_giai='/',so_tien=False,journal_id=False, context=None):
+        domain = {}
+        vals = {}
+        if ids:
+            cr.execute('delete from account_invoice_line where invoice_id in %s',(tuple(ids),))
+        if not dien_giai:
+            dien_giai = '/'
+        if so_tien and journal_id:
+            journal = self.pool.get('account.journal').browse(cr, uid, journal_id)
+            vals = {'invoice_line': [(0,0,{'name': dien_giai,'price_unit': so_tien,'account_id':journal.default_credit_account_id.id})]}
         return {'value': vals}
+    
+    def onchange_chinhanh_ndt(self, cr, uid, ids, chinhanh_ndt_id=False, partner_id=False, context=None):
+        domain = {}
+        vals = {}
+        if chinhanh_ndt_id and partner_id:
+            sql = '''
+                select bsx_id from chinhanh_bien_so_xe_ref where chinhanh_id in (select id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s)
+            '''%(chinhanh_ndt_id,partner_id)
+            cr.execute(sql)
+            bsx_ids = [r[0] for r in cr.fetchall()]
+            domain={'bien_so_xe_id': [('id','in',bsx_ids)]}
+            sql = '''
+                select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+            '''%(chinhanh_ndt_id,partner_id)
+            cr.execute(sql)
+            account_ids = [r[0] for r in cr.fetchall()]
+            account_id = account_ids and account_ids[0] or False
+            vals = {'account_id':account_id}
+        return {'value': vals, 'domain': domain}
     
     def action_move_create(self):
         """ Creates invoice related analytics and financial move lines """

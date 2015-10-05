@@ -61,6 +61,9 @@
 		<record model="ir.ui.menu" id="account.menu_account_customer">
 			<field name="active" eval="False"/>
 		</record>
+		<record model="ir.ui.menu" id="account.menu_account_supplier">
+			<field name="active" eval="False"/>
+		</record>
 		
 		<menuitem id="menu_root_doituong"
 			name="Đối Tượng" sequence="1"/>
@@ -192,9 +195,15 @@
 					name="Loại vi phạm"
 					parent="menu_danhmuc_dungchung" sequence="6"/>
 					
-				<menuitem id="account.menu_account_supplier"
-					name="Suppliers"
+				<menuitem id="menu_action_bien_so_xe"
+					action="action_bien_so_xe"
+					name="Biển số xe"
 					parent="menu_danhmuc_dungchung" sequence="7"/>
+					
+				<menuitem id="menu_action_ma_xuong"
+					action="action_ma_xuong"
+					name="Mã xưởng"
+					parent="menu_danhmuc_dungchung" sequence="8"/>
 					
 			<menuitem id="menu_cauhinh"
 				name="Cấu hình"

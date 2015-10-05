@@ -62,9 +62,26 @@ class res_partner(osv.osv):
         'ma_doi_tuong': fields.char('Mã đối tượng', size=1024),
         'bien_so_xe': fields.char('Biển số xe', size=1024),
         'loai_doituong': fields.related('loai_doituong_id', 'name', type='char', string='Loại đối tượng', readonly=True, store=True),
+        'taixe': fields.boolean('Tài xế'),
+        'nhadautu': fields.boolean('Nhà đầu tư'),
+        'nhanvienvanphong': fields.boolean('Nhân viên văn phòng'),
+        'chinhanh_line': fields.one2many('chi.nhanh.line','partner_id','Chi nhánh'),
+        'cmnd': fields.char('Số CMND', size=1024),
+        'mst': fields.char('Mã số thuế', size=1024),
+        'giayphep_kinhdoanh': fields.char('Mã số giấy phép kinh doanh', size=1024),
     }
     
 res_partner()
 
+class chi_nhanh_line(osv.osv):
+    _name = "chi.nhanh.line"
+    
+    _columns = {
+        'partner_id': fields.many2one('res.partner', 'Chi nhánh', required=True, ondelete='cascade'),
+        'chinhanh_id': fields.many2one('account.account', 'Chi nhánh', required=True),
+        'nhom_chinhanh_id': fields.many2one('account.account', 'Nhóm chi nhánh', required=True),
+        'bien_so_xe_ids': fields.many2many('bien.so.xe', 'chinhanh_bien_so_xe_ref', 'chinhanh_id', 'bsx_id', 'Biển số xe'),
+    }
+chi_nhanh_line()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
