@@ -48,7 +48,7 @@
                     <field name="name"/>
                     <field name="thungan_id"/>
                     <field name="dieuhanh_id"/>
-                    <field name="account_id" domain="[('type','=','receivable')]"/>
+                    <field name="account_id" domain="[('type','=','other')]"/>
                 </tree>
             </field>
         </record>
@@ -342,7 +342,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
@@ -494,7 +493,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
@@ -646,7 +644,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
@@ -799,7 +796,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
@@ -951,7 +947,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
@@ -1105,7 +1100,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
@@ -1256,7 +1250,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
@@ -1407,7 +1400,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>
@@ -1558,7 +1550,6 @@
 			                    <field name="currency_id" invisible='1'/>
 			                    <group class="oe_subtotal_footer oe_right">
 	                                <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                                <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                            </group>
 	                            <div class="oe_clear"/>
 		                    </page>

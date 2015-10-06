@@ -28,7 +28,7 @@ class danhsach_congno(osv.osv_memory):
         domain = {}
         if chinhanh_ids and chinhanh_ids[0] and chinhanh_ids[0][2]:
             domain={
-                'doi_xe_ids': [('type','=','receivable'),('parent_id','child_of',chinhanh_ids[0][2])]
+                'doi_xe_ids': [('type','=','other'),('parent_id','child_of',chinhanh_ids[0][2])]
             }
         return {'value': {}, 'domain': domain}
     

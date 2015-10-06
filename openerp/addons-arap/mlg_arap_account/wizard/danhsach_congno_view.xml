@@ -17,7 +17,7 @@
 	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
                     	</group>
                     	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','receivable')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
 	                    </group>
 	                    <group colspan='4' string="Bãi giao ca">
 	                    	<field name='bai_giaoca_ids' nolabel='1'/>
@@ -59,7 +59,7 @@
 	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
                     	</group>
                     	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','receivable')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
 	                    </group>
 	                    <group colspan='4' string="Đối tượng">
 	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
@@ -98,7 +98,7 @@
 	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
                     	</group>
                     	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','receivable')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
 	                    </group>
 	                    <group colspan='4' string="Đối tượng">
 	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
@@ -137,7 +137,7 @@
 	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
                     	</group>
                     	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','receivable')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
 	                    </group>
 	                    <group colspan='4' string="Đối tượng">
 	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>

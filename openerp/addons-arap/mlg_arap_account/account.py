@@ -89,6 +89,35 @@ ma_xuong()
 
 class account_invoice(osv.osv):
     _inherit = "account.invoice"
+    
+    
+    def _compute_residual(self):
+        self.residual = 0.0
+        # Each partial reconciliation is considered only once for each invoice it appears into,
+        # and its residual amount is divided by this number of invoices
+        partial_reconciliations_done = []
+        for line in self.sudo().move_id.line_id:
+            if line.account_id.type not in ('other'):
+                continue
+            if line.reconcile_partial_id and line.reconcile_partial_id.id in partial_reconciliations_done:
+                continue
+            # Get the correct line residual amount
+            if line.currency_id == self.currency_id:
+                line_amount = line.amount_residual_currency if line.currency_id else line.amount_residual
+            else:
+                from_currency = line.company_id.currency_id.with_context(date=line.date)
+                line_amount = from_currency.compute(line.amount_residual, self.currency_id)
+            # For partially reconciled lines, split the residual amount
+            if line.reconcile_partial_id:
+                partial_reconciliation_invoices = set()
+                for pline in line.reconcile_partial_id.line_partial_ids:
+                    if pline.invoice and self.type == pline.invoice.type:
+                        partial_reconciliation_invoices.update([pline.invoice.id])
+                line_amount = self.currency_id.round(line_amount / len(partial_reconciliation_invoices))
+                partial_reconciliations_done.append(line.reconcile_partial_id.id)
+            self.residual += line_amount
+        self.residual = max(self.residual, 0.0)
+        
     _columns = {
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
@@ -135,6 +164,8 @@ class account_invoice(osv.osv):
         'loai_doituong': fields.selection([('taixe','Tài xế'),
                                            ('nhadautu','Nhà đầu tư'),
                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),
+#         'residual': fields.function(_compute_residual,type='float',digits=dp.get_precision('Account'), store=True,
+#                                     string='Balance',help="Remaining amount due."),
     }
     
     _defaults = {
@@ -506,7 +537,7 @@ class account_voucher(osv.osv):
         else:
             total_credit = price or 0.0
             if not account_type:
-                account_type = 'receivable'
+                account_type = 'other'
 
         if not context.get('move_line_ids', False):
             ids = move_line_pool.search(cr, uid, [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', partner_id)], context=context)
