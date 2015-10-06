@@ -532,7 +532,7 @@ class account_voucher(osv.osv):
             account_type = self.pool['account.account'].browse(cr, uid, context['account_id'], context=context).type
         if ttype == 'payment':
             if not account_type:
-                account_type = 'payable'
+                account_type = 'other'
             total_debit = price or 0.0
         else:
             total_credit = price or 0.0
