@@ -64,6 +64,12 @@
 		<record model="ir.ui.menu" id="account.menu_account_supplier">
 			<field name="active" eval="False"/>
 		</record>
+		<record model="ir.ui.menu" id="account.menu_action_invoice_tree2">
+			<field name="active" eval="False"/>
+		</record>
+		<record model="ir.ui.menu" id="account_voucher.menu_action_vendor_payment">
+			<field name="active" eval="False"/>
+		</record>
 		
 		<menuitem id="menu_root_doituong"
 			name="Đối Tượng" sequence="1"/>
@@ -154,10 +160,6 @@
 					name="Supplier Invoices"
 					parent="menu_congno_chi" sequence="10"/>
 					
-				<menuitem id="account_voucher.menu_action_vendor_payment"
-					name="Supplier Payments"
-					parent="menu_congno_chi" sequence="20"/>
-		
 		<menuitem id="menu_root_quanly"
 			name="Quản Lý" sequence="4"/>
 			

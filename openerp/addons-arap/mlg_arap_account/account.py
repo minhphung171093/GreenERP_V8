@@ -78,6 +78,25 @@ class bien_so_xe(osv.osv):
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
     }
+    
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        if context.get('cong_no_thu', False) and context.get('partner_id', False) and context.get('chinhanh_ndt_id', False):
+            sql = '''
+                select bsx_id from chinhanh_bien_so_xe_ref where chinhanh_id in (select id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s)
+            '''%(context['chinhanh_ndt_id'],context['partner_id'])
+            cr.execute(sql)
+            bsx_ids = [r[0] for r in cr.fetchall()]
+            args += [('id','in',bsx_ids)]
+        return super(bien_so_xe, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if context is None:
+            context = {}
+        ids = self.search(cr, user, args, context=context, limit=limit)
+        return self.name_get(cr, user, ids, context=context)
+    
 bien_so_xe()
 
 class ma_xuong(osv.osv):
@@ -158,7 +177,7 @@ class account_invoice(osv.osv):
         'chinhanh_ndt_id': fields.many2one('account.account','Chi nhánh'),
         'so_bien_ban_vi_pham':fields.char('Số biên bản vi phạm',size = 64),
         'ngay_vi_pham':fields.date('Ngày vi phạm'),
-        'dien_giai': fields.char('Diễn giải', size=1024),
+        'dien_giai': fields.text('Diễn giải'),
         'so_tien': fields.float('Số tiền'),
         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã bảng chiết tính chi phí sửa', size=1024),
         'loai_doituong': fields.selection([('taixe','Tài xế'),
@@ -184,13 +203,37 @@ class account_invoice(osv.osv):
             '''%(vals['chinhanh_ndt_id'],vals['partner_id'])
             cr.execute(sql)
             account_ids = [r[0] for r in cr.fetchall()]
-            account_id = account_ids and account_id[0] or False
+            account_id = account_ids and account_ids[0] or False
             vals.update({'account_id':account_id})
         else:
             partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
             account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
             vals.update({'account_id':account_id})
         return super(account_invoice, self).create(cr, uid, vals, context)
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        for line in self.browse(cr, uid, ids):
+            if vals.get('partner_id',False):
+                partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
+                account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+                vals.update({'account_id':account_id})
+            if vals.get('loai_doituong',False)=='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong=='nhadautu'):
+                if vals.get('chinhanh_ndt_id',False):
+                    chinhanh_ndt_id = vals['chinhanh_ndt_id']
+                else:
+                    chinhanh_ndt_id = line.chinhanh_ndt_id.id
+                if vals.get('partner_id',False):
+                    partner_id = vals['partner_id']
+                else:
+                    partner_id = line.partner_id.id
+                sql = '''
+                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                '''%(chinhanh_ndt_id,partner_id)
+                cr.execute(sql)
+                account_ids = [r[0] for r in cr.fetchall()]
+                account_id = account_ids and account_ids[0] or False
+                vals.update({'account_id':account_id})
+        return super(account_invoice, self).write(cr, uid, ids, vals, context)
     
     def onchange_doituong(self, cr, uid, ids, partner_id=False,loai_doituong=False, context=None):
         vals = {}
@@ -206,10 +249,15 @@ class account_invoice(osv.osv):
             domain = {'chinhanh_ndt_id':[('id','in',chinhanh_ids)]}
             if loai_doituong!='nhadautu':
                 account_id= partner.property_account_receivable.id
+            if partner.taixe:
+                bai_giaoca_id=partner.bai_giaoca_id and partner.bai_giaoca_id.id or False
+            else:
+                bai_giaoca_id = False
             vals = {'account_id':account_id,
-                    'bai_giaoca_id': partner.bai_giaoca_id and partner.bai_giaoca_id.id or False,
+                    'bai_giaoca_id': bai_giaoca_id,
                     'chinhanh_id': partner.property_account_receivable.parent_id.id,
                     }
+        vals.update({'chinhanh_ndt_id': False})
         return {'value': vals,'domain': domain}
     
     def onchange_loaidoituong(self, cr, uid, ids, loai_doituong=False, context=None):
@@ -440,7 +488,6 @@ class account_invoice_line(osv.osv):
     _inherit = "account.invoice.line"
     
     _columns = {
-        'name': fields.char('Diễn giải', size=1024, required=True),
         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã bảng chiết tính chi phí sửa', size=1024),
     }
     
@@ -704,4 +751,28 @@ class account_voucher_line(osv.osv):
     }
     
 account_voucher_line()
+
+class account_account(osv.osv):
+    _inherit = "account.account"
+    
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        if context.get('cong_no_thu', False) and context.get('partner_id', False):
+            sql = '''
+                select chinhanh_id from chi_nhanh_line where partner_id=%s
+            '''%(context['partner_id'])
+            cr.execute(sql)
+            chinhanh_ids = [r[0] for r in cr.fetchall()]
+            args += [('id','in',chinhanh_ids)]
+        return super(account_account, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if context is None:
+            context = {}
+        ids = self.search(cr, user, args, context=context, limit=limit)
+        return self.name_get(cr, user, ids, context=context)
+    
+account_account()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

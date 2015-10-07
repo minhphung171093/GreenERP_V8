@@ -24,6 +24,7 @@ import time
 
 from openerp.osv import fields, osv
 from openerp import api
+from openerp.tools.translate import _
 
 class res_partner(osv.osv):
     _inherit = 'res.partner'
@@ -71,6 +72,27 @@ class res_partner(osv.osv):
         'giayphep_kinhdoanh': fields.char('Mã số giấy phép kinh doanh', size=1024),
     }
     
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        if context.get('cong_no_thu', False) and context.get('loai_doituong', False):
+            if context['loai_doituong']=='taixe':
+                partner_ids = self.search(cr, uid, [('taixe','=',True)])
+                args += [('id','in',partner_ids)]
+            if context['loai_doituong']=='nhadautu':
+                partner_ids = self.search(cr, uid, [('nhadautu','=',True)])
+                args += [('id','in',partner_ids)]
+            if context['loai_doituong']=='nhanvienvanphong':
+                partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True)])
+                args += [('id','in',partner_ids)]
+        return super(res_partner, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if context is None:
+            context = {}
+        ids = self.search(cr, user, args, context=context, limit=limit)
+        return self.name_get(cr, user, ids, context=context)
+    
 res_partner()
 
 class chi_nhanh_line(osv.osv):
@@ -79,9 +101,25 @@ class chi_nhanh_line(osv.osv):
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Chi nhánh', required=True, ondelete='cascade'),
         'chinhanh_id': fields.many2one('account.account', 'Chi nhánh', required=True),
-        'nhom_chinhanh_id': fields.many2one('account.account', 'Nhóm chi nhánh', required=True),
+        'nhom_chinhanh_id': fields.many2one('account.account', 'Chi nhánh đầu tư', required=True),
         'bien_so_xe_ids': fields.many2many('bien.so.xe', 'chinhanh_bien_so_xe_ref', 'chinhanh_id', 'bsx_id', 'Biển số xe'),
     }
+    
+    def _check_chinhanh_id(self, cr, uid, ids, context=None):
+        for cnl in self.browse(cr, uid, ids, context=context):
+            sql = '''
+                select id from chi_nhanh_line where id != %s and nhom_chinhanh_id=%s and partner_id=%s
+            '''%(cnl.id,cnl.nhom_chinhanh_id.id,cnl.partner_id.id)
+            cr.execute(sql)
+            cnl_ids = [row[0] for row in cr.fetchall()]
+            if cnl_ids:  
+                raise osv.except_osv(_('Cảnh báo!'),_('Không được phép chọn hai chi nhánh đầu tư giống nhau cho cùng một nhà đầu tư!'))
+                return False
+        return True
+    _constraints = [
+        (_check_chinhanh_id, 'Identical Data', ['chinhanh_id']),
+    ]
+    
 chi_nhanh_line()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

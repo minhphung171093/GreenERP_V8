@@ -104,13 +104,13 @@
 	                    	<page string="Accounting">
 								<group>
 									<group>
-			                        	<field name="property_account_receivable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="property_account_receivable" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
-			                        	<field name="property_account_payable" attrs="{'invisible':[('supplier','=',False)],'required':[('supplier','=',True)]}"/>
+			                        	<field name="property_account_payable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        </group>
 			                        <group>
-			                        	<field name="customer"/>
-					                    <field name="supplier"/>
+			                        	<field name="customer" invisible='1'/>
+					                    <field name="supplier" invisible='1'/>
 					                    <field name="taixe"/>
 					                    <field name="nhadautu"/>
 					                    <field name="nhanvienvanphong"/>
@@ -147,7 +147,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('taixe','=',True)]</field>
-            <field name="context">{'default_customer':1,'default_taixe':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_taixe'}</field>
+            <field name="context">{'default_customer':1,'default_supplier':1,'default_taixe':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_taixe'}</field>
             <field name="filter" eval="True"/>
         </record>
         <record id="action_partner_taixe0" model="ir.actions.act_window.view">
@@ -228,13 +228,13 @@
 	                    	<page string="Accounting">
 								<group>
 									<group>
-			                        	<field name="property_account_receivable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="property_account_receivable" string="Chi nhánh đầu tư" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
-			                        	<field name="property_account_payable" attrs="{'invisible':[('supplier','=',False)],'required':[('supplier','=',True)]}"/>
+			                        	<field name="property_account_payable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        </group>
 			                        <group>
-			                        	<field name="customer"/>
-					                    <field name="supplier"/>
+			                        	<field name="customer" invisible='1'/>
+					                    <field name="supplier" invisible='1'/>
 					                    <field name="taixe"/>
 					                    <field name="nhadautu"/>
 					                    <field name="nhanvienvanphong"/>
@@ -271,7 +271,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('nhadautu','=',True)]</field>
-            <field name="context">{'default_customer':1,'default_nhadautu':1, 'search_default_customer':1,'loai_doituong':'loai_doi_tuong_ndt','default_loai_doituong':'Nhà đầu tư'}</field>
+            <field name="context">{'default_customer':1,'default_supplier':1,'default_nhadautu':1, 'search_default_customer':1,'loai_doituong':'loai_doi_tuong_ndt','default_loai_doituong':'Nhà đầu tư'}</field>
             <field name="filter" eval="True"/>
         </record>
         <record id="action_partner_ndt0" model="ir.actions.act_window.view">
@@ -353,13 +353,13 @@
 	                    	<page string="Accounting">
 								<group>
 									<group>
-			                        	<field name="property_account_receivable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="property_account_receivable" string="Phòng ban" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
-			                        	<field name="property_account_payable" attrs="{'invisible':[('supplier','=',False)],'required':[('supplier','=',True)]}"/>
+			                        	<field name="property_account_payable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        </group>
 			                        <group>
-			                        	<field name="customer"/>
-					                    <field name="supplier"/>
+			                        	<field name="customer" invisible='1'/>
+					                    <field name="supplier" invisible='1'/>
 					                    <field name="taixe"/>
 					                    <field name="nhadautu"/>
 					                    <field name="nhanvienvanphong"/>
@@ -396,7 +396,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('nhanvienvanphong','=',True)]</field>
-            <field name="context">{'default_customer':1,'default_nhanvienvanphong':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_nvvp'}</field>
+            <field name="context">{'default_customer':1,'default_supplier':1,'default_nhanvienvanphong':1, 'search_default_customer':1,'default_loai_doituong':'loai_doi_tuong_nvvp'}</field>
             <field name="filter" eval="True"/>
         </record>
         <record id="action_partner_nvvp0" model="ir.actions.act_window.view">
