@@ -259,6 +259,7 @@ class account_invoice(osv.osv):
             cr.execute(sql)
             chinhanh_ids = [r[0] for r in cr.fetchall()]
             domain = {'chinhanh_ndt_id':[('id','in',chinhanh_ids)]}
+            chinhanh_id = False
             if loai_doituong!='nhadautu':
                 if context.get('default_type',False)=='out_invoice':
                     account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
