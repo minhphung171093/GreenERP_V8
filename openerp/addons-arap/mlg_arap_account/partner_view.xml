@@ -131,7 +131,6 @@
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" domain="[('parent_id.code','=','1')]"/>
 					                    <field name="nhom_chinhanh_id" domain="[('parent_id','=',chinhanh_id)]"/>
-					                    <field name="bien_so_xe_ids" widget="many2many_tags"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>
@@ -255,7 +254,6 @@
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" domain="[('parent_id.code','=','1')]"/>
 					                    <field name="nhom_chinhanh_id" domain="[('parent_id','=',chinhanh_id)]"/>
-					                    <field name="bien_so_xe_ids" widget="many2many_tags"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>
@@ -380,7 +378,6 @@
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" domain="[('parent_id.code','=','1')]"/>
 					                    <field name="nhom_chinhanh_id" domain="[('parent_id','=',chinhanh_id)]"/>
-					                    <field name="bien_so_xe_ids" widget="many2many_tags"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>

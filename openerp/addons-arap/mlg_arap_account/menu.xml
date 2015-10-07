@@ -156,9 +156,10 @@
 				name="Công nợ chi"
 				parent="menu_root_congno_chi" sequence="3"/>
 				
-				<menuitem id="account.menu_action_invoice_tree2"
-					name="Supplier Invoices"
-					parent="menu_congno_chi" sequence="10"/>
+				<menuitem id="menu_action_chi_no_doanh_thu"
+					action="action_chi_no_doanh_thu"
+					name="Chi nợ doanh thu"
+					parent="menu_congno_chi" sequence="5"/>
 					
 		<menuitem id="menu_root_quanly"
 			name="Quản Lý" sequence="4"/>
@@ -206,7 +207,10 @@
 					action="action_ma_xuong"
 					name="Mã xưởng"
 					parent="menu_danhmuc_dungchung" sequence="8"/>
-					
+			
+			<menuitem id="account.menu_finance_entries"
+				parent="menu_root_quanly" sequence="15"/>
+			
 			<menuitem id="menu_cauhinh"
 				name="Cấu hình"
 				parent="menu_root_quanly" sequence="20"/>

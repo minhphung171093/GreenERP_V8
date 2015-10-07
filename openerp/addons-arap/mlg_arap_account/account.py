@@ -79,23 +79,23 @@ class bien_so_xe(osv.osv):
         'name': fields.char('Tên', size=1024, required=True),
     }
     
-    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        if context is None:
-            context = {}
-        if context.get('cong_no_thu', False) and context.get('partner_id', False) and context.get('chinhanh_ndt_id', False):
-            sql = '''
-                select bsx_id from chinhanh_bien_so_xe_ref where chinhanh_id in (select id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s)
-            '''%(context['chinhanh_ndt_id'],context['partner_id'])
-            cr.execute(sql)
-            bsx_ids = [r[0] for r in cr.fetchall()]
-            args += [('id','in',bsx_ids)]
-        return super(bien_so_xe, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
-    
-    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
-        if context is None:
-            context = {}
-        ids = self.search(cr, user, args, context=context, limit=limit)
-        return self.name_get(cr, user, ids, context=context)
+#     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+#         if context is None:
+#             context = {}
+#         if context.get('cong_no_thu', False) and context.get('partner_id', False) and context.get('chinhanh_ndt_id', False):
+#             sql = '''
+#                 select bsx_id from chinhanh_bien_so_xe_ref where chinhanh_id in (select id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s)
+#             '''%(context['chinhanh_ndt_id'],context['partner_id'])
+#             cr.execute(sql)
+#             bsx_ids = [r[0] for r in cr.fetchall()]
+#             args += [('id','in',bsx_ids)]
+#         return super(bien_so_xe, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+#     
+#     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+#         if context is None:
+#             context = {}
+#         ids = self.search(cr, user, args, context=context, limit=limit)
+#         return self.name_get(cr, user, ids, context=context)
     
 bien_so_xe()
 
@@ -146,7 +146,8 @@ class account_invoice(osv.osv):
                                       ('thu_no_xuong','Thu nợ xưởng'),
                                       ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
                                       ('tra_gop_xe','Trả góp xe'),
-                                      ('tam_ung','Tạm ứng')],'Loại'),
+                                      ('tam_ung','Tạm ứng'),
+                                      ('chi_no_doanh_thu','Chi nợ doanh thu'),],'Loại'),
         'state': fields.selection([
             ('draft','Pending'),
             ('proforma','Pro-forma'),
@@ -167,6 +168,7 @@ class account_invoice(osv.osv):
                                       domain="[('type', 'in', ['cash','bank']), ('company_id', '=', company_id)]"),
 #         'account_id': fields.related('partner_id', 'property_account_receivable', type='many2one', relation='account.account', string='Đội xe', readonly=True, store=True),
         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
+        'bien_so_xe': fields.char('Biển số xe', size=1024),
         'ma_xuong_id': fields.many2one('ma.xuong','Mã xưởng'),
         'so_hop_dong': fields.char('Số hợp đồng', size=1024),
         'loai_doituong_id': fields.related('partner_id', 'loai_doituong_id',type='many2one',relation='loai.doi.tuong',string='Loại đối tượng', readonly=True, store=True),
@@ -207,7 +209,10 @@ class account_invoice(osv.osv):
 #             vals.update({'account_id':account_id})
         if vals.get('loai_doituong',False)!='nhadautu':
             partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
-            account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+            if context.get('default_type',False)=='out_invoice':
+                account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+            else:
+                account_id = partner.property_account_payable and partner.property_account_payable.id or False
             vals.update({'account_id':account_id})
         return super(account_invoice, self).create(cr, uid, vals, context)
     
@@ -215,7 +220,10 @@ class account_invoice(osv.osv):
         for line in self.browse(cr, uid, ids):
             if (vals.get('loai_doituong',False)!='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong!='nhadautu')) and vals.get('partner_id',False):
                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
-                account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+                if context.get('default_type',False)=='out_invoice':
+                    account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+                else:
+                    account_id = partner.property_account_payable and partner.property_account_payable.id or False
                 vals.update({'account_id':account_id})
 #             if vals.get('partner_id',False):
 #                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
@@ -252,14 +260,19 @@ class account_invoice(osv.osv):
             chinhanh_ids = [r[0] for r in cr.fetchall()]
             domain = {'chinhanh_ndt_id':[('id','in',chinhanh_ids)]}
             if loai_doituong!='nhadautu':
-                account_id= partner.property_account_receivable.id
+                if context.get('default_type',False)=='out_invoice':
+                    account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+                    chinhanh_id = partner.property_account_receivable.parent_id.id
+                else:
+                    account_id = partner.property_account_payable and partner.property_account_payable.id or False
+                    chinhanh_id = partner.property_account_payable.parent_id.id
             if partner.taixe:
                 bai_giaoca_id=partner.bai_giaoca_id and partner.bai_giaoca_id.id or False
             else:
                 bai_giaoca_id = False
             vals = {'account_id':account_id,
                     'bai_giaoca_id': bai_giaoca_id,
-                    'chinhanh_id': partner.property_account_receivable.parent_id.id,
+                    'chinhanh_id': chinhanh_id,
                     }
         vals.update({'chinhanh_ndt_id': False})
         return {'value': vals,'domain': domain}
@@ -292,12 +305,12 @@ class account_invoice(osv.osv):
         domain = {}
         vals = {}
         if chinhanh_ndt_id and partner_id:
-            sql = '''
-                select bsx_id from chinhanh_bien_so_xe_ref where chinhanh_id in (select id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s)
-            '''%(chinhanh_ndt_id,partner_id)
-            cr.execute(sql)
-            bsx_ids = [r[0] for r in cr.fetchall()]
-            domain={'bien_so_xe_id': [('id','in',bsx_ids)]}
+#             sql = '''
+#                 select bsx_id from chinhanh_bien_so_xe_ref where chinhanh_id in (select id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s)
+#             '''%(chinhanh_ndt_id,partner_id)
+#             cr.execute(sql)
+#             bsx_ids = [r[0] for r in cr.fetchall()]
+#             domain={'bien_so_xe_id': [('id','in',bsx_ids)]}
             sql = '''
                 select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
             '''%(chinhanh_ndt_id,partner_id)
@@ -477,6 +490,7 @@ class account_invoice(osv.osv):
                 'default_partner_id': self.pool.get('res.partner')._find_accounting_partner(inv.partner_id).id,
                 'default_amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
                 'default_reference': inv.name,
+                'default_journal_id': inv.journal_id.id,
                 'default_bai_giaoca_id': inv.bai_giaoca_id and inv.bai_giaoca_id.id or False,
                 'close_after_process': True,
                 'invoice_type': inv.type,

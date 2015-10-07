@@ -109,7 +109,6 @@ class chi_nhanh_line(osv.osv):
         'partner_id': fields.many2one('res.partner', 'Chi nhánh', required=True, ondelete='cascade'),
         'chinhanh_id': fields.many2one('account.account', 'Chi nhánh', required=True),
         'nhom_chinhanh_id': fields.many2one('account.account', 'Chi nhánh đầu tư', required=True),
-        'bien_so_xe_ids': fields.many2many('bien.so.xe', 'chinhanh_bien_so_xe_ref', 'chinhanh_id', 'bsx_id', 'Biển số xe'),
     }
     
     def _check_chinhanh_id(self, cr, uid, ids, context=None):
