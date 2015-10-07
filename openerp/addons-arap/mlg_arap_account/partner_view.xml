@@ -104,7 +104,7 @@
 	                    	<page string="Accounting">
 								<group>
 									<group>
-			                        	<field name="property_account_receivable" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="property_account_receivable" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
 			                        	<field name="property_account_payable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        </group>

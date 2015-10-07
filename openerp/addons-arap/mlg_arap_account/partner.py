@@ -90,9 +90,16 @@ class res_partner(osv.osv):
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
         if context is None:
             context = {}
-        ids = self.search(cr, user, args, context=context, limit=limit)
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
         return self.name_get(cr, user, ids, context=context)
     
+    def onchange_property_account_receivable(self, cr, uid, ids, property_account_receivable=False, context=None):
+        return {'value': {'property_account_payable':property_account_receivable}}
 res_partner()
 
 class chi_nhanh_line(osv.osv):

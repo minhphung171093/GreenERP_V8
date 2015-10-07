@@ -213,7 +213,7 @@ class account_invoice(osv.osv):
     
     def write(self, cr, uid, ids, vals, context=None):
         for line in self.browse(cr, uid, ids):
-            if vals.get('loai_doituong',False)!='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong!='nhadautu'):
+            if (vals.get('loai_doituong',False)!='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong!='nhadautu')) and vals.get('partner_id',False):
                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
                 account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
                 vals.update({'account_id':account_id})
@@ -790,7 +790,12 @@ class account_account(osv.osv):
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
         if context is None:
             context = {}
-        ids = self.search(cr, user, args, context=context, limit=limit)
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
         return self.name_get(cr, user, ids, context=context)
     
 account_account()
