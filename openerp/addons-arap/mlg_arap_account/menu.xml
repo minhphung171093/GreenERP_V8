@@ -198,11 +198,6 @@
 					name="Loại vi phạm"
 					parent="menu_danhmuc_dungchung" sequence="6"/>
 					
-				<menuitem id="menu_action_bien_so_xe"
-					action="action_bien_so_xe"
-					name="Biển số xe"
-					parent="menu_danhmuc_dungchung" sequence="7"/>
-					
 				<menuitem id="menu_action_ma_xuong"
 					action="action_ma_xuong"
 					name="Mã xưởng"
