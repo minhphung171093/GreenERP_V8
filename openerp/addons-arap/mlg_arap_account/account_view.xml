@@ -305,7 +305,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" readonly='1'/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="bien_so_xe_id" context="{'cong_no_thu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 		                    </group>

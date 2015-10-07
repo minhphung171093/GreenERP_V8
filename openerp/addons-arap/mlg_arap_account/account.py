@@ -197,15 +197,15 @@ class account_invoice(osv.osv):
             context = {}
         if vals.get('mlg_type') and (vals.get('name', '/') == '/' or 'name' not in vals):
             vals['name'] = self.pool.get('ir.sequence').get(cr, uid, vals['mlg_type'], context=context) or '/'
-        if vals.get('loai_doituong',False)=='nhadautu':
-            sql = '''
-                select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
-            '''%(vals['chinhanh_ndt_id'],vals['partner_id'])
-            cr.execute(sql)
-            account_ids = [r[0] for r in cr.fetchall()]
-            account_id = account_ids and account_ids[0] or False
-            vals.update({'account_id':account_id})
-        else:
+#         if vals.get('loai_doituong',False)=='nhadautu':
+#             sql = '''
+#                 select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+#             '''%(vals['chinhanh_ndt_id'],vals['partner_id'])
+#             cr.execute(sql)
+#             account_ids = [r[0] for r in cr.fetchall()]
+#             account_id = account_ids and account_ids[0] or False
+#             vals.update({'account_id':account_id})
+        if vals.get('loai_doituong',False)!='nhadautu':
             partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
             account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
             vals.update({'account_id':account_id})
@@ -213,26 +213,30 @@ class account_invoice(osv.osv):
     
     def write(self, cr, uid, ids, vals, context=None):
         for line in self.browse(cr, uid, ids):
-            if vals.get('partner_id',False):
+            if vals.get('loai_doituong',False)!='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong!='nhadautu'):
                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
                 account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
                 vals.update({'account_id':account_id})
-            if vals.get('loai_doituong',False)=='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong=='nhadautu'):
-                if vals.get('chinhanh_ndt_id',False):
-                    chinhanh_ndt_id = vals['chinhanh_ndt_id']
-                else:
-                    chinhanh_ndt_id = line.chinhanh_ndt_id.id
-                if vals.get('partner_id',False):
-                    partner_id = vals['partner_id']
-                else:
-                    partner_id = line.partner_id.id
-                sql = '''
-                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
-                '''%(chinhanh_ndt_id,partner_id)
-                cr.execute(sql)
-                account_ids = [r[0] for r in cr.fetchall()]
-                account_id = account_ids and account_ids[0] or False
-                vals.update({'account_id':account_id})
+#             if vals.get('partner_id',False):
+#                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
+#                 account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+#                 vals.update({'account_id':account_id})
+#             if vals.get('loai_doituong',False)=='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong=='nhadautu'):
+#                 if vals.get('chinhanh_ndt_id',False):
+#                     chinhanh_ndt_id = vals['chinhanh_ndt_id']
+#                 else:
+#                     chinhanh_ndt_id = line.chinhanh_ndt_id.id
+#                 if vals.get('partner_id',False):
+#                     partner_id = vals['partner_id']
+#                 else:
+#                     partner_id = line.partner_id.id
+#                 sql = '''
+#                     select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+#                 '''%(chinhanh_ndt_id,partner_id)
+#                 cr.execute(sql)
+#                 account_ids = [r[0] for r in cr.fetchall()]
+#                 account_id = account_ids and account_ids[0] or False
+#                 vals.update({'account_id':account_id})
         return super(account_invoice, self).write(cr, uid, ids, vals, context)
     
     def onchange_doituong(self, cr, uid, ids, partner_id=False,loai_doituong=False, context=None):
@@ -762,6 +766,22 @@ class account_account(osv.osv):
             sql = '''
                 select chinhanh_id from chi_nhanh_line where partner_id=%s
             '''%(context['partner_id'])
+            cr.execute(sql)
+            chinhanh_ids = [r[0] for r in cr.fetchall()]
+            args += [('id','in',chinhanh_ids)]
+        
+        if context.get('show_doixe',False):
+            sql = '''
+                select id from account_account where parent_id in (select id from account_account where parent_id in (select id from account_account where code='1'))
+            '''
+            cr.execute(sql)
+            doixe_ids = [r[0] for r in cr.fetchall()]
+            args += [('id','in',doixe_ids)]
+        
+        if context.get('cong_no_thu_nhadautu', False) and context.get('chinhanh_ndt_id', False) and context.get('partner_id', False):
+            sql = '''
+                select nhom_chinhanh_id from chi_nhanh_line where partner_id=%s and chinhanh_id=%s
+            '''%(context['partner_id'],context['chinhanh_ndt_id'])
             cr.execute(sql)
             chinhanh_ids = [r[0] for r in cr.fetchall()]
             args += [('id','in',chinhanh_ids)]
