@@ -144,10 +144,6 @@
 					action="action_tam_ung"
 					name="Tạm ứng"
 					parent="menu_cong_no" sequence="25"/>
-				
-			<menuitem id="account.menu_finance_entries"
-				name="Bút toán"
-				parent="menu_root_congno" sequence="20"/>
 		
 		<menuitem id="menu_root_congno_chi"
 			name="Công Nợ Chi" sequence="3"/>
@@ -205,6 +201,12 @@
 			
 			<menuitem id="account.menu_finance_entries"
 				parent="menu_root_quanly" sequence="15"/>
+			
+			<menuitem id="account.periodical_processing_journal_entries_validation"
+				parent="menu_root_quanly" sequence="16"/>
+
+			<menuitem id="account.menu_account_end_year_treatments"
+				parent="menu_root_quanly" sequence="17"/>
 			
 			<menuitem id="menu_cauhinh"
 				name="Cấu hình"
