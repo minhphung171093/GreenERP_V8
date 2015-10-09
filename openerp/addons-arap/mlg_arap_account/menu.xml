@@ -115,9 +115,9 @@
 					name="Phải thu bảo hiểm"
 					parent="menu_cong_no" sequence="7"/>
 					
-				<menuitem id="menu_action_phai_tra_ky_quy"
-					action="action_phai_tra_ky_quy"
-					name="Phải trả ký quỹ"
+				<menuitem id="menu_action_phai_thu_ky_quy"
+					action="action_phai_thu_ky_quy"
+					name="Phải thu ký quỹ"
 					parent="menu_cong_no" sequence="8"/>
 					
 				<menuitem id="menu_action_phat_vi_pham"
@@ -140,9 +140,9 @@
 					name="Trả góp xe"
 					parent="menu_cong_no" sequence="20"/>
 					
-				<menuitem id="menu_action_tam_ung"
-					action="action_tam_ung"
-					name="Tạm ứng"
+				<menuitem id="menu_action_hoan_tam_ung"
+					action="action_hoan_tam_ung"
+					name="Hoàn tạm ứng"
 					parent="menu_cong_no" sequence="25"/>
 		
 		<menuitem id="menu_root_congno_chi"
@@ -156,6 +156,26 @@
 					action="action_chi_no_doanh_thu"
 					name="Chi nợ doanh thu"
 					parent="menu_congno_chi" sequence="5"/>
+					
+				<menuitem id="menu_action_chi_dien_thoai"
+					action="action_chi_dien_thoai"
+					name="Chi điện thoại"
+					parent="menu_congno_chi" sequence="10"/>
+					
+				<menuitem id="menu_action_chi_bao_hiem"
+					action="action_chi_bao_hiem"
+					name="Chi bảo hiểm"
+					parent="menu_congno_chi" sequence="15"/>
+					
+				<menuitem id="menu_action_phai_tra_ky_quy"
+					action="action_phai_tra_ky_quy"
+					name="Phải trả ký quỹ"
+					parent="menu_congno_chi" sequence="20"/>
+					
+				<menuitem id="menu_action_tam_ung"
+					action="action_tam_ung"
+					name="Tạm ứng"
+					parent="menu_congno_chi" sequence="25"/>
 					
 		<menuitem id="menu_root_quanly"
 			name="Quản Lý" sequence="4"/>
