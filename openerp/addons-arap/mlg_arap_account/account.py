@@ -290,7 +290,15 @@ class account_invoice(osv.osv):
                     account_id = partner.property_account_payable and partner.property_account_payable.id or False
                     chinhanh_id = partner.property_account_payable.parent_id.id
             else:
-                vals.update({'cmnd': partner.cmnd,'giayphep_kinhdoanh': partner.giayphep_kinhdoanh})
+                user = self.pool.get('res.users').browse(cr, uid, uid)
+                chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
+                sql = '''
+                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                '''%(chinhanh_id,partner_id)
+                cr.execute(sql)
+                account_ids = [r[0] for r in cr.fetchall()]
+                account_id = account_ids and account_ids[0] or False
+                vals.update({'cmnd': partner.cmnd,'giayphep_kinhdoanh': partner.giayphep_kinhdoanh,'account_id':account_id})
             if partner.taixe:
                 bai_giaoca_id=partner.bai_giaoca_id and partner.bai_giaoca_id.id or False
             else:
@@ -830,7 +838,7 @@ class account_voucher(osv.osv):
                 
             # them bai_giaoca_id
             if voucher.mlg_type:
-                cr.execute(''' update account_move_line set mlg_type=%s where move_id=%s ''',(voucher.mlg_type,))
+                cr.execute(''' update account_move_line set mlg_type=%s where move_id=%s ''',(voucher.mlg_type,move_id,))
             
             if voucher.journal_id.entry_posted:
                 move_pool.post(cr, uid, [move_id], context={})

@@ -324,7 +324,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -332,7 +332,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -478,7 +478,7 @@
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -486,7 +486,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -633,7 +633,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -641,7 +641,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -790,7 +790,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -798,7 +798,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -944,7 +944,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -952,7 +952,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -1101,7 +1101,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -1109,7 +1109,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -1258,7 +1258,7 @@
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -1266,7 +1266,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -1412,7 +1412,7 @@
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -1420,7 +1420,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -1566,7 +1566,7 @@
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -1574,7 +1574,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -1725,7 +1725,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -1733,7 +1733,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -1879,7 +1879,7 @@
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -1887,7 +1887,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -2034,7 +2034,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -2042,7 +2042,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -2191,7 +2191,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -2199,7 +2199,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
@@ -2346,7 +2346,7 @@
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id" string="Chi nhánh" attrs="{'invisible':[('loai_doituong','=','nhadautu')]}"/>
+		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" domain="[('parent_id','=',chinhanh_id),('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
@@ -2354,7 +2354,7 @@
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
-			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" required='1' attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>

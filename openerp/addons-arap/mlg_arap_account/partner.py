@@ -94,6 +94,9 @@ class res_partner(osv.osv):
             ids = self.search(cr, user, args, limit=limit, context=context)
         else:
             ids = self.search(cr, user, [('ma_doi_tuong',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            
         return self.name_get(cr, user, ids, context=context)
     
     def onchange_property_account_receivable(self, cr, uid, ids, property_account_receivable=False, context=None):
@@ -106,7 +109,7 @@ class res_partner(osv.osv):
             ids = [ids]
         res = []
         for record in self.browse(cr, uid, ids, context=context):
-            name = record.ma_doi_tuong
+            name = '['+(record.ma_doi_tuong or '')+']'+' '+(record.name or '')
             res.append((record.id, name))
         return res
     

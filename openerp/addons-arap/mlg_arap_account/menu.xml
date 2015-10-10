@@ -220,12 +220,15 @@
 					parent="menu_danhmuc_dungchung" sequence="8"/>
 			
 			<menuitem id="account.menu_finance_entries"
+				name="Journal Entries"
 				parent="menu_root_quanly" sequence="15"/>
 			
 			<menuitem id="account.periodical_processing_journal_entries_validation"
+				name="Draft Entries"
 				parent="menu_root_quanly" sequence="16"/>
 
 			<menuitem id="account.menu_account_end_year_treatments"
+				name="End of Period"
 				parent="menu_root_quanly" sequence="17"/>
 			
 			<menuitem id="menu_cauhinh"
