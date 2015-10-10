@@ -1,4 +1,4 @@
-# -*- coding: utf-8# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
@@ -19,28 +19,20 @@
 #
 ##############################################################################
 
-{
-    'name': 'MLG ARAP ACCOUNT',
-    'version': '1.0',
-    'category': 'ARAP',
-    'sequence': 1,
-    'depends': ['mlg_arap_base','account_accountant','account_cancel','report_aeroo_controller','report_aeroo'],
-    'data': [
-        'report/danhsach_congno_view.xml',
-        'wizard/danhsach_congno_view.xml',
-        'account_data.xml',
-        'partner_view.xml',
-        'account_view.xml',
-        'account_sequence.xml',
-        'user_view.xml',
-        'menu.xml',
-    ],
-    'css' : [
-    ],
-    'qweb': [
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': True,
-}
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4: -*-
+from operator import itemgetter
+import time
+
+from openerp.osv import fields, osv
+from openerp import api
+from openerp.tools.translate import _
+
+class res_users(osv.osv):
+    _inherit = 'res.users'
+
+    _columns = {
+        'chinhanh_ids': fields.many2many('account.account', 'user_chinhanh_ref', 'user_id', 'chinhanh_id', 'Các chi nhánh'),
+        'chinhanh_id': fields.many2one('account.account', 'Chi nhánh'),
+    }
+res_users()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

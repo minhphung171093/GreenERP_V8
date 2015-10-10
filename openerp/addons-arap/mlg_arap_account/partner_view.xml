@@ -42,6 +42,17 @@
                 </field>
             </field>
         </record>
+        <record id="view_res_partner_filter_inherit" model="ir.ui.view">
+            <field name="name">res.partner.filter.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                	<field name="ma_doi_tuong"/>
+                </field>
+            </field>
+        </record>
 
 <!-- action đối tượng -->
 		<record id="view_tai_xe_tree" model="ir.ui.view">
@@ -92,7 +103,7 @@
 	                            </div>
 	                        </group>
 	                        <group>
-	                        	<field name="cmnd" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="cmnd"/>
 	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="phone" string="Điện thoại"/>
@@ -106,7 +117,7 @@
 									<group>
 			                        	<field name="property_account_receivable" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
-			                        	<field name="property_account_payable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="property_account_payable" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
@@ -215,7 +226,7 @@
 	                            </div>
 	                        </group>
 	                        <group>
-	                        	<field name="cmnd" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="cmnd"/>
 	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="phone" string="Điện thoại"/>
@@ -229,7 +240,7 @@
 									<group>
 			                        	<field name="property_account_receivable" string="Chi nhánh đầu tư" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
-			                        	<field name="property_account_payable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="property_account_payable" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
@@ -339,7 +350,7 @@
 	                            </div>
 	                        </group>
 	                        <group>
-	                        	<field name="cmnd" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+	                        	<field name="cmnd"/>
 	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="phone" string="Điện thoại"/>
@@ -353,7 +364,7 @@
 									<group>
 			                        	<field name="property_account_receivable" string="Phòng ban" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':[('taixe','=',False)],'required':[('taixe','=',True)]}"/>
-			                        	<field name="property_account_payable" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="property_account_payable" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>

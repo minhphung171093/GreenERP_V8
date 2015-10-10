@@ -93,13 +93,23 @@ class res_partner(osv.osv):
         if not name:
             ids = self.search(cr, user, args, limit=limit, context=context)
         else:
-            ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
-            if not ids:
-                ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
+            ids = self.search(cr, user, [('ma_doi_tuong',operator,name)] + args, limit=limit, context=context)
         return self.name_get(cr, user, ids, context=context)
     
     def onchange_property_account_receivable(self, cr, uid, ids, property_account_receivable=False, context=None):
         return {'value': {'property_account_payable':property_account_receivable}}
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        res = []
+        for record in self.browse(cr, uid, ids, context=context):
+            name = record.ma_doi_tuong
+            res.append((record.id, name))
+        return res
+    
 res_partner()
 
 class chi_nhanh_line(osv.osv):
