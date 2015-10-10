@@ -201,7 +201,7 @@ class account_invoice(osv.osv):
     def _get_chinhanh(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid)
         if not user.chinhanh_id:
-            raise osv.except_osv(_('Cảnh báo!'), _('Vui lòng định nghĩa chi nhánh cho người dùng "%s" '%(user.name)))
+            raise osv.except_osv(_('Cảnh báo!'), _('''Vui lòng định nghĩa chi nhánh cho người dùng '%s' '''%(user.name)))
         return user.chinhanh_id and user.chinhanh_id.id or False
     
     def _get_journal(self, cr, uid, context=None):
