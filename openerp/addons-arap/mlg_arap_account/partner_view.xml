@@ -90,6 +90,7 @@
 	                    <group>
 	                        <group>
 	                        	<field name="ma_doi_tuong" string="Mã tài xế" required='1'/>
+	                        	<field name="cmnd"/>
 	                        	<label for="street" string="Address" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                            <div attrs="{'invisible':[('nhadautu','=',False)]}">
 	                                <field name="street" placeholder="Street..."/>
@@ -103,7 +104,6 @@
 	                            </div>
 	                        </group>
 	                        <group>
-	                        	<field name="cmnd"/>
 	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="phone" string="Điện thoại"/>
@@ -213,6 +213,7 @@
 	                    <group>
 	                        <group>
 	                        	<field name="ma_doi_tuong" string="Mã nhà đầu tư" required='1'/>
+	                        	<field name="cmnd"/>
 	                        	<label for="street" string="Address" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                            <div attrs="{'invisible':[('nhadautu','=',False)]}">
 	                                <field name="street" placeholder="Street..."/>
@@ -226,7 +227,6 @@
 	                            </div>
 	                        </group>
 	                        <group>
-	                        	<field name="cmnd"/>
 	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="phone" string="Điện thoại"/>
@@ -337,6 +337,7 @@
 	                    <group>
 	                        <group>
 	                        	<field name="ma_doi_tuong" string="Mã nhân viên văn phòng" required='1'/>
+	                        	<field name="cmnd"/>
 	                        	<label for="street" string="Address" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                            <div attrs="{'invisible':[('nhadautu','=',False)]}">
 	                                <field name="street" placeholder="Street..."/>
@@ -350,7 +351,6 @@
 	                            </div>
 	                        </group>
 	                        <group>
-	                        	<field name="cmnd"/>
 	                        	<field name="mst" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="phone" string="Điện thoại"/>
