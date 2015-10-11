@@ -84,15 +84,21 @@ class res_partner(osv.osv):
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context is None:
             context = {}
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
         if context.get('cong_no_thu', False) and context.get('loai_doituong', False):
             if context['loai_doituong']=='taixe':
-                partner_ids = self.search(cr, uid, [('taixe','=',True)])
+                partner_ids = self.search(cr, uid, [('taixe','=',True),('property_account_receivable.parent_id','=',chinhanh_id)])
                 args += [('id','in',partner_ids)]
             if context['loai_doituong']=='nhadautu':
-                partner_ids = self.search(cr, uid, [('nhadautu','=',True)])
-                args += [('id','in',partner_ids)]
+                sql = '''
+                    select partner_id from chi_nhanh_line where chinhanh_id=%s
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
+                args += [('nhadautu','=',True),('id','in',partner_ids)]
             if context['loai_doituong']=='nhanvienvanphong':
-                partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True)])
+                partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',chinhanh_id)])
                 args += [('id','in',partner_ids)]
         return super(res_partner, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
     
