@@ -61,6 +61,13 @@ class loai_vi_pham(osv.osv):
     }
 loai_vi_pham()
 
+class loai_tam_ung(osv.osv):
+    _name = "loai.tam.ung"
+    _columns = {
+        'name': fields.char('Tên', size=1024, required=True),
+    }
+loai_tam_ung()
+
 class bai_giaoca(osv.osv):
     _name = "bai.giaoca"
     _columns = {
@@ -178,6 +185,7 @@ class account_invoice(osv.osv):
         'loai_doituong_id': fields.related('partner_id', 'loai_doituong_id',type='many2one',relation='loai.doi.tuong',string='Loại đối tượng', readonly=True, store=True),
         'so_hoa_don':fields.char('Số hóa đơn',size = 64),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
+        'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng'),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
         'chinhanh_ndt_id': fields.many2one('account.account','Chi nhánh'),
@@ -581,6 +589,12 @@ class account_move_line(osv.osv):
                 result[line.id] = 'Thu'
         return result
     
+    def _get_con_lai(self, cr, uid, ids, name, arg, context=None):
+        result = {}
+        for line in self.browse(cr, uid, ids):
+            result[line.id] = line.debit - line.credit
+        return result
+    
     _columns = {
         'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
@@ -598,6 +612,7 @@ class account_move_line(osv.osv):
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('tam_ung','Tạm ứng'),],'Loại công nợ'),
         'thu_chi': fields.function(_get_thu_chi,type='char', string='Thu/Chi', store=True),
+        'con_lai': fields.function(_get_con_lai,type='float', string='Còn lại', store=True),
     }
     
 account_move_line()

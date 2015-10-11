@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mlg_arap_account_1,thungan.bai.giaoca,mlg_arap_account.model_thungan_bai_giaoca,base.group_user,1,1,1,1
+access_mlg_arap_account_2,dieuhanh.bai.giaoca,mlg_arap_account.model_dieuhanh_bai_giaoca,base.group_user,1,1,1,1
+access_mlg_arap_account_3,loai.doi.tuong,mlg_arap_account.model_loai_doi_tuong,base.group_user,1,1,1,1
+access_mlg_arap_account_4,loai.ky.quy,mlg_arap_account.model_loai_ky_quy,base.group_user,1,1,1,1
+access_mlg_arap_account_5,loai.vi.pham,mlg_arap_account.model_loai_vi_pham,base.group_user,1,1,1,1
+access_mlg_arap_account_6,loai.tam.ung,mlg_arap_account.model_loai_tam_ung,base.group_user,1,1,1,1
+access_mlg_arap_account_7,bai.giaoca,mlg_arap_account.model_bai_giaoca,base.group_user,1,1,1,1
+access_mlg_arap_account_8,bien.so.xe,mlg_arap_account.model_bien_so_xe,base.group_user,1,1,1,1
+access_mlg_arap_account_9,ma.xuong,mlg_arap_account.model_ma_xuong,base.group_user,1,1,1,1
+access_mlg_arap_account_10,chi.nhanh.line,mlg_arap_account.model_chi_nhanh_line,base.group_user,1,1,1,1

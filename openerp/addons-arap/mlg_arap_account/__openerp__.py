@@ -26,6 +26,7 @@
     'sequence': 1,
     'depends': ['mlg_arap_base','account_accountant','account_cancel','report_aeroo_controller','report_aeroo'],
     'data': [
+        'security/ir.model.access.csv',
         'report/danhsach_congno_view.xml',
         'wizard/danhsach_congno_view.xml',
         'account_data.xml',
@@ -38,6 +39,8 @@
     'css' : [
     ],
     'qweb': [
+    ],
+    'js': [
     ],
     'installable': True,
     'auto_install': False,

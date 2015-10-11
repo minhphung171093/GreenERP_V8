@@ -96,6 +96,24 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_loai_ky_quy_tree"/>
         </record>
+        
+<!-- Loại tạm ứng -->    
+    	<record id="view_loai_tam_ung_tree" model="ir.ui.view">
+            <field name="name">loai.tam.ung.tree</field>
+            <field name="model">loai.tam.ung</field>
+            <field name="arch" type="xml">
+                <tree string="Loại tạm ứng" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_tam_ung" model="ir.actions.act_window">
+            <field name="name">Loại tạm ứng</field>
+            <field name="res_model">loai.tam.ung</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_tam_ung_tree"/>
+        </record>
 
 <!-- Loại vi phạm -->    
     	<record id="view_loai_vi_pham_tree" model="ir.ui.view">
@@ -164,6 +182,9 @@
 	        	</xpath>
 	        	<xpath expr="//field[@name='reconcile_ref']" position="attributes">
 	        		<attribute name="invisible">1</attribute>
+	        	</xpath>
+	        	<xpath expr="//field[@name='credit']" position="after">
+	        		<field name="con_lai"/>
 	        	</xpath>
             </field>
         </record>
@@ -252,6 +273,18 @@
             res_model="account.move.line"
             src_model="account.account"
             key2="tree_but_open"/>
+            
+        <record id="view_account_tree_inherit" model="ir.ui.view">
+            <field name="name">account.account.tree.inherit</field>
+            <field name="model">account.account</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_account_tree"/>
+            <field name="arch" type="xml">
+	        	<xpath expr="//field[@name='type']" position="attributes">
+	        		<attribute name="invisible">1</attribute>
+	        	</xpath>
+            </field>
+        </record>
 		
 <!-- Nợ doanh thu -->
 		<record id="view_no_doanh_thu_filter" model="ir.ui.view">
@@ -642,8 +675,8 @@
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
-			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hoa_don"/>
@@ -799,8 +832,8 @@
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
-			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="loai_kyquy_id" options="{'no_create': True}"/>
@@ -1110,8 +1143,8 @@
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
-			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hop_dong"/>
@@ -1268,6 +1301,7 @@
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hop_dong"/>
@@ -1422,6 +1456,7 @@
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hop_dong"/>
@@ -2043,8 +2078,8 @@
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
-			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hoa_don"/>
@@ -2200,8 +2235,8 @@
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
-			                    <field name="bien_so_xe"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="loai_kyquy_id" options="{'no_create': True}"/>
@@ -2359,6 +2394,7 @@
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hop_dong"/>
+			                    <field name="loai_tamung_id" options="{'no_create': True}"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">

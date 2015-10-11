@@ -1027,16 +1027,18 @@ instance.web.UserMenu =  instance.web.Widget.extend({
             if (!self.session.uid)
                 return;
             var func = new instance.web.Model("res.users").get_func("read");
-            return self.alive(func(self.session.uid, ["name", "company_id"])).then(function(res) {
+            return self.alive(func(self.session.uid, ["name", "company_id", "chinhanh_id"])).then(function(res) {
                 var topbar_name = res.name;
+                var chinhanh = res.chinhanh_id[1];
+                var chinhanh_name=chinhanh.split("-")[1]
                 if(instance.session.debug)
-                    topbar_name = _.str.sprintf("%s (%s)", topbar_name, instance.session.db);
+                    topbar_name = _.str.sprintf("%s - %s (%s)", topbar_name, chinhanh_name, instance.session.db);
                 if(res.company_id[0] > 1)
-                    topbar_name = _.str.sprintf("%s (%s)", topbar_name, res.company_id[1]);
-                self.$el.find('.oe_topbar_name').text(topbar_name);
+                    topbar_name = _.str.sprintf("%s - %s (%s)", topbar_name, chinhanh_name, res.company_id[1]);
                 if (!instance.session.debug) {
-                    topbar_name = _.str.sprintf("%s (%s)", topbar_name, instance.session.db);
+                    topbar_name = _.str.sprintf("%s - %s", topbar_name, chinhanh_name);
                 }
+                self.$el.find('.oe_topbar_name').text(topbar_name);
                 var avatar_src = self.session.url('/web/binary/image', {model:'res.users', field: 'image_small', id: self.session.uid});
                 $avatar.attr('src', avatar_src);
 

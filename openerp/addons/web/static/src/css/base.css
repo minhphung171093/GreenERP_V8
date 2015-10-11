@@ -66,7 +66,7 @@
 }
 
 .navbar .oe_topbar_name {
-  max-width: 150px;
+  max-width: 350px;
   display: inline-block;
   height: 15px;
   text-overflow: ellipsis;

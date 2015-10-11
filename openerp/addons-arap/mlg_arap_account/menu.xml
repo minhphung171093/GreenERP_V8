@@ -70,6 +70,9 @@
 		<record model="ir.ui.menu" id="account_voucher.menu_action_vendor_payment">
 			<field name="active" eval="False"/>
 		</record>
+		<record model="ir.ui.menu" id="base.menu_base_partner">
+			<field name="active" eval="False"/>
+		</record>
 		
 		<menuitem id="menu_root_doituong"
 			name="Đối Tượng" sequence="1"/>
@@ -213,6 +216,11 @@
 					action="action_loai_vi_pham"
 					name="Loại vi phạm"
 					parent="menu_danhmuc_dungchung" sequence="6"/>
+					
+				<menuitem id="menu_action_loai_tam_ung"
+					action="action_loai_tam_ung"
+					name="Loại tạm ứng"
+					parent="menu_danhmuc_dungchung" sequence="7"/>
 					
 				<menuitem id="menu_action_ma_xuong"
 					action="action_ma_xuong"
