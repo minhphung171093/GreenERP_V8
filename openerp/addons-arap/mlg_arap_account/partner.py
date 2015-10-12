@@ -71,6 +71,7 @@ class res_partner(osv.osv):
         'mst': fields.char('Mã số thuế', size=1024),
         'giayphep_kinhdoanh': fields.char('Mã số giấy phép kinh doanh', size=1024),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
+        'create_user_id': fields.many2one('res.users','User'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):
@@ -79,6 +80,7 @@ class res_partner(osv.osv):
 
     _defaults = {
         'chinhanh_id': _get_chinhanh,
+        'create_user_id': lambda self,cr, uid, context: uid,
     }
     
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
@@ -131,12 +133,14 @@ class res_partner(osv.osv):
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = {}
+        user = self.pool.get('res.users').browse(cr, uid, uid)
         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
         return super(res_partner, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
-        user = self.pool.get('res.users').browse(cr, uid, uid)
-        vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+        for line in self.browse(cr, uid, ids):
+            user = line.create_user_id
+            vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
         return super(res_partner, self).write(cr, uid, ids, vals, context)
     
 res_partner()

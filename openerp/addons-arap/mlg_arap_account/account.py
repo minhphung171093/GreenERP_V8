@@ -247,9 +247,9 @@ class account_invoice(osv.osv):
         return super(account_invoice, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
-        user = self.pool.get('res.users').browse(cr, uid, uid)
-        vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
         for line in self.browse(cr, uid, ids):
+            user = line.user_id
+            vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
             if (vals.get('loai_doituong',False)!='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong!='nhadautu')) and vals.get('partner_id',False):
                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
                 if context.get('default_type',False)=='out_invoice':
@@ -301,6 +301,9 @@ class account_invoice(osv.osv):
                     chinhanh_id = partner.property_account_payable.parent_id.id
             else:
                 user = self.pool.get('res.users').browse(cr, uid, uid)
+                if ids:
+                    invoice = self.browse(cr, uid, ids[0])
+                    user = invoice.user_id
                 chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
                 sql = '''
                     select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
@@ -322,6 +325,9 @@ class account_invoice(osv.osv):
         domain = {}
         vals = {'partner_id':False,'account_id':False}
         user = self.pool.get('res.users').browse(cr, uid, uid)
+        if ids:
+            invoice = self.browse(cr, uid, ids[0])
+            user = invoice.user_id
         chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
         if loai_doituong=='taixe':
             domain={'partner_id': [('taixe','=',True),('property_account_receivable.parent_id','=',chinhanh_id)]}
