@@ -14,5 +14,5 @@
     'data': [
         'views/web_adblock.xml',
     ],
-    'auto_install': True,
+    'auto_install': False,
 }

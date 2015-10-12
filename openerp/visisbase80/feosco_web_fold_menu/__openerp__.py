@@ -13,7 +13,7 @@ Web Show Hide Menu
     'website': 'http://feosco.com',
     'depends': ['web'],
     'data': ['views/fold_menu.xml'],
-    'auto_install': True,
+    'auto_install': False,
     'active': False,
 
     'qweb' : [
