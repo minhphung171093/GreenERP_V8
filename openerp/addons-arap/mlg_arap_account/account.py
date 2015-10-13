@@ -287,6 +287,8 @@ class account_invoice(osv.osv):
         datas['form'] = self.read(cr, uid, ids)[0]
         datas['form'].update({'active_id':context.get('active_ids',False)})
         name_report = context['name_report']
+        invoice = self.browse(cr, uid, ids[0])
+        name_report +='_'+invoice.loai_doituong
         return {'type': 'ir.actions.report.xml', 'report_name': name_report, 'datas': datas}
     
     def onchange_doituong(self, cr, uid, ids, partner_id=False,loai_doituong=False, context=None):

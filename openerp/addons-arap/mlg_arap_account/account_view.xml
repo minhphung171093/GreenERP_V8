@@ -340,7 +340,7 @@
             <field name="arch" type="xml">
                 <form string="Nợ doanh thu" version='7.0'>
 					<header>
-	                    <button name="in_phieu" states="draft" type="object" string="In" class="oe_highlight" context="{'name_report':'form_no_doanh_thu_report'}"/>
+	                    <button name="in_phieu" type="object" string="In" class="oe_highlight" context="{'name_report':'form_no_doanh_thu_report'}"/>
 	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
@@ -1744,6 +1744,7 @@
             <field name="arch" type="xml">
                 <form string="Chi nợ doanh thu" version='7.0'>
 					<header>
+	                    <button name="in_phieu" type="object" string="In" class="oe_highlight" context="{'name_report':'form_chi_no_doanh_thu_report'}"/>
 	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
