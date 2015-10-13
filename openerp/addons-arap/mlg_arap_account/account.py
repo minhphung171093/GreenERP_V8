@@ -279,6 +279,16 @@ class account_invoice(osv.osv):
 #                 vals.update({'account_id':account_id})
         return super(account_invoice, self).write(cr, uid, ids, vals, context)
     
+    def in_phieu(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        datas = {'ids': ids}
+        datas['model'] = 'account.invoice'
+        datas['form'] = self.read(cr, uid, ids)[0]
+        datas['form'].update({'active_id':context.get('active_ids',False)})
+        name_report = context['name_report']
+        return {'type': 'ir.actions.report.xml', 'report_name': name_report, 'datas': datas}
+    
     def onchange_doituong(self, cr, uid, ids, partner_id=False,loai_doituong=False, context=None):
         vals = {}
         domain = {}

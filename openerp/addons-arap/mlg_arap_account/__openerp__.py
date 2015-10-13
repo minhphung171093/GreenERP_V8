@@ -28,6 +28,7 @@
     'data': [
         'security/ir.model.access.csv',
         'report/danhsach_congno_view.xml',
+        'report/form_congno_view.xml',
         'wizard/danhsach_congno_view.xml',
         'account_data.xml',
         'partner_view.xml',

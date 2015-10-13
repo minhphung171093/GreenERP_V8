@@ -97,10 +97,10 @@
 		            action="action_partner_nvvp" sequence="30"/>
 	            
 		<menuitem id="menu_root_congno"
-			name="Công Nợ Thu" sequence="2"/>
+			name="Phải Thu" sequence="2"/>
 			
 			<menuitem id="menu_cong_no"
-				name="Công nợ thu"
+				name="Phải thu"
 				parent="menu_root_congno" sequence="10"/>
 				
 				<menuitem id="menu_action_no_doanh_thu"
@@ -149,10 +149,10 @@
 					parent="menu_cong_no" sequence="25"/>
 		
 		<menuitem id="menu_root_congno_chi"
-			name="Công Nợ Chi" sequence="3"/>
+			name="Phải Chi" sequence="3"/>
 			
 			<menuitem id="menu_congno_chi"
-				name="Công nợ chi"
+				name="Phải chi"
 				parent="menu_root_congno_chi" sequence="3"/>
 				
 				<menuitem id="menu_action_chi_no_doanh_thu"
