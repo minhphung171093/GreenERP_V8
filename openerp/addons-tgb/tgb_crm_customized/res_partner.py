@@ -92,6 +92,79 @@ class res_partner(osv.osv):
                 vals.update({'document_collection_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})]})
         return super(res_partner, self).create(cr, uid, vals, context)
     
+    def send_mail(self, cr, uid, lead_email, msg_id,context=None):
+        mail_message_pool = self.pool.get('mail.message')
+        mail_mail = self.pool.get('mail.mail')
+        msg = mail_message_pool.browse(cr, SUPERUSER_ID, msg_id, context=context)
+        body_html = msg.body
+        # email_from: partner-user alias or partner email or mail.message email_from
+        if msg.author_id and msg.author_id.user_ids and msg.author_id.user_ids[0].alias_domain and msg.author_id.user_ids[0].alias_name:
+            email_from = '%s <%s@%s>' % (msg.author_id.name, msg.author_id.user_ids[0].alias_name, msg.author_id.user_ids[0].alias_domain)
+        elif msg.author_id:
+            email_from = '%s <%s>' % (msg.author_id.name, msg.author_id.email)
+        else:
+            email_from = msg.email_from
+
+        references = False
+        if msg.parent_id:
+            references = msg.parent_id.message_id
+
+        mail_values = {
+            'mail_message_id': msg.id,
+            'auto_delete': True,
+            'body_html': body_html,
+            'email_from': email_from,
+            'email_to' : lead_email,
+            'references': references,
+        }
+        email_notif_id = mail_mail.create(cr, uid, mail_values, context=context)
+        try:
+             mail_mail.send(cr, uid, [email_notif_id], context=context)
+        except Exception:
+            a = 1
+        return True
+    
+    def send_mail_for_admin(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        partner = user.partner_id
+        partner.signup_prepare()
+        body = ''
+        doc_obj = self.pool.get('document.collection')
+        doc_ids = doc_obj.search(cr, uid, [('alert_date','<',time.strftime('%Y-%m-%d')),('partner_id','!=',False)],order='partner_id')
+        partner_id = False
+        temp=0
+        for seq,doc in enumerate(doc_obj.browse(cr, uid, doc_ids)):
+            if temp and doc.partner_id!=partner_id:
+                body+='</p>'
+                temp = 0
+            if doc.partner_id!=partner_id and \
+            ((not doc.document_sales_invoice or not doc.document_receipt or not doc.document_payment_voucher or not doc.document_bank_statement or not doc.document_rental_contract or not doc.document_petty_cash) \
+             or (not doc.tracking_sales_invoice or not doc.tracking_receipt or not doc.tracking_payment_voucher or not doc.tracking_bank_statement or not doc.tracking_rental_contract or not doc.tracking_petty_cash)):
+                temp = 1
+                body+='''
+                    <p><b>%s</b><br>
+                '''%(doc.partner_id.name)
+                partner_id = doc.partner_id
+            if doc.partner_id==partner_id and \
+            (not doc.document_sales_invoice or not doc.document_receipt or not doc.document_payment_voucher or not doc.document_bank_statement or not doc.document_rental_contract or not doc.document_petty_cash):
+                body+='''
+                    %s document still pending<br>
+                '''%(doc.name)
+            if doc.partner_id==partner_id and \
+            (not doc.tracking_sales_invoice or not doc.tracking_receipt or not doc.tracking_payment_voucher or not doc.tracking_bank_statement or not doc.tracking_rental_contract or not doc.tracking_petty_cash):
+                body+='''
+                    %s tracking still pending<br>
+                '''%(doc.name)
+        if body:
+            post_values = {
+                'subject': 'Still Pending',
+                'body': body,
+                'partner_ids': [],
+                }
+            lead_email = partner.email
+            msg_id = self.message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+            self.send_mail(cr, uid, lead_email, msg_id, context)
+        return True
     
 res_partner()
 

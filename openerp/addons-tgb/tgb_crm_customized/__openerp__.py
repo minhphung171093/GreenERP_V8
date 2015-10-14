@@ -28,6 +28,7 @@
     'data': [
         'res_partner_view.xml',
         'hr_employee_view.xml',
+        'schedule.xml',
     ],
     'css' : [
     ],
