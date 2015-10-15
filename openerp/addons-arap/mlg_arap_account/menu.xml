@@ -147,6 +147,11 @@
 					action="action_hoan_tam_ung"
 					name="Hoàn tạm ứng"
 					parent="menu_cong_no" sequence="25"/>
+					
+				<menuitem id="menu_action_ql_bao_hiem"
+					action="action_ql_bao_hiem"
+					name="Quản lý bảo hiểm xe"
+					parent="menu_cong_no" sequence="30"/>
 		
 		<menuitem id="menu_root_congno_chi"
 			name="Phải Chi" sequence="3"/>
@@ -226,6 +231,11 @@
 					action="action_ma_xuong"
 					name="Mã xưởng"
 					parent="menu_danhmuc_dungchung" sequence="8"/>
+					
+				<menuitem id="menu_action_no_hang_muc"
+					action="action_no_hang_muc"
+					name="Nợ hạng mức"
+					parent="menu_danhmuc_dungchung" sequence="9"/>
 			
 			<menuitem id="account.menu_finance_entries"
 				name="Journal Entries"

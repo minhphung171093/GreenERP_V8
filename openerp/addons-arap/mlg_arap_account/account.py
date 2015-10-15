@@ -113,6 +113,93 @@ class ma_xuong(osv.osv):
     }
 ma_xuong()
 
+class no_hang_muc(osv.osv):
+    _name = "no.hang.muc"
+    _columns = {
+        'name': fields.many2one('res.partner','Đối tượng', required=True),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+                                      ('chi_ho_dien_thoai','Chi hộ điện thoại'),
+                                      ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
+                                      ('phai_thu_ky_quy','Phải thu ký quỹ'),
+                                      ('phat_vi_pham','Phạt vi phạm'),
+                                      ('thu_no_xuong','Thu nợ xưởng'),
+                                      ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
+                                      ('tra_gop_xe','Trả góp xe'),
+                                      ('hoan_tam_ung','Hoàn tạm ứng'),
+                                      ],'Loại công nợ', required=True),
+        'so_tien': fields.float('Số tiền', required=True),
+    }
+no_hang_muc()
+
+class ql_bao_hiem(osv.osv):
+    _name = "ql.bao.hiem"
+    
+    def _get_sotien(self, cr, uid, ids, name, arg, context=None):
+        result = {}
+        for line in self.browse(cr, uid, ids):
+            result[line.id] = {'sotien_datra':0,'sotien_conlai':0}
+            sql = '''
+                select amount_total, residual from account_invoice
+                    where state in ('open','paid') and partner_id=%s and so_hoa_don='%s' and bien_so_xe='%s' and mlg_type='phai_thu_bao_hiem'
+                        and date_invoice between '%s' and '%s' order by date_invoice limit 1
+            '''%(line.partner_id.id,line.so_hoa_don,line.name,line.ngay_tham_gia,line.ngay_ket_thuc)
+            cr.execute(sql)
+            invoice = cr.dictfetchone()
+            if invoice:
+                sotien = invoice['amount_total']
+                sotien_conlai = invoice['residual']
+                result[line.id] = {'sotien_datra':sotien-sotien_conlai,'sotien_conlai':sotien_conlai}
+        return result
+    
+    _columns = {
+        'name': fields.char('Biển số xe', size=1024, required=True),
+        'hieu_xe': fields.char('Hiệu xe', size=1024),
+        'dong_xe': fields.char('Dòng xe', size=1024),
+        'cap_noi_that': fields.char('Cấp nội thất', size=1024),
+        'partner_id': fields.many2one('res.partner','Nhà đầu tư', required=True),
+        'loai_hinh_kd': fields.selection([('thuong_quyen','Thương quyền'),
+                                      ('cong_ty','Công ty'),
+                                      ],'Loại hình kinh doanh'),
+        'ngay_tham_gia': fields.date('Ngày tham gia BH', required=True),
+        'ngay_ket_thuc': fields.date('Ngày kết thúc BH', required=True),
+        'so_hoa_don':fields.char('Số hóa đơn',size = 64, required=True),
+        'nha_cung_cap_bh':fields.char('Nhà cung cấp BH',size = 1024),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh', required=True),
+        'sotien_datra': fields.function(_get_sotien, type='float', string='Số tiền đã trả', multi='sotien'),
+        'sotien_conlai': fields.function(_get_sotien, type='float', string='Số tiền còn lại', multi='sotien'),
+        'currency_id': fields.many2one('res.currency','Đơn vị tiền tệ'),
+        'user_id': fields.many2one('res.users','Người tạo'),
+    }
+    
+    def _get_currency(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        return user.company_id and user.company_id.currency_id and user.company_id.currency_id.id or False
+    
+    def _get_chinhanh(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        return user.chinhanh_id and user.chinhanh_id.id or False
+    
+    _defaults = {
+        'currency_id': _get_currency,
+        'chinhanh_id': _get_chinhanh,
+        'user_id': lambda self,cr, uid, context: uid,
+    }
+    
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+        return super(ql_bao_hiem, self).create(cr, uid, vals, context)
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        for line in self.browse(cr, uid, ids):
+            user = line.user_id
+            vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+        return super(ql_bao_hiem, self).write(cr, uid, ids, vals, context)
+    
+ql_bao_hiem()
+
 class account_invoice(osv.osv):
     _inherit = "account.invoice"
     
@@ -244,6 +331,24 @@ class account_invoice(osv.osv):
             vals.update({'account_id':account_id})
         user = self.pool.get('res.users').browse(cr, uid, uid)
         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+        
+        if vals.get('mlg_type',False) and vals.get('partner_id',False):
+            if not vals.get('so_tien', False):
+                vals.update({'so_tien':0})
+            sql = '''
+                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from no_hang_muc where name=%s and mlg_type='%s'
+            '''%(vals['partner_id'],vals['mlg_type'])
+            cr.execute(sql)
+            sotien_hangmuc = cr.fetchone()[0]
+            sql = '''
+                select case when sum(residual)!=0 then sum(residual) else 0 end residual from account_invoice
+                    where partner_id=%s and mlg_type='%s' and state='open'
+            '''%(vals['partner_id'],vals['mlg_type'])
+            cr.execute(sql)
+            sotien_conno = cr.fetchone()[0]
+            if sotien_hangmuc and (sotien_conno+vals['so_tien'])>sotien_hangmuc:
+                raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo khi đang nợ vượt hạng mức!'))
+                
         return super(account_invoice, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
@@ -277,6 +382,23 @@ class account_invoice(osv.osv):
 #                 account_ids = [r[0] for r in cr.fetchall()]
 #                 account_id = account_ids and account_ids[0] or False
 #                 vals.update({'account_id':account_id})
+
+                
+            if vals.get('state',False)=='open' and line.type=='out_invoice':
+                sql = '''
+                    select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from no_hang_muc where name=%s and mlg_type='%s'
+                '''%(vals.get('partner_id',False) and vals['partner_id'] or line.partner_id.id,line.mlg_type)
+                cr.execute(sql)
+                sotien_hangmuc = cr.fetchone()[0]
+                sql = '''
+                    select case when sum(residual)!=0 then sum(residual) else 0 end residual from account_invoice
+                        where partner_id=%s and mlg_type='%s' and state='open'
+                '''%(vals.get('partner_id',False) and vals['partner_id'] or line.partner_id.id,line.mlg_type)
+                cr.execute(sql)
+                sotien_conno = cr.fetchone()[0]
+                if sotien_hangmuc and sotien_conno>sotien_hangmuc:
+                    raise osv.except_osv(_('Cảnh báo!'), _('Không thể duyệt khi đang nợ vượt hạng mức!'))
+                
         return super(account_invoice, self).write(cr, uid, ids, vals, context)
     
     def in_phieu(self, cr, uid, ids, context=None):

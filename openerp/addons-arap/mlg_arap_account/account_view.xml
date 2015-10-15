@@ -264,6 +264,26 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_ma_xuong_tree"/>
         </record>
+        
+<!-- Nợ hạng mức -->    
+    	<record id="view_no_hang_muc_tree" model="ir.ui.view">
+            <field name="name">no.hang.muc.tree</field>
+            <field name="model">no.hang.muc</field>
+            <field name="arch" type="xml">
+                <tree string="Nợ hạng mức" editable='top'>
+                    <field name="name" options="{'no_create': True}" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]"/>
+                    <field name="mlg_type"/>
+                    <field name="so_tien"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_no_hang_muc" model="ir.actions.act_window">
+            <field name="name">Nợ hạng mức</field>
+            <field name="res_model">no.hang.muc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_no_hang_muc_tree"/>
+        </record>
 
 <!-- Chỉnh sửa journal items -->
 		<act_window
@@ -284,6 +304,103 @@
 	        		<attribute name="invisible">1</attribute>
 	        	</xpath>
             </field>
+        </record>
+		
+<!-- QL BH Xe -->
+		<record id="view_ql_bao_hiem_filter" model="ir.ui.view">
+            <field name="name">no.doanh.thu.select</field>
+            <field name="model">ql.bao.hiem</field>
+            <field name="arch" type="xml">
+                <search string="Quản lý bảo hiểm xe">
+                	<field name="name"/>
+                    <field name="hieu_xe"/>
+                    <field name="dong_xe"/>
+                    <field name="cap_noi_that"/>
+                    <field name="partner_id"/>
+                    <field name="loai_hinh_kd"/>
+                    <field name="ngay_tham_gia"/>
+                    <field name="ngay_ket_thuc"/>
+                    <field name="so_hoa_don"/>
+                    <field name="nha_cung_cap_bh"/>
+                    <field name="chinhanh_id"/>
+                    <group expand="0" string="Group By">
+                    	<filter name="group_by_name" string="Biển số xe" context="{'group_by':'name'}"/>
+                    	<filter name="group_by_partner_id" string="Nhà đầu tư" context="{'group_by':'partner_id'}"/>
+                    	<filter name="group_by_ngay_tham_gia" string="Ngày tham gia" context="{'group_by':'ngay_tham_gia'}"/>
+                    	<filter name="group_by_ngay_ket_thuc" string="Ngày kết thúc" context="{'group_by':'ngay_ket_thuc'}"/>
+                    	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
+                    	<filter name="group_by_so_hoa_don" string="Số hóa đơn" context="{'group_by':'so_hoa_don'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+    	<record id="view_ql_bao_hiem_tree" model="ir.ui.view">
+            <field name="name">no.doanh.thu.tree</field>
+            <field name="model">ql.bao.hiem</field>
+            <field name="arch" type="xml">
+                <tree string="Quản lý bảo hiểm xe">
+                	<field name="name"/>
+                	<field name="chinhanh_id"/>
+                	<field name="partner_id"/>
+                	<field name="ngay_tham_gia"/>
+                    <field name="ngay_ket_thuc"/>
+                    <field name="so_hoa_don"/>
+                    <field name="sotien_datra"/>
+                    <field name="sotien_conlai"/>
+                    <field name="nha_cung_cap_bh" invisible='1'/>
+                    <field name="hieu_xe" invisible='1'/>
+                    <field name="dong_xe" invisible='1'/>
+                    <field name="cap_noi_that" invisible='1'/>
+                    <field name="loai_hinh_kd" invisible='1'/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_ql_bao_hiem_form" model="ir.ui.view">
+            <field name="name">no.doanh.thu.form</field>
+            <field name="model">ql.bao.hiem</field>
+            <field name="arch" type="xml">
+                <form string="Quản lý bảo hiểm xe" version='7.0'>
+					<header>
+						<field name="currency_id" invisible='1'/>
+						<field name="user_id" invisible='1'/>
+					</header>
+                	<sheet>
+                		<h1>
+                			<label string='Biển số xe'/>
+                			<field name="name" nolabel='1' class="oe_inline"/>
+                		</h1>
+	                    <group col="4" colspan="2">
+	                    	<group>
+		                    	<field name="chinhanh_id" readonly='1'/>
+			                    <field name="partner_id" options="{'no_create': True}" domain="[('nhadautu','=',True)]" context="{'cong_no_thu':1,'loai_doituong':'nhadautu'}"/>
+								<field name="ngay_tham_gia"/>
+			                    <field name="hieu_xe"/>
+			                    <field name="cap_noi_that"/>
+		                    </group>
+		                    <group>
+		                    	<field name="nha_cung_cap_bh"/>
+		                    	<field name="so_hoa_don"/>
+		                    	<field name="ngay_ket_thuc"/>
+		                    	<field name="dong_xe"/>
+		                    	<field name="loai_hinh_kd"/>
+		                    </group>
+	                    </group>
+	                    <group col="4" colspan="2">
+	                    	<field name="sotien_datra" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	<newline/>
+	                    	<field name="sotien_conlai" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    	</group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_ql_bao_hiem" model="ir.actions.act_window">
+            <field name="name">Quản lý bảo hiểm xe</field>
+            <field name="res_model">ql.bao.hiem</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_ql_bao_hiem_tree"/>
+            <field name="search_view_id" ref="view_ql_bao_hiem_filter"/>
         </record>
 		
 <!-- Nợ doanh thu -->
@@ -2393,6 +2510,7 @@
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hop_dong"/>

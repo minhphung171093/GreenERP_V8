@@ -14,5 +14,21 @@
             <field name="name">Nhân viên văn phòng</field>
         </record>
         
+        <record id="loai_tam_ung_1" model="loai.tam.ung">
+            <field name="name">Tạm ứng khó khăn</field>
+        </record>
+        
+        <record id="loai_tam_ung_2" model="loai.tam.ung">
+            <field name="name">Tạm ứng công tác</field>
+        </record>
+        
+        <record id="loai_tam_ung_3" model="loai.tam.ung">
+            <field name="name">Tạm ứng nhà đầu tư</field>
+        </record>
+        
+        <record id="loai_tam_ung_4" model="loai.tam.ung">
+            <field name="name">Tạm ứng khác</field>
+        </record>
+        
     </data>
 </openerp>
