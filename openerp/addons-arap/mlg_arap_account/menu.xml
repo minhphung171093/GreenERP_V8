@@ -148,11 +148,6 @@
 					name="Hoàn tạm ứng"
 					parent="menu_cong_no" sequence="25"/>
 					
-				<menuitem id="menu_action_ql_bao_hiem"
-					action="action_ql_bao_hiem"
-					name="Quản lý bảo hiểm xe"
-					parent="menu_cong_no" sequence="30"/>
-		
 		<menuitem id="menu_root_congno_chi"
 			name="Phải Chi" sequence="3"/>
 			
@@ -184,9 +179,21 @@
 					action="action_tam_ung"
 					name="Tạm ứng"
 					parent="menu_congno_chi" sequence="25"/>
-					
+		
+		<menuitem id="menu_root_baohiem_xe"
+			name="Bảo Hiểm Xe" sequence="5"/>
+			
+			<menuitem id="menu_baohiem_xe"
+				name="Bảo hiểm xe"
+				parent="menu_root_baohiem_xe" sequence="3"/>
+				
+				<menuitem id="menu_action_ql_bao_hiem"
+					action="action_ql_bao_hiem"
+					name="Quản lý bảo hiểm xe"
+					parent="menu_baohiem_xe" sequence="10"/>
+		
 		<menuitem id="menu_root_quanly"
-			name="Quản Lý" sequence="4"/>
+			name="Quản Lý" sequence="10"/>
 			
 			<menuitem id="menu_danhmuc_dungchung"
 				name="Danh mục dùng chung"
@@ -270,14 +277,14 @@
 					parent="menu_cauhinh" sequence="50"/>
 					
 		<menuitem id="menu_root_luocdo"
-			name="Lược Đồ" sequence="5"/>
+			name="Lược Đồ" sequence="15"/>
 			
 			<menuitem id="account.menu_finance_charts"
 				name="Cây biểu đồ"
 				parent="menu_root_luocdo" sequence="10"/>
 					
 		<menuitem id="menu_root_baocao"
-			name="Báo Cáo" sequence="6"/>
+			name="Báo Cáo" sequence="20"/>
 			
 			<menuitem id="menu_danhsach_congno"
 				name="Danh sách công nợ"
