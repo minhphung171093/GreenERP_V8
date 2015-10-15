@@ -1729,12 +1729,14 @@
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
 			                    <field name="account_id" string="Đội xe" context="{'show_doixe':1,'cong_no_thu_nhadautu':1,'chinhanh_ndt_id':chinhanh_ndt_id,'partner_id':partner_id}" attrs="{'readonly':[('loai_doituong','=','taixe')],'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
+			                    <field name="bien_so_xe"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hoa_don"/>
 			                    <field name="so_tien_tren_hd"/>
 			                    <field name="chung_tu_bao_hiem"/>
 			                    <field name="so_tien_tren_ct"/>
+			                    <field name="loai_tamung_id" options="{'no_create': True}"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">
