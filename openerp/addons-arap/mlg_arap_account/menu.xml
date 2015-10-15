@@ -286,6 +286,15 @@
 		<menuitem id="menu_root_baocao"
 			name="Báo Cáo" sequence="20"/>
 			
+			<menuitem id="menu_danhsach_baohiem_xe"
+				name="Danh sách bảo hiểm xe"
+				parent="menu_root_baocao" sequence="5"/>
+				
+				<menuitem id="menu_action_bao_hiem_xe_report"
+					name="DS Bảo hiểm xe"
+					action="action_bao_hiem_xe_report"
+					parent="menu_danhsach_baohiem_xe" sequence="10"/>
+			
 			<menuitem id="menu_danhsach_congno"
 				name="Danh sách công nợ"
 				parent="menu_root_baocao" sequence="10"/>

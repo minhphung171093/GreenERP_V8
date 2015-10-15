@@ -161,6 +161,40 @@
             <field name="target">new</field>
         </record>
 		
+<!-- Danh sách bảo hiểm xe -->
+		<record id="view_bao_hiem_xe_report" model="ir.ui.view">
+            <field name="name">phat.vi.pham.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Danh sách bảo hiểm xe" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    	<field name='bien_so_xe'/>
+	                    	<field name='so_hoa_don'/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('nhadautu','=',True)]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'bao_hiem_xe_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_bao_hiem_xe_report" model="ir.actions.act_window">
+            <field name="name">Danh sách bảo hiểm xe</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_bao_hiem_xe_report"/>
+            <field name="target">new</field>
+        </record>
 		
     </data>
 </openerp>
