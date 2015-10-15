@@ -271,7 +271,7 @@
             <field name="model">no.hang.muc</field>
             <field name="arch" type="xml">
                 <tree string="Nợ hạng mức" editable='top'>
-                    <field name="name" options="{'no_create': True}" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]"/>
+                    <field name="name"/>
                     <field name="mlg_type"/>
                     <field name="so_tien"/>
                 </tree>

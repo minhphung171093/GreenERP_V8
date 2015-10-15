@@ -116,7 +116,9 @@ ma_xuong()
 class no_hang_muc(osv.osv):
     _name = "no.hang.muc"
     _columns = {
-        'name': fields.many2one('res.partner','Đối tượng', required=True),
+        'name': fields.selection([('taixe','Tài xế'),
+                                           ('nhadautu','Nhà đầu tư'),
+                                           ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng', required=True),
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
@@ -332,12 +334,12 @@ class account_invoice(osv.osv):
         user = self.pool.get('res.users').browse(cr, uid, uid)
         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
         
-        if vals.get('mlg_type',False) and vals.get('partner_id',False):
+        if vals.get('mlg_type',False) and vals.get('partner_id',False) and vals.get('loai_doituong',False):
             if not vals.get('so_tien', False):
                 vals.update({'so_tien':0})
             sql = '''
-                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from no_hang_muc where name=%s and mlg_type='%s'
-            '''%(vals['partner_id'],vals['mlg_type'])
+                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from no_hang_muc where name='%s' and mlg_type='%s'
+            '''%(vals['loai_doituong'],vals['mlg_type'])
             cr.execute(sql)
             sotien_hangmuc = cr.fetchone()[0]
             sql = '''
@@ -386,8 +388,8 @@ class account_invoice(osv.osv):
                 
             if vals.get('state',False)=='open' and line.type=='out_invoice':
                 sql = '''
-                    select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from no_hang_muc where name=%s and mlg_type='%s'
-                '''%(vals.get('partner_id',False) and vals['partner_id'] or line.partner_id.id,line.mlg_type)
+                    select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from no_hang_muc where name='%s' and mlg_type='%s'
+                '''%(vals.get('loai_doituong',False) and vals['loai_doituong'] or line.loai_doituong,line.mlg_type)
                 cr.execute(sql)
                 sotien_hangmuc = cr.fetchone()[0]
                 sql = '''
