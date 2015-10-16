@@ -37,9 +37,9 @@ class Parser(report_sxw.rml_parse):
     
     def get_loaihinhkinhdoanh(self, loai_hinh_kd):
         if loai_hinh_kd=='thuong_quyen':
-            return 'Thương quyền'
+            return u'Thương quyền'
         else:
-            return 'Công ty'
+            return u'Công ty'
     
     def get_sotien_conlai(self, bh_id):
         return bh_id and self.pool.get('ql.bao.hiem').browse(self.cr, self.uid, bh_id).sotien_conlai or 0

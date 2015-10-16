@@ -110,7 +110,20 @@ class ma_xuong(osv.osv):
     _name = "ma.xuong"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'code': fields.char('Mã', size=1024, required=True),
     }
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        res = []
+        for record in self.browse(cr, uid, ids, context=context):
+            name = '['+(record.code or '')+']'+' '+(record.name or '')
+            res.append((record.id, name))
+        return res
+    
 ma_xuong()
 
 class no_hang_muc(osv.osv):
