@@ -23,6 +23,7 @@ import openerp.addons.decimal_precision as dp
 from openerp.osv import fields, osv, expression
 from openerp.tools.translate import _
 import time
+from openerp.exceptions import except_orm, Warning, RedirectWarning
 
 class thungan_bai_giaoca(osv.osv):
     _name = "thungan.bai.giaoca"
@@ -363,7 +364,8 @@ class account_invoice(osv.osv):
             sotien_conno = cr.fetchone()[0]
             if sotien_hangmuc and (sotien_conno+vals['so_tien'])>sotien_hangmuc:
                 raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo khi đang nợ vượt hạng mức!'))
-                
+        if not vals.get('so_tien',False):
+            raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo với số tiền bằng "0"!'))
         return super(account_invoice, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
@@ -413,7 +415,6 @@ class account_invoice(osv.osv):
                 sotien_conno = cr.fetchone()[0]
                 if sotien_hangmuc and sotien_conno>sotien_hangmuc:
                     raise osv.except_osv(_('Cảnh báo!'), _('Không thể duyệt khi đang nợ vượt hạng mức!'))
-                
         return super(account_invoice, self).write(cr, uid, ids, vals, context)
     
     def in_phieu(self, cr, uid, ids, context=None):
