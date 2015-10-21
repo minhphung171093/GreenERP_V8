@@ -198,21 +198,21 @@ class account_invoice(osv.osv):
      
 account_invoice()
 
-# class account_invoice_line(osv.osv):
-#     _inherit = "account.invoice.line"
-#     
-#     _columns = {
-#         'stock_move_id': fields.many2one('stock.move', 'Stock Move'),
-#     }
-#     
-# account_invoice_line()
+class account_invoice_line(osv.osv):
+    _inherit = "account.invoice.line"
+     
+    _columns = {
+        'stock_move_id': fields.many2one('stock.move', 'Stock Move'),
+    }
+     
+account_invoice_line()
 
 class account_move(osv.osv):
     _inherit = "account.move"
 
     _columns = {
         'date_document': fields.date('Document Date', states={'posted':[('readonly',True)]}),
-#         'stock_move_id': fields.many2one('stock.move', 'Stock Move'),
+        'stock_move_id': fields.many2one('stock.move', 'Stock Move'),
     }
     
     
