@@ -59,9 +59,9 @@
             <field name="name">tai.xe.tree</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <tree string="Tài xế">
-                    <field name="ma_doi_tuong" string="Mã tài xế"/>
-                    <field name="display_name" string="Tên tài xế"/>
+                <tree string="Lái xe">
+                    <field name="ma_doi_tuong" string="Mã lái xe"/>
+                    <field name="display_name" string="Tên lái xe"/>
                     <field name="function" invisible="1"/>
                     <field name="phone" string="Điện thoại"/>
                     <field name="bai_giaoca_id"/>
@@ -77,7 +77,7 @@
             <field name="name">tai.xe.form</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <form string="Tài xế">
+                <form string="Lái xe">
 	                <sheet>
 	                    <field name="image" widget="image" class="oe_left oe_avatar" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
 	                    <div class="oe_title oe_left">
@@ -89,7 +89,7 @@
 	
 	                    <group>
 	                        <group>
-	                        	<field name="ma_doi_tuong" string="Mã tài xế" required='1'/>
+	                        	<field name="ma_doi_tuong" string="Mã lái xe" required='1'/>
 	                        	<field name="cmnd"/>
 	                        	<label for="street" string="Address" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                            <div attrs="{'invisible':[('nhadautu','=',False)]}">
@@ -119,6 +119,10 @@
 			                        	<field name="property_account_receivable" domain="[('parent_id','=',chinhanh_id)]" options="{'no_create': True}" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" options="{'no_create': True}" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':['|',('taixe','=',False),('property_account_receivable','=',False)],'required':[('taixe','=',True)]}"/>
 			                        	<field name="property_account_payable" options="{'no_create': True}" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="sotien_phaithu"/>
+			                        	<field name="sotien_phaithu_dinhky"/>
+			                        	<field name="sotien_dathu"/>
+			                        	<field name="sotien_conlai"/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
@@ -152,7 +156,7 @@
             </field>
         </record>
         <record id="action_partner_taixe" model="ir.actions.act_window">
-            <field name="name">Tài xế</field>
+            <field name="name">Lái xe</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
@@ -243,6 +247,10 @@
 			                        	<field name="property_account_receivable" domain="[('parent_id','=',chinhanh_id)]" options="{'no_create': True}" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" options="{'no_create': True}" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':['|',('taixe','=',False),('property_account_receivable','=',False)],'required':[('taixe','=',True)]}"/>
 			                        	<field name="property_account_payable" options="{'no_create': True}" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="sotien_phaithu"/>
+			                        	<field name="sotien_phaithu_dinhky"/>
+			                        	<field name="sotien_dathu"/>
+			                        	<field name="sotien_conlai"/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
@@ -309,8 +317,8 @@
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
                 <tree string="Nhân viên văn phòng">
-                    <field name="ma_doi_tuong" string="Mã tài xế"/>
-                    <field name="display_name" string="Tên tài xế"/>
+                    <field name="ma_doi_tuong" string="Mã nhân viên"/>
+                    <field name="display_name" string="Tên nhân viên"/>
                     <field name="function" invisible="1"/>
                     <field name="phone" string="Điện thoại"/>
                     <field name="bai_giaoca_id"/>
@@ -368,6 +376,10 @@
 			                        	<field name="property_account_receivable" domain="[('parent_id','=',chinhanh_id)]" options="{'no_create': True}" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" options="{'no_create': True}" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':['|',('taixe','=',False),('property_account_receivable','=',False)],'required':[('taixe','=',True)]}"/>
 			                        	<field name="property_account_payable" options="{'no_create': True}" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="sotien_phaithu"/>
+			                        	<field name="sotien_phaithu_dinhky"/>
+			                        	<field name="sotien_dathu"/>
+			                        	<field name="sotien_conlai"/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>

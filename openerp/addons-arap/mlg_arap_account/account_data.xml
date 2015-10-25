@@ -3,7 +3,7 @@
 	<data noupdate="1">
 
         <record id="loai_doi_tuong_taixe" model="loai.doi.tuong">
-            <field name="name">Tài xế</field>
+            <field name="name">Lái xe</field>
         </record>
         
         <record id="loai_doi_tuong_ndt" model="loai.doi.tuong">

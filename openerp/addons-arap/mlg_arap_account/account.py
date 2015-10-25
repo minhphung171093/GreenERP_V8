@@ -130,7 +130,7 @@ ma_xuong()
 class no_hang_muc(osv.osv):
     _name = "no.hang.muc"
     _columns = {
-        'name': fields.selection([('taixe','Tài xế'),
+        'name': fields.selection([('taixe','Lái xe'),
                                            ('nhadautu','Nhà đầu tư'),
                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng', required=True),
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
@@ -300,7 +300,7 @@ class account_invoice(osv.osv):
         'chung_tu_bao_hiem':fields.char('Chứng từ bảo hiểm',size = 1024, readonly=True, states={'draft': [('readonly', False)]}),
         'so_tien_tren_ct': fields.float('Số tiền trên chứng từ', readonly=True, states={'draft': [('readonly', False)]}),
         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã bảng chiết tính chi phí sửa', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
-        'loai_doituong': fields.selection([('taixe','Tài xế'),
+        'loai_doituong': fields.selection([('taixe','Lái xe'),
                                            ('nhadautu','Nhà đầu tư'),
                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng', readonly=True, states={'draft': [('readonly', False)]}),
         'cmnd': fields.related('partner_id','cmnd',type='char',string='Số CMND',readonly=True),
@@ -316,12 +316,17 @@ class account_invoice(osv.osv):
         return user.chinhanh_id and user.chinhanh_id.id or False
     
     def _get_journal(self, cr, uid, context=None):
-        journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash')])
+        journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
         return journal_ids and journal_ids[0] or False
+    
+    def _get_currency(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        return user.company_id and user.company_id.currency_id and user.company_id.currency_id.id or False
     
     _defaults = {
         'date_invoice': time.strftime('%Y-%m-%d'),
         'journal_id': _get_journal,
+        'currency_id': _get_currency,
         'chinhanh_id': _get_chinhanh,
     }
     
@@ -700,13 +705,14 @@ class account_invoice(osv.osv):
                 'default_partner_id': self.pool.get('res.partner')._find_accounting_partner(inv.partner_id).id,
                 'default_amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
                 'default_reference': inv.name,
-                'default_journal_id': inv.journal_id.id,
+#                 'default_journal_id': inv.journal_id.id,
                 'default_bai_giaoca_id': inv.bai_giaoca_id and inv.bai_giaoca_id.id or False,
                 'default_mlg_type': inv.mlg_type,
                 'close_after_process': True,
                 'invoice_type': inv.type,
                 'invoice_id': inv.id,
                 'default_type': inv.type in ('out_invoice','out_refund') and 'receipt' or 'payment',
+                'default_chinhanh_id': inv.chinhanh_id.id,
                 'type': inv.type in ('out_invoice','out_refund') and 'receipt' or 'payment'
             }
         }
@@ -791,6 +797,7 @@ class account_voucher(osv.osv):
                                       ('chi_bao_hiem','Chi bảo hiểm'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('tam_ung','Tạm ứng'),],'Loại công nợ'),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
     }
     def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
         """
@@ -1095,5 +1102,90 @@ class account_account(osv.osv):
         return self.name_get(cr, user, ids, context=context)
     
 account_account()
+
+class thu_ky_quy(osv.osv):
+    _name = "thu.ky.quy"
+    _inherit = ['mail.thread']
+    
+    _columns = {
+        'state': fields.selection([
+            ('draft','Đang chờ'),
+            ('paid','Đã thu'),
+            ('cancel','Hủy bỏ'),
+        ], string='Trạng thái', readonly=True, track_visibility='always'),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True, track_visibility='always'),
+        'partner_id': fields.many2one('res.partner','Đối tượng', required=True, readonly=True, states={'draft': [('readonly', False)]},track_visibility='always'),
+        'ngay_thu': fields.date('Ngày thu', readonly=True, states={'draft': [('readonly', False)]},track_visibility='always'),
+        'user_id': fields.many2one('res.users', 'Nhân viên thu', readonly=True, states={'draft': [('readonly', False)]},track_visibility='always'),
+        'dien_giai': fields.text('Diễn giải', readonly=True, states={'draft': [('readonly', False)]},track_visibility='always'),
+        'so_tien': fields.float('Số tiền', required=True, readonly=True, states={'draft': [('readonly', False)]},track_visibility='always'),
+        'name': fields.char('Số'),
+        'currency_id': fields.many2one('res.currency','Đơn vị tiền tệ'),
+        'loai_doituong': fields.selection([('taixe','Lái xe'),
+                                           ('nhadautu','Nhà đầu tư'),
+                                           ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),
+    }
+    
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
+        if vals.get('name', '/') == '/' or 'name' not in vals:
+            vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'thu_ky_quy', context=context) or '/'
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+        return super(thu_ky_quy, self).create(cr, uid, vals, context)
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        for line in self.browse(cr, uid, ids):
+            user = line.user_id
+            vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+        return super(thu_ky_quy, self).write(cr, uid, ids, vals, context)
+    
+    def _get_chinhanh(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        return user.chinhanh_id and user.chinhanh_id.id or False
+    
+    def _get_currency(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        return user.company_id and user.company_id.currency_id and user.company_id.currency_id.id or False
+    
+    _defaults = {
+        'state': 'draft',
+        'ngay_thu': time.strftime('%Y-%m-%d'),
+        'chinhanh_id': _get_chinhanh,
+        'user_id': lambda self, cr, uid, context: uid,
+        'currency_id': _get_currency,
+    }
+    
+    def bt_thu(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state': 'paid'})
+    
+    def bt_huybo(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state': 'cancel'})
+    
+    def onchange_doituong(self, cr, uid, ids, partner_id=False, context=None):
+        vals = {}
+        domain = {}
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+            if partner.taixe:
+                vals={'loai_doituong': 'taixe'}
+            if partner.nhadautu:
+                vals={'loai_doituong': 'nhadautu'}
+            if partner.nhanvienvanphong:
+                vals={'loai_doituong': 'nhanvienvanphong'}
+        return {'value': vals}
+    
+thu_ky_quy()
+
+class account_journal(osv.osv):
+    _inherit = "account.journal"
+    
+    _columns = {
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
+    }
+    
+account_journal()
+    
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
