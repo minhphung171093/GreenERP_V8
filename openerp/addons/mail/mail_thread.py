@@ -504,7 +504,7 @@ class mail_thread(osv.AbstractModel):
                 message += '<div> &nbsp; &nbsp; &bull; <b>%s</b>: ' % change.get('col_info')
                 if change.get('old_value'):
                     message += '%s &rarr; ' % change.get('old_value')
-                message += u'%s</div>' % change.get('new_value')
+                message += '%s</div>' % change.get('new_value')
             return message
 
         if not tracked_fields:
