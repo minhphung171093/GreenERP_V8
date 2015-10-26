@@ -261,7 +261,8 @@ class account_invoice(osv.osv):
                                       ('chi_dien_thoai','Chi điện thoại'),
                                       ('chi_bao_hiem','Chi bảo hiểm'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
-                                      ('tam_ung','Tạm ứng'),],'Loại công nợ', readonly=True, states={'draft': [('readonly', False)]}),
+                                      ('tam_ung','Tạm ứng'),
+                                      ('chi_ho','Chi hộ'),],'Loại công nợ', readonly=True, states={'draft': [('readonly', False)]}),
         'state': fields.selection([
             ('draft','Pending'),
             ('proforma','Pro-forma'),
@@ -343,7 +344,7 @@ class account_invoice(osv.osv):
 #             account_ids = [r[0] for r in cr.fetchall()]
 #             account_id = account_ids and account_ids[0] or False
 #             vals.update({'account_id':account_id})
-        if vals.get('loai_doituong',False)!='nhadautu':
+        if vals.get('loai_doituong',False) and vals['loai_doituong']!='nhadautu':
             partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
             if context.get('default_type',False)=='out_invoice':
                 account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
@@ -377,7 +378,7 @@ class account_invoice(osv.osv):
         for line in self.browse(cr, uid, ids):
             user = line.user_id
             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-            if (vals.get('loai_doituong',False)!='nhadautu' or ('loai_doituong' not in vals and line.loai_doituong!='nhadautu')) and vals.get('partner_id',False):
+            if ((vals.get('loai_doituong',False) and vals['loai_doituong']!='nhadautu') or ('loai_doituong' not in vals and line.loai_doituong and line.loai_doituong!='nhadautu')) and vals.get('partner_id',False):
                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
                 if context.get('default_type',False)=='out_invoice':
                     account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
@@ -475,6 +476,27 @@ class account_invoice(osv.osv):
                     'bai_giaoca_id': bai_giaoca_id,
                     })
         return {'value': vals,'domain': domain}
+    
+    def onchange_nhadautugiantiep(self, cr, uid, ids, partner_id=False, context=None):
+        vals = {}
+        domain = {}
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+            account_id = False
+            chinhanh_id = False
+            user = self.pool.get('res.users').browse(cr, uid, uid)
+            if ids:
+                invoice = self.browse(cr, uid, ids[0])
+                user = invoice.user_id
+            chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
+            sql = '''
+                select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+            '''%(chinhanh_id,partner_id)
+            cr.execute(sql)
+            account_ids = [r[0] for r in cr.fetchall()]
+            account_id = account_ids and account_ids[0] or False
+            vals.update({'cmnd': partner.cmnd,'giayphep_kinhdoanh': partner.giayphep_kinhdoanh,'account_id':account_id})
+        return {'value': vals}
     
     def onchange_loaidoituong(self, cr, uid, ids, loai_doituong=False, context=None):
         domain = {}
@@ -772,7 +794,8 @@ class account_move_line(osv.osv):
                                       ('chi_dien_thoai','Chi điện thoại'),
                                       ('chi_bao_hiem','Chi bảo hiểm'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
-                                      ('tam_ung','Tạm ứng'),],'Loại công nợ'),
+                                      ('tam_ung','Tạm ứng'),
+                                      ('chi_ho','Chi hộ'),],'Loại công nợ'),
         'thu_chi': fields.function(_get_thu_chi,type='char', string='Thu/Chi', store=True),
         'con_lai': fields.function(_get_con_lai,type='float', string='Còn lại', store=True),
     }
@@ -796,7 +819,8 @@ class account_voucher(osv.osv):
                                       ('chi_dien_thoai','Chi điện thoại'),
                                       ('chi_bao_hiem','Chi bảo hiểm'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
-                                      ('tam_ung','Tạm ứng'),],'Loại công nợ'),
+                                      ('tam_ung','Tạm ứng'),
+                                      ('chi_ho','Chi hộ'),],'Loại công nợ'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
     }
     def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
@@ -1048,7 +1072,8 @@ class account_voucher_line(osv.osv):
                                       ('chi_dien_thoai','Chi điện thoại'),
                                       ('chi_bao_hiem','Chi bảo hiểm'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
-                                      ('tam_ung','Tạm ứng'),],'Loại công nợ'),
+                                      ('tam_ung','Tạm ứng'),
+                                      ('chi_ho','Chi hộ'),],'Loại công nợ'),
     }
     
 account_voucher_line()

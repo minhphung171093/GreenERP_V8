@@ -96,6 +96,7 @@ class res_partner(osv.osv):
         'loai_doituong': fields.related('loai_doituong_id', 'name', type='char', string='Loại đối tượng', readonly=True, store=True),
         'taixe': fields.boolean('Lái xe'),
         'nhadautu': fields.boolean('Nhà đầu tư'),
+        'nhadautugiantiep': fields.boolean('Nhà đầu tư gián tiếp'),
         'nhanvienvanphong': fields.boolean('Nhân viên văn phòng'),
         'chinhanh_line': fields.one2many('chi.nhanh.line','partner_id','Chi nhánh'),
         'cmnd': fields.char('Số CMND', size=1024),
@@ -154,6 +155,15 @@ class res_partner(osv.osv):
             partner_ids = [r[0] for r in cr.fetchall()]
             partner1_ids = self.search(cr, uid, ['|',('taixe','=',True),('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',context['chinhanh_id']),('sotien_conlai','>',0)])
             args += [('id','in',partner_ids+partner1_ids)]
+        
+        if context.get('timnhadautugiantiep', False):
+            sql = '''
+                select partner_id from chi_nhanh_line where chinhanh_id=%s
+            '''%(chinhanh_id)
+            cr.execute(sql)
+            partner_ids = [r[0] for r in cr.fetchall()]
+            args += [('nhadautugiantiep','=',True),('id','in',partner_ids)]
+            
         return super(res_partner, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
     
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):

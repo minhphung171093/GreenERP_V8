@@ -87,9 +87,14 @@
 		            action="action_partner_taixe" sequence="10"/>
 		            
 	            <menuitem id="menu_action_partner_ndt"
-		            name="Nhà đầu tư"
+		            name="Nhà đầu tư trực tiếp"
 		            parent="menu_doituong"
 		            action="action_partner_ndt" sequence="20"/>
+		            
+	            <menuitem id="menu_action_partner_ndt_giantiep"
+		            name="Nhà đầu tư gián tiếp"
+		            parent="menu_doituong"
+		            action="action_partner_ndt_giantiep" sequence="25"/>
 		            
 	            <menuitem id="menu_action_partner_nvvp"
 		            name="Nhân viên văn phòng"
@@ -179,6 +184,11 @@
 					action="action_tam_ung"
 					name="Tạm ứng"
 					parent="menu_congno_chi" sequence="25"/>
+					
+				<menuitem id="menu_action_chi_ho"
+					action="action_chi_ho"
+					name="Chi hộ"
+					parent="menu_congno_chi" sequence="30"/>
 		
 		<menuitem id="menu_root_ky_quy"
 			name="Ký Quỹ" sequence="4"/>
