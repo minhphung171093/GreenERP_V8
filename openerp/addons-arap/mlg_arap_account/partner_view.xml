@@ -150,6 +150,9 @@
 				                    </tree>
 								</field>	                    		
 	                        </page>
+	                        <page string="Ký quỹ">
+	                        	<field name="ky_quy_ids" nolabel='1'/>
+	                        </page>
 	                    </notebook>
 	                </sheet>
                 </form>

@@ -62,6 +62,18 @@ class res_partner(osv.osv):
             result[line.partner_id.id] = True
         return result.keys()
     
+    def _get_kyquy(self, cr, uid, ids, field_name, arg, context=None):
+        cur_obj = self.pool.get('res.currency')
+        res = {}
+        for partner in self.browse(cr, uid, ids, context=context):
+            sql = '''
+                select id from thu_ky_quy where partner_id=%s and state='paid'
+            '''%(partner.id)
+            cr.execute(sql)
+            kyquy_ids = [r[0] for r in cr.fetchall()]
+            res[partner.id] = kyquy_ids
+        return res
+    
     _columns = {
         'property_account_payable': fields.property(
             type='many2one',
@@ -103,6 +115,7 @@ class res_partner(osv.osv):
                 'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
                 'thu.ky.quy': (_get_partner, ['state', 'so_tien', 'partner_id'], 10),
             },type='float'),
+        'ky_quy_ids': fields.function(_get_kyquy, relation='thu.ky.quy',type='many2many', string='Ký quỹ', readonly=True),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):
