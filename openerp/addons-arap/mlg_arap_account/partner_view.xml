@@ -155,6 +155,17 @@
 	                        	</group>
 	                        	<field name="ky_quy_ids" nolabel='1'/>
 	                        </page>
+	                        <page string="Công nợ">
+	                        	<field name="tinh_congno" invisible='1'/>
+	                        	<field name="congno_line" nolabel='1'>
+	                        		<tree>
+	                        			<field name="mlg_type"/>
+			                        	<field name="sotien_congno"/>
+			                        	<field name="sotien_dathu"/>
+			                        	<field name="sotien_conlai"/>
+	                        		</tree>
+	                        	</field>
+	                        </page>
 	                    </notebook>
 	                </sheet>
                 </form>
@@ -287,6 +298,17 @@
 		                        	<field name="sotien_conlai"/>
 	                        	</group>
 	                        	<field name="ky_quy_ids" nolabel='1'/>
+	                        </page>
+	                        <page string="Công nợ">
+	                        	<field name="tinh_congno" invisible='1'/>
+	                        	<field name="congno_line" nolabel='1'>
+	                        		<tree>
+	                        			<field name="mlg_type"/>
+			                        	<field name="sotien_congno"/>
+			                        	<field name="sotien_dathu"/>
+			                        	<field name="sotien_conlai"/>
+	                        		</tree>
+	                        	</field>
 	                        </page>
 	                    </notebook>
 	                </sheet>
@@ -421,6 +443,17 @@
 		                        	<field name="sotien_conlai"/>
 	                        	</group>
 	                        	<field name="ky_quy_ids" nolabel='1'/>
+	                        </page>
+	                        <page string="Công nợ">
+	                        	<field name="tinh_congno" invisible='1'/>
+	                        	<field name="congno_line" nolabel='1'>
+	                        		<tree>
+	                        			<field name="mlg_type"/>
+			                        	<field name="sotien_congno"/>
+			                        	<field name="sotien_dathu"/>
+			                        	<field name="sotien_conlai"/>
+	                        		</tree>
+	                        	</field>
 	                        </page>
 	                    </notebook>
 	                </sheet>

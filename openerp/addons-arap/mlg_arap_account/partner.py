@@ -74,6 +74,45 @@ class res_partner(osv.osv):
             res[partner.id] = kyquy_ids
         return res
     
+    def _get_kyquy(self, cr, uid, ids, field_name, arg, context=None):
+        cur_obj = self.pool.get('res.currency')
+        res = {}
+        for partner in self.browse(cr, uid, ids, context=context):
+            sql = '''
+                select id from thu_ky_quy where partner_id=%s and state='paid'
+            '''%(partner.id)
+            cr.execute(sql)
+            kyquy_ids = [r[0] for r in cr.fetchall()]
+            res[partner.id] = kyquy_ids
+        return res
+    
+    def _get_congno(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        congno_obj = self.pool.get('tong.cong.no')
+        for partner in self.browse(cr, uid, ids, context=context):
+            cr.execute('delete from tong_cong_no where partner_id=%s',(partner.id,))
+            
+            sql = '''
+                select mlg_type,case when sum(amount_total)!=0 then sum(amount_total) else 0 end sotien_congno,
+                        case when sum(residual)!=0 then sum(residual) else 0 end sotien_conlai
+                    from account_invoice
+                    where partner_id=%s and state in ('open','paid') and type='out_invoice'
+                    group by mlg_type
+            '''%(partner.id)
+            cr.execute(sql)
+            vals = []
+            for line in cr.dictfetchall():
+                congno_obj.create(cr, uid, {
+                    'partner_id': partner.id,
+                    'mlg_type': line['mlg_type'],
+                    'sotien_congno': line['sotien_congno'],
+                    'sotien_dathu': line['sotien_congno']-line['sotien_conlai'],
+                    'sotien_conlai': line['sotien_conlai'],
+                })
+            res[partner.id] = 'DONE'
+        return res
+    
+    
     _columns = {
         'property_account_payable': fields.property(
             type='many2one',
@@ -117,6 +156,8 @@ class res_partner(osv.osv):
                 'thu.ky.quy': (_get_partner, ['state', 'so_tien', 'partner_id'], 10),
             },type='float'),
         'ky_quy_ids': fields.function(_get_kyquy, relation='thu.ky.quy',type='many2many', string='Ký quỹ', readonly=True),
+        'tinh_congno': fields.function(_get_congno, type='char', string='Tính công nợ', readonly=True),
+        'congno_line': fields.one2many('tong.cong.no', 'partner_id','Chi tiết công nợ', readonly=True),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):
@@ -236,5 +277,30 @@ class chi_nhanh_line(osv.osv):
     ]
     
 chi_nhanh_line()
+
+class tong_cong_no(osv.osv):
+    _name = "tong.cong.no"
+    _columns = {
+        'partner_id': fields.many2one('res.partner','Partner', ondelete='cascade'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+                                      ('chi_ho_dien_thoai','Chi hộ điện thoại'),
+                                      ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
+                                      ('phai_thu_ky_quy','Phải thu ký quỹ'),
+                                      ('phat_vi_pham','Phạt vi phạm'),
+                                      ('thu_no_xuong','Thu nợ xưởng'),
+                                      ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
+                                      ('tra_gop_xe','Trả góp xe'),
+                                      ('hoan_tam_ung','Hoàn tạm ứng'),
+                                      ('chi_no_doanh_thu','Chi nợ doanh thu'),
+                                      ('chi_dien_thoai','Chi điện thoại'),
+                                      ('chi_bao_hiem','Chi bảo hiểm'),
+                                      ('phai_tra_ky_quy','Phải trả ký quỹ'),
+                                      ('tam_ung','Tạm ứng'),
+                                      ('chi_ho','Chi hộ'),],'Loại công nợ', readonly=True),
+        'sotien_congno': fields.float('Số tiền công nợ'),
+        'sotien_dathu': fields.float('Số tiền đã thu'),
+        'sotien_conlai': fields.float('Số tiền còn lại'),
+    }
+tong_cong_no()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
