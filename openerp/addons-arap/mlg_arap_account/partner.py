@@ -147,14 +147,18 @@ class res_partner(osv.osv):
             if context['loai_doituong']=='nhanvienvanphong':
                 partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',chinhanh_id)])
                 args += [('id','in',partner_ids)]
-        if context.get('doituong_thukyquy', False) and context.get('chinhanh_id', False):
-            sql = '''
-                select id from res_partner where id in (select partner_id from chi_nhanh_line where chinhanh_id=%s) and nhadautu='t' and sotien_conlai>0
-            '''%(context['chinhanh_id'])
-            cr.execute(sql)
-            partner_ids = [r[0] for r in cr.fetchall()]
-            partner1_ids = self.search(cr, uid, ['|',('taixe','=',True),('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',context['chinhanh_id']),('sotien_conlai','>',0)])
-            args += [('id','in',partner_ids+partner1_ids)]
+        if context.get('doituong_thukyquy', False) and context.get('chinhanh_id', False) and context.get('loai_doituong',False):
+            if context['loai_doituong']=='nhadautu':
+                sql = '''
+                    select id from res_partner where id in (select partner_id from chi_nhanh_line where chinhanh_id=%s) and nhadautu='t' and sotien_conlai>0
+                '''%(context['chinhanh_id'])
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
+            if context['loai_doituong']=='taixe':
+                partner_ids = self.search(cr, uid, [('taixe','=',True),('property_account_receivable.parent_id','=',context['chinhanh_id']),('sotien_conlai','>',0)])
+            if context['loai_doituong']=='nhanvienvanphong':
+                partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',context['chinhanh_id']),('sotien_conlai','>',0)])
+            args += [('id','in',partner_ids)]
         
         if context.get('timnhadautugiantiep', False):
             sql = '''

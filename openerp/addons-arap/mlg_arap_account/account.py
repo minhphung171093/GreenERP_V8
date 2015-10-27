@@ -1149,6 +1149,8 @@ class thu_ky_quy(osv.osv):
         'loai_doituong': fields.selection([('taixe','Lái xe'),
                                            ('nhadautu','Nhà đầu tư'),
                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),
+        'bien_so_xe': fields.char('Biển số xe', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
+        'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ', readonly=True, states={'draft': [('readonly', False)]}),
     }
     
     def create(self, cr, uid, vals, context=None):

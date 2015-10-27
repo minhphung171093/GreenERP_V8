@@ -87,12 +87,12 @@
 		            action="action_partner_taixe" sequence="10"/>
 		            
 	            <menuitem id="menu_action_partner_ndt"
-		            name="Nhà đầu tư trực tiếp"
+		            name="Nhà đầu tư"
 		            parent="menu_doituong"
 		            action="action_partner_ndt" sequence="20"/>
 		            
 	            <menuitem id="menu_action_partner_ndt_giantiep"
-		            name="Nhà đầu tư gián tiếp"
+		            name="Đơn vị thu chi hộ"
 		            parent="menu_doituong"
 		            action="action_partner_ndt_giantiep" sequence="25"/>
 		            

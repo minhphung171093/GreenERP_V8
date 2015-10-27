@@ -2677,7 +2677,6 @@
 	                    <button name="bt_huybo" states="draft,paid" type='object' string="Hủy bỏ" class="oe_highlight"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="currency_id" invisible='1'/>
-						<field name="loai_doituong" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -2687,11 +2686,14 @@
 	                    <group col="4" colspan="2">
 	                    	<group>
 		                    	<field name="chinhanh_id"/>
-			                    <field name="partner_id" options="{'no_create': True}" on_change="onchange_doituong(partner_id)" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]" string="Đối tượng" context="{'doituong_thukyquy':1,'chinhanh_id':chinhanh_id,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}"/>
+		                    	<field name="loai_doituong" required='1'/>
+			                    <field name="partner_id" options="{'no_create': True}" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]" string="Đối tượng" context="{'doituong_thukyquy':1,'chinhanh_id':chinhanh_id,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}"/>
 		                    </group>
 		                    <group>
 			                    <field name="ngay_thu"/>
 			                    <field name="user_id"/>
+			                    <field name="bien_so_xe"/>
+			                    <field name="loai_kyquy_id" options="{'no_create': True}"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">
