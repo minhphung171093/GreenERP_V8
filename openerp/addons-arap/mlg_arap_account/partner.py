@@ -41,6 +41,13 @@ class res_partner(osv.osv):
             loai = cr.fetchone()
             if loai:
                 res.update({'loai_doituong_id': loai[0]})
+        if context.get('matdinh_receivable_payable', False):
+            sql = '''
+                select id from account_account where code='200' limit 1
+            '''
+            cr.execute(sql)
+            account_id = cr.fetchone()
+            res.update({'property_account_receivable': account_id[0],'property_account_payable': account_id[0]})
         return res
     
     def _get_sotien(self, cr, uid, ids, field_name, arg, context=None):
@@ -202,12 +209,12 @@ class res_partner(osv.osv):
             args += [('id','in',partner_ids)]
         
         if context.get('timnhadautugiantiep', False):
-            sql = '''
-                select partner_id from chi_nhanh_line where chinhanh_id=%s
-            '''%(chinhanh_id)
-            cr.execute(sql)
-            partner_ids = [r[0] for r in cr.fetchall()]
-            args += [('nhadautugiantiep','=',True),('id','in',partner_ids)]
+#             sql = '''
+#                 select partner_id from chi_nhanh_line where chinhanh_id=%s
+#             '''%(chinhanh_id)
+#             cr.execute(sql)
+#             partner_ids = [r[0] for r in cr.fetchall()]
+            args += [('nhadautugiantiep','=',True)]
             
         return super(res_partner, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
     

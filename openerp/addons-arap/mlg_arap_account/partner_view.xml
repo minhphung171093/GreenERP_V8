@@ -541,10 +541,12 @@
 	                        	<field name="giayphep_kinhdoanh"/>
 	                        	<field name="phone" string="Điện thoại"/>
 			                    <field name="email"/>
+			                    <field name="property_account_receivable" invisible='1'/>
+	                        	<field name="property_account_payable" invisible='1'/>
 	                        </group>
 	                    </group>
 	
-	                    <notebook colspan="4">
+	                   <!-- <notebook colspan="4">
 	                        <page string="Chi nhánh">
 	                        	<field name="chinhanh_line" nolabel='1'>
 				                    <tree editable='bottom'>
@@ -553,7 +555,7 @@
 				                    </tree>
 								</field>	                    		
 	                        </page>
-	                    </notebook>
+	                    </notebook> -->
 	                </sheet>
                 </form>
             </field>
@@ -565,7 +567,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[('nhadautugiantiep','=',True)]</field>
-            <field name="context">{'default_customer':1,'default_supplier':1,'default_nhadautugiantiep':1, 'search_default_customer':1}</field>
+            <field name="context">{'default_customer':1,'default_supplier':1,'default_nhadautugiantiep':1, 'search_default_customer':1,'matdinh_receivable_payable':1}</field>
             <field name="filter" eval="True"/>
         </record>
         <record id="action_partner_ndt_giantiep0" model="ir.actions.act_window.view">

@@ -482,20 +482,20 @@ class account_invoice(osv.osv):
         domain = {}
         if partner_id:
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
-            account_id = False
-            chinhanh_id = False
-            user = self.pool.get('res.users').browse(cr, uid, uid)
-            if ids:
-                invoice = self.browse(cr, uid, ids[0])
-                user = invoice.user_id
-            chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
-            sql = '''
-                select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
-            '''%(chinhanh_id,partner_id)
-            cr.execute(sql)
-            account_ids = [r[0] for r in cr.fetchall()]
-            account_id = account_ids and account_ids[0] or False
-            vals.update({'cmnd': partner.cmnd,'giayphep_kinhdoanh': partner.giayphep_kinhdoanh,'account_id':account_id})
+#             account_id = False
+#             chinhanh_id = False
+#             user = self.pool.get('res.users').browse(cr, uid, uid)
+#             if ids:
+#                 invoice = self.browse(cr, uid, ids[0])
+#                 user = invoice.user_id
+#             chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
+#             sql = '''
+#                 select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+#             '''%(chinhanh_id,partner_id)
+#             cr.execute(sql)
+#             account_ids = [r[0] for r in cr.fetchall()]
+#             account_id = account_ids and account_ids[0] or False
+            vals.update({'cmnd': partner.cmnd,'giayphep_kinhdoanh': partner.giayphep_kinhdoanh,'account_id':partner.property_account_receivable.id})
         return {'value': vals}
     
     def onchange_loaidoituong(self, cr, uid, ids, loai_doituong=False, context=None):
