@@ -209,12 +209,12 @@ class res_partner(osv.osv):
             args += [('id','in',partner_ids)]
         
         if context.get('timnhadautugiantiep', False):
-#             sql = '''
-#                 select partner_id from chi_nhanh_line where chinhanh_id=%s
-#             '''%(chinhanh_id)
-#             cr.execute(sql)
-#             partner_ids = [r[0] for r in cr.fetchall()]
-            args += [('nhadautugiantiep','=',True)]
+            sql = '''
+                select partner_id from chi_nhanh_line where chinhanh_id=%s
+            '''%(chinhanh_id)
+            cr.execute(sql)
+            partner_ids = [r[0] for r in cr.fetchall()]
+            args += [('nhadautugiantiep','=',True),('id','in',partner_ids)]
             
         return super(res_partner, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
     
@@ -265,7 +265,7 @@ class chi_nhanh_line(osv.osv):
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Chi nhánh', required=True, ondelete='cascade'),
         'chinhanh_id': fields.many2one('account.account', 'Chi nhánh', required=True),
-        'nhom_chinhanh_id': fields.many2one('account.account', 'Chi nhánh đầu tư', required=True),
+        'nhom_chinhanh_id': fields.many2one('account.account', 'Chi nhánh đầu tư', required=False),
     }
     
     def _check_chinhanh_id(self, cr, uid, ids, context=None):

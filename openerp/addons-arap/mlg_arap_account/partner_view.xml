@@ -142,7 +142,7 @@
 	                        	<field name="chinhanh_line" nolabel='1'>
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','1')]"/>
-					                    <field name="nhom_chinhanh_id" options="{'no_create': True}" domain="[('parent_id','=',chinhanh_id)]"/>
+					                    <field name="nhom_chinhanh_id" required='1' options="{'no_create': True}" domain="[('parent_id','=',chinhanh_id)]"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>
@@ -286,7 +286,7 @@
 	                        	<field name="chinhanh_line" nolabel='1'>
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','1')]"/>
-					                    <field name="nhom_chinhanh_id" options="{'no_create': True}" domain="[('parent_id','=',chinhanh_id)]"/>
+					                    <field name="nhom_chinhanh_id" required='1' options="{'no_create': True}" domain="[('parent_id','=',chinhanh_id)]"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>
@@ -431,7 +431,7 @@
 	                        	<field name="chinhanh_line" nolabel='1'>
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','1')]"/>
-					                    <field name="nhom_chinhanh_id" options="{'no_create': True}" domain="[('parent_id','=',chinhanh_id)]"/>
+					                    <field name="nhom_chinhanh_id" required='1' options="{'no_create': True}" domain="[('parent_id','=',chinhanh_id)]"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>
@@ -546,16 +546,16 @@
 	                        </group>
 	                    </group>
 	
-	                   <!-- <notebook colspan="4">
+	                   <notebook colspan="4">
 	                        <page string="Chi nhánh">
 	                        	<field name="chinhanh_line" nolabel='1'>
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','1')]"/>
-					                    <field name="nhom_chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','222')]"/>
+					                    <field name="nhom_chinhanh_id" invisible='1' options="{'no_create': True}" domain="[('parent_id.code','=','222')]"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>
-	                    </notebook> -->
+	                    </notebook>
 	                </sheet>
                 </form>
             </field>
