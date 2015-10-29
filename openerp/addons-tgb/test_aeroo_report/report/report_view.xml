@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	    <record id="test_report_aeroo_ods" model="ir.actions.report.xml">
+	        <field name="name">test_report_aeroo_ods</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">res.partner</field>
+	        <field name="report_name">test_report_aeroo_ods</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">test_aeroo_report/report/test_report.py</field>
+	        <field name="report_rml">test_aeroo_report/report/test_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record>		    
+    	
+		<report 
+			auto="False" 
+			menu="True"
+			id="test_report_aeroo_ods"
+			model="res.partner"
+			name="test_report_aeroo_ods"
+	        string="Test aeroo report ods xls"
+	        rml="test_aeroo_report/report/test_report.ods"/>
+	        
+        <record id="test_report_aeroo_ods_pdf" model="ir.actions.report.xml">
+	        <field name="name">test_report_aeroo_ods_pdf</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">res.partner</field>
+	        <field name="report_name">test_report_aeroo_ods_pdf</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">test_aeroo_report/report/test_report.py</field>
+	        <field name="report_rml">test_aeroo_report/report/test_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record>		    
+    	
+		<report 
+			auto="False" 
+			menu="True"
+			id="test_report_aeroo_ods_pdf"
+			model="res.partner"
+			name="test_report_aeroo_ods_pdf"
+	        string="Test aeroo report ods pdf"
+	        rml="test_aeroo_report/report/test_report.ods"/>
+	        
+        <record id="test_report_aeroo_odt" model="ir.actions.report.xml">
+	        <field name="name">test_report_aeroo_odt</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">res.partner</field>
+	        <field name="report_name">test_report_aeroo_odt</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">test_aeroo_report/report/test_report.py</field>
+	        <field name="report_rml">test_aeroo_report/report/test_report.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record>		    
+    	
+		<report 
+			auto="False" 
+			menu="True"
+			id="test_report_aeroo_odt"
+			model="res.partner"
+			name="test_report_aeroo_odt"
+	        string="Test aeroo report odt doc"
+	        rml="test_aeroo_report/report/test_report.odt"/>
+	        
+        <record id="test_report_aeroo_odt_pdf" model="ir.actions.report.xml">
+	        <field name="name">test_report_aeroo_odt_pdf</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">res.partner</field>
+	        <field name="report_name">test_report_aeroo_odt_pdf</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">test_aeroo_report/report/test_report.py</field>
+	        <field name="report_rml">test_aeroo_report/report/test_report.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record>		    
+    	
+		<report 
+			auto="False" 
+			menu="True"
+			id="test_report_aeroo_odt_pdf"
+			model="res.partner"
+			name="test_report_aeroo_odt_pdf"
+	        string="Test aeroo report odt pdf"
+	        rml="test_aeroo_report/report/test_report.odt"/>
+        
+	</data>
+</openerp>
