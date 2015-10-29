@@ -244,18 +244,18 @@ class res_partner(osv.osv):
             res.append((record.id, name))
         return res
     
-    def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = {}
-        user = self.pool.get('res.users').browse(cr, uid, uid)
-        vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-        return super(res_partner, self).create(cr, uid, vals, context)
+#     def create(self, cr, uid, vals, context=None):
+#         if context is None:
+#             context = {}
+#         user = self.pool.get('res.users').browse(cr, uid, uid)
+#         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+#         return super(res_partner, self).create(cr, uid, vals, context)
     
-    def write(self, cr, uid, ids, vals, context=None):
-        for line in self.browse(cr, uid, ids):
-            user = line.create_user_id
-            vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-        return super(res_partner, self).write(cr, uid, ids, vals, context)
+#     def write(self, cr, uid, ids, vals, context=None):
+#         for line in self.browse(cr, uid, ids):
+#             user = line.create_user_id
+#             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+#         return super(res_partner, self).write(cr, uid, ids, vals, context)
     
 res_partner()
 

@@ -201,18 +201,18 @@ class ql_bao_hiem(osv.osv):
         'user_id': lambda self,cr, uid, context: uid,
     }
     
-    def create(self, cr, uid, vals, context=None):
-        if context is None:
-            context = {}
-        user = self.pool.get('res.users').browse(cr, uid, uid)
-        vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-        return super(ql_bao_hiem, self).create(cr, uid, vals, context)
-    
-    def write(self, cr, uid, ids, vals, context=None):
-        for line in self.browse(cr, uid, ids):
-            user = line.user_id
-            vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-        return super(ql_bao_hiem, self).write(cr, uid, ids, vals, context)
+#     def create(self, cr, uid, vals, context=None):
+#         if context is None:
+#             context = {}
+#         user = self.pool.get('res.users').browse(cr, uid, uid)
+#         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+#         return super(ql_bao_hiem, self).create(cr, uid, vals, context)
+#     
+#     def write(self, cr, uid, ids, vals, context=None):
+#         for line in self.browse(cr, uid, ids):
+#             user = line.user_id
+#             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+#         return super(ql_bao_hiem, self).write(cr, uid, ids, vals, context)
     
 ql_bao_hiem()
 
@@ -344,15 +344,16 @@ class account_invoice(osv.osv):
 #             account_ids = [r[0] for r in cr.fetchall()]
 #             account_id = account_ids and account_ids[0] or False
 #             vals.update({'account_id':account_id})
-        if vals.get('loai_doituong',False) and vals['loai_doituong']!='nhadautu':
-            partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
-            if context.get('default_type',False)=='out_invoice':
-                account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
-            else:
-                account_id = partner.property_account_payable and partner.property_account_payable.id or False
-            vals.update({'account_id':account_id})
-        user = self.pool.get('res.users').browse(cr, uid, uid)
-        vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+#bat dau de tao du lieu readonly
+#         if vals.get('loai_doituong',False) and vals['loai_doituong']!='nhadautu':
+#             partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
+#             if context.get('default_type',False)=='out_invoice':
+#                 account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+#             else:
+#                 account_id = partner.property_account_payable and partner.property_account_payable.id or False
+#             vals.update({'account_id':account_id})
+#         user = self.pool.get('res.users').browse(cr, uid, uid)
+#         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
         
         if vals.get('mlg_type',False) and vals.get('partner_id',False) and vals.get('loai_doituong',False):
             if not vals.get('so_tien', False):
@@ -376,15 +377,16 @@ class account_invoice(osv.osv):
     
     def write(self, cr, uid, ids, vals, context=None):
         for line in self.browse(cr, uid, ids):
-            user = line.user_id
-            vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-            if ((vals.get('loai_doituong',False) and vals['loai_doituong']!='nhadautu') or ('loai_doituong' not in vals and line.loai_doituong and line.loai_doituong!='nhadautu')) and vals.get('partner_id',False):
-                partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
-                if context.get('default_type',False)=='out_invoice':
-                    account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
-                else:
-                    account_id = partner.property_account_payable and partner.property_account_payable.id or False
-                vals.update({'account_id':account_id})
+#             user = line.user_id
+#             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+#             if ((vals.get('loai_doituong',False) and vals['loai_doituong']!='nhadautu') or ('loai_doituong' not in vals and line.loai_doituong and line.loai_doituong!='nhadautu')) and vals.get('partner_id',False):
+#                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
+#                 if context.get('default_type',False)=='out_invoice':
+#                     account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
+#                 else:
+#                     account_id = partner.property_account_payable and partner.property_account_payable.id or False
+#                 vals.update({'account_id':account_id})
+#ket thuc
 #             if vals.get('partner_id',False):
 #                 partner = self.pool.get('res.partner').browse(cr, uid, vals['partner_id'])
 #                 account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
@@ -1158,15 +1160,15 @@ class thu_ky_quy(osv.osv):
             context = {}
         if vals.get('name', '/') == '/' or 'name' not in vals:
             vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'thu_ky_quy', context=context) or '/'
-        user = self.pool.get('res.users').browse(cr, uid, uid)
-        vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+#         user = self.pool.get('res.users').browse(cr, uid, uid)
+#         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
         return super(thu_ky_quy, self).create(cr, uid, vals, context)
     
-    def write(self, cr, uid, ids, vals, context=None):
-        for line in self.browse(cr, uid, ids):
-            user = line.user_id
-            vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-        return super(thu_ky_quy, self).write(cr, uid, ids, vals, context)
+#     def write(self, cr, uid, ids, vals, context=None):
+#         for line in self.browse(cr, uid, ids):
+#             user = line.user_id
+#             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+#         return super(thu_ky_quy, self).write(cr, uid, ids, vals, context)
     
     def _get_chinhanh(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid)
