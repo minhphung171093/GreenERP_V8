@@ -508,18 +508,18 @@ class account_invoice(osv.osv):
             invoice = self.browse(cr, uid, ids[0])
             user = invoice.user_id
         chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
-        if loai_doituong=='taixe':
-            domain={'partner_id': [('taixe','=',True),('property_account_receivable.parent_id','=',chinhanh_id)]}
+#         if loai_doituong=='taixe':
+#             domain={'partner_id': [('taixe','=',True),('property_account_receivable.parent_id','=',chinhanh_id)]}
         if loai_doituong=='nhadautu':
-            sql = '''
-                select partner_id from chi_nhanh_line where chinhanh_id=%s
-            '''%(chinhanh_id)
-            cr.execute(sql)
-            partner_ids = [r[0] for r in cr.fetchall()]
-            domain={'partner_id': [('nhadautu','=',True),('id','in',partner_ids)]}
+#             sql = '''
+#                 select partner_id from chi_nhanh_line where chinhanh_id=%s
+#             '''%(chinhanh_id)
+#             cr.execute(sql)
+#             partner_ids = [r[0] for r in cr.fetchall()]
+#             domain={'partner_id': [('nhadautu','=',True),('id','in',partner_ids)]}
             vals.update({'chinhanh_ndt_id': chinhanh_id})
-        if loai_doituong=='nhanvienvanphong':
-            domain={'partner_id': [('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',chinhanh_id)]}
+#         if loai_doituong=='nhanvienvanphong':
+#             domain={'partner_id': [('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',chinhanh_id)]}
         return {'value': vals, 'domain': domain}
     
     def onchange_dien_giai_st(self, cr, uid, ids, dien_giai='/',so_tien=False,journal_id=False, context=None):
