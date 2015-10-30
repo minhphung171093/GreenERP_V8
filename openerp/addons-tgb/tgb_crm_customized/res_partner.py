@@ -56,6 +56,7 @@ class res_partner(osv.osv):
         'country_secretary_id': fields.many2one('res.country', 'Country', ondelete='restrict'),
         'period_of_year':fields.selection([('month','Month'),('quarter','Quarter'),('half_year','Half year'),('year','Year')],'Period or Year'),
         'document_collection_ids':fields.one2many('document.collection','partner_id','Document Collection'),
+        'signature_image': fields.binary('Signature'),
     }
     
     

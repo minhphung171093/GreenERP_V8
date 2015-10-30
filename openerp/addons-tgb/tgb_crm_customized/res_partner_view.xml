@@ -6,6 +6,17 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
+            	<!--<xpath expr="//form/sheet" position="before">
+            		<header>
+            			<button string="Wizard Report 1" type="action" name="%(action_wizard_report_1)d" context="{'default_partner_id':active_id}"/>
+            		</header>
+            	</xpath>-->
+            	
+            	<xpath expr="//field[@name='title']" position="after">
+					<label for="signature_image"/>
+					<h2><field name="signature_image" widget="signature"/></h2>
+				</xpath>
+            	
             	<xpath expr="//form/sheet/notebook/page[@name='sales_purchases']" position="before">
             		<page name='crm_detail' string="CRM Details">
                             <group>
@@ -93,6 +104,15 @@
                         </page>
             	</xpath>
             </field>
+        </record>
+        
+        <record model="ir.values" id="wizard_report_partner">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Wizard Report 1</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_1'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
         </record>
 
     </data>

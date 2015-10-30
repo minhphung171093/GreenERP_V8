@@ -24,8 +24,10 @@
     'version': '1.0',
     'category': 'TGB',
     'sequence': 1,
-    'depends': ['sale','account','hr'],
+    'depends': ['sale','account','hr','report_aeroo','report_aeroo_ooo','web_digital_sign'],
     'data': [
+        'report/partner_report_view.xml',
+        'wizard/report_wizard_view.xml',
         'res_partner_view.xml',
         'hr_employee_view.xml',
         'schedule.xml',

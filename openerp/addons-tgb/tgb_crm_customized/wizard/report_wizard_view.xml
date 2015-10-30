@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+    	<record id="wizard_report_form_3" model="ir.ui.view">
+            <field name="name">report.wizard.form.3</field>
+            <field name="model">report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Wizard Report" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<group>
+                		<button string="Print Report" type="object" name="print_report" context="{'report_name':'partner_report_xls'}"/>
+                		<button string="Print Report TEST" type="action" name="%(tgb_crm_customized.partner_report_xls)d"/>
+	                </group>
+	                <footer>
+	                	<button string="Back to Wizard Report 2" type="action" name="%(action_wizard_report_2)d" context="{'default_partner_id':partner_id}"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_wizard_report_3" model="ir.actions.act_window">
+            <field name="name">Wizard Report 3</field>
+            <field name="res_model">report.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_3"/>
+        </record>
+        
+        <record id="wizard_report_form_2" model="ir.ui.view">
+            <field name="name">report.wizard.form.2</field>
+            <field name="model">report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Wizard Report" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<group>
+                		<button string="Wizard Report 3" type="action" name="%(action_wizard_report_3)d" context="{'default_partner_id':partner_id}"/>
+                		<button string="Print Report" type="object" name="print_report" context="{'report_name':'partner_report_xls'}"/>
+	                </group>
+	                <footer>
+	                	<button string="Back to Wizard Report 1" type="action" name="%(action_wizard_report_1)d" context="{'default_partner_id':partner_id}"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_wizard_report_2" model="ir.actions.act_window">
+            <field name="name">Wizard Report 2</field>
+            <field name="res_model">report.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_2"/>
+        </record>
+        
+        <record id="wizard_report_form_1" model="ir.ui.view">
+            <field name="name">report.wizard.form.1</field>
+            <field name="model">report.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Wizard Report" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<group>
+                		<button string="Wizard Report 2" type="action" name="%(action_wizard_report_2)d" context="{'default_partner_id':partner_id}"/>
+                		<button string="Print Report" type="object" name="print_report" context="{'report_name':'partner_report_xls'}"/>
+	                </group>
+	                <footer>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_wizard_report_1" model="ir.actions.act_window">
+            <field name="name">Wizard Report 1</field>
+            <field name="res_model">report.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_1"/>
+        </record>
+
+    </data>
+</openerp>
