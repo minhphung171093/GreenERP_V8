@@ -119,6 +119,7 @@
 			                        	<field name="property_account_receivable" domain="[('parent_id','=',chinhanh_id)]" options="{'no_create': True}" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" options="{'no_create': True}" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':['|',('taixe','=',False),('property_account_receivable','=',False)],'required':[('taixe','=',True)]}"/>
 			                        	<field name="property_account_payable" options="{'no_create': True}" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="account_ht_id" invisible='1'/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
@@ -263,6 +264,7 @@
 			                        	<field name="property_account_receivable" domain="[('parent_id','=',chinhanh_id)]" options="{'no_create': True}" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" options="{'no_create': True}" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':['|',('taixe','=',False),('property_account_receivable','=',False)],'required':[('taixe','=',True)]}"/>
 			                        	<field name="property_account_payable" options="{'no_create': True}" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="account_ht_id" invisible='1'/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
@@ -408,6 +410,7 @@
 			                        	<field name="property_account_receivable" domain="[('parent_id','=',chinhanh_id)]" options="{'no_create': True}" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" options="{'no_create': True}" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':['|',('taixe','=',False),('property_account_receivable','=',False)],'required':[('taixe','=',True)]}"/>
 			                        	<field name="property_account_payable" options="{'no_create': True}" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
+			                        	<field name="account_ht_id" invisible='1'/>
 			                        </group>
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
@@ -543,6 +546,7 @@
 			                    <field name="email"/>
 			                    <field name="property_account_receivable" invisible='1'/>
 	                        	<field name="property_account_payable" invisible='1'/>
+	                        	<field name="account_ht_id" invisible='1'/>
 	                        </group>
 	                    </group>
 	

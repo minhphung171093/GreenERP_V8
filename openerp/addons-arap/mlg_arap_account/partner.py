@@ -136,6 +136,7 @@ class res_partner(osv.osv):
             help="This account will be used instead of the default one as the receivable account for the current partner",
             required=False),
         'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
+        'account_ht_id': fields.many2one('account.account', 'Account'),
         'loai_doituong_id': fields.many2one('loai.doi.tuong', 'Loại đối tượng'),
         'ma_doi_tuong': fields.char('Mã đối tượng', size=1024),
         'bien_so_xe': fields.char('Biển số xe', size=1024),
@@ -183,7 +184,12 @@ class res_partner(osv.osv):
         chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
         if context.get('cong_no_thu', False) and context.get('loai_doituong', False):
             if context['loai_doituong']=='taixe':
-                partner_ids = self.search(cr, uid, [('taixe','=',True),('property_account_receivable.parent_id','=',chinhanh_id)])
+#                 partner_ids = self.search(cr, uid, [('taixe','=',True),('account_ht_id.parent_id','=',chinhanh_id)])
+                sql = '''
+                    select id from res_partner where taixe='t' and account_ht_id in (select id from account_account where parent_id=%s)
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
                 args += [('id','in',partner_ids)]
             if context['loai_doituong']=='nhadautu':
                 sql = '''
@@ -193,7 +199,12 @@ class res_partner(osv.osv):
                 partner_ids = [r[0] for r in cr.fetchall()]
                 args += [('nhadautu','=',True),('id','in',partner_ids)]
             if context['loai_doituong']=='nhanvienvanphong':
-                partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',chinhanh_id)])
+#                 partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('account_ht_id.parent_id','=',chinhanh_id)])
+                sql = '''
+                    select id from res_partner where nhanvienvanphong='t' and account_ht_id in (select id from account_account where parent_id=%s)
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
                 args += [('id','in',partner_ids)]
         if context.get('doituong_thukyquy', False) and context.get('chinhanh_id', False) and context.get('loai_doituong',False):
             if context['loai_doituong']=='nhadautu':
@@ -203,9 +214,19 @@ class res_partner(osv.osv):
                 cr.execute(sql)
                 partner_ids = [r[0] for r in cr.fetchall()]
             if context['loai_doituong']=='taixe':
-                partner_ids = self.search(cr, uid, [('taixe','=',True),('property_account_receivable.parent_id','=',context['chinhanh_id']),('sotien_conlai','>',0)])
+#                 partner_ids = self.search(cr, uid, [('taixe','=',True),('account_ht_id.parent_id','=',context['chinhanh_id']),('sotien_conlai','>',0)])
+                sql = '''
+                    select id from res_partner where taixe='t' and account_ht_id in (select id from account_account where parent_id=%s) and sotien_conlai>0
+                '''%(context['chinhanh_id'])
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
             if context['loai_doituong']=='nhanvienvanphong':
-                partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('property_account_receivable.parent_id','=',context['chinhanh_id']),('sotien_conlai','>',0)])
+#                 partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('account_ht_id.parent_id','=',context['chinhanh_id']),('sotien_conlai','>',0)])
+                sql = '''
+                    select id from res_partner where nhanvienvanphong='t' and account_ht_id in (select id from account_account where parent_id=%s) and sotien_conlai>0
+                '''%(context['chinhanh_id'])
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
             args += [('id','in',partner_ids)]
         
         if context.get('timnhadautugiantiep', False):
@@ -231,7 +252,7 @@ class res_partner(osv.osv):
         return self.name_get(cr, user, ids, context=context)
     
     def onchange_property_account_receivable(self, cr, uid, ids, property_account_receivable=False, context=None):
-        return {'value': {'property_account_payable':property_account_receivable}}
+        return {'value': {'property_account_payable':property_account_receivable,'account_ht_id':property_account_receivable}}
     
     def name_get(self, cr, uid, ids, context=None):
         if context is None:
