@@ -56,6 +56,9 @@ class res_partner(osv.osv):
         'country_secretary_id': fields.many2one('res.country', 'Country', ondelete='restrict'),
         'period_of_year':fields.selection([('month','Month'),('quarter','Quarter'),('half_year','Half year'),('year','Year')],'Period or Year'),
         'document_collection_ids':fields.one2many('document.collection','partner_id','Document Collection'),
+        'tracking_collection_ids':fields.one2many('document.collection','partner_traking_id','Tracking Collection'),
+        'account_adjustment_ids':fields.one2many('document.collection','partner_adjustment_id','Account Adjustment'),
+        'account_finalization_ids':fields.one2many('document.collection','partner_finalization_id','Account Finalization'),
     }
     
     
@@ -63,33 +66,63 @@ class res_partner(osv.osv):
         if vals.get('period_of_year',False):
             if vals['period_of_year']=='month':
                 document_collection_ids = []
+                tracking_collection_ids = []
+                account_adjustment_ids = []
+                account_finalization_ids = []
                 for seq,m in enumerate(['January','February','March','April','May','June','July','August','September','October','November','December']):
                     year = int(time.strftime('%Y'))
                     month = seq+1
                     day = calendar.monthrange(year, month)[1]
                     alert_date = datetime.datetime(year,month,day)
                     document_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
-                vals.update({'document_collection_ids':document_collection_ids})
+                    tracking_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    account_adjustment_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    account_finalization_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                vals.update({'document_collection_ids':document_collection_ids,
+                             'tracking_collection_ids':tracking_collection_ids,
+                             'account_adjustment_ids':account_adjustment_ids,
+                             'account_finalization_ids':account_finalization_ids})
             if vals['period_of_year']=='quarter':
                 document_collection_ids = []
+                tracking_collection_ids = []
+                account_adjustment_ids = []
+                account_finalization_ids = []
                 for seq,m in enumerate(['First Quarter','Second Quarter', 'Third Quarter','Fourth Quarter']):
                     year = int(time.strftime('%Y'))
                     month = (seq+1)*3
                     day = calendar.monthrange(year, month)[1]
                     alert_date = datetime.datetime(year,month,day)
                     document_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
-                vals.update({'document_collection_ids':document_collection_ids})
+                    tracking_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    account_adjustment_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    account_finalization_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                vals.update({'document_collection_ids':document_collection_ids,
+                             'tracking_collection_ids':tracking_collection_ids,
+                             'account_adjustment_ids':account_adjustment_ids,
+                             'account_finalization_ids':account_finalization_ids})
             if vals['period_of_year']=='half_year':
                 document_collection_ids = []
+                tracking_collection_ids = []
+                account_adjustment_ids = []
+                account_finalization_ids = []
                 for seq,m in enumerate(['First Half','Second Half']):
                     year = int(time.strftime('%Y'))
                     month = (seq+1)*6
                     day = calendar.monthrange(year, month)[1]
                     alert_date = datetime.datetime(year,month,day)
                     document_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
-                vals.update({'document_collection_ids':document_collection_ids})
+                    tracking_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    account_adjustment_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    account_finalization_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                vals.update({'document_collection_ids':document_collection_ids,
+                             'tracking_collection_ids':tracking_collection_ids,
+                             'account_adjustment_ids':account_adjustment_ids,
+                             'account_finalization_ids':account_finalization_ids})
             if vals['period_of_year']=='year':
-                vals.update({'document_collection_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})]})
+                vals.update({'document_collection_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})],
+                             'tracking_collection_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})],
+                             'account_adjustment_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})],
+                             'account_finalization_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})]})
         return super(res_partner, self).create(cr, uid, vals, context)
     
     def send_mail(self, cr, uid, lead_email, msg_id,context=None):
@@ -129,32 +162,95 @@ class res_partner(osv.osv):
         partner = user.partner_id
         partner.signup_prepare()
         body = ''
-        doc_obj = self.pool.get('document.collection')
-        doc_ids = doc_obj.search(cr, uid, [('alert_date','<',time.strftime('%Y-%m-%d')),('partner_id','!=',False)],order='partner_id')
-        partner_id = False
-        temp=0
-        for seq,doc in enumerate(doc_obj.browse(cr, uid, doc_ids)):
-            if temp and doc.partner_id!=partner_id:
-                body+='</p>'
-                temp = 0
-            if doc.partner_id!=partner_id and \
-            ((not doc.document_sales_invoice or not doc.document_receipt or not doc.document_payment_voucher or not doc.document_bank_statement or not doc.document_rental_contract or not doc.document_petty_cash) \
-             or (not doc.tracking_sales_invoice or not doc.tracking_receipt or not doc.tracking_payment_voucher or not doc.tracking_bank_statement or not doc.tracking_rental_contract or not doc.tracking_petty_cash)):
-                temp = 1
-                body+='''
-                    <p><b>%s</b><br>
-                '''%(doc.partner_id.name)
-                partner_id = doc.partner_id
-            if doc.partner_id==partner_id and \
-            (not doc.document_sales_invoice or not doc.document_receipt or not doc.document_payment_voucher or not doc.document_bank_statement or not doc.document_rental_contract or not doc.document_petty_cash):
-                body+='''
-                    %s document still pending<br>
-                '''%(doc.name)
-            if doc.partner_id==partner_id and \
-            (not doc.tracking_sales_invoice or not doc.tracking_receipt or not doc.tracking_payment_voucher or not doc.tracking_bank_statement or not doc.tracking_rental_contract or not doc.tracking_petty_cash):
-                body+='''
-                    %s tracking still pending<br>
-                '''%(doc.name)
+        ngay = time.strftime('%Y-%m-%d')
+        sql = '''
+            select id from res_partner where id in (select partner_id from document_collection where alert_date<'%(ngay)s')
+                or id in (select partner_traking_id from document_collection where alert_date<'%(ngay)s')
+                or id in (select partner_adjustment_id from document_collection where alert_date<'%(ngay)s')
+                or id in (select partner_finalization_id from document_collection where alert_date<'%(ngay)s')
+            group by id
+            order by id
+        '''%{'ngay':ngay}
+        cr.execute(sql)
+        partner_ids = [r[0] for r in cr.fetchall()]
+        partner_obj = self.pool.get('res.partner')
+        
+#         doc_obj = self.pool.get('document.collection')
+#         doc_ids = doc_obj.search(cr, uid, [('alert_date','<',time.strftime('%Y-%m-%d')),('partner_id','!=',False)],order='partner_id')
+        for partner in partner_obj.browse(cr, uid, partner_ids):
+            partner_id = False
+            temp=0
+            for seq,doc in enumerate(partner.document_collection_ids):
+                if doc.alert_date<ngay:
+                    if temp and doc.partner_id!=partner_id:
+                        body+='</p>'
+                        temp = 0
+                    if doc.partner_id!=partner_id and \
+                    (not doc.document_sales_invoice or not doc.document_receipt or not doc.document_payment_voucher or not doc.document_bank_statement or not doc.document_rental_contract or not doc.document_petty_cash):
+                        temp = 1
+                        body+='''
+                            <p><b>%s</b><br>
+                        '''%(doc.partner_id.name)
+                        partner_id = doc.partner_id
+                    if doc.partner_id==partner_id and \
+                    (not doc.document_sales_invoice or not doc.document_receipt or not doc.document_payment_voucher or not doc.document_bank_statement or not doc.document_rental_contract or not doc.document_petty_cash):
+                        body+='''
+                            %s document still pending<br>
+                        '''%(doc.name)
+                        
+            for seq,doc in enumerate(partner.tracking_collection_ids):
+                if doc.alert_date<ngay:
+                    if temp and doc.partner_traking_id!=partner_id:
+                        body+='</p>'
+                        temp = 0
+                    if doc.partner_traking_id!=partner_id and \
+                    (not doc.tracking_sales_invoice or not doc.tracking_receipt or not doc.tracking_payment_voucher or not doc.tracking_bank_statement or not doc.tracking_rental_contract or not doc.tracking_petty_cash):
+                        temp = 1
+                        body+='''
+                            <p><b>%s</b><br>
+                        '''%(doc.partner_traking_id.name)
+                        partner_id = doc.partner_traking_id
+                    if doc.partner_traking_id==partner_id and \
+                    (not doc.tracking_sales_invoice or not doc.tracking_receipt or not doc.tracking_payment_voucher or not doc.tracking_bank_statement or not doc.tracking_rental_contract or not doc.tracking_petty_cash):
+                        body+='''
+                            %s tracking still pending<br>
+                        '''%(doc.name)
+                        
+            for seq,doc in enumerate(partner.account_adjustment_ids):
+                if doc.alert_date<ngay:
+                    if temp and doc.partner_adjustment_id!=partner_id:
+                        body+='</p>'
+                        temp = 0
+                    if doc.partner_adjustment_id!=partner_id and \
+                    (not doc.account_adjustment):
+                        temp = 1
+                        body+='''
+                            <p><b>%s</b><br>
+                        '''%(doc.partner_adjustment_id.name)
+                        partner_id = doc.partner_adjustment_id
+                    if doc.partner_adjustment_id==partner_id and \
+                    (not doc.account_adjustment):
+                        body+='''
+                            %s account adjustment still pending<br>
+                        '''%(doc.name)
+                        
+            for seq,doc in enumerate(partner.account_finalization_ids):
+                if doc.alert_date<ngay:
+                    if temp and doc.partner_finalization_id!=partner_id:
+                        body+='</p>'
+                        temp = 0
+                    if doc.partner_finalization_id!=partner_id and \
+                    (not doc.account_finalization):
+                        temp = 1
+                        body+='''
+                            <p><b>%s</b><br>
+                        '''%(doc.partner_finalization_id.name)
+                        partner_id = doc.partner_id
+                    if doc.partner_finalization_id==partner_id and \
+                    (not doc.account_finalization):
+                        body+='''
+                            %s account finalization still pending<br>
+                        '''%(doc.name)
         if body:
             post_values = {
                 'subject': 'Still Pending',
@@ -165,6 +261,48 @@ class res_partner(osv.osv):
             msg_id = self.message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
             self.send_mail(cr, uid, lead_email, msg_id, context)
         return True
+    
+#     def send_mail_for_admin(self, cr, uid, context=None):
+#         user = self.pool.get('res.users').browse(cr, uid, uid)
+#         partner = user.partner_id
+#         partner.signup_prepare()
+#         body = ''
+#         doc_obj = self.pool.get('document.collection')
+#         doc_ids = doc_obj.search(cr, uid, [('alert_date','<',time.strftime('%Y-%m-%d')),('partner_id','!=',False)],order='partner_id')
+#         partner_id = False
+#         temp=0
+#         for seq,doc in enumerate(doc_obj.browse(cr, uid, doc_ids)):
+#             if temp and doc.partner_id!=partner_id:
+#                 body+='</p>'
+#                 temp = 0
+#             if doc.partner_id!=partner_id and \
+#             ((not doc.document_sales_invoice or not doc.document_receipt or not doc.document_payment_voucher or not doc.document_bank_statement or not doc.document_rental_contract or not doc.document_petty_cash) \
+#              or (not doc.tracking_sales_invoice or not doc.tracking_receipt or not doc.tracking_payment_voucher or not doc.tracking_bank_statement or not doc.tracking_rental_contract or not doc.tracking_petty_cash)):
+#                 temp = 1
+#                 body+='''
+#                     <p><b>%s</b><br>
+#                 '''%(doc.partner_id.name)
+#                 partner_id = doc.partner_id
+#             if doc.partner_id==partner_id and \
+#             (not doc.document_sales_invoice or not doc.document_receipt or not doc.document_payment_voucher or not doc.document_bank_statement or not doc.document_rental_contract or not doc.document_petty_cash):
+#                 body+='''
+#                     %s document still pending<br>
+#                 '''%(doc.name)
+#             if doc.partner_id==partner_id and \
+#             (not doc.tracking_sales_invoice or not doc.tracking_receipt or not doc.tracking_payment_voucher or not doc.tracking_bank_statement or not doc.tracking_rental_contract or not doc.tracking_petty_cash):
+#                 body+='''
+#                     %s tracking still pending<br>
+#                 '''%(doc.name)
+#         if body:
+#             post_values = {
+#                 'subject': 'Still Pending',
+#                 'body': body,
+#                 'partner_ids': [],
+#                 }
+#             lead_email = partner.email
+#             msg_id = self.message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+#             self.send_mail(cr, uid, lead_email, msg_id, context)
+#         return True
     
 res_partner()
 
@@ -180,12 +318,20 @@ class document_collection(osv.osv):
         'document_bank_statement':fields.boolean('Bank Statement'),
         'document_rental_contract':fields.boolean('Rental Contract'),
         'document_petty_cash':fields.boolean('Petty Cash'),
+        
+        'partner_traking_id':fields.many2one('res.partner','Partner',ondelete='cascade'),
         'tracking_sales_invoice':fields.boolean('Sales Invoice'),
         'tracking_receipt':fields.boolean('Receipt'),
         'tracking_payment_voucher':fields.boolean('Payment Voucher'),
         'tracking_bank_statement':fields.boolean('Bank Statement'),
         'tracking_rental_contract':fields.boolean('Rental Contract'),
         'tracking_petty_cash':fields.boolean('Petty Cash'),
+        
+        'partner_adjustment_id':fields.many2one('res.partner','Partner',ondelete='cascade'),
+        'account_adjustment':fields.boolean('Account Adjustment Check Box (Monthly)'),
+        
+        'partner_finalization_id':fields.many2one('res.partner','Partner',ondelete='cascade'),
+        'account_finalization':fields.boolean('Account Finalization Check Box (Yearly)'),
     }
     _defaults = {
              }

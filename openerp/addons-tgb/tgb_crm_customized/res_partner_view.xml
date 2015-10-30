@@ -80,7 +80,7 @@
 					                    </group>
 				                    </group>
                         		</form>
-                        		<tree string="Document Collection">
+                        		<tree string="Document Collection" editable='top'>
 				                    <field name="name" />
 				                    <field name="alert_date" />
 				                    <field name="document_sales_invoice"/>
@@ -89,12 +89,38 @@
 				                    <field name="document_bank_statement"/>
 				                    <field name="document_rental_contract"/>
 				                    <field name="document_petty_cash"/>
+				                </tree>
+			                </field>
+                        </page>
+                        <page string="Tracking Collection">
+                        	<field name='tracking_collection_ids'>
+                        		<tree string="Tracking Collection" editable='top'>
+				                    <field name="name" />
+				                    <field name="alert_date" />
 				                    <field name="tracking_sales_invoice"/>
 				                    <field name="tracking_receipt"/>
 				                    <field name="tracking_payment_voucher"/>
 				                    <field name="tracking_bank_statement"/>
 				                    <field name="tracking_rental_contract"/>
 				                    <field name="tracking_petty_cash"/>
+				                </tree>
+			                </field>
+                        </page>
+                        <page string="Tracking Collection">
+                        	<field name='account_adjustment_ids'>
+                        		<tree string="Account Adjustment" editable='top'>
+				                    <field name="name" />
+				                    <field name="alert_date" />
+				                    <field name="account_adjustment"/>
+				                </tree>
+			                </field>
+                        </page>
+                        <page string="Account Finalization">
+                        	<field name='account_finalization_ids'>
+                        		<tree string="Account Finalization" editable='top'>
+				                    <field name="name" />
+				                    <field name="alert_date" />
+				                    <field name="account_finalization"/>
 				                </tree>
 			                </field>
                         </page>
