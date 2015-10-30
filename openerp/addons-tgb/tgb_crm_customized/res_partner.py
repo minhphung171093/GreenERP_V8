@@ -39,7 +39,7 @@ class res_partner(osv.osv):
     _columns = {
         'company_roc': fields.char('Company ROC',size=1024),
         'nric': fields.char('NRIC',size=1024),
-        'signature_specimen': fields.char('Signature Specimen',size=1024),
+        'signature_specimen': fields.binary('Signature Specimen'),
         'hp': fields.char('HP',size=1024),
         'office_no': fields.char('Office No',size=1024),
         'street_personal': fields.char('Street'),
@@ -56,7 +56,6 @@ class res_partner(osv.osv):
         'country_secretary_id': fields.many2one('res.country', 'Country', ondelete='restrict'),
         'period_of_year':fields.selection([('month','Month'),('quarter','Quarter'),('half_year','Half year'),('year','Year')],'Period or Year'),
         'document_collection_ids':fields.one2many('document.collection','partner_id','Document Collection'),
-        'signature_image': fields.binary('Signature'),
     }
     
     

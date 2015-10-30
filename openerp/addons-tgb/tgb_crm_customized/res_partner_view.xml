@@ -12,11 +12,6 @@
             		</header>
             	</xpath>-->
             	
-            	<xpath expr="//field[@name='title']" position="after">
-					<label for="signature_image"/>
-					<h2><field name="signature_image" widget="signature"/></h2>
-				</xpath>
-            	
             	<xpath expr="//form/sheet/notebook/page[@name='sales_purchases']" position="before">
             		<page name='crm_detail' string="CRM Details">
                             <group>
@@ -51,7 +46,8 @@
                             	<group>
                                 	<field name="company_roc"/>
                                 	<field name="nric"/>
-                                	<field name="signature_specimen"/>
+                                	<label for="signature_specimen"/>
+									<h2><field name="signature_specimen" widget="signature"/></h2>
                                 </group>
                                 <group>
                                 	<field name="hp"/>
