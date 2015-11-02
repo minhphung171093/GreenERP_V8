@@ -6,13 +6,52 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-            	<!--<xpath expr="//form/sheet" position="before">
-            		<header>
-            			<button string="Wizard Report 1" type="action" name="%(action_wizard_report_1)d" context="{'default_partner_id':active_id}"/>
-            		</header>
-            	</xpath>-->
-            	
             	<xpath expr="//form/sheet/notebook/page[@name='sales_purchases']" position="before">
+            		<page string="Payroll Details">
+                        <group>
+                        	<group>
+                            	<field name="uen"/>
+                            	<field name="chinese_name"/>
+                            	<field name="incorporation_date"/>
+                            	<field name="director_appt_date"/>
+                            	<field name="secretary_appt_date"/>
+                            	<field name="employment"/>
+                            	<field name="paid_up_capital"/>
+                            </group>
+                            <group>
+                            	<field name="c_status"/>
+                            	<field name="race"/>
+                            	<field name="country_id"/>
+                            	<field name="block_house_no"/>
+                            	<field name="street_name"/>
+                            	<field name="level_no"/>
+                            	<field name="unit_no"/>
+                            	<field name="postal_code"/>
+                            </group>
+                        </group>
+                        <group>
+                        	<group>
+                            	<field name="period_year"/>
+                            	<field name="fs_start_date"/>
+                            	<field name="fs_end_date"/>
+                            	<field name="axp_report"/>
+                            	<field name="estimate_chargable_income_date"/>
+                            	<field name="annual_general_meeting_date"/>
+                            	<field name="annual_return_date"/>
+                            	<field name="financial_month"/>
+                            </group>
+                            <group>
+                            	<field name="next_annual_general_meeting_due_date"/>
+                            	<field name="sole_proprietary_partnership"/>
+                            	<field name="last_financiall_year_end"/>
+                            	<field name="sole_proprietary_partnership_date"/>
+                            	<field name="tax_form_cs"/>
+                            	<field name="submit_monthly_cpf"/>
+                            	<field name="compute_submit_yearly_staff_salary"/>
+                            	<field name="remarks_1"/>
+                            </group>
+                        </group>
+                    </page>
             		<page name='crm_detail' string="CRM Details">
                             <group>
                                 <group>
@@ -132,7 +171,7 @@
             <field name="model_id" ref="base.model_res_partner" />
             <field name="name">Wizard Report 1</field>
             <field name="key2">client_action_multi</field>
-            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_1'))" />
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_agm'))" />
             <field name="key">action</field>
             <field name="model">res.partner</field>
         </record>
