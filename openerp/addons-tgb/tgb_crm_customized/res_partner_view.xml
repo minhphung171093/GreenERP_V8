@@ -145,7 +145,7 @@
 				                </tree>
 			                </field>
                         </page>
-                        <page string="Tracking Collection">
+                        <page string="Account Adjustment">
                         	<field name='account_adjustment_ids'>
                         		<tree string="Account Adjustment" editable='top'>
 				                    <field name="name" />
