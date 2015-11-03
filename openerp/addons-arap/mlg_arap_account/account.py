@@ -769,7 +769,7 @@ class account_move_line(osv.osv):
     def _get_thu_chi(self, cr, uid, ids, name, arg, context=None):
         result = {}
         for line in self.browse(cr, uid, ids):
-            if line.mlg_type in ['chi_no_doanh_thu','chi_dien_thoai','chi_bao_hiem','phai_tra_ky_quy','tam_ung']:
+            if line.mlg_type in ['chi_no_doanh_thu','chi_dien_thoai','chi_bao_hiem','phai_tra_ky_quy','tam_ung','chi_ho']:
                 result[line.id] = 'Chi'
             else:
                 result[line.id] = 'Thu'
