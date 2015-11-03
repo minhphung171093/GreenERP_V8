@@ -252,10 +252,10 @@ class res_partner(osv.osv):
         
 #         doc_obj = self.pool.get('document.collection')
 #         doc_ids = doc_obj.search(cr, uid, [('alert_date','<',time.strftime('%Y-%m-%d')),('partner_id','!=',False)],order='partner_id')
-        for partner in partner_obj.browse(cr, uid, partner_ids):
+        for rp in partner_obj.browse(cr, uid, partner_ids):
             partner_id = False
             temp=0
-            for seq,doc in enumerate(partner.document_collection_ids):
+            for seq,doc in enumerate(rp.document_collection_ids):
                 if doc.alert_date<ngay:
                     if temp and doc.partner_id!=partner_id:
                         body+='</p>'
@@ -273,7 +273,7 @@ class res_partner(osv.osv):
                             %s document still pending<br>
                         '''%(doc.name)
                         
-            for seq,doc in enumerate(partner.tracking_collection_ids):
+            for seq,doc in enumerate(rp.tracking_collection_ids):
                 if doc.alert_date<ngay:
                     if temp and doc.partner_traking_id!=partner_id:
                         body+='</p>'
@@ -291,7 +291,7 @@ class res_partner(osv.osv):
                             %s tracking still pending<br>
                         '''%(doc.name)
                         
-            for seq,doc in enumerate(partner.account_adjustment_ids):
+            for seq,doc in enumerate(rp.account_adjustment_ids):
                 if doc.alert_date<ngay:
                     if temp and doc.partner_adjustment_id!=partner_id:
                         body+='</p>'
@@ -309,7 +309,7 @@ class res_partner(osv.osv):
                             %s account adjustment still pending<br>
                         '''%(doc.name)
                         
-            for seq,doc in enumerate(partner.account_finalization_ids):
+            for seq,doc in enumerate(rp.account_finalization_ids):
                 if doc.alert_date<ngay:
                     if temp and doc.partner_finalization_id!=partner_id:
                         body+='</p>'
