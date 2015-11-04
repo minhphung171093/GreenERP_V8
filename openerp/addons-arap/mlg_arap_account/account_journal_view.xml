@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+<!-- Thêm chi nhánh trên journal -->
+		<record id="view_account_journal_form_inherit" model="ir.ui.view">
+            <field name="name">account.journal.form.inherit</field>
+            <field name="model">account.journal</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+	        	<xpath expr="//field[@name='type']" position="after">
+	        		<field name="chinhanh_id" domain="[('parent_id.code','=','1')]"/>
+	        	</xpath>
+            </field>
+        </record>
+
+<!-- Chỉnh sửa journal items -->
+		<act_window
+            id="account.action_account_items"
+            name="Journal Items"
+            context="{'search_default_account_id': [active_id], 'fiscalyear': context.get('fiscalyear'),'search_default_doi_xe': 1,'search_default_thuchi': 1,'search_default_loaicongno': 1}"
+            res_model="account.move.line"
+            src_model="account.account"
+            key2="tree_but_open"/>
+            
+	</data>
+</openerp>

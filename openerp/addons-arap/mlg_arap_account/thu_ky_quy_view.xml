@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+<!-- Thu ký quỹ -->
+		<record id="view_thu_ky_quy_filter" model="ir.ui.view">
+            <field name="name">thu.ky.quy.select</field>
+            <field name="model">thu.ky.quy</field>
+            <field name="arch" type="xml">
+                <search string="Thu ký quỹ">
+                	<field name="name"/>
+                    <field name="chinhanh_id"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="so_tien"/>
+                    <field name="ngay_thu"/>
+                    <field name="dien_giai"/>
+                    <field name="state"/>
+                    <group expand="0" string="Group By">
+                    	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
+                    	<filter name="group_by_ngay_thu" string="Ngày thu" context="{'group_by':'ngay_thu'}"/>
+                    	<filter name="group_by_user_id" string="Nhân viên thu" context="{'group_by':'user_id'}"/>
+                    	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
+                    	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+    	<record id="view_thu_ky_quy_tree" model="ir.ui.view">
+            <field name="name">thu.ky.quy.tree</field>
+            <field name="model">thu.ky.quy</field>
+            <field name="arch" type="xml">
+                <tree string="Thu ký quỹ">
+                	<field name="name"/>
+                    <field name="chinhanh_id"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="ngay_thu"/>
+                    <field name="so_tien"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_thu_ky_quy_form" model="ir.ui.view">
+            <field name="name">thu.ky.quy.form</field>
+            <field name="model">thu.ky.quy</field>
+            <field name="arch" type="xml">
+                <form string="Thu ký quỹ" version='7.0'>
+					<header>
+	                    <button name="bt_thu" states="draft" type='object' string="Thu" class="oe_highlight"/>
+	                    <button name="bt_huybo" states="draft,paid" type='object' string="Hủy bỏ" class="oe_highlight"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
+						<field name="currency_id" invisible='1'/>
+					</header>
+                	<sheet>
+                		<h1>
+                			<label string='Mã phiếu đề xuất'/>
+                			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                		</h1>
+	                    <group col="4" colspan="2">
+	                    	<group>
+		                    	<field name="chinhanh_id"/>
+		                    	<field name="loai_doituong" required='1'/>
+			                    <field name="partner_id" options="{'no_create': True}" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]" string="Đối tượng" context="{'doituong_thukyquy':1,'chinhanh_id':chinhanh_id,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}"/>
+		                    </group>
+		                    <group>
+			                    <field name="ngay_thu"/>
+			                    <field name="user_id"/>
+			                    <field name="bien_so_xe"/>
+			                    <field name="loai_kyquy_id" options="{'no_create': True}"/>
+		                    </group>
+	                    </group>
+                    	<group col="4" colspan="2">
+	                    	<field name="so_tien" required='1' widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    	</group>
+                    	<group>
+                    		<field name="dien_giai" placeholder="Diễn giải ..." nolabel='1'/>
+                    	</group>
+                    </sheet>
+                    <div class="oe_chatter">
+		                <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+		                <field name="message_ids" widget="mail_thread"/>
+		            </div>
+                </form>
+            </field>
+        </record>
+        <record id="action_thu_ky_quy" model="ir.actions.act_window">
+            <field name="name">Thu ký quỹ</field>
+            <field name="res_model">thu.ky.quy</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_thu_ky_quy_tree"/>
+            <field name="search_view_id" ref="view_thu_ky_quy_filter"/>
+            <field name="context">{'readonly_by_pass':['chinhanh_id']}</field>
+        </record>
+        
+	</data>
+</openerp>

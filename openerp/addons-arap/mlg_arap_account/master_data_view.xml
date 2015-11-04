@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+<!-- Thu ngân bãi giao ca -->    
+    	<record id="view_thungan_bai_giaoca_tree" model="ir.ui.view">
+            <field name="name">thungan.bai.giaoca.tree</field>
+            <field name="model">thungan.bai.giaoca</field>
+            <field name="arch" type="xml">
+                <tree string="Thu ngân bãi giao ca" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_thungan_bai_giaoca" model="ir.actions.act_window">
+            <field name="name">Thu ngân bãi giao ca</field>
+            <field name="res_model">thungan.bai.giaoca</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_thungan_bai_giaoca_tree"/>
+        </record>
+        
+<!-- Điều hành bãi giao ca -->    
+    	<record id="view_dieuhanh_bai_giaoca_tree" model="ir.ui.view">
+            <field name="name">dieuhanh.bai.giaoca.tree</field>
+            <field name="model">dieuhanh.bai.giaoca</field>
+            <field name="arch" type="xml">
+                <tree string="Điều hành bãi giao ca" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_dieuhanh_bai_giaoca" model="ir.actions.act_window">
+            <field name="name">Điều hành bãi giao ca</field>
+            <field name="res_model">dieuhanh.bai.giaoca</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_dieuhanh_bai_giaoca_tree"/>
+        </record>
+        
+<!-- Bãi giao ca -->    
+    	<record id="view_bai_giaoca_tree" model="ir.ui.view">
+            <field name="name">bai.giaoca.tree</field>
+            <field name="model">bai.giaoca</field>
+            <field name="arch" type="xml">
+                <tree string="Bãi giao ca" editable='top'>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="thungan_id"/>
+                    <field name="dieuhanh_id"/>
+                    <field name="account_id" domain="[('type','=','other')]"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_bai_giaoca" model="ir.actions.act_window">
+            <field name="name">Bãi giao ca</field>
+            <field name="res_model">bai.giaoca</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_bai_giaoca_tree"/>
+        </record>
+        
+<!-- Loại đối tượng -->    
+    	<record id="view_loai_doi_tuong_tree" model="ir.ui.view">
+            <field name="name">loai.doi.tuong.tree</field>
+            <field name="model">loai.doi.tuong</field>
+            <field name="arch" type="xml">
+                <tree string="Loại đối tượng" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_doi_tuong" model="ir.actions.act_window">
+            <field name="name">Loại đối tượng</field>
+            <field name="res_model">loai.doi.tuong</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_doi_tuong_tree"/>
+        </record>
+        
+<!-- Loại ký quỹ -->    
+    	<record id="view_loai_ky_quy_tree" model="ir.ui.view">
+            <field name="name">loai.ky.quy.tree</field>
+            <field name="model">loai.ky.quy</field>
+            <field name="arch" type="xml">
+                <tree string="Loại ký quỹ" editable='top'>
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_ky_quy" model="ir.actions.act_window">
+            <field name="name">Loại ký quỹ</field>
+            <field name="res_model">loai.ky.quy</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_ky_quy_tree"/>
+        </record>
+        
+<!-- Loại tạm ứng -->    
+    	<record id="view_loai_tam_ung_tree" model="ir.ui.view">
+            <field name="name">loai.tam.ung.tree</field>
+            <field name="model">loai.tam.ung</field>
+            <field name="arch" type="xml">
+                <tree string="Loại tạm ứng" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_tam_ung" model="ir.actions.act_window">
+            <field name="name">Loại tạm ứng</field>
+            <field name="res_model">loai.tam.ung</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_tam_ung_tree"/>
+        </record>
+
+<!-- Loại vi phạm -->    
+    	<record id="view_loai_vi_pham_tree" model="ir.ui.view">
+            <field name="name">loai.vi.pham.tree</field>
+            <field name="model">loai.vi.pham</field>
+            <field name="arch" type="xml">
+                <tree string="Loại vi phạm" editable='top'>
+                    <field name="name"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_vi_pham" model="ir.actions.act_window">
+            <field name="name">Loại vi phạm</field>
+            <field name="res_model">loai.vi.pham</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_vi_pham_tree"/>
+        </record>
+
+<!-- Biển số xe -->    
+    	<record id="view_bien_so_xe_tree" model="ir.ui.view">
+            <field name="name">bien.so.xe.tree</field>
+            <field name="model">bien.so.xe</field>
+            <field name="arch" type="xml">
+                <tree string="Biển số xe" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_bien_so_xe" model="ir.actions.act_window">
+            <field name="name">Biển số xe</field>
+            <field name="res_model">bien.so.xe</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_bien_so_xe_tree"/>
+        </record>
+
+<!-- Mã xưởng -->    
+    	<record id="view_ma_xuong_tree" model="ir.ui.view">
+            <field name="name">ma.xuong.tree</field>
+            <field name="model">ma.xuong</field>
+            <field name="arch" type="xml">
+                <tree string="Mã xưởng" editable='top'>
+                    <field name="code"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_ma_xuong" model="ir.actions.act_window">
+            <field name="name">Mã xưởng</field>
+            <field name="res_model">ma.xuong</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_ma_xuong_tree"/>
+        </record>
+        
+<!-- Nợ hạng mức -->    
+    	<record id="view_no_hang_muc_tree" model="ir.ui.view">
+            <field name="name">no.hang.muc.tree</field>
+            <field name="model">no.hang.muc</field>
+            <field name="arch" type="xml">
+                <tree string="Nợ hạng mức" editable='top'>
+                    <field name="name"/>
+                    <field name="mlg_type"/>
+                    <field name="so_tien"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_no_hang_muc" model="ir.actions.act_window">
+            <field name="name">Nợ hạng mức</field>
+            <field name="res_model">no.hang.muc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_no_hang_muc_tree"/>
+        </record>
+
+	</data>
+</openerp>

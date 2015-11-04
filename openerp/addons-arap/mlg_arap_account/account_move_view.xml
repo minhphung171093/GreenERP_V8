@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+<!-- Thêm bãi giao ca -->
+		<record id="view_account_move_line_filter_inherit" model="ir.ui.view">
+            <field name="name">account.move.line.filter.inherit</field>
+            <field name="model">account.move.line</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="arch" type="xml">
+                <filter string="Account" position="replace">
+                </filter>
+                <filter string="Partner" position="replace">
+                	<filter name="doi_xe" string="Đội xe" icon="terp-folder-green" context="{'group_by':'account_id'}"/>
+                	<filter name="thuchi" string="Thu/Chi" icon="terp-go-month" domain="[]" context="{'group_by':'thu_chi'}"/>
+                	<filter name="loaicongno" string="Loại công nợ" icon="terp-go-month" domain="[]" context="{'group_by':'mlg_type'}"/>
+                	<filter name="bai_giao_ca" string="Bãi giao ca" icon="terp-go-month" domain="[]" context="{'group_by':'bai_giaoca_id'}"/>
+                	<filter name="doi_tuong" string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                </filter>
+                <field name="partner_id" position="after">
+                	<field name="thu_chi"/>
+                	<field name="mlg_type"/>
+                	<field name="bai_giaoca_id"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_move_line_tree_inherit" model="ir.ui.view">
+            <field name="name">account.move.line.tree.inherit</field>
+            <field name="model">account.move.line</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_move_line_tree"/>
+            <field name="arch" type="xml">
+                <field name="account_id" position="after">
+                	<field name="thu_chi" invisible='1'/>
+                	<field name="mlg_type" invisible='1'/>
+                	<field name="bai_giaoca_id" invisible='1'/>
+                </field>
+                <xpath expr="//field[@name='name']" position="attributes">
+	        		<attribute name="invisible">1</attribute>
+	        	</xpath>
+	        	<xpath expr="//field[@name='move_id']" position="attributes">
+	        		<attribute name="invisible">1</attribute>
+	        	</xpath>
+	        	<xpath expr="//field[@name='partner_id']" position="attributes">
+	        		<attribute name="invisible">1</attribute>
+	        	</xpath>
+	        	<xpath expr="//field[@name='account_id']" position="attributes">
+	        		<attribute name="invisible">1</attribute>
+	        	</xpath>
+	        	<xpath expr="//field[@name='reconcile_ref']" position="attributes">
+	        		<attribute name="invisible">1</attribute>
+	        	</xpath>
+	        	<xpath expr="//field[@name='credit']" position="after">
+	        		<field name="con_lai"/>
+	        	</xpath>
+            </field>
+        </record>
+
+	</data>
+</openerp>
