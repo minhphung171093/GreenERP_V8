@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!-- Import Phải thu chi hộ điện thoại -->
+		<record id="import_phaithu_chiho_dienthoai_tree_view" model="ir.ui.view">
+			<field name="name">import.phaithu.chiho.dienthoai.tree</field>
+			<field name="model">import.phaithu.chiho.dienthoai</field>
+			<field name="arch" type="xml">
+				<tree string="Import Phải thu chi hộ điện thoại">
+					<field name ="name"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="import_phaithu_chiho_dienthoai_form_view" model="ir.ui.view">
+            <field name="name">import.phaithu.chiho.dienthoai.form</field>
+            <field name="model">import.phaithu.chiho.dienthoai</field>
+            <field name="arch" type="xml">
+                <form string="Import Phải thu chi hộ điện thoại" version="7.0">
+                    <header>
+	                    <button name="bt_import" states='draft' string="Import" type="object" class="oe_highlight" />
+	                    <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"draft":"blue","done":"blue"}'/>
+	                </header>                
+                	<sheet>  
+                		<group>
+                		<field name ="name"/>
+						<label for="datas" string="Data Upload Field"/>
+							<div>
+								<field name="datas" filename="datas_fname"/>
+	                        	<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
+	                        </div>
+                		</group>
+                	</sheet>
+				</form>
+			</field>
+		</record>
+
+        <record id="action_import_phaithu_chiho_dienthoai" model="ir.actions.act_window">
+            <field name="name">Import Phải thu chi hộ điện thoại</field>
+			<field name="type">ir.actions.act_window</field>
+            <field name="res_model">import.phaithu.chiho.dienthoai</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="import_phaithu_chiho_dienthoai_tree_view"/>
+        </record>
+        
+	</data>
+</openerp>

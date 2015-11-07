@@ -10,7 +10,7 @@
 	        <field name="report_name">form_no_doanh_thu_report_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-odt'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/form_no_doanh_thu_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/form_no_doanh_thu_report_taixe.odt</field>
 	        <field name="parser_state">loc</field>
@@ -32,7 +32,7 @@
 	        <field name="report_name">form_no_doanh_thu_report_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-odt'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/form_no_doanh_thu_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/form_no_doanh_thu_report_nhadautu.odt</field>
 	        <field name="parser_state">loc</field>
@@ -54,7 +54,7 @@
 	        <field name="report_name">form_no_doanh_thu_report_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-odt'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/form_no_doanh_thu_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/form_no_doanh_thu_report_nhanvienvanphong.odt</field>
 	        <field name="parser_state">loc</field>
@@ -78,7 +78,7 @@
 	        <field name="report_name">form_chi_no_doanh_thu_report_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-odt'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/form_chi_no_doanh_thu_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/form_chi_no_doanh_thu_report_taixe.odt</field>
 	        <field name="parser_state">loc</field>
@@ -100,7 +100,7 @@
 	        <field name="report_name">form_chi_no_doanh_thu_report_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-odt'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/form_chi_no_doanh_thu_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/form_chi_no_doanh_thu_report_nhadautu.odt</field>
 	        <field name="parser_state">loc</field>
@@ -122,7 +122,7 @@
 	        <field name="report_name">form_chi_no_doanh_thu_report_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-odt'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/form_chi_no_doanh_thu_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/form_chi_no_doanh_thu_report_nhanvienvanphong.odt</field>
 	        <field name="parser_state">loc</field>

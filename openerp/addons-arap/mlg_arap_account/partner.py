@@ -166,6 +166,7 @@ class res_partner(osv.osv):
         'ky_quy_ids': fields.function(_get_kyquy, relation='thu.ky.quy',type='many2many', string='Ký quỹ', readonly=True),
         'tinh_congno': fields.function(_get_congno, type='char', string='Tính công nợ', readonly=True),
         'congno_line': fields.one2many('tong.cong.no', 'partner_id','Chi tiết công nợ', readonly=True),
+        'loai_doituong_lienket': fields.selection([('baohiem','Bảo hiểm'),('congty_thanhvien','Công ty thành viên')],'Loại đối tượng liên kết'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

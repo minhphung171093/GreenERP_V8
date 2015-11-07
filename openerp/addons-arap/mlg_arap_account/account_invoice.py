@@ -55,7 +55,30 @@ class account_invoice(osv.osv):
                 partial_reconciliations_done.append(line.reconcile_partial_id.id)
             self.residual += line_amount
         self.residual = max(self.residual, 0.0)
+    
+    def _get_loai_doituong(self, cr, uid, context=None):
+        if context is None:
+            context = {}
+            
+        vals = [('taixe','Lái xe'),
+                ('nhadautu','Nhà đầu tư'),
+                ('nhanvienvanphong','Nhân viên văn phòng')]
+            
+        if context.get('default_mlg_type', False) and context['default_mlg_type']=='no_doanh_thu':
+            vals = [('taixe','Lái xe'),
+                ('nhadautu','Nhà đầu tư'),
+                ]
+            
+        if context.get('default_mlg_type', False) and context['default_mlg_type']=='chi_ho_dien_thoai':
+            vals = [('taixe','Lái xe'),
+                ('nhanvienvanphong','Nhân viên văn phòng'),
+                ]
         
+        if context.get('default_mlg_type', False) and context['default_mlg_type']=='phai_thu_bao_hiem':
+            vals = [('nhadautu','Nhà đầu tư')]
+        
+        return vals
+    
     _columns = {
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
@@ -95,6 +118,7 @@ class account_invoice(osv.osv):
         'bien_so_xe': fields.char('Biển số xe', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
         'ma_xuong_id': fields.many2one('ma.xuong','Mã xưởng', readonly=True, states={'draft': [('readonly', False)]}),
         'so_hop_dong': fields.char('Số hợp đồng', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
+        'so_dien_thoai': fields.char('Số điện thoại', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
         'loai_doituong_id': fields.related('partner_id', 'loai_doituong_id',type='many2one',relation='loai.doi.tuong',string='Loại đối tượng', readonly=True, store=True),
         'so_hoa_don':fields.char('Số hóa đơn',size = 64, readonly=True, states={'draft': [('readonly', False)]}),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ', readonly=True, states={'draft': [('readonly', False)]}),
@@ -109,12 +133,14 @@ class account_invoice(osv.osv):
         'so_tien_tren_hd': fields.float('Số tiền trên hóa đơn', readonly=True, states={'draft': [('readonly', False)]}),
         'chung_tu_bao_hiem':fields.char('Chứng từ bảo hiểm',size = 1024, readonly=True, states={'draft': [('readonly', False)]}),
         'so_tien_tren_ct': fields.float('Số tiền trên chứng từ', readonly=True, states={'draft': [('readonly', False)]}),
-        'ma_bang_chiettinh_chiphi_sua': fields.char('Mã bảng chiết tính chi phí sửa', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
-        'loai_doituong': fields.selection([('taixe','Lái xe'),
-                                           ('nhadautu','Nhà đầu tư'),
-                                           ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng', readonly=True, states={'draft': [('readonly', False)]}),
+        'ma_bang_chiettinh_chiphi_sua': fields.char('Mã chiết tính', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
+#         'loai_doituong': fields.selection([('taixe','Lái xe'),
+#                                            ('nhadautu','Nhà đầu tư'),
+#                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng', readonly=True, states={'draft': [('readonly', False)]}),
+        'loai_doituong': fields.selection(_get_loai_doituong, 'Loại đối tượng', readonly=True, states={'draft': [('readonly', False)]}),
         'cmnd': fields.related('partner_id','cmnd',type='char',string='Số CMND',readonly=True),
         'giayphep_kinhdoanh': fields.related('partner_id','giayphep_kinhdoanh',type='char',string='Mã số giấy phép kinh doanh',readonly=True),
+        'thu_cho_doituong_id': fields.many2one('res.partner','Thu cho đối tượng'),
 #         'residual': fields.function(_compute_residual,type='float',digits=dp.get_precision('Account'), store=True,
 #                                     string='Balance',help="Remaining amount due."),
     }

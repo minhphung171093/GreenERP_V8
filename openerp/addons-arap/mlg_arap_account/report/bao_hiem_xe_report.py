@@ -75,8 +75,8 @@ class Parser(report_sxw.rml_parse):
             sql+='''
                 and bh.so_hoa_don like '%'''+so_hoa_don+'''%' '''
         
-        so_hoa_don = wizard_data['so_hoa_don']
-        if so_hoa_don:
+        bien_so_xe = wizard_data['bien_so_xe']
+        if bien_so_xe:
             sql+='''
                 and bh.name like '%'''+bien_so_xe+'''%' ''' 
         

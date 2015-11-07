@@ -115,7 +115,7 @@
 					
 				<menuitem id="menu_action_chi_ho_dien_thoai"
 					action="action_chi_ho_dien_thoai"
-					name="Chi hộ điện thoại"
+					name="Phải thu chi hộ điện thoại"
 					parent="menu_cong_no" sequence="6"/>
 					
 				<menuitem id="menu_action_phai_thu_bao_hiem"
@@ -153,6 +153,24 @@
 					name="Phải thu tạm ứng"
 					parent="menu_cong_no" sequence="25"/>
 					
+			<menuitem id="menu_baocao_cong_no_thu"
+				name="Báo cáo"
+				parent="menu_root_congno" sequence="15"/>
+				
+				<menuitem id="menu_action_congno_theo_bang_chiettinh"
+					action="action_congno_theo_bang_chiettinh"
+					name="Công nợ theo bảng chiết tính"
+					parent="menu_baocao_cong_no_thu" sequence="5"/>
+					
+			<menuitem id="menu_import_cong_no_thu"
+				name="Import"
+				parent="menu_root_congno" sequence="20"/>
+				
+				<menuitem id="menu_action_import_phaithu_chiho_dienthoai"
+					action="action_import_phaithu_chiho_dienthoai"
+					name="Import Phải thu chi hộ điện thoại"
+					parent="menu_import_cong_no_thu" sequence="5"/>
+					
 		<menuitem id="menu_root_congno_chi"
 			name="Phải Chi" sequence="3"/>
 			
@@ -175,10 +193,10 @@
 					name="Chi bảo hiểm"
 					parent="menu_congno_chi" sequence="15"/> -->
 					
-				<!-- <menuitem id="menu_action_phai_tra_ky_quy"
+				<menuitem id="menu_action_phai_tra_ky_quy"
 					action="action_phai_tra_ky_quy"
 					name="Phải trả ký quỹ"
-					parent="menu_congno_chi" sequence="20"/> -->
+					parent="menu_congno_chi" sequence="20"/>
 					
 				<menuitem id="menu_action_tam_ung"
 					action="action_tam_ung"
@@ -202,7 +220,7 @@
 					name="Thu ký quỹ"
 					parent="menu_ky_quy" sequence="5"/>
 		
-		<menuitem id="menu_root_baohiem_xe"
+		<!--<menuitem id="menu_root_baohiem_xe"
 			name="Bảo Hiểm Xe" sequence="5"/>
 			
 			<menuitem id="menu_baohiem_xe"
@@ -212,7 +230,7 @@
 				<menuitem id="menu_action_ql_bao_hiem"
 					action="action_ql_bao_hiem"
 					name="Quản lý bảo hiểm xe"
-					parent="menu_baohiem_xe" sequence="10"/>
+					parent="menu_baohiem_xe" sequence="10"/>-->
 		
 		<menuitem id="menu_root_quanly"
 			name="Quản Lý" sequence="10"/>

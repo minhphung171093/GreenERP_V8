@@ -69,7 +69,7 @@
 					</header>
                 	<sheet>
                 		<h1>
-                			<label string='Mã phiếu đề xuất'/>
+                			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
@@ -107,6 +107,7 @@
 	                                    <field name="credit" string="Có"/>
 	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
 	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                    <button name="%(phieu_thu_report)d" string="In phiếu thu" type='action' class="oe_highlight"/>
 	                                </tree>
 	                            </field>
 	                        </page>
@@ -223,7 +224,7 @@
 					</header>
                 	<sheet>
                 		<h1>
-                			<label string='Mã phiếu đề xuất'/>
+                			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
@@ -241,6 +242,7 @@
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hoa_don"/>
+			                    <field name="so_dien_thoai"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">
@@ -378,7 +380,7 @@
 					</header>
                 	<sheet>
                 		<h1>
-                			<label string='Mã phiếu đề xuất'/>
+                			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
@@ -454,7 +456,7 @@
             <field name="view_id" ref="view_phai_thu_bao_hiem_tree"/>
             <field name="search_view_id" ref="view_phai_thu_bao_hiem_filter"/>
             <field name="domain">[('mlg_type','=','phai_thu_bao_hiem')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'phai_thu_bao_hiem', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong':'nhadautu','readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'phai_thu_bao_hiem', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_phai_thu_bao_hiem1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -689,7 +691,7 @@
 					</header>
                 	<sheet>
                 		<h1>
-                			<label string='Mã phiếu đề xuất'/>
+                			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
@@ -846,7 +848,7 @@
 					</header>
                 	<sheet>
                 		<h1>
-                			<label string='Mã phiếu đề xuất'/>
+                			<label string='Tạo mới công nợ xưởng'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
@@ -1003,7 +1005,7 @@
 					</header>
                 	<sheet>
                 		<h1>
-                			<label string='Mã phiếu đề xuất'/>
+                			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
@@ -1166,6 +1168,7 @@
 		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" options="{'no_create': True}" domain="[('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
+			                    <field name="thu_cho_doituong_id" domain="[('nhadautugiantiep','=',True)]" options="{'no_create': True}"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
 		                    </group>
