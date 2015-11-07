@@ -168,7 +168,7 @@
 				
 				<menuitem id="menu_action_import_phaithu_chiho_dienthoai"
 					action="action_import_phaithu_chiho_dienthoai"
-					name="Import Phải thu chi hộ điện thoại"
+					name="Nhập phải thu chi hộ điện thoại"
 					parent="menu_import_cong_no_thu" sequence="5"/>
 					
 		<menuitem id="menu_root_congno_chi"
@@ -283,6 +283,11 @@
 					action="action_no_hang_muc"
 					name="Nợ hạng mức"
 					parent="menu_danhmuc_dungchung" sequence="9"/>
+					
+				<menuitem id="menu_action_cauhinh_thumuc_import"
+					action="action_cauhinh_thumuc_import"
+					name="Cấu hình thư mục"
+					parent="menu_danhmuc_dungchung" sequence="10"/>
 			
 			<menuitem id="account.menu_finance_entries"
 				name="Journal Entries"

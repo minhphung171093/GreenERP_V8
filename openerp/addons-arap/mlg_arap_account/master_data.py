@@ -147,4 +147,20 @@ class no_hang_muc(osv.osv):
     }
 no_hang_muc()
 
+class cauhinh_thumuc_import(osv.osv):
+    _name = "cauhinh.thumuc.import"
+    _columns = {
+        'name': fields.char('Đường dẫn', size=2048, required=True),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+                                      ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
+                                      ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
+                                      ('phat_vi_pham','Phạt vi phạm'),
+                                      ('thu_no_xuong','Thu nợ xưởng'),
+                                      ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
+                                      ('tra_gop_xe','Trả góp xe'),
+                                      ('hoan_tam_ung','Phải thu tạm ứng'),
+                                      ],'Loại công nợ', required=True),
+    }
+cauhinh_thumuc_import()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

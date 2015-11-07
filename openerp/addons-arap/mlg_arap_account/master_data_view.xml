@@ -190,6 +190,25 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_no_hang_muc_tree"/>
         </record>
+        
+<!-- Cấu hình thư mục -->    
+    	<record id="view_cauhinh_thumuc_import_tree" model="ir.ui.view">
+            <field name="name">cauhinh.thumuc.import.tree</field>
+            <field name="model">cauhinh.thumuc.import</field>
+            <field name="arch" type="xml">
+                <tree string="Cấu hình thư mục" editable='top'>
+                    <field name="name"/>
+                    <field name="mlg_type"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_cauhinh_thumuc_import" model="ir.actions.act_window">
+            <field name="name">Cấu hình thư mục</field>
+            <field name="res_model">cauhinh.thumuc.import</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_cauhinh_thumuc_import_tree"/>
+        </record>
 
 	</data>
 </openerp>

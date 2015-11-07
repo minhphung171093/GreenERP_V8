@@ -288,10 +288,10 @@ class account_invoice(osv.osv):
             if loai_doituong!='nhadautu':
                 if context.get('default_type',False)=='out_invoice':
                     account_id = partner.property_account_receivable and partner.property_account_receivable.id or False
-                    chinhanh_id = partner.property_account_receivable.parent_id.id
+#                     chinhanh_id = partner.property_account_receivable.parent_id.id
                 else:
                     account_id = partner.property_account_payable and partner.property_account_payable.id or False
-                    chinhanh_id = partner.property_account_payable.parent_id.id
+#                     chinhanh_id = partner.property_account_payable.parent_id.id
             else:
                 user = self.pool.get('res.users').browse(cr, uid, uid)
                 if ids:
