@@ -31,6 +31,7 @@ import os
 import logging
 from openerp.addons.mlg_arap_account import lib_csv
 from openerp import netsvc
+from glob import glob
 
 # from datetime import datetime, timedelta
 
@@ -94,16 +95,12 @@ class import_congno(osv.osv):
                 open(file_path,'wb').write(bin_value)
                 
                 csvUti = lib_csv.csv_ultilities()
-                for file_name in csvUti._read_files_folder(path):
-                    f_path = file_name
+#                 for file_name in csvUti._read_files_folder(path):
+#                     f_path = file_name
                     
-                    try:
-                        file_data = csvUti._read_file(f_path)
-                    except Exception, e:
-                        error_path = dir_path+'/Error/'
-                        csvUti._moveFiles([file_name],error_path)
-                        continue
-                    
+                try:
+                    file_data = csvUti._read_file(file_path)
+                
                     for data in file_data:
                         print data
                         sql = '''
@@ -149,7 +146,11 @@ class import_congno(osv.osv):
                         vals.update(invoice_vals)
                         invoice_id = invoice_obj.create(cr, uid, vals)
                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                    csvUti._moveFiles([file_name],done_path)
+                    csvUti._moveFiles([file_path],done_path)
+                except Exception, e:
+                    error_path = dir_path+'/Error/'
+                    csvUti._moveFiles([file_path],error_path)
+                    raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
             except Exception, e:
                 raise osv.except_osv(_('Warning!'), str(e))
