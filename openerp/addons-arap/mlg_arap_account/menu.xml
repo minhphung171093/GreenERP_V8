@@ -172,16 +172,16 @@
 					parent="menu_import_cong_no_thu" sequence="5"/>
 					
 		<menuitem id="menu_root_congno_chi"
-			name="Phải Chi" sequence="3"/>
+			name="Phải Trả" sequence="3"/>
 			
 			<menuitem id="menu_congno_chi"
-				name="Phải chi"
+				name="Phải trả"
 				parent="menu_root_congno_chi" sequence="3"/>
 				
-				<menuitem id="menu_action_chi_no_doanh_thu"
+				<!-- <menuitem id="menu_action_chi_no_doanh_thu"
 					action="action_chi_no_doanh_thu"
 					name="Chi nợ doanh thu"
-					parent="menu_congno_chi" sequence="5"/>
+					parent="menu_congno_chi" sequence="5"/> -->
 					
 				<!-- <menuitem id="menu_action_chi_dien_thoai"
 					action="action_chi_dien_thoai"
@@ -198,14 +198,14 @@
 					name="Phải trả ký quỹ"
 					parent="menu_congno_chi" sequence="20"/>
 					
-				<menuitem id="menu_action_tam_ung"
+				<!-- <menuitem id="menu_action_tam_ung"
 					action="action_tam_ung"
 					name="Tạm ứng"
-					parent="menu_congno_chi" sequence="25"/>
+					parent="menu_congno_chi" sequence="25"/> -->
 					
 				<menuitem id="menu_action_chi_ho"
 					action="action_chi_ho"
-					name="Chi hộ"
+					name="Phải trả chi hộ"
 					parent="menu_congno_chi" sequence="30"/>
 		
 		<menuitem id="menu_root_ky_quy"
@@ -331,14 +331,14 @@
 		<menuitem id="menu_root_baocao"
 			name="Báo Cáo" sequence="20"/>
 			
-			<menuitem id="menu_danhsach_baohiem_xe"
+			<!-- <menuitem id="menu_danhsach_baohiem_xe"
 				name="Danh sách bảo hiểm xe"
-				parent="menu_root_baocao" sequence="5"/>
+				parent="menu_root_baocao" sequence="5"/> -->
 				
-				<menuitem id="menu_action_bao_hiem_xe_report"
+				<!-- <menuitem id="menu_action_bao_hiem_xe_report"
 					name="DS Bảo hiểm xe"
 					action="action_bao_hiem_xe_report"
-					parent="menu_danhsach_baohiem_xe" sequence="10"/>
+					parent="menu_danhsach_baohiem_xe" sequence="10"/> -->
 			
 			<menuitem id="menu_danhsach_congno"
 				name="Danh sách công nợ"
