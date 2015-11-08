@@ -18,7 +18,7 @@ class danhsach_congno(osv.osv_memory):
         'bai_giaoca_ids': fields.many2many('bai.giaoca', 'dscn_baigiaoca_ref', 'dscn_id', 'baigiaoca_id', 'Bãi giao ca'),
         'chinhanh_ids': fields.many2many('account.account', 'dscn_chinhanh_ref', 'dscn_id', 'chinhanh_id', 'Chi nhánh'),
         'so_hoa_don':fields.char('Số hóa đơn',size = 64),
-        'bien_so_xe': fields.char('Biển số xe', size=1024),
+        'bien_so_xe_ids': fields.many2many('bien.so.xe','dscn_biensoxe_ref', 'dscn_id', 'biensoxe_id','Biển số xe'),
         'so_hop_dong': fields.char('Số hợp đồng', size=1024),
         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã chiết tính'),
     }

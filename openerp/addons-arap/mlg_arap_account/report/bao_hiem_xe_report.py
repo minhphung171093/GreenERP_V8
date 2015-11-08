@@ -75,10 +75,13 @@ class Parser(report_sxw.rml_parse):
             sql+='''
                 and bh.so_hoa_don like '%'''+so_hoa_don+'''%' '''
         
-        bien_so_xe = wizard_data['bien_so_xe']
-        if bien_so_xe:
+        bien_so_xe_ids = wizard_data['bien_so_xe_ids']
+        if bien_so_xe_ids:
+            bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+            bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
             sql+='''
-                and bh.name like '%'''+bien_so_xe+'''%' ''' 
+                and ai.bien_so_xe_id in %s 
+            '''%(bien_so_xe_ids)
         
         self.cr.execute(sql)
         res = self.cr.dictfetchall()

@@ -39,7 +39,7 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select ai.name as ma_giaodich, ai.date_invoice as ngay_giaodich, cn.code as ma_chinhanh, cn.name as ten_chinhanh,
                 rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, ldt.name as loai_doituong, dx.code as ma_doixe,
-                dx.name as ten_doixe, ai.so_hop_dong as so_hop_dong, ai.bien_so_xe as bien_so_xe, ail.price_unit as sotien, ail.name as diengiai
+                dx.name as ten_doixe, ai.so_hop_dong as so_hop_dong, bsx.name as bien_so_xe, ail.price_unit as sotien, ail.name as diengiai
                 
                 from account_invoice_line ail
                 left join account_invoice ai on ail.invoice_id = ai.id
@@ -47,6 +47,7 @@ class Parser(report_sxw.rml_parse):
                 left join loai_doi_tuong ldt on ai.loai_doituong_id = ldt.id
                 left join account_account dx on ai.account_id = dx.id
                 left join account_account cn on ai.chinhanh_id = cn.id
+                left join bien_so_xe bsx on ai.bien_so_xe_id = bsx.id
                 where date_invoice between '%s' and '%s' and mlg_type='phai_thu_bao_hiem' 
         '''%(from_date,to_date)
         

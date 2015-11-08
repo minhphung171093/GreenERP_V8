@@ -605,7 +605,7 @@
             <field name="arch" type="xml">
                 <field name="website" position="after">
                 	<field name="ma_doi_tuong"/>
-                	<field name="bien_so_xe" attrs="{'invisible':[('loai_doituong','!=','Nhà đầu tư')]}"/>
+                	<field name="bien_so_xe_id" attrs="{'invisible':[('loai_doituong','!=','Nhà đầu tư')]}"/>
                 	<field name="loai_doituong" invisible='1'/>
                 </field>
                 <field name="category_id" position="replace">

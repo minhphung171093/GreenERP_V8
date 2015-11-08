@@ -64,7 +64,7 @@ class Parser(report_sxw.rml_parse):
                 rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, ldt.name as loai_doituong, dx.code as ma_doixe,
                 dx.name as ten_doixe, bgc.code as ma_baigiaoca, bgc.name as ten_baigiaoca, tnbgc.name as thungan_baigiaoca,
                 dhbgc.name as dieuhanh_baigiaoca, ail.price_unit as sotien, ail.name as diengiai,ai.mlg_type as loaicongno,
-                ai.so_hop_dong as so_hop_dong, ai.bien_so_xe as bien_so_xe, ai.so_hoa_don as so_hoa_don,
+                ai.so_hop_dong as so_hop_dong, bsx.name as bien_so_xe, ai.so_hoa_don as so_hoa_don,
                 ai.ma_bang_chiettinh_chiphi_sua as ma_bang_chiettinh_chiphi_sua
                 
                 from account_invoice_line ail
@@ -76,6 +76,7 @@ class Parser(report_sxw.rml_parse):
                 left join thungan_bai_giaoca tnbgc on bgc.thungan_id = tnbgc.id
                 left join dieuhanh_bai_giaoca dhbgc on bgc.dieuhanh_id = dhbgc.id
                 left join account_account cn on ai.chinhanh_id = cn.id
+                left join bien_so_xe bsx on ai.bien_so_xe_id = bsx.id
                 where date_invoice between '%s' and '%s' and mlg_type not in ('chi_no_doanh_thu','chi_dien_thoai','chi_bao_hiem','phai_tra_ky_quy','tam_ung','chi_ho') 
         '''%(from_date,to_date)
         
@@ -121,10 +122,13 @@ class Parser(report_sxw.rml_parse):
             sql+='''
                 and ai.so_hop_dong like '%'''+so_hop_dong+'''%' '''
             
-        bien_so_xe = wizard_data['bien_so_xe']
-        if bien_so_xe:
+        bien_so_xe_ids = wizard_data['bien_so_xe_ids']
+        if bien_so_xe_ids:
+            bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+            bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
             sql+='''
-                and ai.bien_so_xe like '%'''+bien_so_xe+'''%' '''
+                and ai.bien_so_xe_id in %s 
+            '''%(bien_so_xe_ids)
             
         ma_bang_chiettinh_chiphi_sua = wizard_data['ma_bang_chiettinh_chiphi_sua']
         if ma_bang_chiettinh_chiphi_sua:

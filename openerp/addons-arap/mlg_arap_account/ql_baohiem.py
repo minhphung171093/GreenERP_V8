@@ -34,9 +34,9 @@ class ql_bao_hiem(osv.osv):
             result[line.id] = {'sotien_datra':0,'sotien_conlai':0}
             sql = '''
                 select amount_total, residual from account_invoice
-                    where state in ('open','paid') and partner_id=%s and so_hoa_don='%s' and bien_so_xe='%s' and mlg_type='phai_thu_bao_hiem'
+                    where state in ('open','paid') and partner_id=%s and so_hoa_don='%s' and bien_so_xe_id=%s and mlg_type='phai_thu_bao_hiem'
                         and date_invoice between '%s' and '%s' order by date_invoice limit 1
-            '''%(line.partner_id.id,line.so_hoa_don,line.name,line.ngay_tham_gia,line.ngay_ket_thuc)
+            '''%(line.partner_id.id,line.so_hoa_don,line.name.id,line.ngay_tham_gia,line.ngay_ket_thuc)
             cr.execute(sql)
             invoice = cr.dictfetchone()
             if invoice:
@@ -46,7 +46,7 @@ class ql_bao_hiem(osv.osv):
         return result
     
     _columns = {
-        'name': fields.char('Biển số xe', size=1024, required=True),
+        'name': fields.many2one('bien.so.xe','Biển số xe', required=True),
         'hieu_xe': fields.char('Hiệu xe', size=1024),
         'dong_xe': fields.char('Dòng xe', size=1024),
         'cap_noi_that': fields.char('Cấp nội thất', size=1024),

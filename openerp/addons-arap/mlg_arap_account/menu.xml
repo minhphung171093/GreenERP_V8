@@ -288,6 +288,11 @@
 					action="action_cauhinh_thumuc_import"
 					name="Cấu hình thư mục"
 					parent="menu_danhmuc_dungchung" sequence="10"/>
+					
+				<menuitem id="menu_action_bien_so_xe"
+					action="action_bien_so_xe"
+					name="Biển số xe"
+					parent="menu_danhmuc_dungchung" sequence="15"/>
 			
 			<menuitem id="account.menu_finance_entries"
 				name="Journal Entries"

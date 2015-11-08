@@ -139,7 +139,7 @@ class res_partner(osv.osv):
         'account_ht_id': fields.many2one('account.account', 'Account'),
         'loai_doituong_id': fields.many2one('loai.doi.tuong', 'Loại đối tượng'),
         'ma_doi_tuong': fields.char('Mã đối tượng', size=1024),
-        'bien_so_xe': fields.char('Biển số xe', size=1024),
+        'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
         'loai_doituong': fields.related('loai_doituong_id', 'name', type='char', string='Loại đối tượng', readonly=True, store=True),
         'taixe': fields.boolean('Lái xe'),
         'nhadautu': fields.boolean('Nhà đầu tư'),
