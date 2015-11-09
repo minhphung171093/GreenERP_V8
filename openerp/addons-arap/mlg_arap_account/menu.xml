@@ -379,5 +379,20 @@
 					name="Công nợ theo hóa đơn"
 					action="action_baocao_congno_theo_hoadon_report"
 					parent="menu_baocao_congno" sequence="10"/>
+					
+				<menuitem id="menu_action_baocao_congno_theo_chiettinh_report"
+					name="Công nợ theo chiết tính"
+					action="action_baocao_congno_theo_chiettinh_report"
+					parent="menu_baocao_congno" sequence="20"/>
+					
+				<menuitem id="menu_action_baocao_congno_theo_hopdong_report"
+					name="Công nợ theo hợp đồng"
+					action="action_baocao_congno_theo_hopdong_report"
+					parent="menu_baocao_congno" sequence="30"/>
+					
+				<menuitem id="menu_action_baocao_congno_theo_biensoxe_report"
+					name="Công nợ theo biển số xe"
+					action="action_baocao_congno_theo_biensoxe_report"
+					parent="menu_baocao_congno" sequence="40"/>
 	</data>
 </openerp>
