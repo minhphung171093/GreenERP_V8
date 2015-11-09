@@ -171,6 +171,16 @@
 					name="Nhập phải thu chi hộ điện thoại"
 					parent="menu_import_cong_no_thu" sequence="5"/>
 					
+				<menuitem id="menu_action_import_phaithu_baohiem"
+					action="action_import_phaithu_baohiem"
+					name="Nhập phải thu bảo hiểm"
+					parent="menu_import_cong_no_thu" sequence="10"/>
+					
+				<menuitem id="menu_action_import_phaithu_noxuong"
+					action="action_import_phaithu_noxuong"
+					name="Nhập thu nợ xưởng"
+					parent="menu_import_cong_no_thu" sequence="15"/>
+					
 		<menuitem id="menu_root_congno_chi"
 			name="Phải Trả" sequence="3"/>
 			

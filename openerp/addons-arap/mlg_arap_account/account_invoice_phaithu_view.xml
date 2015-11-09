@@ -1167,7 +1167,7 @@
 					</header>
                 	<sheet>
                 		<h1>
-                			<label string='Mã phiếu đề xuất'/>
+                			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
@@ -1324,7 +1324,7 @@
 					</header>
                 	<sheet>
                 		<h1>
-                			<label string='Mã phiếu đề xuất'/>
+                			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">

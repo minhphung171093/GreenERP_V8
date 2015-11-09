@@ -22,6 +22,7 @@
                     <header>
 	                    <button name="bt_import_thuchi_ho_dienthoai" states='draft' string="Nhập" context="{'import_loai_congno':'chi_ho_dien_thoai'}" type="object" class="oe_highlight" />
 	                    <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"draft":"blue","done":"blue"}'/>
+	                    <field name ="mlg_type" invisible='1'/>
 	                </header>                
                 	<sheet>  
                 		<group>
@@ -44,6 +45,102 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="import_phaithu_chiho_dienthoai_tree_view"/>
+            <field name="domain">[('mlg_type','=','chi_ho_dien_thoai')]</field>
+            <field name="context">{'default_mlg_type':'chi_ho_dien_thoai'}</field>
+        </record>
+        
+<!-- Import Phải thu bảo hiểm -->
+		<record id="import_phaithu_baohiem_tree_view" model="ir.ui.view">
+			<field name="name">import.phaithu.chiho.dienthoai.tree</field>
+			<field name="model">import.congno</field>
+			<field name="arch" type="xml">
+				<tree string="Nhập phải thu bảo hiểm">
+					<field name ="name"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="import_phaithu_baohiem_form_view" model="ir.ui.view">
+            <field name="name">import.phaithu.chiho.dienthoai.form</field>
+            <field name="model">import.congno</field>
+            <field name="arch" type="xml">
+                <form string="Nhập phải thu bảo hiểm" version="7.0">
+                    <header>
+	                    <button name="bt_import_phaithu_baohiem" states='draft' string="Nhập" context="{'import_loai_congno':'phai_thu_bao_hiem'}" type="object" class="oe_highlight" />
+	                    <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"draft":"blue","done":"blue"}'/>
+	                    <field name ="mlg_type" invisible='1'/>
+	                </header>                
+                	<sheet>  
+                		<group>
+                		<field name ="name"/>
+						<label for="datas" string="Chọn tập tin"/>
+							<div>
+								<field name="datas" filename="datas_fname"/>
+	                        	<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
+	                        </div>
+                		</group>
+                	</sheet>
+				</form>
+			</field>
+		</record>
+
+        <record id="action_import_phaithu_baohiem" model="ir.actions.act_window">
+            <field name="name">Nhập phải thu bảo hiểm</field>
+			<field name="type">ir.actions.act_window</field>
+            <field name="res_model">import.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="import_phaithu_baohiem_tree_view"/>
+            <field name="domain">[('mlg_type','=','phai_thu_bao_hiem')]</field>
+            <field name="context">{'default_mlg_type':'phai_thu_bao_hiem'}</field>
+        </record>
+        
+<!-- Import thu nợ xưởng -->
+		<record id="import_phaithu_noxuong_tree_view" model="ir.ui.view">
+			<field name="name">import.phaithu.chiho.dienthoai.tree</field>
+			<field name="model">import.congno</field>
+			<field name="arch" type="xml">
+				<tree string="Nhập thu nợ xưởng">
+					<field name ="name"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="import_phaithu_noxuong_form_view" model="ir.ui.view">
+            <field name="name">import.phaithu.chiho.dienthoai.form</field>
+            <field name="model">import.congno</field>
+            <field name="arch" type="xml">
+                <form string="Nhập thu nợ xưởng" version="7.0">
+                    <header>
+	                    <button name="bt_import_phaithu_noxuong" states='draft' string="Nhập" context="{'import_loai_congno':'thu_no_xuong'}" type="object" class="oe_highlight" />
+	                    <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"draft":"blue","done":"blue"}'/>
+	                    <field name ="mlg_type" invisible='1'/>
+	                </header>                
+                	<sheet>  
+                		<group>
+                		<field name ="name"/>
+						<label for="datas" string="Chọn tập tin"/>
+							<div>
+								<field name="datas" filename="datas_fname"/>
+	                        	<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
+	                        </div>
+                		</group>
+                	</sheet>
+				</form>
+			</field>
+		</record>
+
+        <record id="action_import_phaithu_noxuong" model="ir.actions.act_window">
+            <field name="name">Nhập thu nợ xưởng</field>
+			<field name="type">ir.actions.act_window</field>
+            <field name="res_model">import.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="import_phaithu_noxuong_tree_view"/>
+            <field name="domain">[('mlg_type','=','thu_no_xuong')]</field>
+            <field name="context">{'default_mlg_type':'thu_no_xuong'}</field>
         </record>
         
 	</data>
