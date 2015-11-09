@@ -30,7 +30,16 @@ class Parser(report_sxw.rml_parse):
             'get_tongtien': self.get_tongtien,
             'get_loaicongno': self.get_loaicongno,
             'convert_amount': self.convert_amount,
+            'convert': self.convert,
         })
+        
+    def convert(self, amount):
+        amount_text = amount_to_text_vn.amount_to_text(amount, 'vn')
+        if amount_text and len(amount_text)>1:
+            amount = amount_text[1:]
+            head = amount_text[:1]
+            amount_text = head.upper()+amount
+        return amount_text
         
     def convert_date(self, date):
         if date:
