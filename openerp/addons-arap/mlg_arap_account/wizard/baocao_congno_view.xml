@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Báo cáo công nợ theo hóa đơn -->
+        <record id="view_baocao_congno_theo_hoadon_report" model="ir.ui.view">
+            <field name="name">baocao_congno_theo_hoadon.report</field>
+            <field name="model">baocao.congno</field>
+            <field name="arch" type="xml">
+                <form string="Công nợ theo hóa đơn" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='so_hoa_don' required='1'/>
+                		<newline/>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'baocao_congno_theo_hoadon_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_baocao_congno_theo_hoadon_report" model="ir.actions.act_window">
+            <field name="name">Công nợ theo hóa đơn</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">baocao.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_baocao_congno_theo_hoadon_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+    </data>
+</openerp>
+

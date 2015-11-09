@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+<!-- Báo cáo công nợ theo hóa đơn -->
+    	<record id="baocao_congno_theo_hoadon_report" model="ir.actions.report.xml">
+	        <field name="name">baocao_congno_theo_hoadon_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">baocao.congno</field>
+	        <field name="report_name">baocao_congno_theo_hoadon_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/baocao_congno_theo_hoadon_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/baocao_congno_theo_hoadon_report.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="baocao_congno_theo_hoadon_report" 
+			model="baocao.congno" 
+			name="baocao_congno_theo_hoadon_report"
+	        string="Công nợ theo hóa đơn"
+	        rml="mlg_arap_account/report/baocao_congno_theo_hoadon_report.odt"/> 	
+	        
+	</data>
+</openerp>

@@ -370,5 +370,14 @@
 					name="DS Phạt vi phạm"
 					action="action_phat_vi_pham_report"
 					parent="menu_danhsach_congno" sequence="40"/>
+					
+			<menuitem id="menu_baocao_congno"
+				name="Báo cáo công nợ"
+				parent="menu_root_baocao" sequence="20"/>
+				
+				<menuitem id="menu_action_baocao_congno_theo_hoadon_report"
+					name="Công nợ theo hóa đơn"
+					action="action_baocao_congno_theo_hoadon_report"
+					parent="menu_baocao_congno" sequence="10"/>
 	</data>
 </openerp>

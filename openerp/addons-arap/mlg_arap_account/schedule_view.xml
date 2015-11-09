@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record model="ir.cron" id="import_thuchi_ho_dienthoai_cron">
+            <field name="name">Import Phải thu chi hộ điện thoại</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_thuchi_ho_dienthoai'"/>
+            <field name="args" eval="'()'" />
+        </record>        
+	</data>
+</openerp>

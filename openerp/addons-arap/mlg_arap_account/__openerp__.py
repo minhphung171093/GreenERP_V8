@@ -30,8 +30,10 @@
         'report/danhsach_congno_view.xml',
         'report/form_congno_view.xml',
         'report/phieu_dexuat_thu_view.xml',
+        'report/baocao_congno_view.xml',
         'wizard/danhsach_congno_view.xml',
         'wizard/phieu_dexuat_thu_view.xml',
+        'wizard/baocao_congno_view.xml',
         'account_data.xml',
         'master_data_view.xml',
         'ql_baohiem_view.xml',
@@ -46,6 +48,7 @@
         'account_sequence.xml',
         'user_view.xml',
         'import_data_view.xml',
+        'schedule_view.xml',
         'menu.xml',
     ],
     'css' : [

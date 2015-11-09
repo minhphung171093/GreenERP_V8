@@ -159,4 +159,88 @@ class import_congno(osv.osv):
     
 import_congno()
 
+class import_congno_tudong(osv.osv):
+    _name = 'import.congno.tudong'
+
+    _columns = {
+        'name': fields.date('Tên', required=True),
+    }
+    
+    def import_thuchi_ho_dienthoai(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import')
+        invoice_obj = self.pool.get('account.invoice')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        wf_service = netsvc.LocalService("workflow")
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','chi_ho_dien_thoai')])
+
+            dir_path = import_obj.browse(cr, uid, import_ids[0]).name
+            path = dir_path+'/Importing/'
+            done_path = dir_path+'/Done/'
+
+            csvUti = lib_csv.csv_ultilities()
+            for file_name in csvUti._read_files_folder(path):
+                f_path = file_name
+                try:
+                    file_data = csvUti._read_file(f_path)
+                
+                    for data in file_data:
+                        sql = '''
+                            select id from account_account where code='%s' limit 1
+                        '''%(data['ma_chi_nhanh'])
+                        cr.execute(sql)
+                        chinhanh_ids = cr.fetchone()
+                        
+                        sql = '''
+                            select id,bai_giaoca_id,account_ht_id from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                        '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                        cr.execute(sql)
+                        partner = cr.fetchone()
+                        partner_id = partner and partner[0] or False
+                        account_id = partner and partner[2] or False
+                        bai_giaoca_id = partner and partner[1] or False
+                        
+                        ldt = data['loai_doi_tuong']
+                        loai_doituong=''
+                        if ldt=='Lái xe':
+                            loai_doituong='taixe'
+                        if ldt=='Nhân viên văn phòng':
+                            loai_doituong='taixe'
+                            
+                        journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                        
+                        vals = {
+                            'mlg_type': 'chi_ho_dien_thoai',
+                            'type': 'out_invoice',
+                            'account_id': account_id,
+                            'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                            'loai_doituong': loai_doituong,
+                            'partner_id': partner_id,
+                            'date_invoice': data['ngay_giao_dich'],
+                            'so_hoa_don': data['so_hoa_don'],
+                            'so_dien_thoai': data['so_dien_thoai'],
+                            'so_tien': data['so_tien'],
+                            'dien_giai': data['dien_giai'],
+                            'journal_id': journal_ids and journal_ids[0] or False,
+                            'bai_giaoca_id': bai_giaoca_id,
+                        }
+                        invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                        vals.update(invoice_vals)
+                        invoice_id = invoice_obj.create(cr, uid, vals)
+                        wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                    csvUti._moveFiles([f_path],done_path)
+                except Exception, e:
+                    error_path = dir_path+'/Error/'
+                    csvUti._moveFiles([f_path],error_path)
+                    continue
+#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
+        except Exception, e:
+            pass
+        return True
+#         return True
+    
+import_congno_tudong()
+
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
