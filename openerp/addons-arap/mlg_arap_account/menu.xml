@@ -152,16 +152,31 @@
 					action="action_hoan_tam_ung"
 					name="Phải thu tạm ứng"
 					parent="menu_cong_no" sequence="25"/>
-					
-			<menuitem id="menu_baocao_cong_no_thu"
-				name="Báo cáo"
+			
+			<menuitem id="menu_baocao_congno"
+				name="Báo cáo công nợ"
 				parent="menu_root_congno" sequence="15"/>
 				
-				<menuitem id="menu_action_congno_theo_bang_chiettinh"
-					action="action_congno_theo_bang_chiettinh"
-					name="Công nợ theo bảng chiết tính"
-					parent="menu_baocao_cong_no_thu" sequence="5"/>
+				<menuitem id="menu_action_baocao_congno_theo_hoadon_report"
+					name="Công nợ theo hóa đơn"
+					action="action_baocao_congno_theo_hoadon_report"
+					parent="menu_baocao_congno" sequence="10"/>
 					
+				<menuitem id="menu_action_baocao_congno_theo_chiettinh_report"
+					name="Công nợ theo chiết tính"
+					action="action_baocao_congno_theo_chiettinh_report"
+					parent="menu_baocao_congno" sequence="20"/>
+					
+				<menuitem id="menu_action_baocao_congno_theo_hopdong_report"
+					name="Công nợ theo hợp đồng"
+					action="action_baocao_congno_theo_hopdong_report"
+					parent="menu_baocao_congno" sequence="30"/>
+					
+				<menuitem id="menu_action_baocao_congno_theo_biensoxe_report"
+					name="Công nợ theo biển số xe"
+					action="action_baocao_congno_theo_biensoxe_report"
+					parent="menu_baocao_congno" sequence="40"/>
+				
 			<menuitem id="menu_import_cong_no_thu"
 				name="Import"
 				parent="menu_root_congno" sequence="20"/>
@@ -380,29 +395,14 @@
 					name="DS Phạt vi phạm"
 					action="action_phat_vi_pham_report"
 					parent="menu_danhsach_congno" sequence="40"/>
-					
-			<menuitem id="menu_baocao_congno"
-				name="Báo cáo công nợ"
-				parent="menu_root_baocao" sequence="20"/>
+			
+			<menuitem id="menu_baocao_cong_no_thu"
+				name="Công nợ theo bảng chiết tính"
+				parent="menu_root_baocao" sequence="15"/>
 				
-				<menuitem id="menu_action_baocao_congno_theo_hoadon_report"
-					name="Công nợ theo hóa đơn"
-					action="action_baocao_congno_theo_hoadon_report"
-					parent="menu_baocao_congno" sequence="10"/>
-					
-				<menuitem id="menu_action_baocao_congno_theo_chiettinh_report"
-					name="Công nợ theo chiết tính"
-					action="action_baocao_congno_theo_chiettinh_report"
-					parent="menu_baocao_congno" sequence="20"/>
-					
-				<menuitem id="menu_action_baocao_congno_theo_hopdong_report"
-					name="Công nợ theo hợp đồng"
-					action="action_baocao_congno_theo_hopdong_report"
-					parent="menu_baocao_congno" sequence="30"/>
-					
-				<menuitem id="menu_action_baocao_congno_theo_biensoxe_report"
-					name="Công nợ theo biển số xe"
-					action="action_baocao_congno_theo_biensoxe_report"
-					parent="menu_baocao_congno" sequence="40"/>
+				<menuitem id="menu_action_congno_theo_bang_chiettinh"
+					action="action_congno_theo_bang_chiettinh"
+					name="Công nợ theo bảng chiết tính"
+					parent="menu_baocao_cong_no_thu" sequence="5"/>
 	</data>
 </openerp>

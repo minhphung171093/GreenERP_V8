@@ -72,6 +72,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -227,6 +229,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
@@ -384,6 +388,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -542,6 +548,8 @@
                 		<h1>
                 			<label string='Mã phiếu đề xuất'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -697,6 +705,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -855,6 +865,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ xưởng'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -1013,6 +1025,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
@@ -1169,6 +1183,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
@@ -1326,6 +1342,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label for='fusion_id' class="oe_inline"/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
