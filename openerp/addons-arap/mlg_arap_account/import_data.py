@@ -117,31 +117,38 @@ class import_congno(osv.osv):
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
-                        print data
                         sql = '''
                             select id from account_account where code='%s' limit 1
-                        '''%(data['MÃ CHI NHÁNH'])
+                        '''%(data['ma_chi_nhanh'])
                         cr.execute(sql)
                         chinhanh_ids = cr.fetchone()
+                        if not chinhanh_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                         
                         sql = '''
                             select id,bai_giaoca_id,account_ht_id from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
-                        '''%(chinhanh_ids[0],data['MÃ ĐỐI TƯỢNG'])
+                        '''%(chinhanh_ids[0],data['ma_doi_tuong'])
                         cr.execute(sql)
                         partner = cr.fetchone()
+                        if not partner:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                         partner_id = partner and partner[0] or False
                         account_id = partner and partner[2] or False
                         bai_giaoca_id = partner and partner[1] or False
                         
-                        ldt = data['LOẠI ĐỐI TƯỢNG']
+                        ldt = data['loai_doi_tuong']
                         loai_doituong=''
                         if ldt=='Lái xe':
                             loai_doituong='taixe'
                         if ldt=='Nhân viên văn phòng':
-                            loai_doituong='taixe'
+                            loai_doituong='nhanvienvanphong'
+                        if not loai_doituong:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại đối tượng')
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
-                        
+                        if not journal_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy journal trung gian')
+                         
                         vals = {
                             'mlg_type': 'chi_ho_dien_thoai',
                             'type': 'out_invoice',
@@ -149,15 +156,15 @@ class import_congno(osv.osv):
                             'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
                             'loai_doituong': loai_doituong,
                             'partner_id': partner_id,
-                            'date_invoice': data['NGÀY GIAO DỊCH'],
-                            'so_hoa_don': data['SỐ HÓA ĐƠN'],
-                            'so_dien_thoai': data['SỐ ĐIỆN THOẠI'],
-                            'so_tien': data['SỐ TIỀN'],
-                            'dien_giai': data['DIỄN GIẢI'],
+                            'date_invoice': data['ngay_giao_dich'],
+                            'so_hoa_don': data['so_hoa_don'],
+                            'so_dien_thoai': data['so_dien_thoai'],
+                            'so_tien': data['so_tien'],
+                            'dien_giai': data['dien_giai'],
                             'journal_id': journal_ids and journal_ids[0] or False,
                             'bai_giaoca_id': bai_giaoca_id,
                         }
-                        invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['DIỄN GIẢI'], data['SỐ TIỀN'], journal_ids and journal_ids[0] or False, context)['value']
+                        invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
                         invoice_id = invoice_obj.create(cr, uid, vals)
                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
@@ -200,47 +207,61 @@ class import_congno(osv.osv):
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
-                        print data
+                        vals = {}
                         sql = '''
                             select id from account_account where code='%s' limit 1
-                        '''%(data['MÃ CHI NHÁNH'])
+                        '''%(data['ma_chi_nhanh'])
                         cr.execute(sql)
                         chinhanh_ids = cr.fetchone()
+                        if not chinhanh_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                         
                         sql = '''
-                            select id,bai_giaoca_id,account_ht_id from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
-                        '''%(chinhanh_ids[0],data['MÃ ĐỐI TƯỢNG'])
+                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                        '''%(chinhanh_ids[0],data['ma_doi_tuong'])
                         cr.execute(sql)
                         partner = cr.fetchone()
+                        if not partner:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                         partner_id = partner and partner[0] or False
-                        account_id = partner and partner[2] or False
-                        bai_giaoca_id = partner and partner[1] or False
                         
-                        ldt = data['LOẠI ĐỐI TƯỢNG']
+                        ldt = data['loai_doi_tuong']
                         loai_doituong=''
-                        if ldt=='Lái xe':
-                            loai_doituong='taixe'
-                        if ldt=='Nhân viên văn phòng':
-                            loai_doituong='taixe'
+                        if ldt=='Nhà đầu tư':
+                            loai_doituong='nhadautu'
+                            sql = '''
+                                select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                            '''%(chinhanh_ids[0],partner_id)
+                            cr.execute(sql)
+                            account_ids = [r[0] for r in cr.fetchall()]
+                            account_id = account_ids and account_ids[0] or False
+                            vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'account_id':account_id})
+                        if not loai_doituong:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại đối tượng')
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                        if not journal_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy journal trung gian')
                         
-                        vals = {
-                            'mlg_type': 'chi_ho_dien_thoai',
+                        bsx = data['bien_so_xe']
+                        sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
+                        cr.execute(sql)
+                        bien_so_xe_ids = cr.fetchone()
+                        
+                        vals.update({
+                            'mlg_type': 'phai_thu_bao_hiem',
                             'type': 'out_invoice',
-                            'account_id': account_id,
                             'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
                             'loai_doituong': loai_doituong,
                             'partner_id': partner_id,
-                            'date_invoice': data['NGÀY GIAO DỊCH'],
-                            'so_hoa_don': data['SỐ HÓA ĐƠN'],
-                            'so_dien_thoai': data['SỐ ĐIỆN THOẠI'],
-                            'so_tien': data['SỐ TIỀN'],
-                            'dien_giai': data['DIỄN GIẢI'],
+                            'date_invoice': data['ngay_giao_dich'],
+                            'so_hoa_don': data['so_hoa_don'],
+                            'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                            'so_tien': data['so_tien'],
+                            'dien_giai': data['dien_giai'],
                             'journal_id': journal_ids and journal_ids[0] or False,
-                            'bai_giaoca_id': bai_giaoca_id,
-                        }
-                        invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['DIỄN GIẢI'], data['SỐ TIỀN'], journal_ids and journal_ids[0] or False, context)['value']
+                        })
+                        invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
                         invoice_id = invoice_obj.create(cr, uid, vals)
                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
@@ -254,7 +275,7 @@ class import_congno(osv.osv):
                 raise osv.except_osv(_('Warning!'), str(e))
         return self.write(cr, uid, ids, {'state':'done'})
 #         return True
-    
+
     def bt_import_phaithu_noxuong(self, cr, uid, ids, context=None):
         this = self.browse(cr, uid, ids[0])
         import_obj = self.pool.get('cauhinh.thumuc.import')
@@ -283,47 +304,79 @@ class import_congno(osv.osv):
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
-                        print data
+                        account_id = False
+                        vals = {}
                         sql = '''
                             select id from account_account where code='%s' limit 1
-                        '''%(data['MÃ CHI NHÁNH'])
+                        '''%(data['ma_chi_nhanh'])
                         cr.execute(sql)
                         chinhanh_ids = cr.fetchone()
+                        if not chinhanh_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                         
                         sql = '''
-                            select id,bai_giaoca_id,account_ht_id from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
-                        '''%(chinhanh_ids[0],data['MÃ ĐỐI TƯỢNG'])
+                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                        '''%(chinhanh_ids[0],data['ma_doi_tuong'])
                         cr.execute(sql)
                         partner = cr.fetchone()
+                        if not partner:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                         partner_id = partner and partner[0] or False
-                        account_id = partner and partner[2] or False
                         bai_giaoca_id = partner and partner[1] or False
                         
-                        ldt = data['LOẠI ĐỐI TƯỢNG']
+                        ldt = data['loai_doi_tuong']
                         loai_doituong=''
                         if ldt=='Lái xe':
                             loai_doituong='taixe'
+                            account_id = partner and partner[2] or False
                         if ldt=='Nhân viên văn phòng':
-                            loai_doituong='taixe'
+                            loai_doituong='nhanvienvanphong'
+                            account_id = partner and partner[2] or False
+                        if ldt=='Nhà đầu tư':
+                            loai_doituong='nhadautu'
+                            sql = '''
+                                select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                            '''%(chinhanh_ids[0],partner_id)
+                            cr.execute(sql)
+                            account_ids = [r[0] for r in cr.fetchall()]
+                            account_id = account_ids and account_ids[0] or False
+                            vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4]})
+                        if not loai_doituong:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại đối tượng')
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                        if not journal_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy journal trung gian')
+                         
+                        bsx = data['bien_so_xe']
+                        sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
+                        cr.execute(sql)
+                        bien_so_xe_ids = cr.fetchone()
                         
-                        vals = {
-                            'mlg_type': 'chi_ho_dien_thoai',
+                        mx = data['ma_xuong']
+                        sql = ''' select id from ma_xuong where code='%s' '''%(mx)
+                        cr.execute(sql)
+                        ma_xuong_ids = cr.fetchone()
+                         
+                        vals.update({
+                            'mlg_type': 'thu_no_xuong',
                             'type': 'out_invoice',
                             'account_id': account_id,
                             'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
                             'loai_doituong': loai_doituong,
                             'partner_id': partner_id,
-                            'date_invoice': data['NGÀY GIAO DỊCH'],
-                            'so_hoa_don': data['SỐ HÓA ĐƠN'],
-                            'so_dien_thoai': data['SỐ ĐIỆN THOẠI'],
-                            'so_tien': data['SỐ TIỀN'],
-                            'dien_giai': data['DIỄN GIẢI'],
+                            'date_invoice': data['ngay_giao_dich'],
+                            'so_hop_dong': data['so_hop_dong'],
+                            'ma_bang_chiettinh_chiphi_sua': data['ma_chiet_tinh'],
+                            'so_tien': data['so_tien'],
+                            'dien_giai': data['dien_giai'],
                             'journal_id': journal_ids and journal_ids[0] or False,
                             'bai_giaoca_id': bai_giaoca_id,
-                        }
-                        invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['DIỄN GIẢI'], data['SỐ TIỀN'], journal_ids and journal_ids[0] or False, context)['value']
+                            'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                            'ma_xuong_id': ma_xuong_ids and ma_xuong_ids[0] or False,
+                        })
+                        
+                        invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
                         invoice_id = invoice_obj.create(cr, uid, vals)
                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
@@ -387,7 +440,7 @@ class import_congno_tudong(osv.osv):
                         if ldt=='Lái xe':
                             loai_doituong='taixe'
                         if ldt=='Nhân viên văn phòng':
-                            loai_doituong='taixe'
+                            loai_doituong='nhanvienvanphong'
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         

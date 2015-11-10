@@ -48,6 +48,18 @@
             <field name="domain">[('mlg_type','=','chi_ho_dien_thoai')]</field>
             <field name="context">{'default_mlg_type':'chi_ho_dien_thoai'}</field>
         </record>
+        <record id="action_import_phaithu_chiho_dienthoai1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="import_phaithu_chiho_dienthoai_tree_view"/>
+            <field name="act_window_id" ref="action_import_phaithu_chiho_dienthoai"/>
+        </record>
+        <record id="action_import_phaithu_chiho_dienthoai2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="import_phaithu_chiho_dienthoai_form_view"/>
+            <field name="act_window_id" ref="action_import_phaithu_chiho_dienthoai"/>
+        </record>
         
 <!-- Import Phải thu bảo hiểm -->
 		<record id="import_phaithu_baohiem_tree_view" model="ir.ui.view">
@@ -95,6 +107,18 @@
             <field name="domain">[('mlg_type','=','phai_thu_bao_hiem')]</field>
             <field name="context">{'default_mlg_type':'phai_thu_bao_hiem'}</field>
         </record>
+        <record id="action_import_phaithu_baohiem1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="import_phaithu_baohiem_tree_view"/>
+            <field name="act_window_id" ref="action_import_phaithu_baohiem"/>
+        </record>
+        <record id="action_import_phaithu_baohiem2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="import_phaithu_baohiem_form_view"/>
+            <field name="act_window_id" ref="action_import_phaithu_baohiem"/>
+        </record>
         
 <!-- Import thu nợ xưởng -->
 		<record id="import_phaithu_noxuong_tree_view" model="ir.ui.view">
@@ -141,6 +165,18 @@
             <field name="view_id" ref="import_phaithu_noxuong_tree_view"/>
             <field name="domain">[('mlg_type','=','thu_no_xuong')]</field>
             <field name="context">{'default_mlg_type':'thu_no_xuong'}</field>
+        </record>
+        <record id="action_import_phaithu_noxuong1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="import_phaithu_noxuong_tree_view"/>
+            <field name="act_window_id" ref="action_import_phaithu_noxuong"/>
+        </record>
+        <record id="action_import_phaithu_noxuong2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="import_phaithu_noxuong_form_view"/>
+            <field name="act_window_id" ref="action_import_phaithu_noxuong"/>
         </record>
         
 	</data>
