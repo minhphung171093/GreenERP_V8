@@ -25,13 +25,14 @@ class Parser(report_sxw.rml_parse):
         pool = pooler.get_pool(self.cr.dbname)
         self.tongtien = 0
         self.localcontext.update({
-            'get_sohopdong': self.get_sohopdong,
+            'get_sohoadon': self.get_sohoadon,
             'get_line': self.get_line,
             'convert_date': self.convert_date,
             'get_tongtien': self.get_tongtien,
             'get_loaicongno': self.get_loaicongno,
             'convert_amount': self.convert_amount,
             'convert': self.convert,
+            'get_biensoxe': self.get_biensoxe,
         })
         
     def convert(self, amount):
@@ -47,10 +48,15 @@ class Parser(report_sxw.rml_parse):
             date = datetime.strptime(date, DATE_FORMAT)
             return date.strftime('%d/%m/%Y')
     
-    def get_sohopdong(self):
+    def get_biensoxe(self):
         wizard_data = self.localcontext['data']['form']
-        so_hop_dong = wizard_data['so_hop_dong']
-        return so_hop_dong
+        bien_so_xe = wizard_data['bien_so_xe_id']
+        return bien_so_xe and bien_so_xe[1] or ''
+    
+    def get_sohoadon(self):
+        wizard_data = self.localcontext['data']['form']
+        so_hoa_don = wizard_data['so_hoa_don']
+        return so_hoa_don
     
     def get_loaicongno(self, mlg_type):
         tt = ''
@@ -86,17 +92,30 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         to_date = wizard_data['to_date']
-        so_hop_dong = wizard_data['so_hop_dong']
+        so_hoa_don = wizard_data['so_hoa_don']
+        bien_so_xe = wizard_data['bien_so_xe_id']
+        
         res = []
         sql = '''
-            select rp.name as tendoituong, ai.mlg_type as loaicongno, ai.so_tien as sotien
+            select ai.name as maphieu,rp.name as tendoituong, ai.mlg_type as loaicongno, ai.so_tien as sotien
                 from account_invoice ai
                 left join res_partner rp on ai.partner_id = rp.id
                 
-                where ai.so_hop_dong='%s' 
-        '''%(so_hop_dong)
+                where mlg_type='phai_thu_bao_hiem' 
+        '''
+        if so_hoa_don:
+            sql+='''
+                and ai.so_hoa_don='%s'  
+            '''%(so_hoa_don)
+            
+        if bien_so_xe:
+            sql+='''
+                and ai.bien_so_xe_id=%s  
+            '''%(bien_so_xe[0])
+            
         if from_date:
             sql += ''' and ai.date_invoice>='%s' '''%(from_date)
+            
         if to_date:
             sql += ''' and ai.date_invoice<='%s' '''%(to_date)
             
@@ -104,8 +123,9 @@ class Parser(report_sxw.rml_parse):
         
         for line in self.cr.dictfetchall():
             res.append({
+                'maphieu': line['maphieu'],
                 'tendoituong': line['tendoituong'],
-                'loaicongno': self.get_loaicongno(line['loaicongno']),
+#                 'loaicongno': self.get_loaicongno(line['loaicongno']),
                 'sotien': self.convert_amount(line['sotien']),
             })
             self.tongtien+=line['sotien']

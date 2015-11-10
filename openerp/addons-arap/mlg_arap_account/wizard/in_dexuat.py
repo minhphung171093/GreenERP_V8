@@ -7,8 +7,8 @@ from openerp.tools.translate import _
 import openerp.tools
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 
-class baocao_congno(osv.osv_memory):
-    _name = "baocao.congno"
+class in_dexuat(osv.osv_memory):
+    _name = "in.dexuat"
     
     _columns = {
         'from_date': fields.date('Ngày bắt đầu', required=False),
@@ -28,11 +28,11 @@ class baocao_congno(osv.osv_memory):
         if context is None:
             context = {}
         datas = {'ids': ids}
-        datas['model'] = 'baocao.congno'
+        datas['model'] = 'in.dexuat'
         datas['form'] = self.read(cr, uid, ids)[0]
         datas['form'].update({'active_id':context.get('active_ids',False)})
         name_report = context['name_report']
         return {'type': 'ir.actions.report.xml', 'report_name': name_report, 'datas': datas}
         
-baocao_congno()
+in_dexuat()
 

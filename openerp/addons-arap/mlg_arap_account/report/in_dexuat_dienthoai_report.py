@@ -25,7 +25,7 @@ class Parser(report_sxw.rml_parse):
         pool = pooler.get_pool(self.cr.dbname)
         self.tongtien = 0
         self.localcontext.update({
-            'get_bien_so_xe': self.get_bien_so_xe,
+            'get_sohoadon': self.get_sohoadon,
             'get_line': self.get_line,
             'convert_date': self.convert_date,
             'get_tongtien': self.get_tongtien,
@@ -47,10 +47,10 @@ class Parser(report_sxw.rml_parse):
             date = datetime.strptime(date, DATE_FORMAT)
             return date.strftime('%d/%m/%Y')
     
-    def get_bien_so_xe(self):
+    def get_sohoadon(self):
         wizard_data = self.localcontext['data']['form']
-        bien_so_xe = wizard_data['bien_so_xe_id'][1]
-        return bien_so_xe
+        so_hoa_don = wizard_data['so_hoa_don']
+        return so_hoa_don
     
     def get_loaicongno(self, mlg_type):
         tt = ''
@@ -86,15 +86,19 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         to_date = wizard_data['to_date']
-        bien_so_xe_id = wizard_data['bien_so_xe_id'][0]
+        so_hoa_don = wizard_data['so_hoa_don']
         res = []
         sql = '''
-            select rp.name as tendoituong, ai.mlg_type as loaicongno, ai.so_tien as sotien
+            select ai.name as maphieu,rp.name as tendoituong, ai.mlg_type as loaicongno, ai.so_tien as sotien
                 from account_invoice ai
                 left join res_partner rp on ai.partner_id = rp.id
                 
-                where ai.bien_so_xe_id='%s' 
-        '''%(bien_so_xe_id)
+                where mlg_type='chi_ho_dien_thoai'  
+        '''
+        if so_hoa_don:
+            sql+='''
+                and ai.so_hoa_don='%s' 
+            '''%(so_hoa_don) 
         if from_date:
             sql += ''' and ai.date_invoice>='%s' '''%(from_date)
         if to_date:
@@ -104,8 +108,9 @@ class Parser(report_sxw.rml_parse):
         
         for line in self.cr.dictfetchall():
             res.append({
+                'maphieu': line['maphieu'],
                 'tendoituong': line['tendoituong'],
-                'loaicongno': self.get_loaicongno(line['loaicongno']),
+#                 'loaicongno': self.get_loaicongno(line['loaicongno']),
                 'sotien': self.convert_amount(line['sotien']),
             })
             self.tongtien+=line['sotien']

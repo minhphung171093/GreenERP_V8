@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- In đề xuất điện thoại -->
+        <record id="view_in_dexuat_dienthoai_report" model="ir.ui.view">
+            <field name="name">in_dexuat_dienthoai.report</field>
+            <field name="model">in.dexuat</field>
+            <field name="arch" type="xml">
+                <form string="In đề xuất điện thoại" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='so_hoa_don'/>
+                		<newline/>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'in_dexuat_dienthoai_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_in_dexuat_dienthoai_report" model="ir.actions.act_window">
+            <field name="name">In đề xuất điện thoại</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">in.dexuat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_in_dexuat_dienthoai_report"/>
+            <field name="target">new</field>
+        </record>
+
+<!-- In đề xuất cho bảo hiểm -->
+        <record id="view_in_dexuat_baohiem_report" model="ir.ui.view">
+            <field name="name">in_dexuat_baohiem.report</field>
+            <field name="model">in.dexuat</field>
+            <field name="arch" type="xml">
+                <form string="In đề xuất cho bảo hiểm" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='so_hoa_don'/>
+                		<field name='bien_so_xe_id'/>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'in_dexuat_baohiem_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_in_dexuat_baohiem_report" model="ir.actions.act_window">
+            <field name="name">In đề xuất cho bảo hiểm</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">in.dexuat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_in_dexuat_baohiem_report"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>
+
