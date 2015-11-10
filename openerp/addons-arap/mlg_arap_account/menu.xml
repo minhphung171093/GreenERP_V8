@@ -167,6 +167,11 @@
 					action="action_in_dexuat_baohiem_report"
 					parent="menu_in_dexuat" sequence="15"/>
 					
+				<menuitem id="menu_action_in_dexuat_noxuong_report"
+					name="In đề xuất cho nợ xưởng"
+					action="action_in_dexuat_noxuong_report"
+					parent="menu_in_dexuat" sequence="20"/>
+					
 			<menuitem id="menu_import_cong_no_thu"
 				name="Import"
 				parent="menu_root_congno" sequence="20"/>
