@@ -1,15 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-		<record model="ir.cron" id="import_thuchi_ho_dienthoai_cron">
-            <field name="name">Import Phải thu chi hộ điện thoại</field>
+    
+<!-- Import thu nợ xưởng -->
+		<record model="ir.cron" id="import_thu_noxuong_cron">
+            <field name="name">Import thu nợ xưởng</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="True"/>
             <field name="model" eval="'import.congno.tudong'"/>
-            <field name="function" eval="'import_thuchi_ho_dienthoai'"/>
+            <field name="function" eval="'import_thu_noxuong'"/>
             <field name="args" eval="'()'" />
-        </record>        
+        </record>
+
+<!-- Import thu ký quỹ -->        
+        <record model="ir.cron" id="import_thu_kyquy_cron">
+            <field name="name">Import thu ký quỹ</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_thu_kyquy'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
+<!-- Import phạt vi phạm -->        
+        <record model="ir.cron" id="import_phat_vipham_cron">
+            <field name="name">Import phạt vi phạm</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phat_vipham'"/>
+            <field name="args" eval="'()'" />
+        </record>    
+        
+<!-- Import phải thu tạm ứng -->        
+        <record model="ir.cron" id="import_phaithu_tamung_cron">
+            <field name="name">Import phải thu tạm ứng</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_tamung'"/>
+            <field name="args" eval="'()'" />
+        </record>   
+            
+<!-- Import thu phí thương hiệu HTKD -->        
+        <record model="ir.cron" id="import_thuphi_thuonghieu_htkd_cron">
+            <field name="name">Import thu phí thương hiệu HTKD</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_thuphi_thuonghieu_htkd'"/>
+            <field name="args" eval="'()'" />
+        </record>
+            
+<!-- Import trả góp xe HTKD -->        
+        <record model="ir.cron" id="import_tragopxe_htkd_cron">
+            <field name="name">Import trả góp xe HTKD</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_tragopxe_htkd'"/>
+            <field name="args" eval="'()'" />
+        </record>
+            
+<!-- Import thu phí thương hiệu SHIFT-->        
+        <record model="ir.cron" id="import_thuphi_thuonghieu_shift_cron">
+            <field name="name">Import thu phí thương hiệu SHIFT</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_thuphi_thuonghieu_shift'"/>
+            <field name="args" eval="'()'" />
+        </record>
+            
+<!-- Import trả góp xe SHIFT -->        
+        <record model="ir.cron" id="import_tragopxe_shift_cron">
+            <field name="name">Import trả góp xe SHIFT</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_tragopxe_shift'"/>
+            <field name="args" eval="'()'" />
+        </record>
+            
 	</data>
 </openerp>

@@ -340,7 +340,7 @@ class import_congno(osv.osv):
                             cr.execute(sql)
                             account_ids = [r[0] for r in cr.fetchall()]
                             account_id = account_ids and account_ids[0] or False
-                            vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4]})
+                            vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
                         if not loai_doituong:
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại đối tượng')
                             
@@ -400,79 +400,725 @@ class import_congno_tudong(osv.osv):
         'name': fields.date('Tên', required=True),
     }
     
-    def import_thuchi_ho_dienthoai(self, cr, uid, context=None):
-        import_obj = self.pool.get('cauhinh.thumuc.import')
+    def import_thu_noxuong(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
         wf_service = netsvc.LocalService("workflow")
         try:
-            import_ids = import_obj.search(cr, uid, [('mlg_type','=','chi_ho_dien_thoai')])
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_no_xuong')])
 
-            dir_path = import_obj.browse(cr, uid, import_ids[0]).name
-            path = dir_path+'/Importing/'
-            done_path = dir_path+'/Done/'
-
-            csvUti = lib_csv.csv_ultilities()
-            for file_name in csvUti._read_files_folder(path):
-                f_path = file_name
-                try:
-                    file_data = csvUti._read_file(f_path)
-                
-                    for data in file_data:
-                        sql = '''
-                            select id from account_account where code='%s' limit 1
-                        '''%(data['ma_chi_nhanh'])
-                        cr.execute(sql)
-                        chinhanh_ids = cr.fetchone()
-                        
-                        sql = '''
-                            select id,bai_giaoca_id,account_ht_id from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
-                        '''%(chinhanh_ids[0],data['ma_doi_tuong'])
-                        cr.execute(sql)
-                        partner = cr.fetchone()
-                        partner_id = partner and partner[0] or False
-                        account_id = partner and partner[2] or False
-                        bai_giaoca_id = partner and partner[1] or False
-                        
-                        ldt = data['loai_doi_tuong']
-                        loai_doituong=''
-                        if ldt=='Lái xe':
-                            loai_doituong='taixe'
-                        if ldt=='Nhân viên văn phòng':
-                            loai_doituong='nhanvienvanphong'
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+'/Importing/'
+                done_path = dir_path.name+'/Done/'
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
                             
-                        journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
-                        
-                        vals = {
-                            'mlg_type': 'chi_ho_dien_thoai',
-                            'type': 'out_invoice',
-                            'account_id': account_id,
-                            'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
-                            'loai_doituong': loai_doituong,
-                            'partner_id': partner_id,
-                            'date_invoice': data['ngay_giao_dich'],
-                            'so_hoa_don': data['so_hoa_don'],
-                            'so_dien_thoai': data['so_dien_thoai'],
-                            'so_tien': data['so_tien'],
-                            'dien_giai': data['dien_giai'],
-                            'journal_id': journal_ids and journal_ids[0] or False,
-                            'bai_giaoca_id': bai_giaoca_id,
-                        }
-                        invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
-                        vals.update(invoice_vals)
-                        invoice_id = invoice_obj.create(cr, uid, vals)
-                        wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                    csvUti._moveFiles([f_path],done_path)
-                except Exception, e:
-                    error_path = dir_path+'/Error/'
-                    csvUti._moveFiles([f_path],error_path)
-                    continue
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.fetchone()
+                            partner_id = partner and partner[0] or False
+                            bai_giaoca_id = partner and partner[1] or False
+                            
+                            ldt = data['loai_doi_tuong']
+                            loai_doituong=''
+                            if ldt=='Lái xe':
+                                loai_doituong='taixe'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhân viên văn phòng':
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhà đầu tư':
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            bsx = data['bien_so_xe']
+                            sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
+                            cr.execute(sql)
+                            bien_so_xe_ids = cr.fetchone()
+                            
+                            mx = data['ma_xuong']
+                            sql = ''' select id from ma_xuong where code='%s' '''%(mx)
+                            cr.execute(sql)
+                            ma_xuong_ids = cr.fetchone()
+                            
+                            vals.update({
+                                'mlg_type': 'thu_no_xuong',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': data['ngay_giao_dich'],
+                                'so_hop_dong': data['so_hop_dong'],
+                                'ma_bang_chiettinh_chiphi_sua': data['ma_chiet_tinh'],
+                                'so_tien': data['so_tien'],
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                                'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                                'ma_xuong_id': ma_xuong_ids and ma_xuong_ids[0] or False,
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                    except Exception, e:
+                        error_path = dir_path.name+'/Error/'
+                        csvUti._moveFiles([f_path],error_path)
+                        continue
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
             pass
         return True
-#         return True
+    
+    def import_thu_kyquy(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        kyquy_obj = self.pool.get('thu.ky.quy')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        wf_service = netsvc.LocalService("workflow")
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','phai_thu_ky_quy')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+'/Importing/'
+                done_path = dir_path.name+'/Done/'
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
+                            
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' and sotien_conlai>0 limit 1
+                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.fetchone()
+                            partner_id = partner and partner[0] or False
+                            bai_giaoca_id = partner and partner[1] or False
+                            
+                            ldt = data['loai_doi_tuong']
+                            loai_doituong=''
+                            if ldt=='Lái xe':
+                                loai_doituong='taixe'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhân viên văn phòng':
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhà đầu tư':
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            bsx = data['bien_so_xe']
+                            sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
+                            cr.execute(sql)
+                            bien_so_xe_ids = cr.fetchone()
+                            
+                            mx = data['ma_xuong']
+                            sql = ''' select id from ma_xuong where code='%s' '''%(mx)
+                            cr.execute(sql)
+                            ma_xuong_ids = cr.fetchone()
+                            
+                            vals.update({
+                                'mlg_type': 'thu_no_xuong',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': data['ngay_giao_dich'],
+                                'so_hop_dong': data['so_hop_dong'],
+                                'ma_bang_chiettinh_chiphi_sua': data['ma_chiet_tinh'],
+                                'so_tien': data['so_tien'],
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                                'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                                'ma_xuong_id': ma_xuong_ids and ma_xuong_ids[0] or False,
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                    except Exception, e:
+                        error_path = dir_path.name+'/Error/'
+                        csvUti._moveFiles([f_path],error_path)
+                        continue
+#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
+        except Exception, e:
+            pass
+        return True
+    
+    def import_phat_vipham(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        invoice_obj = self.pool.get('account.invoice')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        wf_service = netsvc.LocalService("workflow")
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+'/Importing/'
+                done_path = dir_path.name+'/Done/'
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
+                            
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.fetchone()
+                            partner_id = partner and partner[0] or False
+                            bai_giaoca_id = partner and partner[1] or False
+                            
+                            ldt = data['loai_doi_tuong']
+                            loai_doituong=''
+                            if ldt=='Lái xe':
+                                loai_doituong='taixe'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhân viên văn phòng':
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhà đầu tư':
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            vals.update({
+                                'mlg_type': 'phat_vi_pham',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': time.strftime('%Y-%m-%d'),#data['ngay_giao_dich'],
+                                'so_tien': data['so_tien'],
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                    except Exception, e:
+                        error_path = dir_path.name+'/Error/'
+                        csvUti._moveFiles([f_path],error_path)
+                        continue
+#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
+        except Exception, e:
+            pass
+        return True
+    
+    def import_phaithu_tamung(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        invoice_obj = self.pool.get('account.invoice')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        wf_service = netsvc.LocalService("workflow")
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+'/Importing/'
+                done_path = dir_path.name+'/Done/'
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
+                            
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.fetchone()
+                            partner_id = partner and partner[0] or False
+                            bai_giaoca_id = partner and partner[1] or False
+                            
+                            ldt = data['loai_doi_tuong']
+                            loai_doituong=''
+                            if ldt=='Lái xe':
+                                loai_doituong='taixe'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhân viên văn phòng':
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhà đầu tư':
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            vals.update({
+                                'mlg_type': 'hoan_tam_ung',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': time.strftime('%Y-%m-%d'),#data['ngay_giao_dich'],
+                                'so_tien': data['so_tien'],
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                    except Exception, e:
+                        error_path = dir_path.name+'/Error/'
+                        csvUti._moveFiles([f_path],error_path)
+                        continue
+#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
+        except Exception, e:
+            pass
+        return True
+    
+    def import_thuphi_thuonghieu_htkd(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        invoice_obj = self.pool.get('account.invoice')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        wf_service = netsvc.LocalService("workflow")
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_htkd')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+'/Importing/'
+                done_path = dir_path.name+'/Done/'
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
+                            
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.fetchone()
+                            partner_id = partner and partner[0] or False
+                            bai_giaoca_id = partner and partner[1] or False
+                            
+                            ldt = data['loai_doi_tuong']
+                            loai_doituong=''
+                            if ldt=='Lái xe':
+                                loai_doituong='taixe'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhân viên văn phòng':
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhà đầu tư':
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            bsx = data['bien_so_xe']
+                            sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
+                            cr.execute(sql)
+                            bien_so_xe_ids = cr.fetchone()
+                            
+                            vals.update({
+                                'mlg_type': 'thu_phi_thuong_hieu',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': data['ngay_giao_dich'],
+                                'so_hop_dong': data['so_hop_dong'],
+                                'so_tien': data['so_tien'],
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                                'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                    except Exception, e:
+                        error_path = dir_path.name+'/Error/'
+                        csvUti._moveFiles([f_path],error_path)
+                        continue
+#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
+        except Exception, e:
+            pass
+        return True
+    
+    def import_tragopxe_htkd(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        invoice_obj = self.pool.get('account.invoice')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        wf_service = netsvc.LocalService("workflow")
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_htkd')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+'/Importing/'
+                done_path = dir_path.name+'/Done/'
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
+                            
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.fetchone()
+                            partner_id = partner and partner[0] or False
+                            bai_giaoca_id = partner and partner[1] or False
+                            
+                            ldt = data['loai_doi_tuong']
+                            loai_doituong=''
+                            if ldt=='Lái xe':
+                                loai_doituong='taixe'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhân viên văn phòng':
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhà đầu tư':
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            bsx = data['bien_so_xe']
+                            sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
+                            cr.execute(sql)
+                            bien_so_xe_ids = cr.fetchone()
+                            
+                            vals.update({
+                                'mlg_type': 'tra_gop_xe',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': data['ngay_phat_sinh'],
+                                'so_hop_dong': data['so_hop_dong'],
+                                'so_tien': data['so_tien'],
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                                'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                    except Exception, e:
+                        error_path = dir_path.name+'/Error/'
+                        csvUti._moveFiles([f_path],error_path)
+                        continue
+#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
+        except Exception, e:
+            pass
+        return True
+    
+    def import_thuphi_thuonghieu_shift(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        invoice_obj = self.pool.get('account.invoice')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        wf_service = netsvc.LocalService("workflow")
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_shift')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+'/Importing/'
+                done_path = dir_path.name+'/Done/'
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
+                            
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.fetchone()
+                            partner_id = partner and partner[0] or False
+                            bai_giaoca_id = partner and partner[1] or False
+                            
+                            ldt = data['loai_doi_tuong']
+                            loai_doituong=''
+                            if ldt=='Lái xe':
+                                loai_doituong='taixe'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhân viên văn phòng':
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhà đầu tư':
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            bsx = data['bien_so_xe']
+                            sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
+                            cr.execute(sql)
+                            bien_so_xe_ids = cr.fetchone()
+                            
+                            vals.update({
+                                'mlg_type': 'thu_phi_thuong_hieu',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': data['ngay_giao_dich'],
+                                'so_hop_dong': data['so_hop_dong'],
+                                'so_tien': data['so_tien'],
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                                'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                    except Exception, e:
+                        error_path = dir_path.name+'/Error/'
+                        csvUti._moveFiles([f_path],error_path)
+                        continue
+#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
+        except Exception, e:
+            pass
+        return True
+    
+    def import_tragopxe_shift(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        invoice_obj = self.pool.get('account.invoice')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        wf_service = netsvc.LocalService("workflow")
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_shift')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+'/Importing/'
+                done_path = dir_path.name+'/Done/'
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
+                            
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
+                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.fetchone()
+                            partner_id = partner and partner[0] or False
+                            bai_giaoca_id = partner and partner[1] or False
+                            
+                            ldt = data['loai_doi_tuong']
+                            loai_doituong=''
+                            if ldt=='Lái xe':
+                                loai_doituong='taixe'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhân viên văn phòng':
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner[2] or False
+                            if ldt=='Nhà đầu tư':
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            bsx = data['bien_so_xe']
+                            sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
+                            cr.execute(sql)
+                            bien_so_xe_ids = cr.fetchone()
+                            
+                            vals.update({
+                                'mlg_type': 'tra_gop_xe',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': data['ngay_phat_sinh'],
+                                'so_hop_dong': data['so_hop_dong'],
+                                'so_tien': data['so_tien'],
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                                'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                    except Exception, e:
+                        error_path = dir_path.name+'/Error/'
+                        csvUti._moveFiles([f_path],error_path)
+                        continue
+#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
+        except Exception, e:
+            pass
+        return True
     
 import_congno_tudong()
 

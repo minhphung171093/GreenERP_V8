@@ -306,8 +306,13 @@
 					
 				<menuitem id="menu_action_cauhinh_thumuc_import"
 					action="action_cauhinh_thumuc_import"
-					name="Cấu hình thư mục"
+					name="Cấu hình thư mục(bằng tay)"
 					parent="menu_danhmuc_dungchung" sequence="10"/>
+					
+				<menuitem id="menu_action_cauhinh_thumuc_import_tudong"
+					action="action_cauhinh_thumuc_import_tudong"
+					name="Cấu hình thư mục(tự động)"
+					parent="menu_danhmuc_dungchung" sequence="12"/>
 					
 				<menuitem id="menu_action_bien_so_xe"
 					action="action_bien_so_xe"

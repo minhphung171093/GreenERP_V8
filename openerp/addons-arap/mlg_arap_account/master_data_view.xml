@@ -191,23 +191,42 @@
             <field name="view_id" ref="view_no_hang_muc_tree"/>
         </record>
         
-<!-- Cấu hình thư mục -->    
+<!-- Cấu hình thư mục(bằng tay) -->    
     	<record id="view_cauhinh_thumuc_import_tree" model="ir.ui.view">
             <field name="name">cauhinh.thumuc.import.tree</field>
             <field name="model">cauhinh.thumuc.import</field>
             <field name="arch" type="xml">
-                <tree string="Cấu hình thư mục" editable='top'>
+                <tree string="Cấu hình thư mục(bằng tay)" editable='top'>
                     <field name="name"/>
                     <field name="mlg_type"/>
                 </tree>
             </field>
         </record>
         <record id="action_cauhinh_thumuc_import" model="ir.actions.act_window">
-            <field name="name">Cấu hình thư mục</field>
+            <field name="name">Cấu hình thư mục(bằng tay)</field>
             <field name="res_model">cauhinh.thumuc.import</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_cauhinh_thumuc_import_tree"/>
+        </record>
+
+<!-- Cấu hình thư mục(tự động) -->    
+    	<record id="view_cauhinh_thumuc_import_tudong_tree" model="ir.ui.view">
+            <field name="name">cauhinh.thumuc.import.tudong.tree</field>
+            <field name="model">cauhinh.thumuc.import.tudong</field>
+            <field name="arch" type="xml">
+                <tree string="Cấu hình thư mục(tự động)" editable='top'>
+                    <field name="name"/>
+                    <field name="mlg_type"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_cauhinh_thumuc_import_tudong" model="ir.actions.act_window">
+            <field name="name">Cấu hình thư mục(tự động)</field>
+            <field name="res_model">cauhinh.thumuc.import.tudong</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_cauhinh_thumuc_import_tudong_tree"/>
         </record>
 
 	</data>
