@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!-- Change Width Height -->
+    	<record id="change_width_height_form" model="ir.ui.view">
+            <field name="name">change.width.height.form</field>
+            <field name="model">change.width.height</field>
+            <field name="arch" type="xml">
+                <form string="Resize" version="7.0">
+                	<group col='4' colspan='2'>
+	                	<group>
+	                		<field name="width"/>
+	                	</group>
+	                	<group>
+	                		<field name="height"/>
+	                	</group>
+	                </group>
+	                <footer>
+	                	<button string="Change" type="object" name="update_width_height"/>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_change_width_height" model="ir.actions.act_window">
+            <field name="name">Resize</field>
+            <field name="res_model">change.width.height</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="change_width_height_form"/>
+        </record>
+        
+    </data>
+</openerp>

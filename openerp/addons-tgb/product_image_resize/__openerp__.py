@@ -20,14 +20,14 @@
 ##############################################################################
 
 {
-    'name': 'TEST Aeroo Report',
+    'name': 'Product Image Resize',
     'version': '1.0',
     'category': 'TGB',
     'sequence': 1,
-    'depends': ['report_aeroo','report_aeroo_ooo'],
+    'depends': ['product','web'],
     'data': [
-        'report/report_view.xml',
-        'wizard/report_wizard_view.xml',
+        'views/product_image_resize_view.xml',
+        'wizard/change_width_height_view.xml',
         'product_product_view.xml',
     ],
     'css' : [

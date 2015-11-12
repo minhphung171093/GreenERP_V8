@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.values" id="change_width_height_product">
+            <field name="model_id" ref="product.model_product_product" />
+            <field name="name">Change Width Height</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_change_width_height'))" />
+            <field name="key">action</field>
+            <field name="model">product.product</field>
+        </record>
+
+    </data>
+</openerp>
