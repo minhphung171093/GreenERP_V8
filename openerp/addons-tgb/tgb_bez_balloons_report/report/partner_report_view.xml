@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+<!-- Quotation Sample -->
+	    <record id="quotation_sample" model="ir.actions.report.xml">
+	        <field name="name">quotation_sample</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">sale.order</field>
+	        <field name="report_name">quotation_sample</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">tgb_bez_balloons_report/report/quotation_sample.py</field>
+	        <field name="report_rml">tgb_bez_balloons_report/report/quotation_sample.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record>		    
+		<report 
+			auto="False" 
+			menu="True"
+			id="quotation_sample"
+			model="sale.order"
+			name="quotation_sample"
+	        string="Quotation Sample"
+	        rml="tgb_bez_balloons_report/report/quotation_sample.ods"/>
+
+<!-- Cash Sales Sample -->
+	    <record id="cash_sales_sample" model="ir.actions.report.xml">
+	        <field name="name">cash_sales_sample</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">cash_sales_sample</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">tgb_bez_balloons_report/report/cash_sales_sample.py</field>
+	        <field name="report_rml">tgb_bez_balloons_report/report/cash_sales_sample.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record>		    
+		<report 
+			auto="False" 
+			menu="True"
+			id="cash_sales_sample"
+			model="account.invoice"
+			name="cash_sales_sample"
+	        string="Cash Sales Sample"
+	        rml="tgb_bez_balloons_report/report/cash_sales_sample.ods"/>
+
+<!-- Tax Invoice Sample -->
+	    <record id="tax_invoice_sample" model="ir.actions.report.xml">
+	        <field name="name">tax_invoice_sample</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">tax_invoice_sample</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">tgb_bez_balloons_report/report/tax_invoice_sample.py</field>
+	        <field name="report_rml">tgb_bez_balloons_report/report/tax_invoice_sample.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record>		    
+		<report 
+			auto="False" 
+			menu="True"
+			id="tax_invoice_sample"
+			model="account.invoice"
+			name="tax_invoice_sample"
+	        string="Tax Invoice Sample"
+	        rml="tgb_bez_balloons_report/report/tax_invoice_sample.ods"/>
+	        
+<!-- Delivery Order Sample -->
+	    <record id="delivery_order_sample" model="ir.actions.report.xml">
+	        <field name="name">delivery_order_sample</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">stock.picking</field>
+	        <field name="report_name">delivery_order_sample</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">tgb_bez_balloons_report/report/delivery_order_sample.py</field>
+	        <field name="report_rml">tgb_bez_balloons_report/report/delivery_order_sample.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record>		    
+		<report 
+			auto="False" 
+			menu="True"
+			id="delivery_order_sample"
+			model="stock.picking"
+			name="delivery_order_sample"
+	        string="Delivery Order Sample"
+	        rml="tgb_bez_balloons_report/report/delivery_order_sample.ods"/>
+
+	</data>
+</openerp>

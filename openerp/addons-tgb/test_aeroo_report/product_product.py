@@ -33,6 +33,7 @@ import psycopg2
 
 import openerp.addons.decimal_precision as dp
 from openerp.tools.float_utils import float_round, float_compare
+from openerp.addons.web import http as openerpweb
 
 
 class product_product(osv.osv):
@@ -84,6 +85,48 @@ class product_product(osv.osv):
             if product.height:
                 height = product.height
         return [width,height]
+#     
+#     @openerpweb.httprequest
+#     def index(self, req, data, token):
+#         data = json.loads(data)
+#         model = data.get('model', [])
+#         columns_headers = data.get('headers', [])
+#         rows = data.get('rows', [])
+# 
+#         return req.make_response(
+#             self.from_data(columns_headers, rows),
+#             headers=[
+#                 ('Content-Disposition', 'attachment; filename="%s"'
+#                     % self.filename(model)),
+#                 ('Content-Type', self.content_type)
+#             ],
+#             cookies={'fileToken': token}
+#         )
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
     
 product_product()
 

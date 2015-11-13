@@ -959,5 +959,73 @@ class report_wizard_agm_ye_blank(osv.osv_memory):
                 'datas_fname': False}
     
 report_wizard_agm_ye_blank()
-# DDF 310814_CampanyName chua xong
+
+class report_wizard_eci_template(osv.osv_memory):
+    _name = 'report.wizard.eci.template'
+    
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_eci_template, self).default_get(cr, uid, fields, context=context)
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+#         if context.get('eci_template',False) and context['eci_template']:
+        partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+        
+        report_filename='ECI Form (For Company) YA 2016 (2)'
+        report_extention='.xls'
+        report_name='eci_form_for_company_ya_2016'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'eci_form_for_company_ya_2016_fname': report_val['datas_fname'],
+                    'eci_form_for_company_ya_2016_datas': report_val['db_datas']})
+        
+        report_filename='ECI Form (For Tax Agent) YA 2016'
+        report_extention='.xls'
+        report_name='eci_form_for_tax_agent_ya_2016'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'eci_form_for_tax_agent_ya_2016_fname': report_val['datas_fname'],
+                    'eci_form_for_tax_agent_ya_2016_datas': report_val['db_datas']})
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'eci_form_for_company_ya_2016_fname': fields.char('File Name',size=256),
+        'eci_form_for_company_ya_2016_datas': fields.binary('Database Data'),
+        
+        'eci_form_for_tax_agent_ya_2016_fname': fields.char('File Name',size=256),
+        'eci_form_for_tax_agent_ya_2016_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_eci_template()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

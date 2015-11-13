@@ -53,125 +53,152 @@
                         </group>
                     </page>
             		<page name='crm_detail' string="CRM Details">
+                        <group>
                             <group>
-                                <group>
-                                	<label for="street_personal" string="Personal Address"/>
-		                            <div>
-		                                <field name="street_personal" placeholder="Street..." />
-		                                <field name="street2_personal"/>
-		                                <div class="address_format">
-		                                    <field name="city_personal" placeholder="City" style="width: 40%%"/>
-		                                    <field name="state_personal_id" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}' />
-		                                    <field name="zip_personal" placeholder="ZIP" style="width: 20%%" />
-		                                </div>
-		                                <field name="country_personal_id" placeholder="Country" class="oe_no_button" options='{"no_open": True, "no_create": True}' />
-		                            </div>
-                                </group>
-                                <group>
-                                	<label for="street_secretary" string="Secretary Address"/>
-		                            <div>
-		                                <field name="street_secretary" placeholder="Street..." />
-		                                <field name="street2_secretary"/>
-		                                <div class="address_format">
-		                                    <field name="city_secretary" placeholder="City" style="width: 40%%"/>
-		                                    <field name="state_secretary_id" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}' />
-		                                    <field name="zip_secretary" placeholder="ZIP" style="width: 20%%" />
-		                                </div>
-		                                <field name="country_secretary_id" placeholder="Country" class="oe_no_button" options='{"no_open": True, "no_create": True}' />
-		                            </div>
-                                </group>
+                            	<label for="street_personal" string="Personal Address"/>
+	                            <div>
+	                                <field name="street_personal" placeholder="Street..." />
+	                                <field name="street2_personal"/>
+	                                <div class="address_format">
+	                                    <field name="city_personal" placeholder="City" style="width: 40%%"/>
+	                                    <field name="state_personal_id" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}' />
+	                                    <field name="zip_personal" placeholder="ZIP" style="width: 20%%" />
+	                                </div>
+	                                <field name="country_personal_id" placeholder="Country" class="oe_no_button" options='{"no_open": True, "no_create": True}' />
+	                            </div>
                             </group>
                             <group>
-                            	<group>
-                                	<field name="company_roc"/>
-                                	<field name="nric"/>
-                                	<label for="signature_specimen"/>
-									<h2><field name="signature_specimen" widget="signature"/></h2>
-                                </group>
-                                <group>
-                                	<field name="hp"/>
-                                	<field name="office_no"/>
-                                	<field name="period_of_year"/>
-                                </group>
+                            	<label for="street_secretary" string="Secretary Address"/>
+	                            <div>
+	                                <field name="street_secretary" placeholder="Street..." />
+	                                <field name="street2_secretary"/>
+	                                <div class="address_format">
+	                                    <field name="city_secretary" placeholder="City" style="width: 40%%"/>
+	                                    <field name="state_secretary_id" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}' />
+	                                    <field name="zip_secretary" placeholder="ZIP" style="width: 20%%" />
+	                                </div>
+	                                <field name="country_secretary_id" placeholder="Country" class="oe_no_button" options='{"no_open": True, "no_create": True}' />
+	                            </div>
                             </group>
-                        </page>
-                        <page string="Document Collection">
-                        	<field name='document_collection_ids'>
-                        		<form string="Document Collection" >
-                        			<field name="name" />
+                        </group>
+                        <group>
+                        	<group>
+                            	<field name="company_roc"/>
+                            	<field name="nric"/>
+                            	<label for="signature_specimen"/>
+								<h2><field name="signature_specimen" widget="signature"/></h2>
+                            </group>
+                            <group>
+                            	<field name="hp"/>
+                            	<field name="office_no"/>
+                            	<field name="period_of_year"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Document Collection">
+                    	<field name='document_collection_ids'>
+                    		<form string="Document Collection" >
+                    			<field name="name" />
+			                    <group>
 				                    <group>
-					                    <group>
-					                    	<field name="alert_date" />
-						                    <field name="document_sales_invoice"/>
-						                    <field name="document_receipt"/>
-						                    <field name="document_payment_voucher"/>
-						                    <field name="document_bank_statement"/>
-						                    <field name="document_rental_contract"/>
-						                    <field name="document_petty_cash"/>
-					                    </group>
-					                    <group>
-						                    <field name="tracking_sales_invoice"/>
-						                    <field name="tracking_receipt"/>
-						                    <field name="tracking_payment_voucher"/>
-						                    <field name="tracking_bank_statement"/>
-						                    <field name="tracking_rental_contract"/>
-						                    <field name="tracking_petty_cash"/>
-					                    </group>
+				                    	<field name="alert_date" />
+					                    <field name="document_sales_invoice"/>
+					                    <field name="document_receipt"/>
+					                    <field name="document_payment_voucher"/>
+					                    <field name="document_bank_statement"/>
+					                    <field name="document_rental_contract"/>
+					                    <field name="document_petty_cash"/>
 				                    </group>
-                        		</form>
-                        		<tree string="Document Collection" editable='top'>
-				                    <field name="name" />
-				                    <field name="alert_date" />
-				                    <field name="document_sales_invoice"/>
-				                    <field name="document_receipt"/>
-				                    <field name="document_payment_voucher"/>
-				                    <field name="document_bank_statement"/>
-				                    <field name="document_rental_contract"/>
-				                    <field name="document_petty_cash"/>
-				                </tree>
-			                </field>
-                        </page>
-                        <page string="Tracking Collection">
-                        	<field name='tracking_collection_ids'>
-                        		<tree string="Tracking Collection" editable='top'>
-				                    <field name="name" />
-				                    <field name="alert_date" />
-				                    <field name="tracking_sales_invoice"/>
-				                    <field name="tracking_receipt"/>
-				                    <field name="tracking_payment_voucher"/>
-				                    <field name="tracking_bank_statement"/>
-				                    <field name="tracking_rental_contract"/>
-				                    <field name="tracking_petty_cash"/>
-				                </tree>
-			                </field>
-                        </page>
-                        <page string="Account Adjustment">
-                        	<field name='account_adjustment_ids'>
-                        		<tree string="Account Adjustment" editable='top'>
-				                    <field name="name" />
-				                    <field name="alert_date" />
-				                    <field name="account_adjustment"/>
-				                </tree>
-			                </field>
-                        </page>
-                        <page string="Account Finalization">
-                        	<field name='account_finalization_ids'>
-                        		<tree string="Account Finalization" editable='top'>
-				                    <field name="name" />
-				                    <field name="alert_date" />
-				                    <field name="account_finalization"/>
-				                </tree>
-			                </field>
-                        </page>
+				                    <group>
+					                    <field name="tracking_sales_invoice"/>
+					                    <field name="tracking_receipt"/>
+					                    <field name="tracking_payment_voucher"/>
+					                    <field name="tracking_bank_statement"/>
+					                    <field name="tracking_rental_contract"/>
+					                    <field name="tracking_petty_cash"/>
+				                    </group>
+			                    </group>
+                    		</form>
+                    		<tree string="Document Collection" editable='top'>
+			                    <field name="name" />
+			                    <field name="alert_date" />
+			                    <field name="document_sales_invoice"/>
+			                    <field name="document_receipt"/>
+			                    <field name="document_payment_voucher"/>
+			                    <field name="document_bank_statement"/>
+			                    <field name="document_rental_contract"/>
+			                    <field name="document_petty_cash"/>
+			                </tree>
+		                </field>
+                    </page>
+                    <page string="Tracking Collection">
+                    	<field name='tracking_collection_ids'>
+                    		<tree string="Tracking Collection" editable='top'>
+			                    <field name="name" />
+			                    <field name="alert_date" />
+			                    <field name="tracking_sales_invoice"/>
+			                    <field name="tracking_receipt"/>
+			                    <field name="tracking_payment_voucher"/>
+			                    <field name="tracking_bank_statement"/>
+			                    <field name="tracking_rental_contract"/>
+			                    <field name="tracking_petty_cash"/>
+			                </tree>
+		                </field>
+                    </page>
+                    <page string="Account Adjustment">
+                    	<field name='account_adjustment_ids'>
+                    		<tree string="Account Adjustment" editable='top'>
+			                    <field name="name" />
+			                    <field name="alert_date" />
+			                    <field name="account_adjustment"/>
+			                </tree>
+		                </field>
+                    </page>
+                    <page string="Account Finalization">
+                    	<field name='account_finalization_ids'>
+                    		<tree string="Account Finalization" editable='top'>
+			                    <field name="name" />
+			                    <field name="alert_date" />
+			                    <field name="account_finalization"/>
+			                </tree>
+		                </field>
+                    </page>
+                    <page string="Estimate Chargeable Income">
+                    	<field name='estimate_chargeable_income_ids'>
+                    		<tree string="Estimate Chargeable Income" editable='top'>
+			                    <field name="name" />
+			                    <field name="alert_date" />
+			                    <field name="document_collection"/>
+			                </tree>
+		                </field>
+                    </page>
+                    <page string="Annual Report Preparation">
+                    	<field name='annual_report_preparation_ids'>
+                    		<tree string="Annual Report Preparation" editable='top'>
+			                    <field name="name" />
+			                    <field name="alert_date" />
+			                    <field name="document_collection"/>
+			                </tree>
+		                </field>
+                    </page>
             	</xpath>
             </field>
         </record>
         
         <record model="ir.values" id="wizard_report_partner">
             <field name="model_id" ref="base.model_res_partner" />
-            <field name="name">Wizard Report 1</field>
+            <field name="name">AGM</field>
             <field name="key2">client_action_multi</field>
             <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_agm'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+        
+        <record model="ir.values" id="wizard_report_partner_eci_template">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">ECI Template</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_eci_template'))" />
             <field name="key">action</field>
             <field name="model">res.partner</field>
         </record>

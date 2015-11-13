@@ -1222,11 +1222,11 @@
     	</record>		    
 		<report 
 			auto="False" 
-			menu="True"
+			menu="False"
 			id="eci_form_for_company_ya_2016"
 			model="res.partner"
 			name="eci_form_for_company_ya_2016"
-	        string="ECI Form (For Company) YA 2016 (2)"
+	        string="eci_form_for_company_ya_2016"
 	        rml="tgb_crm_customized/report/eci_form_for_company_ya_2016.ods"/>
 	        
 <!-- ECI Form (For Tax Agent) YA 2016 -->
@@ -1246,11 +1246,11 @@
     	</record>		    
 		<report 
 			auto="False" 
-			menu="True"
+			menu="False"
 			id="eci_form_for_tax_agent_ya_2016"
 			model="res.partner"
 			name="eci_form_for_tax_agent_ya_2016"
-	        string="ECI Form (For Tax Agent) YA 2016"
+	        string="eci_form_for_tax_agent_ya_2016"
 	        rml="tgb_crm_customized/report/eci_form_for_tax_agent_ya_2016.ods"/>
 
 	</data>

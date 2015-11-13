@@ -101,6 +101,8 @@ class res_partner(osv.osv):
         'tracking_collection_ids':fields.one2many('document.collection','partner_traking_id','Tracking Collection'),
         'account_adjustment_ids':fields.one2many('document.collection','partner_adjustment_id','Account Adjustment'),
         'account_finalization_ids':fields.one2many('document.collection','partner_finalization_id','Account Finalization'),
+        'estimate_chargeable_income_ids':fields.one2many('document.collection','partner_estimate_id','Estimate Chargeable Income'),
+        'annual_report_preparation_ids':fields.one2many('document.collection','partner_annual_id','Annual Report Preparation'),
         
         'uen':fields.char('UEN'),
         'chinese_name':fields.char('Chinese Name'),
@@ -144,6 +146,8 @@ class res_partner(osv.osv):
                 tracking_collection_ids = []
                 account_adjustment_ids = []
                 account_finalization_ids = []
+                estimate_chargeable_income_ids = []
+                annual_report_preparation_ids = []
                 for seq,m in enumerate(['January','February','March','April','May','June','July','August','September','October','November','December']):
                     year = int(time.strftime('%Y'))
                     month = seq+1
@@ -153,15 +157,21 @@ class res_partner(osv.osv):
                     tracking_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                     account_adjustment_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                     account_finalization_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    estimate_chargeable_income_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    annual_report_preparation_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                 vals.update({'document_collection_ids':document_collection_ids,
                              'tracking_collection_ids':tracking_collection_ids,
                              'account_adjustment_ids':account_adjustment_ids,
-                             'account_finalization_ids':account_finalization_ids})
+                             'account_finalization_ids':account_finalization_ids,
+                             'estimate_chargeable_income_ids':estimate_chargeable_income_ids,
+                             'annual_report_preparation_ids':annual_report_preparation_ids})
             if vals['period_of_year']=='quarter':
                 document_collection_ids = []
                 tracking_collection_ids = []
                 account_adjustment_ids = []
                 account_finalization_ids = []
+                estimate_chargeable_income_ids = []
+                annual_report_preparation_ids = []
                 for seq,m in enumerate(['First Quarter','Second Quarter', 'Third Quarter','Fourth Quarter']):
                     year = int(time.strftime('%Y'))
                     month = (seq+1)*3
@@ -171,15 +181,21 @@ class res_partner(osv.osv):
                     tracking_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                     account_adjustment_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                     account_finalization_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    estimate_chargeable_income_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    annual_report_preparation_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                 vals.update({'document_collection_ids':document_collection_ids,
                              'tracking_collection_ids':tracking_collection_ids,
                              'account_adjustment_ids':account_adjustment_ids,
-                             'account_finalization_ids':account_finalization_ids})
+                             'account_finalization_ids':account_finalization_ids,
+                             'estimate_chargeable_income_ids':estimate_chargeable_income_ids,
+                             'annual_report_preparation_ids':annual_report_preparation_ids})
             if vals['period_of_year']=='half_year':
                 document_collection_ids = []
                 tracking_collection_ids = []
                 account_adjustment_ids = []
                 account_finalization_ids = []
+                estimate_chargeable_income_ids = []
+                annual_report_preparation_ids = []
                 for seq,m in enumerate(['First Half','Second Half']):
                     year = int(time.strftime('%Y'))
                     month = (seq+1)*6
@@ -189,15 +205,21 @@ class res_partner(osv.osv):
                     tracking_collection_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                     account_adjustment_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                     account_finalization_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    estimate_chargeable_income_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
+                    annual_report_preparation_ids.append((0,0,{'name':m,'alert_date':alert_date.strftime('%Y-%m-%d')}))
                 vals.update({'document_collection_ids':document_collection_ids,
                              'tracking_collection_ids':tracking_collection_ids,
                              'account_adjustment_ids':account_adjustment_ids,
-                             'account_finalization_ids':account_finalization_ids})
+                             'account_finalization_ids':account_finalization_ids,
+                             'estimate_chargeable_income_ids':estimate_chargeable_income_ids,
+                             'annual_report_preparation_ids':annual_report_preparation_ids})
             if vals['period_of_year']=='year':
                 vals.update({'document_collection_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})],
                              'tracking_collection_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})],
                              'account_adjustment_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})],
-                             'account_finalization_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})]})
+                             'account_finalization_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})],
+                             'estimate_chargeable_income_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})],
+                             'annual_report_preparation_ids':[(0,0,{'name':time.strftime('%Y'),'alert_date':time.strftime('%Y-12-31')})]})
         return super(res_partner, self).create(cr, uid, vals, context)
     
     def send_mail(self, cr, uid, lead_email, msg_id,context=None):
@@ -326,6 +348,43 @@ class res_partner(osv.osv):
                         body+='''
                             %s account finalization still pending<br>
                         '''%(doc.name)
+                    
+            for seq,doc in enumerate(rp.estimate_chargeable_income_ids):
+                if doc.alert_date<ngay:
+                    if temp and doc.partner_estimate_id!=partner_id:
+                        body+='</p>'
+                        temp = 0
+                    if doc.partner_estimate_id!=partner_id and \
+                    (not doc.document_collection):
+                        temp = 1
+                        body+='''
+                            <p><b>%s</b><br>
+                        '''%(doc.partner_estimate_id.name)
+                        partner_id = doc.partner_id
+                    if doc.partner_estimate_id==partner_id and \
+                    (not doc.document_collection):
+                        body+='''
+                            %s estimate chargeable income still pending<br>
+                        '''%(doc.name)
+                        
+            for seq,doc in enumerate(rp.annual_report_preparation_ids):
+                if doc.alert_date<ngay:
+                    if temp and doc.partner_annual_id!=partner_id:
+                        body+='</p>'
+                        temp = 0
+                    if doc.partner_annual_id!=partner_id and \
+                    (not doc.document_collection):
+                        temp = 1
+                        body+='''
+                            <p><b>%s</b><br>
+                        '''%(doc.partner_annual_id.name)
+                        partner_id = doc.partner_id
+                    if doc.partner_annual_id==partner_id and \
+                    (not doc.document_collection):
+                        body+='''
+                            %s annual report preparation still pending<br>
+                        '''%(doc.name)
+                        
         if body:
             post_values = {
                 'subject': 'Still Pending',
@@ -407,6 +466,10 @@ class document_collection(osv.osv):
         
         'partner_finalization_id':fields.many2one('res.partner','Partner',ondelete='cascade'),
         'account_finalization':fields.boolean('Account Finalization Check Box (Yearly)'),
+        
+        'partner_estimate_id':fields.many2one('res.partner','Partner',ondelete='cascade'),
+        'partner_annual_id':fields.many2one('res.partner','Partner',ondelete='cascade'),
+        'document_collection':fields.boolean('Document Collection'),
     }
     _defaults = {
              }
