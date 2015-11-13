@@ -97,6 +97,114 @@
             <field name="function" eval="'import_tragopxe_shift'"/>
             <field name="args" eval="'()'" />
         </record>
+        
+<!-- Import Fustion (Phải thu) -->        
+        <record model="ir.cron" id="import_fustion_phaithu_cron">
+            <field name="name">Import Fustion (Phải thu)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_fustion_phaithu'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
+<!-- Import Fustion (Phải trả) -->        
+        <record model="ir.cron" id="import_fustion_phaitra_cron">
+            <field name="name">Import Fustion (Phải trả)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_fustion_phaitra'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
+<!-- Import chi góp xe -->        
+        <record model="ir.cron" id="import_chi_gop_xe_cron">
+            <field name="name">Import chi góp xe</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_chi_gop_xe'"/>
+            <field name="args" eval="'()'" />
+        </record>
             
+<!-- Output thu nợ xưởng -->        
+        <record model="ir.cron" id="output_thu_noxuong_cron">
+            <field name="name">Output thu nợ xưởng</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_thu_noxuong'"/>
+            <field name="args" eval="'()'" />
+        </record>
+            
+<!-- Output thu ký quỹ -->        
+        <record model="ir.cron" id="output_ky_quy_cron">
+            <field name="name">Output thu ký quỹ</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_ky_quy'"/>
+            <field name="args" eval="'()'" />
+        </record>
+            
+<!-- Output phạt vi phạm -->        
+        <record model="ir.cron" id="output_phat_vi_pham_cron">
+            <field name="name">Output phạt vi phạm</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phat_vi_pham'"/>
+            <field name="args" eval="'()'" />
+        </record>            
+        
+<!-- Output phải thu tạm ứng -->        
+        <record model="ir.cron" id="output_phaithu_tamung_cron">
+            <field name="name">Output phải thu tạm ứng</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_tamung'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
+<!-- Output thu phí thương hiệu HTKD -->        
+        <record model="ir.cron" id="output_thuphi_thuonghieu_htkd_cron">
+            <field name="name">Output thu phí thương hiệu HTKD</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_thuphi_thuonghieu_htkd'"/>
+            <field name="args" eval="'()'" />
+        </record>
+
+<!-- Output trả góp xe HTKD -->        
+        <record model="ir.cron" id="output_tra_gop_xe_htkd_cron">
+            <field name="name">Output trả góp xe HTKD</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_tra_gop_xe_htkd'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
 	</data>
 </openerp>

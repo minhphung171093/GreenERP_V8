@@ -306,13 +306,18 @@
 					
 				<menuitem id="menu_action_cauhinh_thumuc_import"
 					action="action_cauhinh_thumuc_import"
-					name="Cấu hình thư mục(bằng tay)"
+					name="Thư mục nhập (bằng tay)"
 					parent="menu_danhmuc_dungchung" sequence="10"/>
 					
 				<menuitem id="menu_action_cauhinh_thumuc_import_tudong"
 					action="action_cauhinh_thumuc_import_tudong"
-					name="Cấu hình thư mục(tự động)"
+					name="Thư mục nhập (tự động)"
 					parent="menu_danhmuc_dungchung" sequence="12"/>
+					
+				<menuitem id="menu_action_cauhinh_thumuc_output_tudong"
+					action="action_cauhinh_thumuc_output_tudong"
+					name="Thư mục xuất (tự động)"
+					parent="menu_danhmuc_dungchung" sequence="13"/>
 					
 				<menuitem id="menu_action_bien_so_xe"
 					action="action_bien_so_xe"
