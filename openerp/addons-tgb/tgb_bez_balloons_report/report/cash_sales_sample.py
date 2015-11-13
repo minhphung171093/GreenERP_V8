@@ -20,9 +20,14 @@ class Parser(report_sxw.rml_parse):
         super(Parser, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'get_datenow': self.get_datenow,
+            'convert_date': self.convert_date,
         })
         
     def get_datenow(self):
         return time.strftime('%Y-%m-%d')
+    
+    def convert_date(self,date):
+        date = datetime.strptime(date, DATE_FORMAT)
+        return date.strftime('%d-%b-%y (%a)')
     
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
