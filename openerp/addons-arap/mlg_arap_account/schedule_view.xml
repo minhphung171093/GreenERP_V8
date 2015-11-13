@@ -206,5 +206,53 @@
             <field name="args" eval="'()'" />
         </record>
         
+<!-- Output thu phí thương hiệu SHIFT -->        
+        <record model="ir.cron" id="output_thuphi_thuonghieu_shift_cron">
+            <field name="name">Output thu phí thương hiệu SHIFT</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_thuphi_thuonghieu_shift'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
+<!-- Output trả góp xe SHIFT -->        
+        <record model="ir.cron" id="output_tra_gop_xe_shift_cron">
+            <field name="name">Output trả góp xe SHIFT</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_tra_gop_xe_shift'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
+<!-- Output ORACLE -->        
+        <record model="ir.cron" id="output_oracle_phaithu_cron">
+            <field name="name">Output ORACLE</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_oracle_phaithu'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
+<!-- Output chi góp xe -->        
+        <record model="ir.cron" id="output_chi_gop_xe_cron">
+            <field name="name">Output chi góp xe</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_chi_gop_xe'"/>
+            <field name="args" eval="'()'" />
+        </record>
+        
 	</data>
 </openerp>

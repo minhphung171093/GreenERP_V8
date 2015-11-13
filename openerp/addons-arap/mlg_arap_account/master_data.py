@@ -192,8 +192,7 @@ class cauhinh_thumuc_output_tudong(osv.osv):
                                       ('tra_gop_xe_htkd','Trả góp xe HTKD'),
                                       ('tra_gop_xe_shift','Trả góp xe SHIFT'),
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
-                                      ('fustion_phaithu','Fustion (Phải thu)'),
-                                      ('fustion_phaitra','Fustion (Phải trả)'),
+                                      ('oracle_phaithu','ORACLE'),
                                       ('chi_ho','Chi góp xe')
                                       ],'Loại công nợ', required=True),
     }
