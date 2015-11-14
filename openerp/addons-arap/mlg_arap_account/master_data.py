@@ -164,14 +164,14 @@ class cauhinh_thumuc_import_tudong(osv.osv):
     _columns = {
         'name': fields.char('Đường dẫn', size=2048, required=True),
         'mlg_type': fields.selection([
-                                      ('phai_thu_ky_quy','Phải thu ký quỹ'),
-                                      ('phat_vi_pham','Phạt vi phạm'),
-                                      ('thu_no_xuong','Thu nợ xưởng'),
-                                      ('thu_phi_thuong_hieu_htkd','Thu phí thương hiệu HTKD'),
-                                      ('thu_phi_thuong_hieu_shift','Thu phí thương hiệu SHIFT'),
-                                      ('tra_gop_xe_htkd','Trả góp xe HTKD'),
-                                      ('tra_gop_xe_shift','Trả góp xe SHIFT'),
-                                      ('hoan_tam_ung','Phải thu tạm ứng'),
+                                      ('phai_thu_ky_quy','Phải thu ký quỹ (HISTAFF)'),
+                                      ('phat_vi_pham','Phạt vi phạm (HISTAFF)'),
+                                      ('thu_no_xuong','Thu nợ xưởng (BDSC)'),
+                                      ('thu_phi_thuong_hieu_htkd','Thu phí thương hiệu (HTKD)'),
+                                      ('thu_phi_thuong_hieu_shift','Thu phí thương hiệu (SHIFT)'),
+                                      ('tra_gop_xe_htkd','Trả góp xe (HTKD)'),
+                                      ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
+                                      ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
                                       ('fustion_phaithu','Fustion (Phải thu)'),
                                       ('fustion_phaitra','Fustion (Phải trả)'),
                                       ('chi_ho','Chi góp xe')
@@ -184,18 +184,28 @@ class cauhinh_thumuc_output_tudong(osv.osv):
     _columns = {
         'name': fields.char('Đường dẫn', size=2048, required=True),
         'mlg_type': fields.selection([
-                                      ('phai_thu_ky_quy','Phải thu ký quỹ'),
-                                      ('phat_vi_pham','Phạt vi phạm'),
-                                      ('thu_no_xuong','Thu nợ xưởng'),
-                                      ('thu_phi_thuong_hieu_htkd','Thu phí thương hiệu HTKD'),
-                                      ('thu_phi_thuong_hieu_shift','Thu phí thương hiệu SHIFT'),
-                                      ('tra_gop_xe_htkd','Trả góp xe HTKD'),
-                                      ('tra_gop_xe_shift','Trả góp xe SHIFT'),
-                                      ('hoan_tam_ung','Phải thu tạm ứng'),
+                                      ('phai_thu_ky_quy','Phải thu ký quỹ (HISTAFF)'),
+                                      ('phat_vi_pham','Phạt vi phạm (HISTAFF)'),
+                                      ('thu_no_xuong','Thu nợ xưởng (BDSC)'),
+                                      ('thu_phi_thuong_hieu_htkd','Thu phí thương hiệu (HTKD)'),
+                                      ('thu_phi_thuong_hieu_shift','Thu phí thương hiệu (SHIFT)'),
+                                      ('tra_gop_xe_htkd','Trả góp xe (HTKD)'),
+                                      ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
+                                      ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
                                       ('oracle_phaithu','ORACLE'),
                                       ('chi_ho','Chi góp xe')
                                       ],'Loại công nợ', required=True),
     }
 cauhinh_thumuc_output_tudong()
+
+class ir_cron(osv.osv):
+    _inherit = "ir.cron"
+    
+    _columns = {
+        'mlg': fields.boolean('Mai Linh'),
+    }
+    
+ir_cron()
+    
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

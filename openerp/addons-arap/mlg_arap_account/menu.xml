@@ -316,6 +316,11 @@
 					action="action_bien_so_xe"
 					name="Biển số xe"
 					parent="menu_danhmuc_dungchung" sequence="15"/>
+					
+				<menuitem id="menu_ir_cron_act_mlg"
+					name="Cấu hình tự động"
+					action="ir_cron_act_mlg"
+					parent="menu_danhmuc_dungchung" sequence="20"/>
 			
 			<menuitem id="account.menu_finance_entries"
 				name="Journal Entries"

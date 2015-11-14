@@ -47,7 +47,7 @@
         'thu_ky_quy_view.xml',
         'account_sequence.xml',
         'user_view.xml',
-        'import_data_view.xml',
+        'import_manually_view.xml',
         'schedule_view.xml',
         'menu.xml',
     ],

@@ -196,14 +196,14 @@
             <field name="name">cauhinh.thumuc.import.tree</field>
             <field name="model">cauhinh.thumuc.import</field>
             <field name="arch" type="xml">
-                <tree string="Cấu hình thư mục(bằng tay)" editable='top'>
+                <tree string="Cấu hình thư mục nhập (bằng tay)" editable='top'>
                     <field name="name"/>
                     <field name="mlg_type"/>
                 </tree>
             </field>
         </record>
         <record id="action_cauhinh_thumuc_import" model="ir.actions.act_window">
-            <field name="name">Cấu hình thư mục(bằng tay)</field>
+            <field name="name">Cấu hình thư mục nhập (bằng tay)</field>
             <field name="res_model">cauhinh.thumuc.import</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
@@ -215,14 +215,14 @@
             <field name="name">cauhinh.thumuc.import.tudong.tree</field>
             <field name="model">cauhinh.thumuc.import.tudong</field>
             <field name="arch" type="xml">
-                <tree string="Cấu hình thư mục(tự động)" editable='top'>
+                <tree string="Cấu hình thư mục nhập (tự động)" editable='top'>
                     <field name="name"/>
                     <field name="mlg_type"/>
                 </tree>
             </field>
         </record>
         <record id="action_cauhinh_thumuc_import_tudong" model="ir.actions.act_window">
-            <field name="name">Cấu hình thư mục(tự động)</field>
+            <field name="name">Cấu hình thư mục nhập (tự động)</field>
             <field name="res_model">cauhinh.thumuc.import.tudong</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
@@ -246,6 +246,28 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_cauhinh_thumuc_output_tudong_tree"/>
+        </record>
+
+<!-- Thêm action trong quản lý -->
+		<record id="ir_cron_view_tree_inherit" model="ir.ui.view">
+            <field name="name">ir.cron.tree.inherit</field>
+            <field name="model">ir.cron</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.ir_cron_view_tree"/>
+            <field name="arch" type="xml">
+	        	<xpath expr="//field[@name='name']" position="after">
+	        		<field name="mlg" invisible='1'/>
+	        	</xpath>
+            </field>
+        </record>
+		<record id="ir_cron_act_mlg" model="ir.actions.act_window">
+            <field name="name">Cấu hình tự động</field>
+            <field name="res_model">ir.cron</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="context">{'active_test': False}</field>
+            <field name="domain">[('mlg','=',True)]</field>
+            <field name="view_id" ref="base.ir_cron_view_tree"/>
         </record>
 
 	</data>

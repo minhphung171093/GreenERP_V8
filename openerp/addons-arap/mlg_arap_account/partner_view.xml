@@ -126,9 +126,9 @@
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
 					                    <field name="supplier" invisible='1'/>
-					                    <field name="taixe"/>
-					                    <field name="nhadautu"/>
-					                    <field name="nhanvienvanphong"/>
+					                    <field name="taixe" invisible='1'/>
+					                    <field name="nhadautu" invisible='1'/>
+					                    <field name="nhanvienvanphong" invisible='1'/>
 			                        </group>
 								</group>
 								<field name="bank_ids" context="{'default_partner_id': active_id, 'form_view_ref': 'base.view_partner_bank_form'}">
@@ -273,9 +273,9 @@
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
 					                    <field name="supplier" invisible='1'/>
-					                    <field name="taixe"/>
-					                    <field name="nhadautu"/>
-					                    <field name="nhanvienvanphong"/>
+					                    <field name="taixe" invisible='1'/>
+					                    <field name="nhadautu" invisible='1'/>
+					                    <field name="nhanvienvanphong" invisible='1'/>
 			                        </group>
 								</group>
 								<field name="bank_ids" context="{'default_partner_id': active_id, 'form_view_ref': 'base.view_partner_bank_form'}">
@@ -421,9 +421,9 @@
 			                        <group>
 			                        	<field name="customer" invisible='1'/>
 					                    <field name="supplier" invisible='1'/>
-					                    <field name="taixe"/>
-					                    <field name="nhadautu"/>
-					                    <field name="nhanvienvanphong"/>
+					                    <field name="taixe" invisible='1'/>
+					                    <field name="nhadautu" invisible='1'/>
+					                    <field name="nhanvienvanphong" invisible='1'/>
 			                        </group>
 								</group>
 								<field name="bank_ids" context="{'default_partner_id': active_id, 'form_view_ref': 'base.view_partner_bank_form'}">

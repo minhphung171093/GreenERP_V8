@@ -5,7 +5,7 @@
 <!-- Import Phải thu chi hộ điện thoại -->
 		<record id="import_phaithu_chiho_dienthoai_tree_view" model="ir.ui.view">
 			<field name="name">import.phaithu.chiho.dienthoai.tree</field>
-			<field name="model">import.congno</field>
+			<field name="model">import.congno.manually</field>
 			<field name="arch" type="xml">
 				<tree string="Nhập phải thu chi hộ điện thoại">
 					<field name ="name"/>
@@ -18,7 +18,7 @@
 
 		<record id="import_phaithu_chiho_dienthoai_form_view" model="ir.ui.view">
             <field name="name">import.phaithu.chiho.dienthoai.form</field>
-            <field name="model">import.congno</field>
+            <field name="model">import.congno.manually</field>
             <field name="arch" type="xml">
                 <form string="Nhập phải thu chi hộ điện thoại" version="7.0">
                     <header>
@@ -40,7 +40,7 @@
         <record id="action_import_phaithu_chiho_dienthoai" model="ir.actions.act_window">
             <field name="name">Nhập phải thu chi hộ điện thoại</field>
 			<field name="type">ir.actions.act_window</field>
-            <field name="res_model">import.congno</field>
+            <field name="res_model">import.congno.manually</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="import_phaithu_chiho_dienthoai_tree_view"/>
@@ -63,7 +63,7 @@
 <!-- Import Phải thu bảo hiểm -->
 		<record id="import_phaithu_baohiem_tree_view" model="ir.ui.view">
 			<field name="name">import.phaithu.chiho.dienthoai.tree</field>
-			<field name="model">import.congno</field>
+			<field name="model">import.congno.manually</field>
 			<field name="arch" type="xml">
 				<tree string="Nhập phải thu bảo hiểm">
 					<field name ="name"/>
@@ -74,7 +74,7 @@
 
 		<record id="import_phaithu_baohiem_form_view" model="ir.ui.view">
             <field name="name">import.phaithu.chiho.dienthoai.form</field>
-            <field name="model">import.congno</field>
+            <field name="model">import.congno.manually</field>
             <field name="arch" type="xml">
                 <form string="Nhập phải thu bảo hiểm" version="7.0">
                     <header>
@@ -99,7 +99,7 @@
         <record id="action_import_phaithu_baohiem" model="ir.actions.act_window">
             <field name="name">Nhập phải thu bảo hiểm</field>
 			<field name="type">ir.actions.act_window</field>
-            <field name="res_model">import.congno</field>
+            <field name="res_model">import.congno.manually</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="import_phaithu_baohiem_tree_view"/>
@@ -122,7 +122,7 @@
 <!-- Import thu nợ xưởng -->
 		<record id="import_phaithu_noxuong_tree_view" model="ir.ui.view">
 			<field name="name">import.phaithu.chiho.dienthoai.tree</field>
-			<field name="model">import.congno</field>
+			<field name="model">import.congno.manually</field>
 			<field name="arch" type="xml">
 				<tree string="Nhập thu nợ xưởng">
 					<field name ="name"/>
@@ -133,7 +133,7 @@
 
 		<record id="import_phaithu_noxuong_form_view" model="ir.ui.view">
             <field name="name">import.phaithu.chiho.dienthoai.form</field>
-            <field name="model">import.congno</field>
+            <field name="model">import.congno.manually</field>
             <field name="arch" type="xml">
                 <form string="Nhập thu nợ xưởng" version="7.0">
                     <header>
@@ -158,7 +158,7 @@
         <record id="action_import_phaithu_noxuong" model="ir.actions.act_window">
             <field name="name">Nhập thu nợ xưởng</field>
 			<field name="type">ir.actions.act_window</field>
-            <field name="res_model">import.congno</field>
+            <field name="res_model">import.congno.manually</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="import_phaithu_noxuong_tree_view"/>

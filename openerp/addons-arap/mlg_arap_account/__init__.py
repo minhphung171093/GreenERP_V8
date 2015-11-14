@@ -11,5 +11,6 @@ import partner
 import wizard
 import report
 import user
-import import_data
-import output_data
+import import_manually
+import import_auto
+import output_auto
