@@ -9,7 +9,9 @@
 			<field name="arch" type="xml">
 				<tree string="Nhập phải thu chi hộ điện thoại">
 					<field name ="name"/>
+					<field name="datas" filename="datas_fname" string="Chọn tập tin"/>
 					<field name="state"/>
+					<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
 				</tree>
 			</field>
 		</record>
@@ -20,20 +22,17 @@
             <field name="arch" type="xml">
                 <form string="Nhập phải thu chi hộ điện thoại" version="7.0">
                     <header>
-	                    <button name="bt_import_thuchi_ho_dienthoai" states='draft' string="Nhập" context="{'import_loai_congno':'chi_ho_dien_thoai'}" type="object" class="oe_highlight" />
+	                    <button name="bt_import_thuchi_ho_dienthoai" states='draft' string="Xử lý" context="{'import_loai_congno':'chi_ho_dien_thoai'}" type="object" class="oe_highlight" />
 	                    <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"draft":"blue","done":"blue"}'/>
 	                    <field name ="mlg_type" invisible='1'/>
 	                </header>                
-                	<sheet>  
-                		<group>
-                		<field name ="name"/>
-						<label for="datas" string="Chọn tập tin"/>
-							<div>
-								<field name="datas" filename="datas_fname"/>
-	                        	<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
-	                        </div>
-                		</group>
-                	</sheet>
+            		<group>
+					<label for="datas" string="Chọn tập tin"/>
+						<div>
+							<field name="datas" filename="datas_fname"/>
+                        	<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
+                        </div>
+            		</group>
 				</form>
 			</field>
 		</record>

@@ -60,13 +60,13 @@ class import_congno(osv.osv):
         return True
 
     _columns = {
-        'name': fields.date('Ngày', required=True,states={'done': [('readonly', True)]}),
+        'name': fields.date('Ngày', required=False,states={'done': [('readonly', True)]}),
         'datas_fname': fields.char('File Name',size=256),
         'datas': fields.function(_data_get, fnct_inv=_data_set, string='GL Account', type="binary", nodrop=True,states={'done': [('readonly', True)]}),
         'store_fname': fields.char('Stored Filename', size=256),
         'db_datas': fields.binary('Database Data'),
         'file_size': fields.integer('File Size'),
-        'state':fields.selection([('draft', 'Mới tạo'),('done', 'Đã nhập')],'Trạng thái', readonly=True),
+        'state':fields.selection([('draft', 'Mới tạo'),('done', 'Đã xử lý')],'Trạng thái', readonly=True),
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),

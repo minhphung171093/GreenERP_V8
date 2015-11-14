@@ -152,6 +152,11 @@
 					action="action_hoan_tam_ung"
 					name="Phải thu tạm ứng"
 					parent="menu_cong_no" sequence="25"/>
+					
+				<menuitem id="menu_action_thu_ky_quy"
+					action="action_thu_ky_quy"
+					name="Phải thu ký quỹ"
+					parent="menu_cong_no" sequence="30"/>
 			
 			<menuitem id="menu_in_dexuat"
 				name="In đề xuất"
@@ -227,18 +232,6 @@
 					action="action_chi_ho"
 					name="Phải trả chi hộ"
 					parent="menu_congno_chi" sequence="30"/>
-		
-		<menuitem id="menu_root_ky_quy"
-			name="Ký Quỹ" sequence="4"/>
-			
-			<menuitem id="menu_ky_quy"
-				name="Ký quỹ"
-				parent="menu_root_ky_quy" sequence="3"/>
-				
-				<menuitem id="menu_action_thu_ky_quy"
-					action="action_thu_ky_quy"
-					name="Thu ký quỹ"
-					parent="menu_ky_quy" sequence="5"/>
 		
 		<!--<menuitem id="menu_root_baohiem_xe"
 			name="Bảo Hiểm Xe" sequence="5"/>

@@ -74,8 +74,8 @@ class bai_giaoca(osv.osv):
     _columns = {
         'name': fields.char('Tên bãi giao ca', size=1024, required=True),
         'code': fields.char('Mã bãi giao ca', size=1024, required=True),
-        'thungan_id': fields.many2one('thungan.bai.giaoca', 'Thu ngân bãi giao ca', required=True),
-        'dieuhanh_id': fields.many2one('dieuhanh.bai.giaoca', 'Điều hành bãi giao ca', required=True),
+        'thungan_id': fields.many2one('thungan.bai.giaoca', 'Thu ngân bãi giao ca', required=False),
+        'dieuhanh_id': fields.many2one('dieuhanh.bai.giaoca', 'Điều hành bãi giao ca', required=False),
         'account_id': fields.many2one('account.account', 'Đội xe', required=True),
     }
     

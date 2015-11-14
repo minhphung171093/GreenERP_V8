@@ -1415,7 +1415,7 @@
             </field>
         </record>
         <record id="action_hoan_tam_ung" model="ir.actions.act_window">
-            <field name="name">Hoàn tạm ứng</field>
+            <field name="name">Phải thu tạm ứng</field>
             <field name="res_model">account.invoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

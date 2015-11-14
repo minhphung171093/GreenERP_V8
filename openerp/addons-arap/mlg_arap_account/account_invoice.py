@@ -77,6 +77,16 @@ class account_invoice(osv.osv):
         if context.get('default_mlg_type', False) and context['default_mlg_type']=='phai_thu_bao_hiem':
             vals = [('nhadautu','Nhà đầu tư')]
         
+        if context.get('default_mlg_type', False) and context['default_mlg_type']=='phat_vi_pham':
+            vals = [('taixe','Lái xe'),
+                ('nhanvienvanphong','Nhân viên văn phòng'),
+                ]
+            
+        if context.get('default_mlg_type', False) and context['default_mlg_type']=='thu_phi_thuong_hieu':
+            vals = [('taixe','Lái xe'),
+                ('nhadautu','Nhà đầu tư'),
+                ]
+        
         return vals
     
     _columns = {
