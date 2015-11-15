@@ -817,7 +817,7 @@ class import_congno_tudong(osv.osv):
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
-    def import_fustion_phaithu(self, cr, uid, context=None):
+    def import_phaithu_fustion_oracle(self, cr, uid, context=None):
         import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
         invoice_obj = self.pool.get('account.invoice')
         voucher_obj = self.pool.get('account.voucher')
@@ -834,7 +834,6 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
-                    voucher_ids = []
                     try:
                         file_data = csvUti._read_file(f_path)
                     
@@ -858,6 +857,19 @@ class import_congno_tudong(osv.osv):
                             '''%(data['TRANSACTION_NUMBER'],data['REQUEST_REF_NUMBER'])
                             cr.execute(sql)
                             journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
+                            
+                            ngay_thanh_toan_arr = data['GL_DATE'].split('/')
+                            if len(ngay_thanh_toan_arr[0])==1:
+                                ngay='0'+ngay_thanh_toan_arr[0]
+                            else:
+                                ngay=ngay_thanh_toan_arr[0]
+                            if len(ngay_thanh_toan_arr[1])==1:
+                                thang='0'+ngay_thanh_toan_arr[1]
+                            else:
+                                thang=ngay_thanh_toan_arr[1]
+                            nam=ngay_thanh_toan_arr[2]
+                            ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+                            
                             vals = {
                                 'amount': amount,
                                 'partner_id': invoice['partner_id'],
@@ -867,7 +879,7 @@ class import_congno_tudong(osv.osv):
                                 'type': 'receipt',
                                 'chinhanh_id': invoice['chinhanh_id'],
                                 'journal_id': journal_ids[0],
-                                'date': data['GL_DATE'],
+                                'date': ngay_thanh_toan,
                             }
                             
                             context = {
@@ -884,10 +896,10 @@ class import_congno_tudong(osv.osv):
                                 'default_chinhanh_id': invoice['chinhanh_id'],
                                 'type': 'receipt',
                             }
-                            vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],amount,invoice['currency_id'],'receipt',data['GL_DATE'],context)['value']
+                            vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],amount,invoice['currency_id'],'receipt',ngay_thanh_toan,context)['value']
                             vals.update(vals_onchange_partner)
                             vals.update(
-                                voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,invoice['partner_id'],data['GL_DATE'],amount,'receipt',invoice['company_id'],context)['value']
+                                voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,invoice['partner_id'],ngay_thanh_toan,amount,'receipt',invoice['company_id'],context)['value']
                             )
                             line_cr_ids = []
                             for l in vals['line_cr_ids']:
@@ -895,20 +907,17 @@ class import_congno_tudong(osv.osv):
                             vals.update({'line_cr_ids':line_cr_ids})
                             voucher_id = voucher_obj.create(cr, uid, vals)
                             voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
-                            voucher_ids.append(voucher_id)
                         csvUti._moveFiles([f_path],done_path)
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
-                        voucher_obj.cancel_voucher(cr, uid, voucher_ids)
-                        voucher_obj.unlink(cr, uid, voucher_ids)
-                        break
+                        raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
-            pass
+            raise osv.except_osv(_('Warning!'), str(e))
         return True
     
-    def import_fustion_phaitra(self, cr, uid, context=None):
+    def import_phaitra_fustion_oracle(self, cr, uid, context=None):
         import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
         invoice_obj = self.pool.get('account.invoice')
         voucher_obj = self.pool.get('account.voucher')
@@ -925,7 +934,6 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
-                    voucher_ids = []
                     try:
                         file_data = csvUti._read_file(f_path)
                     
@@ -949,6 +957,19 @@ class import_congno_tudong(osv.osv):
                             '''%(data['TRANSACTION_NUMBER'],data['REQUEST_REF_NUMBER'])
                             cr.execute(sql)
                             journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
+                            
+                            ngay_thanh_toan_arr = data['GL_DATE'].split('/')
+                            if len(ngay_thanh_toan_arr[0])==1:
+                                ngay='0'+ngay_thanh_toan_arr[0]
+                            else:
+                                ngay=ngay_thanh_toan_arr[0]
+                            if len(ngay_thanh_toan_arr[1])==1:
+                                thang='0'+ngay_thanh_toan_arr[1]
+                            else:
+                                thang=ngay_thanh_toan_arr[1]
+                            nam=ngay_thanh_toan_arr[2]
+                            ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+                            
                             vals = {
                                 'amount': amount,
                                 'partner_id': invoice['partner_id'],
@@ -958,7 +979,7 @@ class import_congno_tudong(osv.osv):
                                 'type': 'payment',
                                 'chinhanh_id': invoice['chinhanh_id'],
                                 'journal_id': journal_ids[0],
-                                'date': data['GL_DATE'],
+                                'date': ngay_thanh_toan,
                             }
                             
                             context = {
@@ -975,10 +996,10 @@ class import_congno_tudong(osv.osv):
                                 'default_chinhanh_id': invoice['chinhanh_id'],
                                 'type': 'payment',
                             }
-                            vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],amount,invoice['currency_id'],'payment',data['GL_DATE'],context)['value']
+                            vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],amount,invoice['currency_id'],'payment',ngay_thanh_toan,context)['value']
                             vals.update(vals_onchange_partner)
                             vals.update(
-                                voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,invoice['partner_id'],data['GL_DATE'],amount,'payment',invoice['company_id'],context)['value']
+                                voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,invoice['partner_id'],ngay_thanh_toan,amount,'payment',invoice['company_id'],context)['value']
                             )
                             line_cr_ids = []
                             for l in vals['line_cr_ids']:
@@ -986,20 +1007,17 @@ class import_congno_tudong(osv.osv):
                             vals.update({'line_cr_ids':line_cr_ids})
                             voucher_id = voucher_obj.create(cr, uid, vals)
                             voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
-                            voucher_ids.append(voucher_id)
                         csvUti._moveFiles([f_path],done_path)
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
-                        voucher_obj.cancel_voucher(cr, uid, voucher_ids)
-                        voucher_obj.unlink(cr, uid, voucher_ids)
-                        break
+                        raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
-            pass
+            raise osv.except_osv(_('Warning!'), str(e))
         return True
     
-    def import_chi_gop_xe(self, cr, uid, context=None):
+    def import_phaitra_chigopxe_htkd(self, cr, uid, context=None):
         import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
@@ -1015,7 +1033,6 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
-                    invoice_ids = []
                     try:
                         file_data = csvUti._read_file(f_path)
                     
@@ -1029,22 +1046,22 @@ class import_congno_tudong(osv.osv):
                             chinhanh_ids = cr.fetchone()
                             
                             sql = '''
-                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
-                            '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                                    from res_partner where ma_doi_tuong='%s' limit 1
+                            '''%(data['ma_doi_tuong'])
                             cr.execute(sql)
-                            partner = cr.fetchone()
-                            partner_id = partner and partner[0] or False
-                            bai_giaoca_id = partner and partner[1] or False
+                            partner = cr.dictfetchone()
+                            partner_id = partner and partner['id'] or False
+                            bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
                             
-                            ldt = data['loai_doi_tuong']
                             loai_doituong=''
-                            if ldt=='Lái xe':
+                            if partner['taixe']==True:
                                 loai_doituong='taixe'
-                                account_id = partner and partner[2] or False
-                            if ldt=='Nhân viên văn phòng':
+                                account_id = partner and partner['account_ht_id'] or False
+                            if partner['nhanvienvanphong']==True:
                                 loai_doituong='nhanvienvanphong'
-                                account_id = partner and partner[2] or False
-                            if ldt=='Nhà đầu tư':
+                                account_id = partner and partner['account_ht_id'] or False
+                            if partner['nhadautu']==True:
                                 loai_doituong='nhadautu'
                                 sql = '''
                                     select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
@@ -1052,7 +1069,7 @@ class import_congno_tudong(osv.osv):
                                 cr.execute(sql)
                                 account_ids = [r[0] for r in cr.fetchall()]
                                 account_id = account_ids and account_ids[0] or False
-                                vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                                 
                             journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                             
@@ -1061,6 +1078,18 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             
+                            ngay_giao_dich_arr = data['ngay_phat_sinh'].split('/')
+                            if len(ngay_giao_dich_arr[0])==1:
+                                ngay='0'+ngay_giao_dich_arr[0]
+                            else:
+                                ngay=ngay_giao_dich_arr[0]
+                            if len(ngay_giao_dich_arr[1])==1:
+                                thang='0'+ngay_giao_dich_arr[1]
+                            else:
+                                thang=ngay_giao_dich_arr[1]
+                            nam=ngay_giao_dich_arr[2]
+                            date_invoice=nam+'-'+thang+'-'+ngay
+                            
                             vals.update({
                                 'mlg_type': 'chi_ho',
                                 'type': 'in_invoice',
@@ -1068,7 +1097,7 @@ class import_congno_tudong(osv.osv):
                                 'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
                                 'loai_doituong': loai_doituong,
                                 'partner_id': partner_id,
-                                'date_invoice': data['ngay_phat_sinh'],
+                                'date_invoice': date_invoice,
                                 'so_hop_dong': data['so_hop_dong'],
                                 'so_tien': data['so_tien'],
                                 'dien_giai': data['dien_giai'],
@@ -1079,17 +1108,15 @@ class import_congno_tudong(osv.osv):
                             invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                             vals.update(invoice_vals)
                             invoice_id = invoice_obj.create(cr, uid, vals)
-    #                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-                            invoice_ids.append(invoice_id)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                         csvUti._moveFiles([f_path],done_path)
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
-                        invoice_obj.unlink(cr, uid, invoice_ids)
-                        break
+                        raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
-            pass
+            raise osv.except_osv(_('Warning!'), str(e))
         return True
     
 import_congno_tudong()

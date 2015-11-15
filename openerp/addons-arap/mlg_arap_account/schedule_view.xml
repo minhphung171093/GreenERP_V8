@@ -106,41 +106,41 @@
             <field name="mlg" eval="True"/>
         </record>
         
-<!-- Import Fustion (Phải thu) -->        
-        <record model="ir.cron" id="import_fustion_phaithu_cron">
-            <field name="name">Import Fustion (Phải thu)</field>
+<!-- Import phải thu - Fustion (ORACLE) -->        
+        <record model="ir.cron" id="import_phaithu_fustion_oracle_cron">
+            <field name="name">Import phải thu - Fustion (ORACLE)</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="True"/>
             <field name="model" eval="'import.congno.tudong'"/>
-            <field name="function" eval="'import_fustion_phaithu'"/>
+            <field name="function" eval="'import_phaithu_fustion_oracle'"/>
             <field name="args" eval="'()'" />
             <field name="mlg" eval="True"/>
         </record>
         
-<!-- Import Fustion (Phải trả) -->        
-        <record model="ir.cron" id="import_fustion_phaitra_cron">
-            <field name="name">Import Fustion (Phải trả)</field>
+<!-- Import phải trả - Fustion (ORACLE) -->        
+        <record model="ir.cron" id="import_phaitra_fustion_oracle_cron">
+            <field name="name">Import phải trả - Fustion (ORACLE)</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="True"/>
             <field name="model" eval="'import.congno.tudong'"/>
-            <field name="function" eval="'import_fustion_phaitra'"/>
+            <field name="function" eval="'import_phaitra_fustion_oracle'"/>
             <field name="args" eval="'()'" />
             <field name="mlg" eval="True"/>
         </record>
         
-<!-- Import chi góp xe -->        
-        <record model="ir.cron" id="import_chi_gop_xe_cron">
-            <field name="name">Import chi góp xe</field>
+<!-- Import phải trả - chi góp xe (HTKD) -->        
+        <record model="ir.cron" id="import_phaitra_chigopxe_htkd_cron">
+            <field name="name">Import phải trả - chi góp xe (HTKD)</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="True"/>
             <field name="model" eval="'import.congno.tudong'"/>
-            <field name="function" eval="'import_chi_gop_xe'"/>
+            <field name="function" eval="'import_phaitra_chigopxe_htkd'"/>
             <field name="args" eval="'()'" />
             <field name="mlg" eval="True"/>
         </record>
@@ -262,15 +262,15 @@
             <field name="mlg" eval="True"/>
         </record>
         
-<!-- Output chi góp xe -->        
-        <record model="ir.cron" id="output_chi_gop_xe_cron">
-            <field name="name">Output chi góp xe</field>
+<!-- Output phải trả - chi góp xe (HTKD)-->        
+        <record model="ir.cron" id="output_phaitra_chigopxe_htkd_cron">
+            <field name="name">Output phải trả - chi góp xe (HTKD)</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="doall" eval="True"/>
             <field name="model" eval="'output.congno.tudong'"/>
-            <field name="function" eval="'output_chi_gop_xe'"/>
+            <field name="function" eval="'output_phaitra_chigopxe_htkd'"/>
             <field name="args" eval="'()'" />
             <field name="mlg" eval="True"/>
         </record>

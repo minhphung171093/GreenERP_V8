@@ -172,9 +172,9 @@ class cauhinh_thumuc_import_tudong(osv.osv):
                                       ('tra_gop_xe_htkd','Trả góp xe (HTKD)'),
                                       ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
                                       ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
-                                      ('fustion_phaithu','Fustion (Phải thu)'),
-                                      ('fustion_phaitra','Fustion (Phải trả)'),
-                                      ('chi_ho','Chi góp xe')
+                                      ('fustion_phaithu','Phải thu Fustion (ORACLE)'),
+                                      ('fustion_phaitra','Phải trả Fustion (ORACLE)'),
+                                      ('chi_ho','Chi góp xe (HTKD)')
                                       ],'Loại công nợ', required=True),
     }
 cauhinh_thumuc_import_tudong()
@@ -193,7 +193,7 @@ class cauhinh_thumuc_output_tudong(osv.osv):
                                       ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
                                       ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
                                       ('oracle_phaithu','ORACLE'),
-                                      ('chi_ho','Chi góp xe')
+                                      ('chi_ho','Chi góp xe (HTKD)')
                                       ],'Loại công nợ', required=True),
     }
 cauhinh_thumuc_output_tudong()

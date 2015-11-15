@@ -582,7 +582,7 @@ class output_congno_tudong(osv.osv):
             pass
         return True
     
-    def output_chi_gop_xe(self, cr, uid, context=None):
+    def output_phaitra_chigopxe_htkd(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','chi_ho')])
@@ -600,7 +600,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
-                        where ai.mlg_type='chi_ho'
+                        where ai.mlg_type='chi_ho' and state in ('open','paid')
                 '''
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -615,6 +615,8 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
+                            ngay_thanh_toan_arr = payment.date.split('-')
+                            ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
                             contents.append({
                                 'chi_nhanh': line['chi_nhanh'],
                                 'ma_chi_nhanh': line['ma_chi_nhanh'],
@@ -626,30 +628,15 @@ class output_congno_tudong(osv.osv):
                                 'so_tien': line['so_tien'],
                                 'so_hop_dong': line['so_hop_dong'],
                                 'dien_giai': line['dien_giai'],
-                                'ngay_thanh_toan': payment.date,
+                                'ngay_thanh_toan': ngay_thanh_toan,
                                 'so_tien_da_chi': payment.debit,
                             })
-                    else:
-                        contents.append({
-                            'chi_nhanh': line['chi_nhanh'],
-                            'ma_chi_nhanh': line['ma_chi_nhanh'],
-                            'loai_doi_tuong': loai_doituong,
-                            'ma_doi_tuong': line['ma_doi_tuong'],
-                            'ten_doi_tuong': line['ten_doi_tuong'],
-                            'ngay_phat_sinh': line['ngay_giao_dich'],
-                            'bien_so_xe': line['bien_so_xe'],
-                            'so_tien': line['so_tien'],
-                            'so_hop_dong': line['so_hop_dong'],
-                            'dien_giai': line['dien_giai'],
-                            'ngay_thanh_toan': '',#line['chi_nhanh'],
-                            'so_tien_da_chi': line['so_tien']-line['residual'],
-                        })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'chi_gop_xe_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'chi_gop_xe_htkd_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
         except Exception, e:
-            pass
+            raise osv.except_osv(_('Warning!'), str(e))
         return True
     
 output_congno_tudong()
