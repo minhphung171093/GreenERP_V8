@@ -37,6 +37,7 @@
                     <field name="user_id"/>
                     <field name="ngay_thu"/>
                     <field name="so_tien"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                 </tree>
             </field>

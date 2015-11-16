@@ -89,6 +89,14 @@ class account_invoice(osv.osv):
         
         return vals
     
+    def _get_invisible_button_cancel(self, cr, uid, ids, field_name, arg, context=None):
+        res={}
+        for invoice in self.browse(cr, uid, ids, context=context):
+            res[invoice.id] = False
+            if invoice.state != 'draft' and invoice.so_tien!=invoice.residual:
+                res[invoice.id] = True
+        return res
+    
     _columns = {
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
@@ -154,6 +162,7 @@ class account_invoice(osv.osv):
 #         'residual': fields.function(_compute_residual,type='float',digits=dp.get_precision('Account'), store=True,
 #                                     string='Balance',help="Remaining amount due."),
         'fusion_id': fields.char('Fusion ID', size=1024),
+        'invisible_button_cancel': fields.function(_get_invisible_button_cancel, type='boolean', string='Invisible Button Cancel'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

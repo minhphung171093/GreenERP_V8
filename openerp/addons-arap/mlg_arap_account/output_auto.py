@@ -32,9 +32,10 @@ import logging
 from openerp.addons.mlg_arap_account import lib_csv
 from openerp import netsvc
 from glob import glob
-
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 # from datetime import datetime, timedelta
-
+from openerp.tools import config
 _logger = logging.getLogger(__name__)
 
 
@@ -45,13 +46,76 @@ class output_congno_tudong(osv.osv):
         'name': fields.date('Tên', required=True),
     }
     
+    def init(self, cr):
+        self.fin_output_theodoanhsothu_oracle_data(cr)
+        self.fin_output_theodoanhsothu_oracle(cr)
+        cr.commit()
+        return True
+    
+    def fin_output_theodoanhsothu_oracle_data(self, cr):
+        cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsothu_oracle_data')")
+        res = cr.fetchone()
+        if res and res[0]:
+            cr.execute('''delete from pg_type where typname = 'fin_output_theodoanhsothu_oracle_data';
+                            delete from pg_class where relname='fin_output_theodoanhsothu_oracle_data';
+                            commit;''')
+        sql = '''
+        CREATE TYPE fin_output_theodoanhsothu_oracle_data AS
+           (chinhanh character varying(1024),
+            machinhanh character varying(250),
+            loaicongno character varying(250),
+            taikhoan character varying(250),
+            sotien numeric,
+            ghichu character varying(250)
+            );
+        ALTER TYPE fin_output_theodoanhsothu_oracle_data
+          OWNER TO '''+config['db_user']+''';
+        '''
+        cr.execute(sql)
+        return True
+    
+    def fin_output_theodoanhsothu_oracle(self, cr):
+        sql = '''
+        DROP FUNCTION IF EXISTS fin_output_theodoanhsothu_oracle(date, date) CASCADE;
+        commit;
+        
+        CREATE OR REPLACE FUNCTION fin_output_theodoanhsothu_oracle(date, date)
+          RETURNS SETOF fin_output_theodoanhsothu_oracle_data AS
+        $BODY$
+        DECLARE
+            rec_cn        record;
+            bal_data      fin_output_theodoanhsothu_oracle_data%ROWTYPE;
+        BEGIN
+            
+            for rec_cn in execute '
+                    select id from account_account where parent_id in (select id from account_account where code=''1'')
+                        and id in (select parent_id from account_account where id in (select account_id from account_move_line where date between $1 and $2))
+                ' using $1, $2
+            loop
+                bal_data.sotien=rec_cn.id;
+                return next bal_data;
+            end loop;
+
+            return;
+        END; $BODY$
+          LANGUAGE plpgsql VOLATILE
+          COST 100
+          ROWS 1000000;
+        ALTER FUNCTION fin_output_theodoanhsothu_oracle(date, date)
+          OWNER TO '''+config['db_user']+''';
+        '''
+        cr.execute(sql)
+        return True
+    
     def output_phaithu_thunoxuong_bdsc(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','thu_no_xuong')])
             if output_ids:
                 invoice_obj = self.pool.get('account.invoice')
-                
+                date_start = time.strftime('%Y-%m-01')
+                date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
                 csvUti = lib_csv.csv_ultilities()
                 headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_hop_dong','ma_chiet_tinh','ma_xuong','so_tien','dien_giai','ngay_thanh_toan','so_tien_da_thu']
                 contents = []
@@ -84,39 +148,62 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
-                            ngay_thanh_toan_arr = payment.date.split('-')
-                            ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
-                            contents.append({
-                                'chi_nhanh': line['chi_nhanh'],
-                                'ma_chi_nhanh': line['ma_chi_nhanh'],
-                                'loai_doi_tuong': loai_doituong,
-                                'ma_doi_tuong': line['ma_doi_tuong'],
-                                'ten_doi_tuong': line['ten_doi_tuong'],
-                                'ngay_giao_dich': ngay_giao_dich,
-                                'bien_so_xe': line['bien_so_xe'],
-                                'so_hop_dong': line['so_hop_dong'],
-                                'ma_chiet_tinh': line['ma_chiet_tinh'],
-                                'ma_xuong': line['ma_xuong'],
-                                'so_tien': line['so_tien'],
-                                'dien_giai': line['dien_giai'],
-                                'ngay_thanh_toan': ngay_thanh_toan,
-                                'so_tien_da_thu': payment.credit,
-                            })
+                            if payment.date>=date_start and payment.date<=date_end:
+                                ngay_thanh_toan_arr = payment.date.split('-')
+                                ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
+                                contents.append({
+                                    'chi_nhanh': line['chi_nhanh'],
+                                    'ma_chi_nhanh': line['ma_chi_nhanh'],
+                                    'loai_doi_tuong': loai_doituong,
+                                    'ma_doi_tuong': line['ma_doi_tuong'],
+                                    'ten_doi_tuong': line['ten_doi_tuong'],
+                                    'ngay_giao_dich': ngay_giao_dich,
+                                    'bien_so_xe': line['bien_so_xe'],
+                                    'so_hop_dong': line['so_hop_dong'],
+                                    'ma_chiet_tinh': line['ma_chiet_tinh'],
+                                    'ma_xuong': line['ma_xuong'],
+                                    'so_tien': line['so_tien'],
+                                    'dien_giai': line['dien_giai'],
+                                    'ngay_thanh_toan': ngay_thanh_toan,
+                                    'so_tien_da_thu': payment.credit,
+                                })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'thu_no_xuong_bdsc_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Thu nợ xưởng (BDSC)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Thu nợ xưởng (BDSC)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
     def output_phaithu_thuphithuonghieu_htkd(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_htkd')])
             if output_ids:
                 invoice_obj = self.pool.get('account.invoice')
-                
+                date_start = time.strftime('%Y-%m-01')
+                date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
                 csvUti = lib_csv.csv_ultilities()
                 headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_hop_dong','so_tien','dien_giai','ngay_thanh_toan','so_tien_da_thu']
                 contents = []
@@ -149,37 +236,60 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
-                            ngay_thanh_toan_arr = payment.date.split('-')
-                            ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
-                            contents.append({
-                                'chi_nhanh': line['chi_nhanh'],
-                                'ma_chi_nhanh': line['ma_chi_nhanh'],
-                                'loai_doi_tuong': loai_doituong,
-                                'ma_doi_tuong': line['ma_doi_tuong'],
-                                'ten_doi_tuong': line['ten_doi_tuong'],
-                                'ngay_giao_dich': ngay_giao_dich,
-                                'bien_so_xe': line['bien_so_xe'],
-                                'so_hop_dong': line['so_hop_dong'],
-                                'so_tien': line['so_tien'],
-                                'dien_giai': line['dien_giai'],
-                                'ngay_thanh_toan': ngay_thanh_toan,
-                                'so_tien_da_thu': payment.credit,
-                            })
+                            if payment.date>=date_start and payment.date<=date_end:
+                                ngay_thanh_toan_arr = payment.date.split('-')
+                                ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
+                                contents.append({
+                                    'chi_nhanh': line['chi_nhanh'],
+                                    'ma_chi_nhanh': line['ma_chi_nhanh'],
+                                    'loai_doi_tuong': loai_doituong,
+                                    'ma_doi_tuong': line['ma_doi_tuong'],
+                                    'ten_doi_tuong': line['ten_doi_tuong'],
+                                    'ngay_giao_dich': ngay_giao_dich,
+                                    'bien_so_xe': line['bien_so_xe'],
+                                    'so_hop_dong': line['so_hop_dong'],
+                                    'so_tien': line['so_tien'],
+                                    'dien_giai': line['dien_giai'],
+                                    'ngay_thanh_toan': ngay_thanh_toan,
+                                    'so_tien_da_thu': payment.credit,
+                                })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'thu_phi_thuong_hieu_htkd_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Thu phí thương hiệu (HTKD)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Thu phí thương hiệu (HTKD)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
     def output_phaithu_tragopxe_htkd(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_htkd')])
             if output_ids:
                 invoice_obj = self.pool.get('account.invoice')
-                
+                date_start = time.strftime('%Y-%m-01')
+                date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
                 csvUti = lib_csv.csv_ultilities()
                 headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_phat_sinh','bien_so_xe','so_hop_dong','so_tien','don_vi_chi','dien_giai','ngay_thanh_toan','so_tien_da_thu']
                 contents = []
@@ -213,33 +323,55 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
-                            ngay_thanh_toan_arr = payment.date.split('-')
-                            ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
-                            contents.append({
-                                'chi_nhanh': line['chi_nhanh'],
-                                'ma_chi_nhanh': line['ma_chi_nhanh'],
-                                'loai_doi_tuong': loai_doituong,
-                                'ma_doi_tuong': line['ma_doi_tuong'],
-                                'ten_doi_tuong': line['ten_doi_tuong'],
-                                'ngay_phat_sinh': ngay_giao_dich,
-                                'bien_so_xe': line['bien_so_xe'],
-                                'so_hop_dong': line['so_hop_dong'],
-                                'so_tien': line['so_tien'],
-                                'don_vi_chi': line['don_vi_chi'],
-                                'dien_giai': line['dien_giai'],
-                                'ngay_thanh_toan': ngay_thanh_toan,
-                                'so_tien_da_thu': payment.credit,
-                            })
+                            if payment.date>=date_start and payment.date<=date_end:
+                                ngay_thanh_toan_arr = payment.date.split('-')
+                                ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
+                                contents.append({
+                                    'chi_nhanh': line['chi_nhanh'],
+                                    'ma_chi_nhanh': line['ma_chi_nhanh'],
+                                    'loai_doi_tuong': loai_doituong,
+                                    'ma_doi_tuong': line['ma_doi_tuong'],
+                                    'ten_doi_tuong': line['ten_doi_tuong'],
+                                    'ngay_phat_sinh': ngay_giao_dich,
+                                    'bien_so_xe': line['bien_so_xe'],
+                                    'so_hop_dong': line['so_hop_dong'],
+                                    'so_tien': line['so_tien'],
+                                    'don_vi_chi': line['don_vi_chi'],
+                                    'dien_giai': line['dien_giai'],
+                                    'ngay_thanh_toan': ngay_thanh_toan,
+                                    'so_tien_da_thu': payment.credit,
+                                })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'tra_gop_xe_htkd_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Trả góp xe (HTKD)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Trả góp xe (HTKD)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
 
     def output_phaithu_thuphithuonghieu_shift(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_shift')])
             if output_ids:
@@ -284,12 +416,33 @@ class output_congno_tudong(osv.osv):
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'thu_phi_thuong_hieu_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Thu phí thương hiệu (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Thu phí thương hiệu (SHIFT)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
     def output_phaithu_tragopxe_shift(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_shift')])
             if output_ids:
@@ -334,12 +487,33 @@ class output_congno_tudong(osv.osv):
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'tra_gop_xe_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Trả góp xe (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Trả góp xe (SHIFT)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
     def output_phaithu_phatvipham_histaff(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham')])
             if output_ids:
@@ -380,12 +554,33 @@ class output_congno_tudong(osv.osv):
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'phat_vi_pham_histaff_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Phạt vi phạm (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Phạt vi phạm (HISTAFF)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
     def output_phaithu_tamung_histaff(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung')])
             if output_ids:
@@ -426,12 +621,33 @@ class output_congno_tudong(osv.osv):
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'phai_thu_tam_ung_histaff_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Phải thi tạm ứng (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Phải thi tạm ứng (HISTAFF)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
     def output_phaithu_kyquy_histaff(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','phai_thu_ky_quy')])
             kyquy_obj = self.pool.get('thu.ky.quy')
@@ -525,12 +741,33 @@ class output_congno_tudong(osv.osv):
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'ky_quy_histaff_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Phải thu ký quỹ (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Phải thu ký quỹ (HISTAFF)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
     def output_oracle_phaithu(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','oracle_phaithu')])
             if output_ids:
@@ -584,10 +821,13 @@ class output_congno_tudong(osv.osv):
     
     def output_phaitra_chigopxe_htkd(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','chi_ho')])
             invoice_obj = self.pool.get('account.invoice')
             if output_ids:
+                date_start = time.strftime('%Y-%m-01')
+                date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
                 csvUti = lib_csv.csv_ultilities()
                 headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_phat_sinh','bien_so_xe','so_tien','so_hop_dong','dien_giai','ngay_thanh_toan','so_tien_da_chi']
                 contents = []
@@ -615,27 +855,48 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
-                            ngay_thanh_toan_arr = payment.date.split('-')
-                            ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
-                            contents.append({
-                                'chi_nhanh': line['chi_nhanh'],
-                                'ma_chi_nhanh': line['ma_chi_nhanh'],
-                                'loai_doi_tuong': loai_doituong,
-                                'ma_doi_tuong': line['ma_doi_tuong'],
-                                'ten_doi_tuong': line['ten_doi_tuong'],
-                                'ngay_phat_sinh': line['ngay_giao_dich'],
-                                'bien_so_xe': line['bien_so_xe'],
-                                'so_tien': line['so_tien'],
-                                'so_hop_dong': line['so_hop_dong'],
-                                'dien_giai': line['dien_giai'],
-                                'ngay_thanh_toan': ngay_thanh_toan,
-                                'so_tien_da_chi': payment.debit,
-                            })
+                            if payment.date>=date_start and payment.date<=date_end:
+                                ngay_thanh_toan_arr = payment.date.split('-')
+                                ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
+                                contents.append({
+                                    'chi_nhanh': line['chi_nhanh'],
+                                    'ma_chi_nhanh': line['ma_chi_nhanh'],
+                                    'loai_doi_tuong': loai_doituong,
+                                    'ma_doi_tuong': line['ma_doi_tuong'],
+                                    'ten_doi_tuong': line['ten_doi_tuong'],
+                                    'ngay_phat_sinh': line['ngay_giao_dich'],
+                                    'bien_so_xe': line['bien_so_xe'],
+                                    'so_tien': line['so_tien'],
+                                    'so_hop_dong': line['so_hop_dong'],
+                                    'dien_giai': line['dien_giai'],
+                                    'ngay_thanh_toan': ngay_thanh_toan,
+                                    'so_tien_da_chi': payment.debit,
+                                })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'chi_gop_xe_htkd_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Chi góp xe (HTKD)',
+                            'thu_tra': 'Trả',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Chi góp xe (HTKD)',
+                'thu_tra': 'Trả',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     

@@ -49,6 +49,7 @@ class import_congno_tudong(osv.osv):
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_no_xuong')])
@@ -64,6 +65,8 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                         
                         for data in file_data:
+                            if data['so_tien'] <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
                             sql = '''
@@ -144,9 +147,29 @@ class import_congno_tudong(osv.osv):
                             invoice_id = invoice_obj.create(cr, uid, vals)
                             wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Thu nợ xưởng (BDSC)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Thu nợ xưởng (BDSC)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': e,
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -158,6 +181,7 @@ class import_congno_tudong(osv.osv):
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_htkd')])
@@ -173,6 +197,8 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                         
                         for data in file_data:
+                            if data['so_tien'] <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
                             sql = '''
@@ -246,9 +272,29 @@ class import_congno_tudong(osv.osv):
                             invoice_id = invoice_obj.create(cr, uid, vals)
                             wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Thu phí thương hiệu (HTKD)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Thu phí thương hiệu (HTKD)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -260,6 +306,7 @@ class import_congno_tudong(osv.osv):
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_htkd')])
@@ -275,6 +322,8 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                         
                         for data in file_data:
+                            if data['so_tien'] <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
                             sql = '''
@@ -357,9 +406,29 @@ class import_congno_tudong(osv.osv):
                             invoice_id = invoice_obj.create(cr, uid, vals)
                             wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Trả góp xe (HTKD)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Trả góp xe (HTKD)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -372,6 +441,7 @@ class import_congno_tudong(osv.osv):
         voucher_obj = self.pool.get('account.voucher')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_shift')])
@@ -387,7 +457,7 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
-                                
+                            
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                             cr.execute(sql)
@@ -403,6 +473,8 @@ class import_congno_tudong(osv.osv):
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'],bien_so_xe_ids[0],data['so_hop_dong'])
                             cr.execute(sql)
                             sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -463,9 +535,29 @@ class import_congno_tudong(osv.osv):
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Thu phí thương hiệu (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Thu phí thương hiệu (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -478,6 +570,7 @@ class import_congno_tudong(osv.osv):
         voucher_obj = self.pool.get('account.voucher')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_shift')])
@@ -509,6 +602,8 @@ class import_congno_tudong(osv.osv):
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'],bien_so_xe_ids[0],data['so_hop_dong'])
                             cr.execute(sql)
                             sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -569,9 +664,29 @@ class import_congno_tudong(osv.osv):
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Trả góp xe (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Trả góp xe (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -584,6 +699,7 @@ class import_congno_tudong(osv.osv):
         voucher_obj = self.pool.get('account.voucher')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham')])
@@ -608,6 +724,8 @@ class import_congno_tudong(osv.osv):
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'])
                             cr.execute(sql)
                             sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -668,9 +786,29 @@ class import_congno_tudong(osv.osv):
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Phạt vi phạm (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Phạt vi phạm (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -683,6 +821,7 @@ class import_congno_tudong(osv.osv):
         voucher_obj = self.pool.get('account.voucher')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung')])
@@ -707,6 +846,8 @@ class import_congno_tudong(osv.osv):
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'])
                             cr.execute(sql)
                             sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -767,9 +908,29 @@ class import_congno_tudong(osv.osv):
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Phải thu tạm ứng (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Phải thu tạm ứng (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -779,6 +940,7 @@ class import_congno_tudong(osv.osv):
     def import_phaithu_kyquy_histaff(self, cr, uid, context=None):
         import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
         kyquy_obj = self.pool.get('thu.ky.quy')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','phai_thu_ky_quy')])
 
@@ -793,6 +955,8 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            if data['so_tien_da_thu'] <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id from account_account where code='%s' limit 1
                             '''%(data['ma_chi_nhanh'])
@@ -808,9 +972,29 @@ class import_congno_tudong(osv.osv):
                                 cr.execute('update thu_ky_quy set so_tien=%s where id=%s',(data['so_tien_da_thu'],kyquy['id'],))
                                 kyquy_obj.bt_thu(cr, uid, kyquy['id'])
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Phải thu ký quỹ (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Phải thu ký quỹ (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -823,6 +1007,7 @@ class import_congno_tudong(osv.osv):
         voucher_obj = self.pool.get('account.voucher')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','fustion_phaithu')])
@@ -838,6 +1023,8 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            if data['ACCTD_AMOUNT'] <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where name='%s' and state='open'
@@ -908,9 +1095,29 @@ class import_congno_tudong(osv.osv):
                             voucher_id = voucher_obj.create(cr, uid, vals)
                             voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Fustion (ORACLE)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Fustion (ORACLE)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -923,6 +1130,7 @@ class import_congno_tudong(osv.osv):
         voucher_obj = self.pool.get('account.voucher')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','fustion_phaitra')])
@@ -938,6 +1146,8 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            if data['ACCTD_AMOUNT'] <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where name='%s' and state='open'
@@ -1008,9 +1218,29 @@ class import_congno_tudong(osv.osv):
                             voucher_id = voucher_obj.create(cr, uid, vals)
                             voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Fustion (ORACLE)',
+                            'thu_tra': 'Trả',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Fustion (ORACLE)',
+                            'thu_tra': 'Trả',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
@@ -1022,6 +1252,7 @@ class import_congno_tudong(osv.osv):
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','chi_ho')])
@@ -1037,6 +1268,8 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            if data['so_tien'] <= 0:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
                             sql = '''
@@ -1110,9 +1343,29 @@ class import_congno_tudong(osv.osv):
                             invoice_id = invoice_obj.create(cr, uid, vals)
                             wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                         csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Chi góp xe (HTKD)',
+                            'thu_tra': 'Trả',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': error_path+f_path.split('/')[-1],
+                            'loai_giaodich': 'Chi góp xe (HTKD)',
+                            'thu_tra': 'Trả',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': '',
+                        })
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:

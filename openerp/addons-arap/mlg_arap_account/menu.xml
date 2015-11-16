@@ -321,6 +321,11 @@
 					name="Cấu hình tự động"
 					action="ir_cron_act_mlg"
 					parent="menu_danhmuc_dungchung" sequence="20"/>
+					
+				<menuitem id="menu_action_lichsu_giaodich"
+					name="Lịch sử giao dịch"
+					action="action_lichsu_giaodich"
+					parent="menu_danhmuc_dungchung" sequence="25"/>
 			
 			<menuitem id="account.menu_finance_entries"
 				name="Journal Entries"

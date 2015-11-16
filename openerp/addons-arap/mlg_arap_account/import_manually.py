@@ -95,6 +95,7 @@ class import_congno_manually(osv.osv):
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         if context.get('import_loai_congno',False):
             try:
@@ -117,6 +118,8 @@ class import_congno_manually(osv.osv):
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
+                        if data['so_tien'] <= 0:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         sql = '''
                             select id from account_account where code='%s' limit 1
                         '''%(data['ma_chi_nhanh'])
@@ -169,9 +172,29 @@ class import_congno_manually(osv.osv):
                         invoice_id = invoice_obj.create(cr, uid, vals)
                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                     csvUti._moveFiles([file_path],done_path)
+                    lichsu_obj.create(cr, uid, {
+                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'ten_file': done_path+f_name,
+                        'loai_giaodich': 'Phải thu chi hộ điện thoại',
+                        'thu_tra': 'Thu',
+                        'nhap_xuat': 'Nhập',
+                        'tudong_bangtay': 'Bằng tay',
+                        'trang_thai': 'Thành công',
+                        'noidung_loi': '',
+                    })
                 except Exception, e:
                     error_path = dir_path+'/Error/'
                     csvUti._moveFiles([file_path],error_path)
+                    lichsu_obj.create(cr, uid, {
+                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'ten_file': error_path+f_name,
+                        'loai_giaodich': 'Phải thu chi hộ điện thoại',
+                        'thu_tra': 'Thu',
+                        'nhap_xuat': 'Nhập',
+                        'tudong_bangtay': 'Bằng tay',
+                        'trang_thai': 'Lỗi',
+                        'noidung_loi': e,
+                    })
                     raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
             except Exception, e:
@@ -185,6 +208,7 @@ class import_congno_manually(osv.osv):
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         if context.get('import_loai_congno',False):
             try:
@@ -207,6 +231,8 @@ class import_congno_manually(osv.osv):
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
+                        if data['so_tien'] <= 0:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         vals = {}
                         sql = '''
                             select id from account_account where code='%s' limit 1
@@ -266,9 +292,29 @@ class import_congno_manually(osv.osv):
                         invoice_id = invoice_obj.create(cr, uid, vals)
                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                     csvUti._moveFiles([file_path],done_path)
+                    lichsu_obj.create(cr, uid, {
+                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'ten_file': done_path+f_name,
+                        'loai_giaodich': 'Phải thu bảo hiểm',
+                        'thu_tra': 'Thu',
+                        'nhap_xuat': 'Nhập',
+                        'tudong_bangtay': 'Bằng tay',
+                        'trang_thai': 'Thành công',
+                        'noidung_loi': '',
+                    })
                 except Exception, e:
                     error_path = dir_path+'/Error/'
                     csvUti._moveFiles([file_path],error_path)
+                    lichsu_obj.create(cr, uid, {
+                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'ten_file': error_path+f_name,
+                        'loai_giaodich': 'Phải thu bảo hiểm',
+                        'thu_tra': 'Thu',
+                        'nhap_xuat': 'Nhập',
+                        'tudong_bangtay': 'Bằng tay',
+                        'trang_thai': 'Lỗi',
+                        'noidung_loi': e,
+                    })
                     raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
             except Exception, e:
@@ -282,6 +328,7 @@ class import_congno_manually(osv.osv):
         invoice_obj = self.pool.get('account.invoice')
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
         if context.get('import_loai_congno',False):
             try:
@@ -304,6 +351,8 @@ class import_congno_manually(osv.osv):
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
+                        if data['so_tien'] <= 0:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         account_id = False
                         vals = {}
                         sql = '''
@@ -381,9 +430,29 @@ class import_congno_manually(osv.osv):
                         invoice_id = invoice_obj.create(cr, uid, vals)
                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                     csvUti._moveFiles([file_path],done_path)
+                    lichsu_obj.create(cr, uid, {
+                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'ten_file': done_path+f_name,
+                        'loai_giaodich': 'Thu nợ xưởng',
+                        'thu_tra': 'Thu',
+                        'nhap_xuat': 'Nhập',
+                        'tudong_bangtay': 'Bằng tay',
+                        'trang_thai': 'Thành công',
+                        'noidung_loi': '',
+                    })
                 except Exception, e:
                     error_path = dir_path+'/Error/'
                     csvUti._moveFiles([file_path],error_path)
+                    lichsu_obj.create(cr, uid, {
+                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'ten_file': error_path+f_name,
+                        'loai_giaodich': 'Thu nợ xưởng',
+                        'thu_tra': 'Thu',
+                        'nhap_xuat': 'Nhập',
+                        'tudong_bangtay': 'Bằng tay',
+                        'trang_thai': 'Lỗi',
+                        'noidung_loi': e,
+                    })
                     raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
             except Exception, e:

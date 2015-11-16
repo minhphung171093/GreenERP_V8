@@ -207,5 +207,18 @@ class ir_cron(osv.osv):
     
 ir_cron()
     
+class lichsu_giaodich(osv.osv):
+    _name = "lichsu.giaodich"
+    _columns = {
+        'name': fields.datetime('Ngày'),
+        'ten_file': fields.text('Tên file'),
+        'loai_giaodich': fields.text('Loại giao dịch'),
+        'thu_tra': fields.text('Thu/Trả'),
+        'nhap_xuat': fields.text('Nhập/Xuất'),
+        'tudong_bangtay': fields.text('Tự động/Bằng tay'),
+        'trang_thai': fields.text('Trạng thái'),
+        'noidung_loi': fields.text('Nội dung lỗi'),
+    }
+lichsu_giaodich()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

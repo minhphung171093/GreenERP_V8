@@ -270,5 +270,52 @@
             <field name="view_id" ref="base.ir_cron_view_tree"/>
         </record>
 
+<!-- Lịch sử giao dịch -->
+		<record id="view_lichsu_giaodich_filter" model="ir.ui.view">
+            <field name="name">lichsu.giaodich.select</field>
+            <field name="model">lichsu.giaodich</field>
+            <field name="arch" type="xml">
+                <search string="Lịch sử giao dịch">
+                	<field name="name"/>
+                    <field name="ten_file"/>
+                    <field name="loai_giaodich"/>
+                    <field name="thu_tra"/>
+                    <field name="nhap_xuat"/>
+                    <field name="tudong_bangtay"/>
+                    <field name="trang_thai"/>
+                    <group expand="0" string="Group By">
+                    	<filter name="group_by_loai_giaodich" string="Loại giao dịch" context="{'group_by':'loai_giaodich'}"/>
+                    	<filter name="group_by_thu_tra" string="Thu/Trả" context="{'group_by':'thu_tra'}"/>
+                    	<filter name="group_by_nhap_xuat" string="Nhập/Xuất" context="{'group_by':'nhap_xuat'}"/>
+                    	<filter name="group_by_tudong_bangtay" string="Tự động/Bằng tay" context="{'group_by':'tudong_bangtay'}"/>
+                    	<filter name="group_by_trang_thai" string="Trạng thái" context="{'group_by':'trang_thai'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+    	<record id="view_lichsu_giaodich_tree" model="ir.ui.view">
+            <field name="name">lichsu.giaodich.tree</field>
+            <field name="model">lichsu.giaodich</field>
+            <field name="arch" type="xml">
+                <tree string="Lịch sử giao dịch" create='false' edit='false' delete='false'>
+                    <field name="name"/>
+                    <field name="ten_file"/>
+                    <field name="loai_giaodich"/>
+                    <field name="thu_tra"/>
+                    <field name="nhap_xuat"/>
+                    <field name="tudong_bangtay"/>
+                    <field name="trang_thai"/>
+                    <field name="noidung_loi" invisible='1'/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_lichsu_giaodich" model="ir.actions.act_window">
+            <field name="name">Lịch sử giao dịch</field>
+            <field name="res_model">lichsu.giaodich</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_lichsu_giaodich_tree"/>
+        </record>
+
 	</data>
 </openerp>

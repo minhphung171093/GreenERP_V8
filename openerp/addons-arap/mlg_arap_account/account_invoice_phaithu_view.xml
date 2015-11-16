@@ -62,11 +62,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
                     	<button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -219,11 +220,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -363,6 +365,7 @@
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="type" invisible='1'/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -378,11 +381,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -537,12 +541,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
-                    	<field name="loai_doituong" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -695,11 +699,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -838,6 +843,7 @@
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="type" invisible='1'/>
@@ -855,11 +861,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -998,6 +1005,7 @@
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="type" invisible='1'/>
@@ -1015,11 +1023,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -1156,6 +1165,7 @@
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="type" invisible='1'/>
@@ -1173,11 +1183,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
@@ -1315,6 +1326,7 @@
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     <field name="residual" string="Còn lại" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="type" invisible='1'/>
@@ -1332,11 +1344,12 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action" groups="base.group_no_one"/>
-	                    <button name="invoice_cancel" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
                     	<field name="type" invisible='1'/>
+                    	<field name="invisible_button_cancel" invisible='1'/>
 					</header>
                 	<sheet>
                 		<h1>
