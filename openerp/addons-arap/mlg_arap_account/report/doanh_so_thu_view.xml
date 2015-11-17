@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+<!-- Doanh số thu Wizard-->
+    	<record id="doanh_so_thu_wizard_report" model="ir.actions.report.xml">
+	        <field name="name">doanh_so_thu_wizard_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">doanh.so.thu.wizard</field>
+	        <field name="report_name">doanh_so_thu_wizard_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/doanh_so_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/doanh_so_thu_wizard_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="doanh_so_thu_wizard_report" 
+			model="doanh.so.thu.wizard" 
+			name="doanh_so_thu_wizard_report"
+	        string="Doanh số thu"
+	        rml="mlg_arap_account/report/doanh_so_thu_wizard_report.ods"/>
+	        
+<!-- Doanh số thu-->
+    	<record id="doanh_so_thu_report" model="ir.actions.report.xml">
+	        <field name="name">doanh_so_thu_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">doanh.so.thu</field>
+	        <field name="report_name">doanh_so_thu_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/doanh_so_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/doanh_so_thu_report.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="True"
+			id="doanh_so_thu_report" 
+			model="doanh.so.thu" 
+			name="doanh_so_thu_report"
+	        string="Doanh số thu"
+	        rml="mlg_arap_account/report/doanh_so_thu_report.ods"/>
+	</data>
+</openerp>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Doanh số thu wizard -->
+        <record id="view_doanh_so_thu_wizard_form" model="ir.ui.view">
+            <field name="name">doanh.so.thu.wizard.form</field>
+            <field name="model">doanh.so.thu.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Doanh số thu" version="7.0">
+                	<group col='4' colspan='2'>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                        hoặc
+                        <button name="review_report" string="Xem trước" type="object" class="oe_highlight"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>     
+        <record id="action_doanh_so_thu_wizard" model="ir.actions.act_window">
+            <field name="name">Doanh số thu</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">doanh.so.thu.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_doanh_so_thu_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+	        
+<!-- Doanh số thu -->
+        <record id="view_doanh_so_thu_form" model="ir.ui.view">
+            <field name="name">doanh.so.thu.form</field>
+            <field name="model">doanh.so.thu</field>
+            <field name="arch" type="xml">
+                <form string="Doanh số thu" version="7.0" create='false' edit='false' delete='false'>
+                    <header>
+                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                    </header>
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    </group>
+	                    <group string="Doanh số thu">
+	                    	<field name='doanhsothu_line' colspan='4' nolabel='1'>
+	                    		<tree>
+	                    			<field name='chinhanh'/>
+	                    			<field name='machinhanh'/>
+	                    			<field name='loaicongno'/>
+	                    			<field name='taikhoan'/>
+	                    			<field name='sotien'/>
+	                    			<field name='ghichu'/>
+	                    		</tree>
+	                    	</field>
+	                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	        
+    </data>
+</openerp>
+

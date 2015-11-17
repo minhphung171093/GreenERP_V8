@@ -84,16 +84,243 @@ class output_congno_tudong(osv.osv):
         $BODY$
         DECLARE
             rec_cn        record;
+            rec_aml       record;
             bal_data      fin_output_theodoanhsothu_oracle_data%ROWTYPE;
+            loaicongno    numeric;
+            sotien        numeric;
         BEGIN
-            
             for rec_cn in execute '
-                    select id from account_account where parent_id in (select id from account_account where code=''1'')
+                    select id,code,name from account_account where parent_id in (select id from account_account where code=''1'')
                         and id in (select parent_id from account_account where id in (select account_id from account_move_line where date between $1 and $2))
                 ' using $1, $2
             loop
-                bal_data.sotien=rec_cn.id;
-                return next bal_data;
+                for loaicongno in 1..9
+                loop
+                    if loaicongno=1 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''no_doanh_thu'' and state in (''open'',''paid'')))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Nợ doanh thu';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=2 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
+                                            where name=''Tạm ứng công tác'')
+                                            and state in (''open'',''paid'') and loai_doituong=''nhanvienvanphong''))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Tạm ứng_Công tác_Nhân viên';
+                            bal_data.taikhoan='1411012';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=3 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
+                                            where name=''Tạm ứng công tác'')
+                                            and state in (''open'',''paid'') and loai_doituong=''taixe''))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Tạm ứng_Công tác_Lái xe';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=4 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
+                                            where name=''Tạm ứng khó khăn'')
+                                            and state in (''open'',''paid'') and loai_doituong=''nhanvienvanphong''))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Tạm ứng_Hoàn cảnh_Nhân viên';
+                            bal_data.taikhoan='1411012';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=5 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
+                                            where name=''Tạm ứng khó khăn'')
+                                            and state in (''open'',''paid'') and loai_doituong=''taixe''))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Tạm ứng_Hoàn cảnh_Lái xe';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=6 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''phat_vi_pham'' and state in (''open'',''paid'') ))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phạt vi phạm';
+                            bal_data.taikhoan='7111018';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=7 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''tra_gop_xe'' and state in (''open'',''paid'') ))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Trả góp mua xe';
+                            bal_data.taikhoan='3387018';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=8 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''thu_phi_thuong_hieu'' and state in (''open'',''paid'') ))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phí thương hiệu';
+                            bal_data.taikhoan='3387012';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=9 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''thu_no_xuong'' and state in (''open'',''paid'') ))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Nợ xưởng sửa chữa';
+                            bal_data.taikhoan='5113021';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                end loop;
             end loop;
 
             return;
@@ -765,58 +992,56 @@ class output_congno_tudong(osv.osv):
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
-    def output_oracle_phaithu(self, cr, uid, context=None):
+    def output_phaithu_doanhsothu_oracle(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         try:
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','oracle_phaithu')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doanh_thu','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_cong_no','tai_khoan','so_tien','ghi_chu']
                 contents = []
+                date_start = time.strftime('%Y-%m-01')
+                date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
                 sql = '''
-                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.mlg_type as loai_doanh_thu,ai.so_tien as so_tien,
-                        ai.dien_giai as dien_giai
-                        
-                        from account_invoice ai 
-                        left join account_account cn on cn.id=ai.chinhanh_id
-                        
-                        where ai.type='out_invoice'
-                '''
+                    select * from fin_output_theodoanhsothu_oracle('%s','%s')
+                '''%(date_start,date_end)
                 cr. execute(sql)
                 for line in cr.dictfetchall():
-                    loai_doanh_thu=''
-                    if line['loai_doanh_thu']=='no_doanh_thu':
-                        loai_doanh_thu='Nợ doanh thu'
-                    if line['loai_doanh_thu']=='chi_ho_dien_thoai':
-                        loai_doanh_thu='Phải thu chi hộ điện thoại'
-                    if line['loai_doanh_thu']=='phai_thu_bao_hiem':
-                        loai_doanh_thu='Phải thu bảo hiểm'
-                    if line['loai_doanh_thu']=='phai_thu_ky_quy':
-                        loai_doanh_thu='Phải thu ký quỹ'
-                    if line['loai_doanh_thu']=='phat_vi_pham':
-                        loai_doanh_thu='Phạt vi phạm'
-                    if line['loai_doanh_thu']=='thu_no_xuong':
-                        loai_doanh_thu='Thu nợ xưởng'
-                    if line['loai_doanh_thu']=='thu_phi_thuong_hieu':
-                        loai_doanh_thu='Thu phí thương hiệu'
-                    if line['loai_doanh_thu']=='tra_gop_xe':
-                        loai_doanh_thu='Trả góp xe'
-                    if line['loai_doanh_thu']=='hoan_tam_ung':
-                        loai_doanh_thu='Phải thu tạm ứng'
                     contents.append({
-                        'chi_nhanh': line['chi_nhanh'],
-                        'ma_chi_nhanh': line['ma_chi_nhanh'],
-                        'loai_doanh_thu': loai_doanh_thu,
-                        'so_tien': line['so_tien'],
-                        'dien_giai': line['dien_giai'],
+                        'chi_nhanh': line['chinhanh'],
+                        'ma_chi_nhanh': line['machinhanh'],
+                        'loai_cong_no': line['loaicongno'],
+                        'tai_khoan': line['taikhoan'],
+                        'so_tien': line['sotien'],
+                        'ghi_chu': line['ghichu'],
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'oracle_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'doanh_so_thu_oracle_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Doanh số thu (ORACLE)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
         except Exception, e:
-            pass
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Doanh số thu (ORACLE)',
+                'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
+            raise osv.except_osv(_('Warning!'), str(e))
         return True
     
     def output_phaitra_chigopxe_htkd(self, cr, uid, context=None):
