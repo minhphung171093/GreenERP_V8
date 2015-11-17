@@ -104,14 +104,22 @@ class congno_dauky_line(osv.osv):
         'so_hoa_don': fields.char('Số hóa đơn', size=1024),
         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã chiết tính', size=1024),
         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([
+                                      ('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
+                                      ('phai_thu_ky_quy','Phải thu ký quỹ'),
                                       ('phat_vi_pham','Phạt vi phạm'),
                                       ('thu_no_xuong','Thu nợ xưởng'),
                                       ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
                                       ('tra_gop_xe','Trả góp xe'),
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
+                                      ('chi_no_doanh_thu','Chi nợ doanh thu'),
+                                      ('chi_dien_thoai','Chi điện thoại'),
+                                      ('chi_bao_hiem','Chi bảo hiểm'),
+                                      ('phai_tra_ky_quy','Phải trả ký quỹ'),
+                                      ('tam_ung','Tạm ứng'),
+                                      ('chi_ho','Chi hộ')
                                       ],'Loại công nợ'),
         'so_tien_no': fields.float('Số tiền nợ'),
     }
