@@ -331,6 +331,11 @@
 					name="Lịch sử giao dịch"
 					action="action_lichsu_giaodich"
 					parent="menu_danhmuc_dungchung" sequence="25"/>
+					
+				<menuitem id="menu_action_congno_dauky"
+					name="Công nợ đầu kỳ"
+					action="action_congno_dauky"
+					parent="menu_danhmuc_dungchung" sequence="30"/>
 			
 			<menuitem id="account.menu_finance_entries"
 				name="Journal Entries"

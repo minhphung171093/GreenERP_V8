@@ -275,5 +275,18 @@
             <field name="mlg" eval="True"/>
         </record>
         
+<!-- Tính công nợ đầu kỳ-->        
+        <record model="ir.cron" id="get_congno_dauky_cron">
+            <field name="name">Tính công nợ đầu kỳ</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'congno.dauky'"/>
+            <field name="function" eval="'get_congno_dauky'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+        
 	</data>
 </openerp>

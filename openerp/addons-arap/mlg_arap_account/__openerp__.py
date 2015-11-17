@@ -50,6 +50,7 @@
         'account_sequence.xml',
         'user_view.xml',
         'import_manually_view.xml',
+        'congno_dauky_view.xml',
         'schedule_view.xml',
         'menu.xml',
     ],
