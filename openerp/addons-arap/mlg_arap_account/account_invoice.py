@@ -569,6 +569,7 @@ class account_invoice(osv.osv):
         dummy, view_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'account_voucher', 'view_vendor_receipt_dialog_form')
 
         inv = self.browse(cr, uid, ids[0], context=context)
+        journal_ids = self.pool.get('account.journal').search(cr, uid, [('chinhanh_id','=',inv.chinhanh_id.id),('type','=','cash')])
         return {
             'name':_("Pay Invoice"),
             'view_mode': 'form',
@@ -584,7 +585,7 @@ class account_invoice(osv.osv):
                 'default_partner_id': self.pool.get('res.partner')._find_accounting_partner(inv.partner_id).id,
                 'default_amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
                 'default_reference': inv.name,
-#                 'default_journal_id': inv.journal_id.id,
+                'default_journal_id': journal_ids and journal_ids[0] or False,
                 'default_bai_giaoca_id': inv.bai_giaoca_id and inv.bai_giaoca_id.id or False,
                 'default_mlg_type': inv.mlg_type,
                 'close_after_process': True,

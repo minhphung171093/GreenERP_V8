@@ -13,7 +13,7 @@
                     	<field name='to_date'/>
                     </group>
                     <footer>
-                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                        <button name="print_report" string="Xuất ra excel" type="object" class="oe_highlight"/>
                         hoặc
                         <button name="review_report" string="Xem trước" type="object" class="oe_highlight"/>
                         hoặc
@@ -39,7 +39,7 @@
             <field name="arch" type="xml">
                 <form string="Doanh số thu" version="7.0" create='false' edit='false' delete='false'>
                     <header>
-                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                        <button name="print_report" string="Xuất ra excel" type="object" class="oe_highlight"/>
                     </header>
                 	<sheet version="7.0">
 	                	<group col='4' colspan='2'>
