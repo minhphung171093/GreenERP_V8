@@ -5,6 +5,7 @@ import re
 import collections
 import shutil
 import ntpath
+import time
 
 class csv_ultilities():
     
@@ -15,7 +16,7 @@ class csv_ultilities():
     #Input des_directory: name of folder   
     #Output: list of files 
     def _moveFiles(self, filesArray, des_directory):
-        
+        des_directory = des_directory +'/'+ time.strftime("%Y-%m-%d")
         if not os.path.exists(des_directory):
             os.makedirs(des_directory)
             

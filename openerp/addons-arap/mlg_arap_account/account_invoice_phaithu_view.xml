@@ -147,7 +147,7 @@
             <field name="view_id" ref="view_no_doanh_thu_tree"/>
             <field name="search_view_id" ref="view_no_doanh_thu_filter"/>
             <field name="domain">[('mlg_type','=','no_doanh_thu')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'no_doanh_thu', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'no_doanh_thu','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_no_doanh_thu1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -307,7 +307,7 @@
             <field name="view_id" ref="view_chi_ho_dien_thoai_tree"/>
             <field name="search_view_id" ref="view_chi_ho_dien_thoai_filter"/>
             <field name="domain">[('mlg_type','=','chi_ho_dien_thoai')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'chi_ho_dien_thoai', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'chi_ho_dien_thoai','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_chi_ho_dien_thoai1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -787,7 +787,7 @@
             <field name="view_id" ref="view_phat_vi_pham_tree"/>
             <field name="search_view_id" ref="view_phat_vi_pham_filter"/>
             <field name="domain">[('mlg_type','=','phat_vi_pham')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'phat_vi_pham', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'phat_vi_pham','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_phat_vi_pham1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -950,7 +950,7 @@
             <field name="view_id" ref="view_thu_no_xuong_tree"/>
             <field name="search_view_id" ref="view_thu_no_xuong_filter"/>
             <field name="domain">[('mlg_type','=','thu_no_xuong')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'thu_no_xuong', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'thu_no_xuong','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_thu_no_xuong1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -1110,7 +1110,7 @@
             <field name="view_id" ref="view_thu_phi_thuong_hieu_tree"/>
             <field name="search_view_id" ref="view_thu_phi_thuong_hieu_filter"/>
             <field name="domain">[('mlg_type','=','thu_phi_thuong_hieu')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'thu_phi_thuong_hieu', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong': 'nhadautu','readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'thu_phi_thuong_hieu', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_thu_phi_thuong_hieu1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -1271,7 +1271,7 @@
             <field name="view_id" ref="view_tra_gop_xe_tree"/>
             <field name="search_view_id" ref="view_tra_gop_xe_filter"/>
             <field name="domain">[('mlg_type','=','tra_gop_xe')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'tra_gop_xe', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong': 'nhadautu','readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'tra_gop_xe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_tra_gop_xe1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -1435,7 +1435,7 @@
             <field name="view_id" ref="view_hoan_tam_ung_tree"/>
             <field name="search_view_id" ref="view_hoan_tam_ung_filter"/>
             <field name="domain">[('mlg_type','=','hoan_tam_ung')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'hoan_tam_ung', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong': 'taixe','readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'hoan_tam_ung', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_hoan_tam_ung1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>

@@ -262,6 +262,19 @@
             <field name="mlg" eval="True"/>
         </record>
         
+<!-- Output phải trả - doanh số trả (ORACLE) -->        
+        <record model="ir.cron" id="output_phaithu_doanhsotra_oracle_cron">
+            <field name="name">Output phải trả - doanh số trả (ORACLE)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_doanhsotra_oracle'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+        
 <!-- Output phải trả - chi góp xe (HTKD)-->        
         <record model="ir.cron" id="output_phaitra_chigopxe_htkd_cron">
             <field name="name">Output phải trả - chi góp xe (HTKD)</field>

@@ -193,6 +193,7 @@ class cauhinh_thumuc_output_tudong(osv.osv):
                                       ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
                                       ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
                                       ('oracle_phaithu','Doanh số thu (ORACLE)'),
+                                      ('oracle_phaitra','Doanh số trả (ORACLE)'),
                                       ('chi_ho','Chi góp xe (HTKD)')
                                       ],'Loại công nợ', required=True),
     }

@@ -182,6 +182,11 @@
 					action="action_doanh_so_thu_wizard"
 					parent="menu_in_dexuat" sequence="25"/>
 					
+				<menuitem id="menu_action_doanh_so_tra_wizard"
+					name="Doanh số trả"
+					action="action_doanh_so_tra_wizard"
+					parent="menu_in_dexuat" sequence="30"/>
+					
 			<menuitem id="menu_import_cong_no_thu"
 				name="Import"
 				parent="menu_root_congno" sequence="20"/>

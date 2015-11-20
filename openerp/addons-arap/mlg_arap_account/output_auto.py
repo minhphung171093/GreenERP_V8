@@ -48,7 +48,9 @@ class output_congno_tudong(osv.osv):
     
     def init(self, cr):
         self.fin_output_theodoanhsothu_oracle_data(cr)
+        self.fin_output_theodoanhsotra_oracle_data(cr)
         self.fin_output_theodoanhsothu_oracle(cr)
+        self.fin_output_theodoanhsotra_oracle(cr)
         cr.commit()
         return True
     
@@ -329,6 +331,112 @@ class output_congno_tudong(osv.osv):
           COST 100
           ROWS 1000000;
         ALTER FUNCTION fin_output_theodoanhsothu_oracle(date, date)
+          OWNER TO '''+config['db_user']+''';
+        '''
+        cr.execute(sql)
+        return True
+    
+    def fin_output_theodoanhsotra_oracle_data(self, cr):
+        cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsotra_oracle_data')")
+        res = cr.fetchone()
+        if res and res[0]:
+            cr.execute('''delete from pg_type where typname = 'fin_output_theodoanhsotra_oracle_data';
+                            delete from pg_class where relname='fin_output_theodoanhsotra_oracle_data';
+                            commit;''')
+        sql = '''
+        CREATE TYPE fin_output_theodoanhsotra_oracle_data AS
+           (chinhanh character varying(1024),
+            machinhanh character varying(250),
+            loaicongno character varying(250),
+            taikhoan character varying(250),
+            sotien numeric,
+            ghichu character varying(250)
+            );
+        ALTER TYPE fin_output_theodoanhsotra_oracle_data
+          OWNER TO '''+config['db_user']+''';
+        '''
+        cr.execute(sql)
+        return True
+    
+    def fin_output_theodoanhsotra_oracle(self, cr):
+        sql = '''
+        DROP FUNCTION IF EXISTS fin_output_theodoanhsotra_oracle(date, date) CASCADE;
+        commit;
+        
+        CREATE OR REPLACE FUNCTION fin_output_theodoanhsotra_oracle(date, date)
+          RETURNS SETOF fin_output_theodoanhsotra_oracle_data AS
+        $BODY$
+        DECLARE
+            rec_cn        record;
+            rec_aml       record;
+            bal_data      fin_output_theodoanhsotra_oracle_data%ROWTYPE;
+            loaicongno    numeric;
+            sotien        numeric;
+        BEGIN
+            for rec_cn in execute '
+                    select id,code,name from account_account where parent_id in (select id from account_account where code=''1'')
+                        and id in (select parent_id from account_account where id in (select account_id from account_move_line where date between $1 and $2))
+                ' using $1, $2
+            loop
+                for loaicongno in 1..2
+                loop
+                    if loaicongno=1 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''phai_tra_ky_quy'' and state in (''open'',''paid'')))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phải trả ký quỹ';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=2 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''chi_ho'' and state in (''open'',''paid'')))
+                                and date between $1 and $2
+                        ' using $1, $2
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phải trả chi hộ';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                end loop;
+            end loop;
+
+            return;
+        END; $BODY$
+          LANGUAGE plpgsql VOLATILE
+          COST 100
+          ROWS 1000000;
+        ALTER FUNCTION fin_output_theodoanhsotra_oracle(date, date)
           OWNER TO '''+config['db_user']+''';
         '''
         cr.execute(sql)
@@ -1036,6 +1144,58 @@ class output_congno_tudong(osv.osv):
                 'ten_file': '',
                 'loai_giaodich': 'Doanh số thu (ORACLE)',
                 'thu_tra': 'Thu',
+                'nhap_xuat': 'Xuất',
+                'tudong_bangtay': 'Tự động',
+                'trang_thai': 'Lỗi',
+                'noidung_loi': e,
+            })
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
+    def output_phaithu_doanhsotra_oracle(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','oracle_phaitra')])
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_cong_no','tai_khoan','so_tien','ghi_chu']
+                contents = []
+                date_start = time.strftime('%Y-%m-01')
+                date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
+                sql = '''
+                    select * from fin_output_theodoanhsotra_oracle('%s','%s')
+                '''%(date_start,date_end)
+                cr. execute(sql)
+                for line in cr.dictfetchall():
+                    contents.append({
+                        'chi_nhanh': line['chinhanh'],
+                        'ma_chi_nhanh': line['machinhanh'],
+                        'loai_cong_no': line['loaicongno'],
+                        'tai_khoan': line['taikhoan'],
+                        'so_tien': line['sotien'],
+                        'ghi_chu': line['ghichu'],
+                    })
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'doanh_so_tra_oracle_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Doanh số trả (ORACLE)',
+                            'thu_tra': 'Trả',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            lichsu_obj.create(cr, uid, {
+                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'ten_file': '',
+                'loai_giaodich': 'Doanh số trả (ORACLE)',
+                'thu_tra': 'Trả',
                 'nhap_xuat': 'Xuất',
                 'tudong_bangtay': 'Tự động',
                 'trang_thai': 'Lỗi',

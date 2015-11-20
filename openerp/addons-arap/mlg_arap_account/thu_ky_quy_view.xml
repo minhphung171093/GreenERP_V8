@@ -92,7 +92,7 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_thu_ky_quy_tree"/>
             <field name="search_view_id" ref="view_thu_ky_quy_filter"/>
-            <field name="context">{'readonly_by_pass':['chinhanh_id']}</field>
+            <field name="context">{'default_loai_doituong': 'taixe','readonly_by_pass':['chinhanh_id']}</field>
         </record>
         
 	</data>
