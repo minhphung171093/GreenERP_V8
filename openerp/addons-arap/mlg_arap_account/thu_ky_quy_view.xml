@@ -49,6 +49,7 @@
                 <form string="Thu ký quỹ" version='7.0'>
 					<header>
 	                    <button name="bt_thu" states="draft" type='object' string="Thu" class="oe_highlight"/>
+	                    <button name="%(action_phieu_de_xuat_thukyquy)d" states="draft" string="In phiếu đề xuất" type="action"/>
 	                    <button name="bt_huybo" states="draft,paid" type='object' string="Hủy bỏ" class="oe_highlight"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="currency_id" invisible='1'/>

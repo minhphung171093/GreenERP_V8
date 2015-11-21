@@ -3,11 +3,11 @@
 	<data>
 	
 <!-- Phiếu đề xuất thu nợ doanh thu lái xe-->
-    	<record id="phieu_dexuat_thu_report_nodoanhthu_laixe" model="ir.actions.report.xml">
-	        <field name="name">phieu_dexuat_thu_report_nodoanhthu_laixe</field>
+    	<record id="pdxt_no_doanh_thu_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_no_doanh_thu_taixe</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">account.invoice</field>
-	        <field name="report_name">phieu_dexuat_thu_report_nodoanhthu_laixe</field>
+	        <field name="report_name">pdxt_no_doanh_thu_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -20,23 +20,23 @@
     	<report 
 			auto="False" 
 			menu="False"
-			id="phieu_dexuat_thu_report_nodoanhthu_laixe" 
+			id="pdxt_no_doanh_thu_taixe" 
 			model="account.invoice" 
-			name="phieu_dexuat_thu_report_nodoanhthu_laixe"
+			name="pdxt_no_doanh_thu_taixe"
 	        string="Phiếu đề xuất thu"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_lx.odt"/>
 	
-<!-- Phiếu đề xuất thu -->
-    	<record id="phieu_dexuat_thu_report" model="ir.actions.report.xml">
-	        <field name="name">phieu_dexuat_thu_report</field>
+<!-- Phiếu đề xuất thu nợ doanh thu nhà đầu tư-->
+    	<record id="pdxt_no_doanh_thu_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_no_doanh_thu_nhadautu</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">account.invoice</field>
-	        <field name="report_name">phieu_dexuat_thu_report</field>
+	        <field name="report_name">pdxt_no_doanh_thu_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
-	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu.odt</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_ndt.odt</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -44,10 +44,587 @@
     	<report 
 			auto="False" 
 			menu="False"
-			id="phieu_dexuat_thu_report" 
+			id="pdxt_no_doanh_thu_nhadautu" 
 			model="account.invoice" 
-			name="phieu_dexuat_thu_report"
+			name="pdxt_no_doanh_thu_nhadautu"
 	        string="Phiếu đề xuất thu"
-	        rml="mlg_arap_account/report/phieu_dexuat_thu.odt"/>
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_ndt.odt"/>
+
+<!-- Phiếu đề xuất thu chi hộ điện thoại lái xe-->
+    	<record id="pdxt_chi_ho_dien_thoai_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_chi_ho_dien_thoai_taixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_chi_ho_dien_thoai_taixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_chihodienthoai_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_chi_ho_dien_thoai_taixe" 
+			model="account.invoice" 
+			name="pdxt_chi_ho_dien_thoai_taixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_chihodienthoai_lx.odt"/>
+
+<!-- Phiếu đề xuất thu chi hộ điện thoại nhân viên văn phòng-->
+    	<record id="pdxt_chi_ho_dien_thoai_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_chi_ho_dien_thoai_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_chi_ho_dien_thoai_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_chihodienthoai_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_chi_ho_dien_thoai_nhanvienvanphong" 
+			model="account.invoice" 
+			name="pdxt_chi_ho_dien_thoai_nhanvienvanphong"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_chihodienthoai_nvvp.odt"/>
+
+<!-- Phiếu đề xuất thu bảo hiểm nhà đầu tư-->
+    	<record id="pdxt_phai_thu_bao_hiem_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_phai_thu_bao_hiem_nhadautu</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_phai_thu_bao_hiem_nhadautu</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thubaohiem_ndt.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_phai_thu_bao_hiem_nhadautu" 
+			model="account.invoice" 
+			name="pdxt_phai_thu_bao_hiem_nhadautu"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_thubaohiem_ndt.odt"/>
+
+<!-- Phiếu đề xuất thu phạt vi phạm lái xe-->
+    	<record id="pdxt_phat_vi_pham_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_phat_vi_pham_taixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_phat_vi_pham_taixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_phatvipham_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_phat_vi_pham_taixe" 
+			model="account.invoice" 
+			name="pdxt_phat_vi_pham_taixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_phatvipham_lx.odt"/>
+	        
+<!-- Phiếu đề xuất thu phạt vi phạm nhân viên văn phòng-->
+    	<record id="pdxt_phat_vi_pham_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_phat_vi_pham_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_phat_vi_pham_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_phatvipham_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_phat_vi_pham_nhanvienvanphong" 
+			model="account.invoice" 
+			name="pdxt_phat_vi_pham_nhanvienvanphong"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_phatvipham_nvvp.odt"/>
+	        
+<!-- Phiếu đề xuất thu thu nợ xưởng lái xe-->
+    	<record id="pdxt_thu_no_xuong_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_thu_no_xuong_taixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_thu_no_xuong_taixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_thu_no_xuong_taixe" 
+			model="account.invoice" 
+			name="pdxt_thu_no_xuong_taixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_lx.odt"/>
+	        
+<!-- Phiếu đề xuất thu thu nợ xưởng nhà đầu tư-->
+    	<record id="pdxt_thu_no_xuong_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_thu_no_xuong_nhadautu</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_thu_no_xuong_nhadautu</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_ndt.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_thu_no_xuong_nhadautu" 
+			model="account.invoice" 
+			name="pdxt_thu_no_xuong_nhadautu"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_ndt.odt"/>
+	        
+<!-- Phiếu đề xuất thu thu nợ xưởng nhân viên văn phòng-->
+    	<record id="pdxt_thu_no_xuong_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_thu_no_xuong_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_thu_no_xuong_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_thu_no_xuong_nhanvienvanphong" 
+			model="account.invoice" 
+			name="pdxt_thu_no_xuong_nhanvienvanphong"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_nvvp.odt"/>
+
+<!-- Phiếu đề xuất thu thu phí thương hiệu lái xe-->
+    	<record id="pdxt_thu_phi_thuong_hieu_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_thu_phi_thuong_hieu_taixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_thu_phi_thuong_hieu_taixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_thu_phi_thuong_hieu_taixe" 
+			model="account.invoice" 
+			name="pdxt_thu_phi_thuong_hieu_taixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_lx.odt"/>
+	        
+<!-- Phiếu đề xuất thu thu phí thương hiệu nhà đầu tư-->
+    	<record id="pdxt_thu_phi_thuong_hieu_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_thu_phi_thuong_hieu_nhadautu</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_thu_phi_thuong_hieu_nhadautu</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_ndt.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_thu_phi_thuong_hieu_nhadautu" 
+			model="account.invoice" 
+			name="pdxt_thu_phi_thuong_hieu_nhadautu"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_ndt.odt"/>
+	        
+<!-- Phiếu đề xuất thu thu phí thương hiệu nhân viên văn phòng-->
+    	<record id="pdxt_thu_phi_thuong_hieu_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_thu_phi_thuong_hieu_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_thu_phi_thuong_hieu_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_thu_phi_thuong_hieu_nhanvienvanphong" 
+			model="account.invoice" 
+			name="pdxt_thu_phi_thuong_hieu_nhanvienvanphong"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_nvvp.odt"/>
+
+<!-- Phiếu đề xuất thu trả góp xe lái xe-->
+    	<record id="pdxt_tra_gop_xe_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_tra_gop_xe_taixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_tra_gop_xe_taixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_tragopxe_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_tra_gop_xe_taixe" 
+			model="account.invoice" 
+			name="pdxt_tra_gop_xe_taixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_tragopxe_lx.odt"/>
+	        
+<!-- Phiếu đề xuất thu trả góp xe nhà đầu tư-->
+    	<record id="pdxt_tra_gop_xe_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_tra_gop_xe_nhadautu</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_tra_gop_xe_nhadautu</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_tragopxe_ndt.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_tra_gop_xe_nhadautu" 
+			model="account.invoice" 
+			name="pdxt_tra_gop_xe_nhadautu"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_tragopxe_ndt.odt"/>
+	        
+<!-- Phiếu đề xuất thu trả góp xe nhân viên văn phòng-->
+    	<record id="pdxt_tra_gop_xe_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_tra_gop_xe_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_tra_gop_xe_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_tragopxe_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_tra_gop_xe_nhanvienvanphong" 
+			model="account.invoice" 
+			name="pdxt_tra_gop_xe_nhanvienvanphong"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_tragopxe_nvvp.odt"/>
+
+<!-- Phiếu đề xuất thu phải thu tạm ứng lái xe-->
+    	<record id="pdxt_hoan_tam_ung_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_hoan_tam_ung_taixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_hoan_tam_ung_taixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_hoantamung_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_hoan_tam_ung_taixe" 
+			model="account.invoice" 
+			name="pdxt_hoan_tam_ung_taixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_hoantamung_lx.odt"/>
+	        
+<!-- Phiếu đề xuất thu phải thu tạm ứng nhà đầu tư-->
+    	<record id="pdxt_hoan_tam_ung_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_hoan_tam_ung_nhadautu</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_hoan_tam_ung_nhadautu</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_hoantamung_ndt.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_hoan_tam_ung_nhadautu" 
+			model="account.invoice" 
+			name="pdxt_hoan_tam_ung_nhadautu"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_hoantamung_ndt.odt"/>
+	        
+<!-- Phiếu đề xuất thu phải thu tạm ứng nhân viên văn phòng-->
+    	<record id="pdxt_hoan_tam_ung_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_hoan_tam_ung_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_hoan_tam_ung_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_hoantamung_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_hoan_tam_ung_nhanvienvanphong" 
+			model="account.invoice" 
+			name="pdxt_hoan_tam_ung_nhanvienvanphong"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_hoantamung_nvvp.odt"/>
+
+<!-- Phiếu đề xuất thu phải thu ký quỹ lái xe-->
+    	<record id="pdxt_kyquy_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_kyquy_taixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">thu.ky.quy</field>
+	        <field name="report_name">pdxt_kyquy_taixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_kyquy_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_kyquy_taixe" 
+			model="thu.ky.quy" 
+			name="pdxt_kyquy_taixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_lx.odt"/>
+	        
+<!-- Phiếu đề xuất thu phải thu ký quỹ nhà đầu tư-->
+    	<record id="pdxt_kyquy_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_kyquy_nhadautu</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">thu.ky.quy</field>
+	        <field name="report_name">pdxt_kyquy_nhadautu</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_kyquy_ndt.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_kyquy_nhadautu" 
+			model="thu.ky.quy" 
+			name="pdxt_kyquy_nhadautu"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_ndt.odt"/>
+	        
+<!-- Phiếu đề xuất thu phải thu ký quỹ nhân viên văn phòng-->
+    	<record id="pdxt_kyquy_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_kyquy_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">thu.ky.quy</field>
+	        <field name="report_name">pdxt_kyquy_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_kyquy_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_kyquy_nhanvienvanphong" 
+			model="thu.ky.quy" 
+			name="pdxt_kyquy_nhanvienvanphong"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_nvvp.odt"/>
+
+<!-- Phiếu đề xuất trả phải trả ký quỹ lái xe-->
+    	<record id="pdxt_phai_tra_ky_quy_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_phai_tra_ky_quy_taixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_phai_tra_ky_quy_taixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_tra_trakyquy_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_phai_tra_ky_quy_taixe" 
+			model="account.invoice" 
+			name="pdxt_phai_tra_ky_quy_taixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_tra_trakyquy_lx.odt"/>
+	        
+<!-- Phiếu đề xuất trả phải trả ký quỹ nhà đầu tư-->
+    	<record id="pdxt_phai_tra_ky_quy_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_phai_tra_ky_quy_nhadautu</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_phai_tra_ky_quy_nhadautu</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_tra_trakyquy_ndt.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_phai_tra_ky_quy_nhadautu" 
+			model="account.invoice" 
+			name="pdxt_phai_tra_ky_quy_nhadautu"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_tra_trakyquy_ndt.odt"/>
+	        
+<!-- Phiếu đề xuất trả phải trả ký quỹ nhân viên văn phòng-->
+    	<record id="pdxt_phai_tra_ky_quy_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_phai_tra_ky_quy_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_phai_tra_ky_quy_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_tra_trakyquy_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_phai_tra_ky_quy_nhanvienvanphong" 
+			model="account.invoice" 
+			name="pdxt_phai_tra_ky_quy_nhanvienvanphong"
+	        string="Phiếu đề xuất trả"
+	        rml="mlg_arap_account/report/phieu_dexuat_tra_trakyquy_nvvp.odt"/>
+	        
+<!-- Phiếu đề xuất trả chi hộ-->
+    	<record id="pdxt_chi_ho" model="ir.actions.report.xml">
+	        <field name="name">pdxt_chi_ho</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_chi_ho</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_tra_chi_ho.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_chi_ho" 
+			model="account.invoice" 
+			name="pdxt_chi_ho"
+	        string="Phiếu đề xuất trả"
+	        rml="mlg_arap_account/report/phieu_dexuat_tra_chi_ho.odt"/>
+
 	</data>
 </openerp>

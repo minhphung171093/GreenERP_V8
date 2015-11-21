@@ -48,10 +48,10 @@
 	                    		<tree>
 	                    			<field name="chinhanh_id"/>
 	                    			<field name="mlg_type"/>
-	                    			<field name="bien_so_xe_id"/>
+	                    			<!--<field name="bien_so_xe_id"/>
 	                    			<field name="so_hop_dong"/>
 	                    			<field name="so_hoa_don"/>
-	                    			<field name="ma_bang_chiettinh_chiphi_sua"/>
+	                    			<field name="ma_bang_chiettinh_chiphi_sua"/>-->
 	                    			<field name="so_tien_no"/>
 	                    		</tree>
 	                    	</field>

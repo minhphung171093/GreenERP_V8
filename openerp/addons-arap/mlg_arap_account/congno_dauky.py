@@ -62,14 +62,13 @@ class congno_dauky(osv.osv):
             cr.execute(sql)
             for partner in cr.dictfetchall():
                 sql = '''
-                    select sum(residual) as so_tien_no,mlg_type,chinhanh_id,so_hoa_don,so_hop_dong,ma_bang_chiettinh_chiphi_sua,
-                        bien_so_xe_id
+                    select sum(residual) as so_tien_no,mlg_type,chinhanh_id
                         
                         from account_invoice
                         
                         where state='open' and partner_id=%s 
                         
-                        group by chinhanh_id,mlg_type,bien_so_xe_id,so_hop_dong,so_hoa_don,ma_bang_chiettinh_chiphi_sua
+                        group by chinhanh_id,mlg_type
                 '''%(partner['partner_id'])
                 cr.execute(sql)
                 congno_dauky_line = []
@@ -77,10 +76,10 @@ class congno_dauky(osv.osv):
                     congno_dauky_line.append((0,0,{
                         'chinhanh_id': invoice['chinhanh_id'],
                         'mlg_type': invoice['mlg_type'],
-                        'bien_so_xe_id': invoice['bien_so_xe_id'],
-                        'so_hop_dong': invoice['so_hop_dong'],
-                        'so_hoa_don': invoice['so_hoa_don'],
-                        'ma_bang_chiettinh_chiphi_sua': invoice['ma_bang_chiettinh_chiphi_sua'],
+#                         'bien_so_xe_id': invoice['bien_so_xe_id'],
+#                         'so_hop_dong': invoice['so_hop_dong'],
+#                         'so_hoa_don': invoice['so_hoa_don'],
+#                         'ma_bang_chiettinh_chiphi_sua': invoice['ma_bang_chiettinh_chiphi_sua'],
                         'so_tien_no': invoice['so_tien_no'],
                     }))
                 self.create(cr, uid, {
@@ -100,10 +99,10 @@ class congno_dauky_line(osv.osv):
     _columns = {
         'congno_dauky_id': fields.many2one('congno.dauky','Công nợ đầu kỳ', ondelete='cascade'),
         'chinhanh_id': fields.many2one('account.account', 'Chi nhánh'),
-        'so_hop_dong': fields.char('Số hợp đồng', size=1024),
-        'so_hoa_don': fields.char('Số hóa đơn', size=1024),
-        'ma_bang_chiettinh_chiphi_sua': fields.char('Mã chiết tính', size=1024),
-        'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
+#         'so_hop_dong': fields.char('Số hợp đồng', size=1024),
+#         'so_hoa_don': fields.char('Số hóa đơn', size=1024),
+#         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã chiết tính', size=1024),
+#         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
         'mlg_type': fields.selection([
                                       ('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),

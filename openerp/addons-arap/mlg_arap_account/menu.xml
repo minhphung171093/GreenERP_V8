@@ -397,7 +397,7 @@
 					action="action_bao_hiem_xe_report"
 					parent="menu_danhsach_baohiem_xe" sequence="10"/> -->
 			
-			<menuitem id="menu_danhsach_congno"
+			<!--<menuitem id="menu_danhsach_congno"
 				name="Danh sách công nợ"
 				parent="menu_root_baocao" sequence="10"/>
 				
@@ -421,7 +421,7 @@
 				<menuitem id="menu_action_phat_vi_pham_report"
 					name="DS Phạt vi phạm"
 					action="action_phat_vi_pham_report"
-					parent="menu_danhsach_congno" sequence="40"/>
+					parent="menu_danhsach_congno" sequence="40"/>-->
 			
 			<menuitem id="menu_baocao_cong_no_thu"
 				name="Công nợ theo bảng chiết tính"

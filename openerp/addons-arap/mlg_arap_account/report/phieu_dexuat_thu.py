@@ -29,6 +29,9 @@ class Parser(report_sxw.rml_parse):
             'convert': self.convert,
             'get_sotien': self.get_sotien,
             'get_title': self.get_title,
+            'get_ngay': self.get_ngay,
+            'get_diengiai': self.get_diengiai,
+            'get_phuongthuc_thanhtoan': self.get_phuongthuc_thanhtoan,
         })
         
     def get_sotien(self):
@@ -36,15 +39,31 @@ class Parser(report_sxw.rml_parse):
         so_tien = wizard_data['so_tien']
         return so_tien
     
+    def get_diengiai(self):
+        wizard_data = self.localcontext['data']['form']
+        diengiai = wizard_data['diengiai']
+        return diengiai
+    
+    def get_phuongthuc_thanhtoan(self):
+        wizard_data = self.localcontext['data']['form']
+        phuongthuc_thanhtoan = wizard_data['phuongthuc_thanhtoan']
+        if phuongthuc_thanhtoan=='tienmat':
+            return 'Tiền mặt'
+        return 'Ngân hàng'
+    
     def get_ngay(self):
         wizard_data = self.localcontext['data']['form']
-        so_tien = wizard_data['so_tien']
-        return so_tien
+        ngay = wizard_data['ngay']
+        if ngay:
+            return self.convert_date(ngay)
+        else:
+            return ''
     
     def convert_date(self, date):
         if date:
             date = datetime.strptime(date, DATE_FORMAT)
             return date.strftime('%d/%m/%Y')
+        return ''
     
     def get_title(self, mlg_type):
         tt = ''
@@ -66,6 +85,10 @@ class Parser(report_sxw.rml_parse):
             tt='TRẢ GÓP XE'
         if mlg_type=='hoan_tam_ung':
             tt='TẠM ỨNG'
+        if mlg_type=='phai_tra_ky_quy':
+            tt='KÝ QUỸ'
+        if mlg_type=='chi_ho':
+            tt='CHI HỘ'
         return tt
     
     def convert(self, amount):
