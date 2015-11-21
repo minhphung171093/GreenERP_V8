@@ -76,7 +76,8 @@ class list_project(osv.osv):
             total_amount = 0
             order_line_ids = order_line_obj.search(cr, uid, [('project_id','=',project.id)])
             for order_line in order_line_obj.browse(cr, uid, order_line_ids):
-                total_amount += (float(order_line.price_unit)/float(100-order_line.mark_up)*100)
+                if 100-order_line.mark_up:
+                    total_amount += (float(order_line.price_unit)/float(100-order_line.mark_up)*100)
             res[project.id] = total_amount
         return res
     
