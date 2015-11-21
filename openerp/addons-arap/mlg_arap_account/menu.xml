@@ -341,6 +341,10 @@
 					name="Công nợ đầu kỳ"
 					action="action_congno_dauky"
 					parent="menu_danhmuc_dungchung" sequence="30"/>
+					
+				<menuitem action="base.action_currency_form"
+					id="base.menu_action_currency_form"
+					parent="menu_danhmuc_dungchung" sequence="35" groups="base.group_multi_currency"/>
 			
 			<menuitem id="account.menu_finance_entries"
 				name="Journal Entries"
@@ -370,9 +374,9 @@
 					name="Accounts"
 					parent="menu_cauhinh" sequence="40"/>
 					
-				<menuitem id="account.menu_configuration_misc"
+				<!--<menuitem id="account.menu_configuration_misc"
 					name="Miscellaneous"
-					parent="menu_cauhinh" sequence="50"/>
+					parent="menu_cauhinh" sequence="50"/>-->
 					
 		<menuitem id="menu_root_luocdo"
 			name="Lược Đồ" sequence="15"/>

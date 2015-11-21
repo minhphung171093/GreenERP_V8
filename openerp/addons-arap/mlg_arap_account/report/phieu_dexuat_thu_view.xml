@@ -2,6 +2,30 @@
 <openerp>
 	<data>
 	
+<!-- Phiếu đề xuất thu nợ doanh thu lái xe-->
+    	<record id="phieu_dexuat_thu_report_nodoanhthu_laixe" model="ir.actions.report.xml">
+	        <field name="name">phieu_dexuat_thu_report_nodoanhthu_laixe</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">phieu_dexuat_thu_report_nodoanhthu_laixe</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_lx.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="phieu_dexuat_thu_report_nodoanhthu_laixe" 
+			model="account.invoice" 
+			name="phieu_dexuat_thu_report_nodoanhthu_laixe"
+	        string="Phiếu đề xuất thu"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_lx.odt"/>
+	
 <!-- Phiếu đề xuất thu -->
     	<record id="phieu_dexuat_thu_report" model="ir.actions.report.xml">
 	        <field name="name">phieu_dexuat_thu_report</field>

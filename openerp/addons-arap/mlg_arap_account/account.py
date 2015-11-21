@@ -74,6 +74,12 @@ class account_account(osv.osv):
         return self.name_get(cr, user, ids, context=context)
     
 account_account()
-    
 
+class account_chart(osv.osv_memory):
+    _inherit = "account.chart"
+
+    _defaults = {
+        'target_move': 'all',
+    }
+account_chart()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

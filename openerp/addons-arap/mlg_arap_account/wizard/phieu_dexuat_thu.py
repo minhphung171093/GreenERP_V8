@@ -17,14 +17,20 @@ class phieu_de_xuat(osv.osv_memory):
         if context.get('active_id', False):
             invoice_obj = self.pool.get('account.invoice')
             invoice = invoice_obj.browse(cr, uid, context['active_id'])
-            res.update({'so_tien': invoice.residual})
+            res.update({'so_tien': invoice.residual,'partner_id': invoice.partner_id.id})
         return res
     
     _columns = {
         'so_tien': fields.float('Số tiền', required=True),
+        'phuongthuc_thanhtoan': fields.selection([('tienmat','Tiền mặt'),('nganhang','Ngân hàng')],'Phương thức thanh toán', required=True),
+        'partner_id': fields.many2one('res.partner','Đối tượng'),
+        'ngay': fields.date('Ngày'),
+        'diengiai': fields.char('Diễn giải', size=1024),
     }
     
     _defaults = {
+        'phuongthuc_thanhtoan': 'tienmat',
+        'ngay': time.strftime('%Y-%m-%d'),
     }
     
     def print_report(self, cr, uid, ids, context=None):

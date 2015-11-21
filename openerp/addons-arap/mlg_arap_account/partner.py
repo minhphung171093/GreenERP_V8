@@ -54,13 +54,17 @@ class res_partner(osv.osv):
         cur_obj = self.pool.get('res.currency')
         res = {}
         for partner in self.browse(cr, uid, ids, context=context):
-            res[partner.id] = {}
-            sql = '''
-                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from thu_ky_quy where partner_id=%s and state='paid'
-            '''%(partner.id)
-            cr.execute(sql)
-            res[partner.id]['sotien_dathu'] = cr.fetchone()[0]
-            res[partner.id]['sotien_conlai'] = partner.sotien_phaithu - res[partner.id]['sotien_dathu']
+            res[partner.id] = {
+                'sotien_dathu': 0,
+                'sotien_conlai': 0,
+            }
+            if partner.taixe or partner.nhanvienvanphong:
+                sql = '''
+                    select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from thu_ky_quy where partner_id=%s and state='paid'
+                '''%(partner.id)
+                cr.execute(sql)
+                res[partner.id]['sotien_dathu'] = cr.fetchone()[0]
+                res[partner.id]['sotien_conlai'] = partner.sotien_phaithu - res[partner.id]['sotien_dathu']
         return res
     
     def _get_partner(self, cr, uid, ids, context=None):
@@ -211,7 +215,7 @@ class res_partner(osv.osv):
         if context.get('doituong_thukyquy', False) and context.get('chinhanh_id', False) and context.get('loai_doituong',False):
             if context['loai_doituong']=='nhadautu':
                 sql = '''
-                    select id from res_partner where id in (select partner_id from chi_nhanh_line where chinhanh_id=%s) and nhadautu='t' and sotien_conlai>0
+                    select id from res_partner where id in (select partner_id from chi_nhanh_line where chinhanh_id=%s and sotien_conlai>0) and nhadautu='t'
                 '''%(context['chinhanh_id'])
                 cr.execute(sql)
                 partner_ids = [r[0] for r in cr.fetchall()]
@@ -285,10 +289,48 @@ res_partner()
 class chi_nhanh_line(osv.osv):
     _name = "chi.nhanh.line"
     
+    def _get_sotien(self, cr, uid, ids, field_name, arg, context=None):
+        cur_obj = self.pool.get('res.currency')
+        res = {}
+        for chinhanhline in self.browse(cr, uid, ids, context=context):
+            res[chinhanhline.id] = {
+                'sotien_dathu': 0,
+                'sotien_conlai': 0,
+            }
+            sql = '''
+                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from thu_ky_quy where partner_id=%s and chinhanh_id=%s and state='paid'
+            '''%(chinhanhline.partner_id.id,chinhanhline.chinhanh_id.id)
+            cr.execute(sql)
+            res[chinhanhline.id]['sotien_dathu'] = cr.fetchone()[0]
+            res[chinhanhline.id]['sotien_conlai'] = chinhanhline.sotien_phaithu - res[chinhanhline.id]['sotien_dathu']
+        return res
+    
+    def _get_chi_nhanh_line(self, cr, uid, ids, context=None):
+        result = {}
+        chi_nhanh_line_obj = self.pool.get('chi.nhanh.line')
+        for line in self.pool.get('thu.ky.quy').browse(cr, uid, ids, context=context):
+            chi_nhanh_line_ids = chi_nhanh_line_obj.search(cr, uid, [('chinhanh_id','=',line.chinhanh_id.id),('partner_id','=',line.partner_id.id)])
+            for chi_nhanh_line_id in chi_nhanh_line_ids:
+                result[chi_nhanh_line_id] = True
+        return result.keys()
+    
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Chi nhánh', required=True, ondelete='cascade'),
         'chinhanh_id': fields.many2one('account.account', 'Chi nhánh', required=True),
         'nhom_chinhanh_id': fields.many2one('account.account', 'Chi nhánh đầu tư', required=False),
+        
+        'sotien_phaithu': fields.float('Số tiền phải thu'),
+        'sotien_phaithu_dinhky': fields.float('Số tiền phải thu định kỳ'),
+        'sotien_dathu': fields.function(_get_sotien, string='Số tiền đã thu', multi='sotien',
+            store={
+                'chi.nhanh.line': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
+                'thu.ky.quy': (_get_chi_nhanh_line, ['state', 'so_tien', 'partner_id','chinhanh_id'], 10),
+            },type='float'),
+        'sotien_conlai': fields.function(_get_sotien, string='Số tiền còn lại', multi='sotien',
+            store={
+                'chi.nhanh.line': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
+                'thu.ky.quy': (_get_chi_nhanh_line, ['state', 'so_tien', 'partner_id','chinhanh_id'], 10),
+            },type='float'),
     }
     
     def _check_chinhanh_id(self, cr, uid, ids, context=None):

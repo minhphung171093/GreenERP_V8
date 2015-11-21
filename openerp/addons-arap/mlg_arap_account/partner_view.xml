@@ -293,10 +293,14 @@
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','1')]"/>
 					                    <field name="nhom_chinhanh_id" required='1' options="{'no_create': True}" domain="[('parent_id','=',chinhanh_id)]"/>
+					                    <field name="sotien_phaithu"/>
+			                        	<field name="sotien_phaithu_dinhky"/>
+			                        	<field name="sotien_dathu"/>
+			                        	<field name="sotien_conlai"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>
-	                        <page string="Ký quỹ">
+	                        <!--<page string="Ký quỹ">
 	                        	<group col='4' colspan='2'>
 	                        		<field name="sotien_phaithu"/>
 		                        	<field name="sotien_phaithu_dinhky"/>
@@ -304,7 +308,7 @@
 		                        	<field name="sotien_conlai"/>
 	                        	</group>
 	                        	<field name="ky_quy_ids" nolabel='1'/>
-	                        </page>
+	                        </page>-->
 	                        <page string="Công nợ">
 	                        	<field name="tinh_congno" invisible='1'/>
 	                        	<field name="congno_line" nolabel='1'>

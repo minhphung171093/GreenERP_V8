@@ -993,11 +993,11 @@ class output_congno_tudong(osv.osv):
                 
                 sql = '''
                     select rp.id as id,rp.name as name,rp.chinhanh_id as chinhanh_id,rp.ma_doi_tuong as ma_doi_tuong,rp.taixe as taixe,
-                        rp.nhadautu as nhadautu,rp.nhanvienvanphong as nhanvienvanphong,rp.sotien_conlai as sotien_conlai,
+                        rp.nhanvienvanphong as nhanvienvanphong,rp.sotien_conlai as sotien_conlai,
                         rp.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cn.name as ten_chi_nhanh, cn.code as ma_chi_nhanh
                         from res_partner rp
                         left join account_account cn on cn.id=rp.chinhanh_id
-                        where sotien_conlai>0
+                        where rp.sotien_conlai>0
                 '''
                 cr.execute(sql)
                 for partner in cr.dictfetchall():
@@ -1019,7 +1019,7 @@ class output_congno_tudong(osv.osv):
                         })
                         vals = {
                             'chinhanh_id': partner['chinhanh_id'],
-                            'loai_doi_tuong': 'loai_doituong',
+                            'loai_doituong': loai_doituong,
                             'partner_id': partner['id'],
                             'so_tien': sotien,
                             'ngay_thu': time.strftime('%Y-%m-%d'),
@@ -1030,7 +1030,7 @@ class output_congno_tudong(osv.osv):
                         contents.append({
                             'chi_nhanh': partner['ten_chi_nhanh'],
                             'ma_chi_nhanh': partner['ma_chi_nhanh'],
-                            'loai_doi_tuong': loai_doituong,
+                            'loai_doi_tuong': 'Nhân viên văn phòng',
                             'ma_doi_tuong': partner['ma_doi_tuong'],
                             'ten_doi_tuong': partner['name'],
                             'so_tien': sotien,
@@ -1038,39 +1038,46 @@ class output_congno_tudong(osv.osv):
                         })
                         vals = {
                             'chinhanh_id': partner['chinhanh_id'],
-                            'loai_doi_tuong': 'Nhân viên văn phòng',
+                            'loai_doituong': loai_doituong,
                             'partner_id': partner['id'],
                             'so_tien': sotien,
                             'ngay_thu': time.strftime('%Y-%m-%d'),
                         }
                         kyquy_obj.create(cr, uid, vals)
-                    if partner['nhadautu']==True:
-                        loai_doituong='nhadautu'
-                        sql = '''
-                            select cnl.chinhanh_id as chinhanh_id, cn.code as ma_chi_nhanh, cn.name as ten_chi_nhanh
-                                from chi_nhanh_line cnl
-                                left join account_account cn on cn.id=cnl.chinhanh_id
-                                where partner_id=%s
-                        '''%(partner['id'])
-                        cr.execute(sql)
-                        for ndt in cr.dictfetchall():
-                            contents.append({
-                                'chi_nhanh': ndt['ten_chi_nhanh'],
-                                'ma_chi_nhanh': ndt['ma_chi_nhanh'],
-                                'loai_doi_tuong': 'Nhà đầu tư',
-                                'ma_doi_tuong': partner['ma_doi_tuong'],
-                                'ten_doi_tuong': partner['name'],
-                                'so_tien': sotien,
-                                'dien_giai': '',
-                            })
-                            vals = {
-                                'chinhanh_id': ndt['chinhanh_id'],
-                                'loai_doi_tuong': loai_doituong,
-                                'partner_id': partner['id'],
-                                'so_tien': sotien,
-                                'ngay_thu': time.strftime('%Y-%m-%d'),
-                            }
-                            kyquy_obj.create(cr, uid, vals)
+                sql = '''
+                    select rp.id as id,rp.ma_doi_tuong as ma_doi_tuong,rp.name as name,cnl.chinhanh_id as chinhanh_id, cn.code as ma_chi_nhanh,
+                        cn.name as ten_chi_nhanh,cnl.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cnl.sotien_conlai as sotien_conlai
+                        
+                        from chi_nhanh_line cnl
+                        left join res_partner rp on rp.id=cnl.partner_id
+                        left join account_account cn on cn.id=cnl.chinhanh_id
+                        
+                        where cnl.sotien_conlai>0
+                '''
+                cr.execute(sql)
+                for ndt in cr.dictfetchall():
+                    if ndt['sotien_phaithu_dinhky']<=ndt['sotien_conlai']:
+                        sotien=ndt['sotien_phaithu_dinhky']
+                    else:
+                        sotien=ndt['sotien_conlai']
+                    loai_doituong='nhadautu'
+                    contents.append({
+                        'chi_nhanh': ndt['ten_chi_nhanh'],
+                        'ma_chi_nhanh': ndt['ma_chi_nhanh'],
+                        'loai_doi_tuong': 'Nhà đầu tư',
+                        'ma_doi_tuong': ndt['ma_doi_tuong'],
+                        'ten_doi_tuong': ndt['name'],
+                        'so_tien': sotien,
+                        'dien_giai': '',
+                    })
+                    vals = {
+                        'chinhanh_id': ndt['chinhanh_id'],
+                        'loai_doituong': loai_doituong,
+                        'partner_id': ndt['id'],
+                        'so_tien': sotien,
+                        'ngay_thu': time.strftime('%Y-%m-%d'),
+                    }
+                    kyquy_obj.create(cr, uid, vals)
                         
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):

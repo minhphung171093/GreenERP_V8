@@ -36,6 +36,11 @@ class Parser(report_sxw.rml_parse):
         so_tien = wizard_data['so_tien']
         return so_tien
     
+    def get_ngay(self):
+        wizard_data = self.localcontext['data']['form']
+        so_tien = wizard_data['so_tien']
+        return so_tien
+    
     def convert_date(self, date):
         if date:
             date = datetime.strptime(date, DATE_FORMAT)
