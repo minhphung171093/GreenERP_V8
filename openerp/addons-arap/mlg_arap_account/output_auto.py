@@ -631,7 +631,7 @@ class output_congno_tudong(osv.osv):
                 sql = '''
                     select ai.id as invoice_id,cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
                         ai.date_invoice as ngay_giao_dich,bsx.name as bien_so_xe, ai.so_hop_dong as so_hop_dong, ai.ma_bang_chiettinh_chiphi_sua as ma_chiet_tinh,
-                        mx.code as ma_xuong, ai.so_tien as so_tien, ai.dien_giai as dien_giai, ai.residual as residual, ai.state as state
+                        mx.code as ma_xuong, ai.so_tien as so_tien, ai.dien_giai as dien_giai, ai.residual as residual, ai.state as state,dvc.ma_doi_tuong as don_vi_chi
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
