@@ -12,6 +12,7 @@
 	                	<group col='4' colspan='2'>
 	                    	<field name='period_id' required='1' domain="[('special','!=',True)]"/>
 	                    	<field name='chinhanh_id' readonly='1'/>
+	                    	<field name='mlg_type' required='1'/>
 	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','other'),('parent_id','=',chinhanh_id)]" on_change="onchange_doi_xe(doi_xe_ids)"/>
 	                    	<field name='bai_giaoca_ids' widget="many2many_tags" on_change="onchange_bai_giaoca(bai_giaoca_ids)"/>
 	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>

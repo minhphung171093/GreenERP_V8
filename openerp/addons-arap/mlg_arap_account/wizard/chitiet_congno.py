@@ -12,10 +12,20 @@ class chitiet_congno(osv.osv_memory):
     
     _columns = {
         'period_id': fields.many2one('account.period','Tháng'),
-        'partner_ids': fields.many2many('res.partner', 'dscn_doituong_ref', 'dscn_id', 'doituong_id', 'Đối tượng'),
-        'doi_xe_ids': fields.many2many('account.account', 'dscn_doixe_ref', 'dscn_id', 'doixe_id', 'Đội xe'),
-        'bai_giaoca_ids': fields.many2many('bai.giaoca', 'dscn_baigiaoca_ref', 'dscn_id', 'baigiaoca_id', 'Bãi giao ca'),
+        'partner_ids': fields.many2many('res.partner', 'ctcn_doituong_ref', 'dscn_id', 'doituong_id', 'Đối tượng'),
+        'doi_xe_ids': fields.many2many('account.account', 'ctcn_doixe_ref', 'dscn_id', 'doixe_id', 'Đội xe'),
+        'bai_giaoca_ids': fields.many2many('bai.giaoca', 'ctcn_baigiaoca_ref', 'dscn_id', 'baigiaoca_id', 'Bãi giao ca'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+                                      ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
+                                      ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
+                                      ('phat_vi_pham','Phạt vi phạm'),
+                                      ('thu_no_xuong','Thu nợ xưởng'),
+                                      ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
+                                      ('tra_gop_xe','Trả góp xe'),
+                                      ('hoan_tam_ung','Phải thu tạm ứng'),
+                                      ('phai_tra_ky_quy','Phải trả ký quỹ'),
+                                      ('chi_ho','Phải trả chi hộ'),],'Loại công nợ'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):
