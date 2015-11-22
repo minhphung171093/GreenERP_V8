@@ -147,10 +147,10 @@ class account_invoice(osv.osv):
         'so_bien_ban_vi_pham':fields.char('Số biên bản vi phạm',size = 64, readonly=True, states={'draft': [('readonly', False)]}),
         'ngay_vi_pham':fields.date('Ngày vi phạm', readonly=True, states={'draft': [('readonly', False)]}),
         'dien_giai': fields.text('Diễn giải', readonly=True, states={'draft': [('readonly', False)]}),
-        'so_tien': fields.float('Số tiền', readonly=True, states={'draft': [('readonly', False)]}),
-        'so_tien_tren_hd': fields.float('Số tiền trên hóa đơn', readonly=True, states={'draft': [('readonly', False)]}),
+        'so_tien': fields.float('Số tiền',digits=(16,0), readonly=True, states={'draft': [('readonly', False)]}),
+        'so_tien_tren_hd': fields.float('Số tiền trên hóa đơn',digits=(16,0), readonly=True, states={'draft': [('readonly', False)]}),
         'chung_tu_bao_hiem':fields.char('Chứng từ bảo hiểm',size = 1024, readonly=True, states={'draft': [('readonly', False)]}),
-        'so_tien_tren_ct': fields.float('Số tiền trên chứng từ', readonly=True, states={'draft': [('readonly', False)]}),
+        'so_tien_tren_ct': fields.float('Số tiền trên chứng từ',digits=(16,0), readonly=True, states={'draft': [('readonly', False)]}),
         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã chiết tính', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
 #         'loai_doituong': fields.selection([('taixe','Lái xe'),
 #                                            ('nhadautu','Nhà đầu tư'),
@@ -618,5 +618,4 @@ class account_invoice_line(osv.osv):
         return res
     
 account_invoice_line()
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

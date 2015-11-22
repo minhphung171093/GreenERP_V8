@@ -99,7 +99,7 @@ class doanh_so_thu_line(osv.osv_memory):
         'machinhanh': fields.char('Mã chi nhánh', size=1024),
         'loaicongno': fields.char('Loại công nợ', size=1024),
         'taikhoan': fields.char('Tài khoản', size=1024),
-        'sotien': fields.float('Số tiền'),
+        'sotien': fields.float('Số tiền',digits=(16,0)),
         'ghichu': fields.char('Ghi chú', size=1024),
     }
     

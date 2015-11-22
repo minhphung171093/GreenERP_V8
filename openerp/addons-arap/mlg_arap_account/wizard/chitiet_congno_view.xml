@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Báo cáo chi tiết công nợ -->
+        <record id="view_chitiet_congno_report" model="ir.ui.view">
+            <field name="name">chitiet.report</field>
+            <field name="model">chitiet.congno</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo chi tiết công nợ" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='period_id' required='1' domain="[('special','!=',True)]"/>
+	                    	<field name='chinhanh_id' readonly='1'/>
+	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','other'),('parent_id','=',chinhanh_id)]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    	<field name='bai_giaoca_ids' widget="many2many_tags" on_change="onchange_bai_giaoca(bai_giaoca_ids)"/>
+	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'chitiet_congno_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_chitiet_congno" model="ir.actions.act_window">
+            <field name="name">Báo cáo chi tiết công nợ</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">chitiet.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_chitiet_congno_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+    </data>
+</openerp>
+

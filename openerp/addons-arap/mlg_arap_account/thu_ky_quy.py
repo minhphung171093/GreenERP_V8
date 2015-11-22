@@ -40,7 +40,7 @@ class thu_ky_quy(osv.osv):
         'ngay_thu': fields.date('Ngày thu', readonly=True, states={'draft': [('readonly', False)]}),
         'user_id': fields.many2one('res.users', 'Nhân viên thu', readonly=True, states={'draft': [('readonly', False)]}),
         'dien_giai': fields.text('Diễn giải', readonly=True, states={'draft': [('readonly', False)]}),
-        'so_tien': fields.float('Số tiền', required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'so_tien': fields.float('Số tiền',digits=(16,0), required=True, readonly=True, states={'draft': [('readonly', False)]}),
         'name': fields.char('Số'),
         'currency_id': fields.many2one('res.currency','Đơn vị tiền tệ'),
         'loai_doituong': fields.selection([('taixe','Lái xe'),

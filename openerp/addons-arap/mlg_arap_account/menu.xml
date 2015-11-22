@@ -423,6 +423,15 @@
 					action="action_phat_vi_pham_report"
 					parent="menu_danhsach_congno" sequence="40"/>-->
 			
+			<menuitem id="menu_chitiet_congno"
+				name="Báo cáo chi tiết công nợ"
+				parent="menu_root_baocao" sequence="12"/>
+				
+				<menuitem id="menu_action_chitiet_congno"
+					name="Chi tiết công nợ"
+					action="action_chitiet_congno"
+					parent="menu_chitiet_congno" sequence="10"/>
+			
 			<menuitem id="menu_baocao_cong_no_thu"
 				name="Công nợ theo bảng chiết tính"
 				parent="menu_root_baocao" sequence="15"/>

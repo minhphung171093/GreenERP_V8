@@ -155,18 +155,18 @@ class res_partner(osv.osv):
         'giayphep_kinhdoanh': fields.char('Mã số giấy phép kinh doanh', size=1024),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
         'create_user_id': fields.many2one('res.users','User'),
-        'sotien_phaithu': fields.float('Số tiền phải thu'),
-        'sotien_phaithu_dinhky': fields.float('Số tiền phải thu định kỳ'),
+        'sotien_phaithu': fields.float('Số tiền phải thu',digits=(16,0)),
+        'sotien_phaithu_dinhky': fields.float('Số tiền phải thu định kỳ',digits=(16,0)),
         'sotien_dathu': fields.function(_get_sotien, string='Số tiền đã thu', multi='sotien',
             store={
                 'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
                 'thu.ky.quy': (_get_partner, ['state', 'so_tien', 'partner_id'], 10),
-            },type='float'),
+            },type='float',digits=(16,0)),
         'sotien_conlai': fields.function(_get_sotien, string='Số tiền còn lại', multi='sotien',
             store={
                 'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
                 'thu.ky.quy': (_get_partner, ['state', 'so_tien', 'partner_id'], 10),
-            },type='float'),
+            },type='float',digits=(16,0)),
         'ky_quy_ids': fields.function(_get_kyquy, relation='thu.ky.quy',type='many2many', string='Ký quỹ', readonly=True),
         'tinh_congno': fields.function(_get_congno, type='char', string='Tính công nợ', readonly=True),
         'congno_line': fields.one2many('tong.cong.no', 'partner_id','Chi tiết công nợ', readonly=True),
@@ -319,18 +319,18 @@ class chi_nhanh_line(osv.osv):
         'chinhanh_id': fields.many2one('account.account', 'Chi nhánh', required=True),
         'nhom_chinhanh_id': fields.many2one('account.account', 'Chi nhánh đầu tư', required=False),
         
-        'sotien_phaithu': fields.float('Số tiền phải thu'),
-        'sotien_phaithu_dinhky': fields.float('Số tiền phải thu định kỳ'),
+        'sotien_phaithu': fields.float('Số tiền phải thu',digits=(16,0)),
+        'sotien_phaithu_dinhky': fields.float('Số tiền phải thu định kỳ',digits=(16,0)),
         'sotien_dathu': fields.function(_get_sotien, string='Số tiền đã thu', multi='sotien',
             store={
                 'chi.nhanh.line': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
                 'thu.ky.quy': (_get_chi_nhanh_line, ['state', 'so_tien', 'partner_id','chinhanh_id'], 10),
-            },type='float'),
+            },type='float',digits=(16,0)),
         'sotien_conlai': fields.function(_get_sotien, string='Số tiền còn lại', multi='sotien',
             store={
                 'chi.nhanh.line': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
                 'thu.ky.quy': (_get_chi_nhanh_line, ['state', 'so_tien', 'partner_id','chinhanh_id'], 10),
-            },type='float'),
+            },type='float',digits=(16,0)),
     }
     
     def _check_chinhanh_id(self, cr, uid, ids, context=None):
@@ -369,9 +369,9 @@ class tong_cong_no(osv.osv):
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('tam_ung','Tạm ứng'),
                                       ('chi_ho','Chi hộ'),],'Loại công nợ', readonly=True),
-        'sotien_congno': fields.float('Số tiền công nợ'),
-        'sotien_dathu': fields.float('Số tiền đã thu'),
-        'sotien_conlai': fields.float('Số tiền còn lại'),
+        'sotien_congno': fields.float('Số tiền công nợ',digits=(16,0)),
+        'sotien_dathu': fields.float('Số tiền đã thu',digits=(16,0)),
+        'sotien_conlai': fields.float('Số tiền còn lại',digits=(16,0)),
     }
 tong_cong_no()
 

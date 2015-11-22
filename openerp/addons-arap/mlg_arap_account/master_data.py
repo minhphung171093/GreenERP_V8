@@ -143,7 +143,7 @@ class no_hang_muc(osv.osv):
                                       ('tra_gop_xe','Trả góp xe'),
                                       ('hoan_tam_ung','Hoàn tạm ứng'),
                                       ],'Loại công nợ', required=True),
-        'so_tien': fields.float('Số tiền', required=True),
+        'so_tien': fields.float('Số tiền',digits=(16,0), required=True),
     }
 no_hang_muc()
 

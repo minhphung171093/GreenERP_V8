@@ -33,7 +33,7 @@ class phieu_de_xuat(osv.osv_memory):
         return res
     
     _columns = {
-        'so_tien': fields.float('Số tiền', required=True),
+        'so_tien': fields.float('Số tiền',digits=(16,0), required=True),
         'phuongthuc_thanhtoan': fields.selection([('tienmat','Tiền mặt'),('nganhang','Ngân hàng')],'Phương thức thanh toán', required=True),
         'partner_id': fields.many2one('res.partner','Đối tượng'),
         'ngay': fields.date('Ngày'),

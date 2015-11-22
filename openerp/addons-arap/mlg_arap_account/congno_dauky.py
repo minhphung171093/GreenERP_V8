@@ -120,7 +120,7 @@ class congno_dauky_line(osv.osv):
                                       ('tam_ung','Tạm ứng'),
                                       ('chi_ho','Chi hộ')
                                       ],'Loại công nợ'),
-        'so_tien_no': fields.float('Số tiền nợ'),
+        'so_tien_no': fields.float('Số tiền nợ',digits=(16,0)),
     }
 congno_dauky_line()
 

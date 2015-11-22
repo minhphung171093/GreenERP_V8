@@ -33,7 +33,7 @@ from openerp.addons.mlg_arap_account import lib_csv
 from openerp import netsvc
 from glob import glob
 
-# from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -74,6 +74,8 @@ class import_congno_tudong(osv.osv):
                             '''%(data['ma_chi_nhanh'])
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
+                            if not chinhanh_ids:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
                                 select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
@@ -81,6 +83,8 @@ class import_congno_tudong(osv.osv):
                             '''%(data['ma_doi_tuong'])
                             cr.execute(sql)
                             partner = cr.dictfetchone()
+                            if not partner:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
                             
@@ -107,23 +111,17 @@ class import_congno_tudong(osv.osv):
                             sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
+                            if bsx and not bien_so_xe_ids:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             mx = data['ma_xuong']
                             sql = ''' select id from ma_xuong where code='%s' '''%(mx)
                             cr.execute(sql)
                             ma_xuong_ids = cr.fetchone()
+                            if mx and not ma_xuong_ids:
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy mã xưởng')
                             
-                            ngay_giao_dich_arr = data['ngay_giao_dich'].split('/')
-                            if len(ngay_giao_dich_arr[0])==1:
-                                ngay='0'+ngay_giao_dich_arr[0]
-                            else:
-                                ngay=ngay_giao_dich_arr[0]
-                            if len(ngay_giao_dich_arr[1])==1:
-                                thang='0'+ngay_giao_dich_arr[1]
-                            else:
-                                thang=ngay_giao_dich_arr[1]
-                            nam=ngay_giao_dich_arr[2]
-                            date_invoice=nam+'-'+thang+'-'+ngay
+                            date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%d-%m')
                             
                             vals.update({
                                 'mlg_type': 'thu_no_xuong',
@@ -160,7 +158,7 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
-                        lichsu_obj.create(cr, uid, {
+                        lichsu_id = lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
                             'ten_file': error_path+f_path.split('/')[-1],
                             'loai_giaodich': 'Thu nợ xưởng (BDSC)',
