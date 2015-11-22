@@ -477,8 +477,9 @@ class output_congno_tudong(osv.osv):
                     if line['loai_doituong']=='nhanvienvanphong':
                         loai_doituong = 'Nhân viên văn phòng'
                         
-                    ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
-                    ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
+#                     ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
+#                     ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
+                    ngay_giao_dich=datetime.strptime(line['ngay_giao_dich'],'%Y-%m-%d').strftime('%d/%m/%Y')
                         
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
@@ -565,9 +566,10 @@ class output_congno_tudong(osv.osv):
                     if line['loai_doituong']=='nhanvienvanphong':
                         loai_doituong = 'Nhân viên văn phòng'
                         
-                    ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
-                    ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
-                        
+#                     ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
+#                     ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
+                    ngay_giao_dich=datetime.strptime(line['ngay_giao_dich'],'%Y-%m-%d').strftime('%d/%m/%Y')    
+                    
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
@@ -652,8 +654,9 @@ class output_congno_tudong(osv.osv):
                     if line['loai_doituong']=='nhanvienvanphong':
                         loai_doituong = 'Nhân viên văn phòng'
                         
-                    ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
-                    ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
+#                     ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
+#                     ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
+                    ngay_giao_dich=datetime.strptime(line['ngay_giao_dich'],'%Y-%m-%d').strftime('%d/%m/%Y')
                         
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:

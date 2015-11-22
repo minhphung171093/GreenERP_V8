@@ -121,7 +121,7 @@ class import_congno_tudong(osv.osv):
                             if mx and not ma_xuong_ids:
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy mã xưởng')
                             
-                            date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%d-%m')
+                            date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
                             vals.update({
                                 'mlg_type': 'thu_no_xuong',
@@ -238,17 +238,18 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             
-                            ngay_giao_dich_arr = data['ngay_giao_dich'].split('/')
-                            if len(ngay_giao_dich_arr[0])==1:
-                                ngay='0'+ngay_giao_dich_arr[0]
-                            else:
-                                ngay=ngay_giao_dich_arr[0]
-                            if len(ngay_giao_dich_arr[1])==1:
-                                thang='0'+ngay_giao_dich_arr[1]
-                            else:
-                                thang=ngay_giao_dich_arr[1]
-                            nam=ngay_giao_dich_arr[2]
-                            date_invoice=nam+'-'+thang+'-'+ngay
+#                             ngay_giao_dich_arr = data['ngay_giao_dich'].split('/')
+#                             if len(ngay_giao_dich_arr[0])==1:
+#                                 ngay='0'+ngay_giao_dich_arr[0]
+#                             else:
+#                                 ngay=ngay_giao_dich_arr[0]
+#                             if len(ngay_giao_dich_arr[1])==1:
+#                                 thang='0'+ngay_giao_dich_arr[1]
+#                             else:
+#                                 thang=ngay_giao_dich_arr[1]
+#                             nam=ngay_giao_dich_arr[2]
+#                             date_invoice=nam+'-'+thang+'-'+ngay
+                            date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
                             vals.update({
                                 'mlg_type': 'thu_phi_thuong_hieu',
@@ -363,17 +364,18 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             
-                            ngay_giao_dich_arr = data['ngay_phat_sinh'].split('/')
-                            if len(ngay_giao_dich_arr[0])==1:
-                                ngay='0'+ngay_giao_dich_arr[0]
-                            else:
-                                ngay=ngay_giao_dich_arr[0]
-                            if len(ngay_giao_dich_arr[1])==1:
-                                thang='0'+ngay_giao_dich_arr[1]
-                            else:
-                                thang=ngay_giao_dich_arr[1]
-                            nam=ngay_giao_dich_arr[2]
-                            date_invoice=nam+'-'+thang+'-'+ngay
+#                             ngay_giao_dich_arr = data['ngay_phat_sinh'].split('/')
+#                             if len(ngay_giao_dich_arr[0])==1:
+#                                 ngay='0'+ngay_giao_dich_arr[0]
+#                             else:
+#                                 ngay=ngay_giao_dich_arr[0]
+#                             if len(ngay_giao_dich_arr[1])==1:
+#                                 thang='0'+ngay_giao_dich_arr[1]
+#                             else:
+#                                 thang=ngay_giao_dich_arr[1]
+#                             nam=ngay_giao_dich_arr[2]
+#                             date_invoice=nam+'-'+thang+'-'+ngay
+                            date_invoice=datetime.strptime(data['ngay_phat_sinh'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
                             donvithuhuong = []
                             if data['don_vi_thu_huong']:
@@ -483,17 +485,19 @@ class import_congno_tudong(osv.osv):
                                     break
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
-                                ngay_thanh_toan_arr = data['ngay_thanh_toan'].split('/')
-                                if len(ngay_thanh_toan_arr[0])==1:
-                                    ngay='0'+ngay_thanh_toan_arr[0]
-                                else:
-                                    ngay=ngay_thanh_toan_arr[0]
-                                if len(ngay_thanh_toan_arr[1])==1:
-                                    thang='0'+ngay_thanh_toan_arr[1]
-                                else:
-                                    thang=ngay_thanh_toan_arr[1]
-                                nam=ngay_thanh_toan_arr[2]
-                                ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+#                                 ngay_thanh_toan_arr = data['ngay_thanh_toan'].split('/')
+#                                 if len(ngay_thanh_toan_arr[0])==1:
+#                                     ngay='0'+ngay_thanh_toan_arr[0]
+#                                 else:
+#                                     ngay=ngay_thanh_toan_arr[0]
+#                                 if len(ngay_thanh_toan_arr[1])==1:
+#                                     thang='0'+ngay_thanh_toan_arr[1]
+#                                 else:
+#                                     thang=ngay_thanh_toan_arr[1]
+#                                 nam=ngay_thanh_toan_arr[2]
+#                                 ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+                                
+                                ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
                                 vals = {
                                     'amount': amount,
@@ -612,17 +616,18 @@ class import_congno_tudong(osv.osv):
                                     break
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
-                                ngay_thanh_toan_arr = data['ngay_thanh_toan'].split('/')
-                                if len(ngay_thanh_toan_arr[0])==1:
-                                    ngay='0'+ngay_thanh_toan_arr[0]
-                                else:
-                                    ngay=ngay_thanh_toan_arr[0]
-                                if len(ngay_thanh_toan_arr[1])==1:
-                                    thang='0'+ngay_thanh_toan_arr[1]
-                                else:
-                                    thang=ngay_thanh_toan_arr[1]
-                                nam=ngay_thanh_toan_arr[2]
-                                ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+#                                 ngay_thanh_toan_arr = data['ngay_thanh_toan'].split('/')
+#                                 if len(ngay_thanh_toan_arr[0])==1:
+#                                     ngay='0'+ngay_thanh_toan_arr[0]
+#                                 else:
+#                                     ngay=ngay_thanh_toan_arr[0]
+#                                 if len(ngay_thanh_toan_arr[1])==1:
+#                                     thang='0'+ngay_thanh_toan_arr[1]
+#                                 else:
+#                                     thang=ngay_thanh_toan_arr[1]
+#                                 nam=ngay_thanh_toan_arr[2]
+#                                 ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+                                ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
                                 vals = {
                                     'amount': amount,
@@ -734,17 +739,18 @@ class import_congno_tudong(osv.osv):
                                     break
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
-                                ngay_thanh_toan_arr = data['ngay_thanh_toan'].split('/')
-                                if len(ngay_thanh_toan_arr[0])==1:
-                                    ngay='0'+ngay_thanh_toan_arr[0]
-                                else:
-                                    ngay=ngay_thanh_toan_arr[0]
-                                if len(ngay_thanh_toan_arr[1])==1:
-                                    thang='0'+ngay_thanh_toan_arr[1]
-                                else:
-                                    thang=ngay_thanh_toan_arr[1]
-                                nam=ngay_thanh_toan_arr[2]
-                                ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+#                                 ngay_thanh_toan_arr = data['ngay_thanh_toan'].split('/')
+#                                 if len(ngay_thanh_toan_arr[0])==1:
+#                                     ngay='0'+ngay_thanh_toan_arr[0]
+#                                 else:
+#                                     ngay=ngay_thanh_toan_arr[0]
+#                                 if len(ngay_thanh_toan_arr[1])==1:
+#                                     thang='0'+ngay_thanh_toan_arr[1]
+#                                 else:
+#                                     thang=ngay_thanh_toan_arr[1]
+#                                 nam=ngay_thanh_toan_arr[2]
+#                                 ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+                                ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
                                 vals = {
                                     'amount': amount,
@@ -856,17 +862,19 @@ class import_congno_tudong(osv.osv):
                                     break
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
-                                ngay_thanh_toan_arr = data['ngay_thanh_toan'].split('/')
-                                if len(ngay_thanh_toan_arr[0])==1:
-                                    ngay='0'+ngay_thanh_toan_arr[0]
-                                else:
-                                    ngay=ngay_thanh_toan_arr[0]
-                                if len(ngay_thanh_toan_arr[1])==1:
-                                    thang='0'+ngay_thanh_toan_arr[1]
-                                else:
-                                    thang=ngay_thanh_toan_arr[1]
-                                nam=ngay_thanh_toan_arr[2]
-                                ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+#                                 ngay_thanh_toan_arr = data['ngay_thanh_toan'].split('/')
+#                                 if len(ngay_thanh_toan_arr[0])==1:
+#                                     ngay='0'+ngay_thanh_toan_arr[0]
+#                                 else:
+#                                     ngay=ngay_thanh_toan_arr[0]
+#                                 if len(ngay_thanh_toan_arr[1])==1:
+#                                     thang='0'+ngay_thanh_toan_arr[1]
+#                                 else:
+#                                     thang=ngay_thanh_toan_arr[1]
+#                                 nam=ngay_thanh_toan_arr[2]
+#                                 ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+                                
+                                ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
                                 vals = {
                                     'amount': amount,
@@ -1043,17 +1051,19 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
                             
-                            ngay_thanh_toan_arr = data['GL_DATE'].split('/')
-                            if len(ngay_thanh_toan_arr[0])==1:
-                                ngay='0'+ngay_thanh_toan_arr[0]
-                            else:
-                                ngay=ngay_thanh_toan_arr[0]
-                            if len(ngay_thanh_toan_arr[1])==1:
-                                thang='0'+ngay_thanh_toan_arr[1]
-                            else:
-                                thang=ngay_thanh_toan_arr[1]
-                            nam=ngay_thanh_toan_arr[2]
-                            ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+#                             ngay_thanh_toan_arr = data['GL_DATE'].split('/')
+#                             if len(ngay_thanh_toan_arr[0])==1:
+#                                 ngay='0'+ngay_thanh_toan_arr[0]
+#                             else:
+#                                 ngay=ngay_thanh_toan_arr[0]
+#                             if len(ngay_thanh_toan_arr[1])==1:
+#                                 thang='0'+ngay_thanh_toan_arr[1]
+#                             else:
+#                                 thang=ngay_thanh_toan_arr[1]
+#                             nam=ngay_thanh_toan_arr[2]
+#                             ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+                            
+                            ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
                             vals = {
                                 'amount': amount,
@@ -1166,17 +1176,19 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
                             
-                            ngay_thanh_toan_arr = data['GL_DATE'].split('/')
-                            if len(ngay_thanh_toan_arr[0])==1:
-                                ngay='0'+ngay_thanh_toan_arr[0]
-                            else:
-                                ngay=ngay_thanh_toan_arr[0]
-                            if len(ngay_thanh_toan_arr[1])==1:
-                                thang='0'+ngay_thanh_toan_arr[1]
-                            else:
-                                thang=ngay_thanh_toan_arr[1]
-                            nam=ngay_thanh_toan_arr[2]
-                            ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+#                             ngay_thanh_toan_arr = data['GL_DATE'].split('/')
+#                             if len(ngay_thanh_toan_arr[0])==1:
+#                                 ngay='0'+ngay_thanh_toan_arr[0]
+#                             else:
+#                                 ngay=ngay_thanh_toan_arr[0]
+#                             if len(ngay_thanh_toan_arr[1])==1:
+#                                 thang='0'+ngay_thanh_toan_arr[1]
+#                             else:
+#                                 thang=ngay_thanh_toan_arr[1]
+#                             nam=ngay_thanh_toan_arr[2]
+#                             ngay_thanh_toan=nam+'-'+thang+'-'+ngay
+                            
+                            ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
                             vals = {
                                 'amount': amount,
@@ -1309,17 +1321,19 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             
-                            ngay_giao_dich_arr = data['ngay_phat_sinh'].split('/')
-                            if len(ngay_giao_dich_arr[0])==1:
-                                ngay='0'+ngay_giao_dich_arr[0]
-                            else:
-                                ngay=ngay_giao_dich_arr[0]
-                            if len(ngay_giao_dich_arr[1])==1:
-                                thang='0'+ngay_giao_dich_arr[1]
-                            else:
-                                thang=ngay_giao_dich_arr[1]
-                            nam=ngay_giao_dich_arr[2]
-                            date_invoice=nam+'-'+thang+'-'+ngay
+#                             ngay_giao_dich_arr = data['ngay_phat_sinh'].split('/')
+#                             if len(ngay_giao_dich_arr[0])==1:
+#                                 ngay='0'+ngay_giao_dich_arr[0]
+#                             else:
+#                                 ngay=ngay_giao_dich_arr[0]
+#                             if len(ngay_giao_dich_arr[1])==1:
+#                                 thang='0'+ngay_giao_dich_arr[1]
+#                             else:
+#                                 thang=ngay_giao_dich_arr[1]
+#                             nam=ngay_giao_dich_arr[2]
+#                             date_invoice=nam+'-'+thang+'-'+ngay
+                            
+                            date_invoice=datetime.strptime(data['ngay_phat_sinh'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
                             vals.update({
                                 'mlg_type': 'chi_ho',
