@@ -158,16 +158,25 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+'/Error/'
                         csvUti._moveFiles([f_path],error_path)
-                        lichsu_id = lichsu_obj.create(cr, uid, {
-                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': error_path+f_path.split('/')[-1],
-                            'loai_giaodich': 'Thu nợ xưởng (BDSC)',
-                            'thu_tra': 'Thu',
-                            'nhap_xuat': 'Nhập',
-                            'tudong_bangtay': 'Tự động',
-                            'trang_thai': 'Lỗi',
-                            'noidung_loi': e,
-                        })
+#                         lichsu_id = lichsu_obj.create(cr, uid, {
+#                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+#                             'ten_file': error_path+f_path.split('/')[-1],
+#                             'loai_giaodich': 'Thu nợ xưởng (BDSC)',
+#                             'thu_tra': 'Thu',
+#                             'nhap_xuat': 'Nhập',
+#                             'tudong_bangtay': 'Tự động',
+#                             'trang_thai': 'Lỗi',
+#                             'noidung_loi': e,
+#                         })
+                        sql = '''
+                            insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                            values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                            commit;
+                        '''%(
+                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                             error_path+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)','Thu','Nhập','Tự động','Lỗi',''
+                        )
+                        cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
 #                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
         except Exception, e:
