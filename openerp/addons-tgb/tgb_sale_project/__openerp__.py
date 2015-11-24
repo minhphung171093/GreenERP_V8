@@ -27,6 +27,8 @@
     'depends': ['sale'],
     'data': [
         'security/ir.model.access.csv',
+        'views/report_sample_with_one_project.xml',
+        'sale_report.xml',
         'sale_view.xml',
     ],
     'css' : [
