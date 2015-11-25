@@ -1036,12 +1036,47 @@ class import_congno_tudong(osv.osv):
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                    from account_invoice where name='%s' and state='open'
+                                    from account_invoice where name='%s' and state='open' and type='out_invoice'
                                     order by date_invoice
                             '''%(data['REQUEST_REF_NUMBER'])
                             cr.execute(sql)
-                            sotiendathu = float(data['ACCTD_AMOUNT'])
                             invoice = cr.dictfetchone()
+                            if not invoice:
+                                sql = '''
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                        from account_invoice where so_hoa_don='%s' and state='open' and type='out_invoice'
+                                        order by date_invoice
+                                '''%(data['REQUEST_REF_NUMBER'])
+                                cr.execute(sql)
+                                invoice = cr.dictfetchone()
+                            if not invoice:
+                                sql = '''
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                        from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and state='open' and type='out_invoice'
+                                        order by date_invoice
+                                '''%(data['REQUEST_REF_NUMBER'])
+                                cr.execute(sql)
+                                invoice = cr.dictfetchone()
+                            if not invoice:
+                                sql = '''
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                        from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and state='open' and type='out_invoice'
+                                        order by date_invoice
+                                '''%(data['REQUEST_REF_NUMBER'])
+                                cr.execute(sql)
+                                invoice = cr.dictfetchone()
+                            if not invoice:
+                                sql = '''
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                        from account_invoice where so_hop_dong='%s' and state='open' and type='out_invoice'
+                                        order by date_invoice
+                                '''%(data['REQUEST_REF_NUMBER'])
+                                cr.execute(sql)
+                                invoice = cr.dictfetchone()    
+                            if not invoice:
+                                raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
+                            
+                            sotiendathu = float(data['ACCTD_AMOUNT'])
                             if invoice['residual']>sotiendathu:
                                 amount = sotiendathu
                             else:
@@ -1165,8 +1200,43 @@ class import_congno_tudong(osv.osv):
                                     order by date_invoice
                             '''%(data['REQUEST_REF_NUMBER'])
                             cr.execute(sql)
-                            sotiendathu = float(data['ACCTD_AMOUNT'])
                             invoice = cr.dictfetchone()
+                            if not invoice:
+                                sql = '''
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                        from account_invoice where so_hoa_don='%s' and state='open' and type='in_invoice'
+                                        order by date_invoice
+                                '''%(data['REQUEST_REF_NUMBER'])
+                                cr.execute(sql)
+                                invoice = cr.dictfetchone()
+                            if not invoice:
+                                sql = '''
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                        from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and state='open' and type='in_invoice'
+                                        order by date_invoice
+                                '''%(data['REQUEST_REF_NUMBER'])
+                                cr.execute(sql)
+                                invoice = cr.dictfetchone()
+                            if not invoice:
+                                sql = '''
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                        from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and state='open' and type='in_invoice'
+                                        order by date_invoice
+                                '''%(data['REQUEST_REF_NUMBER'])
+                                cr.execute(sql)
+                                invoice = cr.dictfetchone()
+                            if not invoice:
+                                sql = '''
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                        from account_invoice where so_hop_dong='%s' and state='open' and type='in_invoice'
+                                        order by date_invoice
+                                '''%(data['REQUEST_REF_NUMBER'])
+                                cr.execute(sql)
+                                invoice = cr.dictfetchone()    
+                            if not invoice:
+                                raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
+                            
+                            sotiendathu = float(data['ACCTD_AMOUNT'])
                             if invoice['residual']>sotiendathu:
                                 amount = sotiendathu
                             else:

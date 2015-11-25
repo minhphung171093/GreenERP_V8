@@ -24,7 +24,7 @@
     'version': '1.0',
     'category': 'ARAP',
     'sequence': 1,
-    'depends': ['mlg_arap_base','account_accountant','account_cancel','report_aeroo_ooo','report_aeroo','web_readonly_bypass'],
+    'depends': ['mlg_arap_base','account_accountant','account_cancel','report_aeroo','web_readonly_bypass'],
     'data': [
         'security/ir.model.access.csv',
         'report/danhsach_congno_view.xml',
