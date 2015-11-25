@@ -7,10 +7,10 @@ import account_journal
 import master_data
 import thu_ky_quy
 import ql_baohiem
+import user
 import partner
 import wizard
 import report
-import user
 import import_manually
 import import_auto
 import output_auto
