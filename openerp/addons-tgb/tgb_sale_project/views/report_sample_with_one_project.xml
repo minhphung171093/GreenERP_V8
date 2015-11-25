@@ -66,16 +66,19 @@
 		                    <tr>
 		                        <td>
 		                        	VALIDITY:<br/>
+		                        	<span t-field="o.payment_term.name"/>
 		                        </td>
 		                    </tr>
 		                    <tr>
 		                        <td>
 		                        	PRICE:<br/>
+		                        	Quoted in SGD exclude GST, ex-works Singapore
 		                        </td>
 		                    </tr>
 		                    <tr>
 		                        <td>
 		                        	TERMS:<br/>
+		                        	To be discussed
 		                        </td>
 		                    </tr>
 		                </tbody>
