@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Công nợ vượt định mức -->
+        <record id="view_congno_vuotdinhmuc_report" model="ir.ui.view">
+            <field name="name">congno.vuotdinhmuc.form</field>
+            <field name="model">congno.vuotdinhmuc</field>
+            <field name="arch" type="xml">
+                <form string="Công nợ vượt định mức" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='mlg_type' required='1'/>
+	                    	<field name='chinhanh_id' readonly='1'/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_vuotdinhmuc_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_congno_vuotdinhmuc" model="ir.actions.act_window">
+            <field name="name">Công nợ vượt định mức</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">congno.vuotdinhmuc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_congno_vuotdinhmuc_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+    </data>
+</openerp>
+

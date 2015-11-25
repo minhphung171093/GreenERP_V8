@@ -431,6 +431,11 @@
 					name="Chi tiết công nợ"
 					action="action_chitiet_congno"
 					parent="menu_chitiet_congno" sequence="10"/>
+					
+				<menuitem id="menu_action_congno_vuotdinhmuc"
+					name="Công nợ vượt định mức"
+					action="action_congno_vuotdinhmuc"
+					parent="menu_chitiet_congno" sequence="20"/>
 			
 			<menuitem id="menu_baocao_cong_no_thu"
 				name="Công nợ theo bảng chiết tính"
