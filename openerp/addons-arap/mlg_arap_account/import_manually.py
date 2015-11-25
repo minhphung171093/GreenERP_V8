@@ -111,13 +111,12 @@ class import_congno_manually(osv.osv):
                 open(file_path,'wb').write(bin_value)
                 
                 csvUti = lib_csv.csv_ultilities()
-#                 for file_name in csvUti._read_files_folder(path):
-#                     f_path = file_name
                     
                 try:
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
+                        vals = {}
                         if data['so_tien'] <= 0:
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         sql = '''
@@ -129,30 +128,38 @@ class import_congno_manually(osv.osv):
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                         
                         sql = '''
-                            select id,bai_giaoca_id,account_ht_id from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
-                        '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                                from res_partner where ma_doi_tuong='%s' limit 1
+                        '''%(data['ma_doi_tuong'])
                         cr.execute(sql)
-                        partner = cr.fetchone()
+                        partner = cr.dictfetchone()
                         if not partner:
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
-                        partner_id = partner and partner[0] or False
-                        account_id = partner and partner[2] or False
-                        bai_giaoca_id = partner and partner[1] or False
+                        partner_id = partner and partner['id'] or False
+                        bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
                         
-                        ldt = data['loai_doi_tuong']
                         loai_doituong=''
-                        if ldt=='Lái xe':
+                        if partner['taixe']==True:
                             loai_doituong='taixe'
-                        if ldt=='Nhân viên văn phòng':
+                            account_id = partner and partner['account_ht_id'] or False
+                        if partner['nhanvienvanphong']==True:
                             loai_doituong='nhanvienvanphong'
-                        if not loai_doituong:
-                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại đối tượng')
+                            account_id = partner and partner['account_ht_id'] or False
+                        if partner['nhadautu']==True:
+                            loai_doituong='nhadautu'
+                            sql = '''
+                                select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                            '''%(chinhanh_ids[0],partner_id)
+                            cr.execute(sql)
+                            account_ids = [r[0] for r in cr.fetchall()]
+                            account_id = account_ids and account_ids[0] or False
+                            vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy journal trung gian')
                          
-                        vals = {
+                        vals.update({
                             'mlg_type': 'chi_ho_dien_thoai',
                             'type': 'out_invoice',
                             'account_id': account_id,
@@ -166,7 +173,7 @@ class import_congno_manually(osv.osv):
                             'dien_giai': data['dien_giai'],
                             'journal_id': journal_ids and journal_ids[0] or False,
                             'bai_giaoca_id': bai_giaoca_id,
-                        }
+                        })
                         invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
                         invoice_id = invoice_obj.create(cr, uid, vals)
@@ -185,22 +192,19 @@ class import_congno_manually(osv.osv):
                 except Exception, e:
                     error_path = dir_path+'/Error/'
                     csvUti._moveFiles([file_path],error_path)
-                    lichsu_obj.create(cr, uid, {
-                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                        'ten_file': error_path+f_name,
-                        'loai_giaodich': 'Phải thu chi hộ điện thoại',
-                        'thu_tra': 'Thu',
-                        'nhap_xuat': 'Nhập',
-                        'tudong_bangtay': 'Bằng tay',
-                        'trang_thai': 'Lỗi',
-                        'noidung_loi': e,
-                    })
+                    sql = '''
+                        insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                        values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                        commit;
+                    '''%(
+                         1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                         error_path+f_path.split('/')[-1],'Phải thu chi hộ điện thoại','Thu','Nhập','Bằng tay','Lỗi',''
+                    )
+                    cr.execute(sql)
                     raise osv.except_osv(_('Warning!'), str(e))
-#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
             except Exception, e:
                 raise osv.except_osv(_('Warning!'), str(e))
         return self.write(cr, uid, ids, {'state':'done'})
-#         return True
     
     def bt_import_phaithu_baohiem(self, cr, uid, ids, context=None):
         this = self.browse(cr, uid, ids[0])
@@ -224,8 +228,6 @@ class import_congno_manually(osv.osv):
                 open(file_path,'wb').write(bin_value)
                 
                 csvUti = lib_csv.csv_ultilities()
-#                 for file_name in csvUti._read_files_folder(path):
-#                     f_path = file_name
                     
                 try:
                     file_data = csvUti._read_file(file_path)
@@ -243,17 +245,24 @@ class import_congno_manually(osv.osv):
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                         
                         sql = '''
-                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
-                        '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                                from res_partner where ma_doi_tuong='%s' limit 1
+                        '''%(data['ma_doi_tuong'])
                         cr.execute(sql)
-                        partner = cr.fetchone()
+                        partner = cr.dictfetchone()
                         if not partner:
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
-                        partner_id = partner and partner[0] or False
+                        partner_id = partner and partner['id'] or False
+                        bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
                         
-                        ldt = data['loai_doi_tuong']
                         loai_doituong=''
-                        if ldt=='Nhà đầu tư':
+                        if partner['taixe']==True:
+                            loai_doituong='taixe'
+                            account_id = partner and partner['account_ht_id'] or False
+                        if partner['nhanvienvanphong']==True:
+                            loai_doituong='nhanvienvanphong'
+                            account_id = partner and partner['account_ht_id'] or False
+                        if partner['nhadautu']==True:
                             loai_doituong='nhadautu'
                             sql = '''
                                 select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
@@ -261,9 +270,7 @@ class import_congno_manually(osv.osv):
                             cr.execute(sql)
                             account_ids = [r[0] for r in cr.fetchall()]
                             account_id = account_ids and account_ids[0] or False
-                            vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'account_id':account_id})
-                        if not loai_doituong:
-                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại đối tượng')
+                            vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
@@ -273,6 +280,8 @@ class import_congno_manually(osv.osv):
                         sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                         cr.execute(sql)
                         bien_so_xe_ids = cr.fetchone()
+                        if bsx and not bien_so_xe_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                         
                         vals.update({
                             'mlg_type': 'phai_thu_bao_hiem',
@@ -305,22 +314,19 @@ class import_congno_manually(osv.osv):
                 except Exception, e:
                     error_path = dir_path+'/Error/'
                     csvUti._moveFiles([file_path],error_path)
-                    lichsu_obj.create(cr, uid, {
-                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                        'ten_file': error_path+f_name,
-                        'loai_giaodich': 'Phải thu bảo hiểm',
-                        'thu_tra': 'Thu',
-                        'nhap_xuat': 'Nhập',
-                        'tudong_bangtay': 'Bằng tay',
-                        'trang_thai': 'Lỗi',
-                        'noidung_loi': e,
-                    })
+                    sql = '''
+                        insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                        values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                        commit;
+                    '''%(
+                         1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                         error_path+f_path.split('/')[-1],'Phải thu bảo hiểm','Thu','Nhập','Bằng tay','Lỗi',''
+                    )
+                    cr.execute(sql)
                     raise osv.except_osv(_('Warning!'), str(e))
-#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
             except Exception, e:
                 raise osv.except_osv(_('Warning!'), str(e))
         return self.write(cr, uid, ids, {'state':'done'})
-#         return True
 
     def bt_import_phaithu_noxuong(self, cr, uid, ids, context=None):
         this = self.browse(cr, uid, ids[0])
@@ -344,9 +350,7 @@ class import_congno_manually(osv.osv):
                 open(file_path,'wb').write(bin_value)
                 
                 csvUti = lib_csv.csv_ultilities()
-#                 for file_name in csvUti._read_files_folder(path):
-#                     f_path = file_name
-                    
+
                 try:
                     file_data = csvUti._read_file(file_path)
                 
@@ -364,24 +368,24 @@ class import_congno_manually(osv.osv):
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                         
                         sql = '''
-                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh from res_partner where chinhanh_id=%s and ma_doi_tuong='%s' limit 1
-                        '''%(chinhanh_ids[0],data['ma_doi_tuong'])
+                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                                from res_partner where ma_doi_tuong='%s' limit 1
+                        '''%(data['ma_doi_tuong'])
                         cr.execute(sql)
-                        partner = cr.fetchone()
+                        partner = cr.dictfetchone()
                         if not partner:
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
-                        partner_id = partner and partner[0] or False
-                        bai_giaoca_id = partner and partner[1] or False
+                        partner_id = partner and partner['id'] or False
+                        bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
                         
-                        ldt = data['loai_doi_tuong']
                         loai_doituong=''
-                        if ldt=='Lái xe':
+                        if partner['taixe']==True:
                             loai_doituong='taixe'
-                            account_id = partner and partner[2] or False
-                        if ldt=='Nhân viên văn phòng':
+                            account_id = partner and partner['account_ht_id'] or False
+                        if partner['nhanvienvanphong']==True:
                             loai_doituong='nhanvienvanphong'
-                            account_id = partner and partner[2] or False
-                        if ldt=='Nhà đầu tư':
+                            account_id = partner and partner['account_ht_id'] or False
+                        if partner['nhadautu']==True:
                             loai_doituong='nhadautu'
                             sql = '''
                                 select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
@@ -389,9 +393,7 @@ class import_congno_manually(osv.osv):
                             cr.execute(sql)
                             account_ids = [r[0] for r in cr.fetchall()]
                             account_id = account_ids and account_ids[0] or False
-                            vals.update({'cmnd': partner[3],'giayphep_kinhdoanh': partner[4],'chinhanh_ndt_id':chinhanh_ids[0]})
-                        if not loai_doituong:
-                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại đối tượng')
+                            vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
@@ -401,11 +403,15 @@ class import_congno_manually(osv.osv):
                         sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                         cr.execute(sql)
                         bien_so_xe_ids = cr.fetchone()
+                        if bsx and not bien_so_xe_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                         
                         mx = data['ma_xuong']
                         sql = ''' select id from ma_xuong where code='%s' '''%(mx)
                         cr.execute(sql)
                         ma_xuong_ids = cr.fetchone()
+                        if mx and not ma_xuong_ids:
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy mã xưởng')
                          
                         vals.update({
                             'mlg_type': 'thu_no_xuong',
@@ -443,22 +449,19 @@ class import_congno_manually(osv.osv):
                 except Exception, e:
                     error_path = dir_path+'/Error/'
                     csvUti._moveFiles([file_path],error_path)
-                    lichsu_obj.create(cr, uid, {
-                        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                        'ten_file': error_path+f_name,
-                        'loai_giaodich': 'Thu nợ xưởng',
-                        'thu_tra': 'Thu',
-                        'nhap_xuat': 'Nhập',
-                        'tudong_bangtay': 'Bằng tay',
-                        'trang_thai': 'Lỗi',
-                        'noidung_loi': e,
-                    })
+                    sql = '''
+                        insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                        values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                        commit;
+                    '''%(
+                         1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                         error_path+f_path.split('/')[-1],'Thu nợ xưởng','Thu','Nhập','Bằng tay','Lỗi',''
+                    )
+                    cr.execute(sql)
                     raise osv.except_osv(_('Warning!'), str(e))
-#                 os.rename("path/to/current/file.foo", "path/to/new/desination/for/file.foo")-> chuyen doi thu muc
             except Exception, e:
                 raise osv.except_osv(_('Warning!'), str(e))
         return self.write(cr, uid, ids, {'state':'done'})
-#         return True
     
 import_congno_manually()
 

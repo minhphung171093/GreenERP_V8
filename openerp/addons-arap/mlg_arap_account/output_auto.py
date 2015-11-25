@@ -477,8 +477,6 @@ class output_congno_tudong(osv.osv):
                     if line['loai_doituong']=='nhanvienvanphong':
                         loai_doituong = 'Nhân viên văn phòng'
                         
-#                     ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
-#                     ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
                     ngay_giao_dich=datetime.strptime(line['ngay_giao_dich'],'%Y-%m-%d').strftime('%d/%m/%Y')
                         
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
@@ -518,16 +516,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Thu nợ xưởng (BDSC)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -566,8 +563,6 @@ class output_congno_tudong(osv.osv):
                     if line['loai_doituong']=='nhanvienvanphong':
                         loai_doituong = 'Nhân viên văn phòng'
                         
-#                     ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
-#                     ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
                     ngay_giao_dich=datetime.strptime(line['ngay_giao_dich'],'%Y-%m-%d').strftime('%d/%m/%Y')    
                     
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
@@ -605,16 +600,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Thu phí thương hiệu (HTKD)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Thu phí thương hiệu (HTKD)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -654,8 +648,6 @@ class output_congno_tudong(osv.osv):
                     if line['loai_doituong']=='nhanvienvanphong':
                         loai_doituong = 'Nhân viên văn phòng'
                         
-#                     ngay_giao_dich_arr = line['ngay_giao_dich'].split('-')
-#                     ngay_giao_dich = ngay_giao_dich_arr[2]+'/'+ngay_giao_dich_arr[1]+'/'+ngay_giao_dich_arr[0]
                     ngay_giao_dich=datetime.strptime(line['ngay_giao_dich'],'%Y-%m-%d').strftime('%d/%m/%Y')
                         
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
@@ -694,16 +686,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Trả góp xe (HTKD)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Trả góp xe (HTKD)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
 
@@ -765,16 +756,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Thu phí thương hiệu (SHIFT)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Thu phí thương hiệu (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -836,16 +826,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Trả góp xe (SHIFT)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Trả góp xe (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -903,16 +892,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Phạt vi phạm (HISTAFF)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Phạt vi phạm (HISTAFF)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -970,16 +958,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Phải thi tạm ứng (HISTAFF)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Phải thi tạm ứng (HISTAFF)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -1097,16 +1084,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Phải thu ký quỹ (HISTAFF)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Phải thu ký quỹ (HISTAFF)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -1149,16 +1135,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Doanh số thu (ORACLE)',
-                'thu_tra': 'Thu',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Doanh số thu (ORACLE)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -1201,16 +1186,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Doanh số trả (ORACLE)',
-                'thu_tra': 'Trả',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Doanh số trả (ORACLE)','Trả','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
@@ -1282,16 +1266,15 @@ class output_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
         except Exception, e:
-            lichsu_obj.create(cr, uid, {
-                'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'ten_file': '',
-                'loai_giaodich': 'Chi góp xe (HTKD)',
-                'thu_tra': 'Trả',
-                'nhap_xuat': 'Xuất',
-                'tudong_bangtay': 'Tự động',
-                'trang_thai': 'Lỗi',
-                'noidung_loi': e,
-            })
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Chi góp xe (HTKD)','Trả','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
