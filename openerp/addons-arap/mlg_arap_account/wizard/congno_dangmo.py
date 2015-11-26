@@ -7,13 +7,11 @@ from openerp.tools.translate import _
 import openerp.tools
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 
-class congno_vuotdinhmuc(osv.osv_memory):
-    _name = "congno.vuotdinhmuc"
+class congno_dangmo(osv.osv_memory):
+    _name = "congno.dangmo"
     
     _columns = {
-        'from_date': fields.date('Ngày bắt đầu', required=True),
-        'to_date': fields.date('Ngày kết thúc', required=True),
-        'sotien_dinhmuc': fields.float('Số tiền định mức', digits=(16,0), required=True),
+        'date': fields.date('Ngày', required=True),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
@@ -34,19 +32,18 @@ class congno_vuotdinhmuc(osv.osv_memory):
     _defaults = {
         'chinhanh_id': _get_chinhanh,
         'mlg_type': 'no_doanh_thu',
-        'from_date': time.strftime('%Y-%m-01'),
-        'to_date': lambda *a: str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10],
+        'date': time.strftime('%Y-%m-%d'),
     }
     
     def print_report(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         datas = {'ids': context.get('active_ids', [])}
-        datas['model'] = 'congno.vuotdinhmuc'
+        datas['model'] = 'congno.dangmo'
         datas['form'] = self.read(cr, uid, ids)[0]
         datas['form'].update({'active_id':context.get('active_ids',False)})
         name_report = context['name_report']
         return {'type': 'ir.actions.report.xml', 'report_name': name_report, 'datas': datas}
         
-congno_vuotdinhmuc()
+congno_dangmo()
 

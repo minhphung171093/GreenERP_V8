@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+<!-- Công nợ đang mở -->
+    	<record id="congno_dangmo_report" model="ir.actions.report.xml">
+	        <field name="name">congno_dangmo_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">congno.dangmo</field>
+	        <field name="report_name">congno_dangmo_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/congno_dangmo_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/congno_dangmo_report.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="congno_dangmo_report" 
+			model="congno.dangmo" 
+			name="congno_dangmo_report"
+	        string="Công nợ đang mở"
+	        rml="mlg_arap_account/report/congno_dangmo_report.odt"/> 	
+	        
+	        
+	</data>
+</openerp>

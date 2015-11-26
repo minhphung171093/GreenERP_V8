@@ -56,7 +56,7 @@ class Parser(report_sxw.rml_parse):
             period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
             mlg_type = wizard_data['mlg_type']
             sql = '''
-                select partner_id from account_invoice where type='out_invoice' and date_invoice between '%s' and '%s' and chinhanh_id=%s
+                select partner_id from account_invoice where date_invoice between '%s' and '%s' and chinhanh_id=%s
                     and state in ('open','paid') 
             '''%(period.date_start,period.date_stop,chinhanh_id[0])
             doi_xe_ids = wizard_data['doi_xe_ids']

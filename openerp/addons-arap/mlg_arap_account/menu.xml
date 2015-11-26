@@ -435,6 +435,11 @@
 				<menuitem id="menu_action_congno_vuotdinhmuc"
 					name="Công nợ vượt định mức"
 					action="action_congno_vuotdinhmuc"
+					parent="menu_chitiet_congno" sequence="15"/>
+					
+				<menuitem id="menu_action_congno_dangmo"
+					name="Công nợ đang mở"
+					action="action_congno_dangmo"
 					parent="menu_chitiet_congno" sequence="20"/>
 			
 			<menuitem id="menu_baocao_cong_no_thu"
