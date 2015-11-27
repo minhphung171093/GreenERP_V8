@@ -13,3 +13,4 @@ access_mlg_arap_account_11,no.hang.muc,mlg_arap_account.model_no_hang_muc,base.g
 access_mlg_arap_account_12,ql.bao.hiem,mlg_arap_account.model_ql_bao_hiem,base.group_user,1,1,1,1
 access_mlg_arap_account_13,thu_ky_quy,mlg_arap_account.model_thu_ky_quy,base.group_user,1,1,1,1
 access_mlg_arap_account_14,tong.cong.no,mlg_arap_account.model_tong_cong_no,base.group_user,1,1,1,1
+access_mlg_arap_account_15,loai.bao.hiem,mlg_arap_account.model_loai_bao_hiem,base.group_user,1,1,1,1

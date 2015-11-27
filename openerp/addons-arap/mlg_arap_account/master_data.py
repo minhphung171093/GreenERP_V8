@@ -222,4 +222,12 @@ class lichsu_giaodich(osv.osv):
     }
 lichsu_giaodich()
 
+class loai_bao_hiem(osv.osv):
+    _name = "loai.bao.hiem"
+    _columns = {
+        'name': fields.char('Tên', size=1024, required=True),
+        'so_taikhoan': fields.char('Số tài khoản', size=1024, required=True),
+    }
+loai_bao_hiem()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

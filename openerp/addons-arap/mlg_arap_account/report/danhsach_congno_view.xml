@@ -127,6 +127,81 @@
 	        string="Danh sách bảo hiểm xe"
 	        rml="mlg_arap_account/report/bao_hiem_xe_report.ods"/> 
 	        
+<!-- Báo cáo công nợ theo số hợp đồng -->
+    	<record id="congno_theo_sohopdong_report" model="ir.actions.report.xml">
+	        <field name="name">congno_theo_sohopdong_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">congno_theo_sohopdong_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/congno_theo_sohopdong_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/congno_theo_sohopdong_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="congno_theo_sohopdong_report" 
+			model="danhsach.congno" 
+			name="congno_theo_sohopdong_report"
+	        string="Báo cáo công nợ theo số hợp đồng"
+	        rml="mlg_arap_account/report/congno_theo_sohopdong_report.ods"/>
+	        
+<!-- Báo cáo công nợ theo số hóa đơn -->
+    	<record id="congno_theo_sohoadon_report" model="ir.actions.report.xml">
+	        <field name="name">congno_theo_sohoadon_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">congno_theo_sohoadon_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/congno_theo_sohoadon_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/congno_theo_sohoadon_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="congno_theo_sohoadon_report" 
+			model="danhsach.congno" 
+			name="congno_theo_sohoadon_report"
+	        string="Báo cáo công nợ theo số hóa đơn"
+	        rml="mlg_arap_account/report/congno_theo_sohoadon_report.ods"/>
+	        
+<!-- Báo cáo công nợ theo biển số xe -->
+    	<record id="congno_theo_biensoxe_report" model="ir.actions.report.xml">
+	        <field name="name">congno_theo_biensoxe_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">congno_theo_biensoxe_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/congno_theo_biensoxe_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/congno_theo_biensoxe_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="congno_theo_biensoxe_report" 
+			model="danhsach.congno" 
+			name="congno_theo_biensoxe_report"
+	        string="Báo cáo công nợ theo biển số xe"
+	        rml="mlg_arap_account/report/congno_theo_biensoxe_report.ods"/>
+	        
 <!-- Báo cáo công nợ theo bảng chiết tính -->
     	<record id="congno_theo_bang_chiettinh_report" model="ir.actions.report.xml">
 	        <field name="name">congno_theo_bang_chiettinh_report</field>
@@ -151,6 +226,31 @@
 			name="congno_theo_bang_chiettinh_report"
 	        string="Báo cáo công nợ theo bảng chiết tính"
 	        rml="mlg_arap_account/report/congno_theo_bang_chiettinh_report.ods"/>
+	        
+<!-- Báo cáo công nợ theo loại bảo hiểm -->
+    	<record id="congno_theo_loaibaohiem_report" model="ir.actions.report.xml">
+	        <field name="name">congno_theo_loaibaohiem_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">danhsach.congno</field>
+	        <field name="report_name">congno_theo_loaibaohiem_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/congno_theo_loaibaohiem_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/congno_theo_loaibaohiem_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="congno_theo_loaibaohiem_report" 
+			model="danhsach.congno" 
+			name="congno_theo_loaibaohiem_report"
+	        string="Báo cáo công nợ theo loại bảo hiểm"
+	        rml="mlg_arap_account/report/congno_theo_loaibaohiem_report.ods"/>
 	        
 	</data>
 </openerp>

@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 	
-<!-- Danh sách nợ doanh thu -->
+<!-- Chi tiết công nợ -->
     	<record id="chitiet_congno_report" model="ir.actions.report.xml">
 	        <field name="name">chitiet_congno_report</field>
 	        <field name="type">ir.actions.report.xml</field>
@@ -24,7 +24,7 @@
 			id="chitiet_congno_report" 
 			model="chitiet.congno" 
 			name="chitiet_congno_report"
-	        string="Danh sách nợ doanh thu"
+	        string="Chi tiết công nợ"
 	        rml="mlg_arap_account/report/chitiet_congno_report.odt"/> 	
 	        
 	        

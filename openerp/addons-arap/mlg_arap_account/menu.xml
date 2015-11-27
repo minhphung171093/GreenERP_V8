@@ -292,6 +292,11 @@
 					name="Loại vi phạm"
 					parent="menu_danhmuc_dungchung" sequence="6"/>
 					
+				<menuitem id="menu_action_loai_bao_hiem"
+					action="action_loai_bao_hiem"
+					name="Loại bảo hiểm"
+					parent="menu_danhmuc_dungchung" sequence="6"/>
+					
 				<menuitem id="menu_action_loai_tam_ung"
 					action="action_loai_tam_ung"
 					name="Loại tạm ứng"
@@ -427,6 +432,11 @@
 				name="Báo cáo chi tiết công nợ"
 				parent="menu_root_baocao" sequence="12"/>
 				
+				<menuitem id="menu_action_tonghop_congno"
+					name="Tổng hợp công nợ"
+					action="action_tonghop_congno"
+					parent="menu_chitiet_congno" sequence="5"/>
+				
 				<menuitem id="menu_action_chitiet_congno"
 					name="Chi tiết công nợ"
 					action="action_chitiet_congno"
@@ -443,12 +453,32 @@
 					parent="menu_chitiet_congno" sequence="20"/>
 			
 			<menuitem id="menu_baocao_cong_no_thu"
-				name="Công nợ theo bảng chiết tính"
+				name="Báo cáo công nợ"
 				parent="menu_root_baocao" sequence="15"/>
 				
+				<menuitem id="menu_action_congno_theo_sohopdong"
+					action="action_congno_theo_sohopdong"
+					name="Theo số hợp đồng"
+					parent="menu_baocao_cong_no_thu" sequence="5"/>
+					
+				<menuitem id="menu_action_congno_theo_sohoadon"
+					action="action_congno_theo_sohoadon"
+					name="Theo số hóa đơn"
+					parent="menu_baocao_cong_no_thu" sequence="10"/>
+					
+				<menuitem id="menu_action_congno_theo_biensoxe"
+					action="action_congno_theo_biensoxe"
+					name="Theo biển số xe"
+					parent="menu_baocao_cong_no_thu" sequence="15"/>
+					
 				<menuitem id="menu_action_congno_theo_bang_chiettinh"
 					action="action_congno_theo_bang_chiettinh"
-					name="Công nợ theo bảng chiết tính"
-					parent="menu_baocao_cong_no_thu" sequence="5"/>
+					name="Theo bảng chiết tính"
+					parent="menu_baocao_cong_no_thu" sequence="20"/>
+					
+				<menuitem id="menu_action_congno_theo_loai_baohiem"
+					action="action_congno_theo_loai_baohiem"
+					name="Theo loại bảo hiểm"
+					parent="menu_baocao_cong_no_thu" sequence="25"/>
 	</data>
 </openerp>

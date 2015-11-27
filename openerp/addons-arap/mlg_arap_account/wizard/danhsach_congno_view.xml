@@ -198,6 +198,137 @@
             <field name="target">new</field>
         </record>
 		
+<!-- Báo cáo công nợ theo số hợp đồng -->
+        <record id="view_congno_theo_sohopdong_report" model="ir.ui.view">
+            <field name="name">congno.theo.bang.chiettinh.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo công nợ theo số hợp đồng" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    	<field name='so_hop_dong'/>
+	                    </group>
+	                    <group colspan='4' string="Chi nhánh">
+	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
+                    	</group>
+                    	<group colspan='4' string="Đội xe">
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    </group>
+	                    <group colspan='4' string="Bãi giao ca">
+	                    	<field name='bai_giaoca_ids' nolabel='1'/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_sohopdong_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_congno_theo_sohopdong" model="ir.actions.act_window">
+            <field name="name">Báo cáo công nợ theo số hợp đồng</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_congno_theo_sohopdong_report"/>
+            <field name="target">new</field>
+        </record>
+		
+<!-- Báo cáo công nợ theo số hóa đơn -->
+        <record id="view_congno_theo_sohoadon_report" model="ir.ui.view">
+            <field name="name">congno.theo.bang.chiettinh.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo công nợ theo số hóa đơn" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    	<field name='so_hoa_don'/>
+	                    </group>
+	                    <group colspan='4' string="Chi nhánh">
+	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
+                    	</group>
+                    	<group colspan='4' string="Đội xe">
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    </group>
+	                    <group colspan='4' string="Bãi giao ca">
+	                    	<field name='bai_giaoca_ids' nolabel='1'/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_sohoadon_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_congno_theo_sohoadon" model="ir.actions.act_window">
+            <field name="name">Báo cáo công nợ theo số hóa đơn</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_congno_theo_sohoadon_report"/>
+            <field name="target">new</field>
+        </record>
+		
+<!-- Báo cáo công nợ theo biển số xe -->
+        <record id="view_congno_theo_biensoxe_report" model="ir.ui.view">
+            <field name="name">congno.theo.bang.chiettinh.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo công nợ theo biển số xe" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    </group>
+	                    <group colspan='4' string="Biển số xe">
+	                    	<field name='bien_so_xe_ids' nolabel='1'/>
+	                    </group>
+	                    <group colspan='4' string="Chi nhánh">
+	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
+                    	</group>
+                    	<group colspan='4' string="Đội xe">
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    </group>
+	                    <group colspan='4' string="Bãi giao ca">
+	                    	<field name='bai_giaoca_ids' nolabel='1'/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_biensoxe_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_congno_theo_biensoxe" model="ir.actions.act_window">
+            <field name="name">Báo cáo công nợ theo biển số xe</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_congno_theo_biensoxe_report"/>
+            <field name="target">new</field>
+        </record>
+        
 <!-- Báo cáo công nợ theo bảng chiết tính -->
         <record id="view_congno_theo_bang_chiettinh_report" model="ir.ui.view">
             <field name="name">congno.theo.bang.chiettinh.report</field>
@@ -208,12 +339,7 @@
 	                	<group col='4' colspan='2'>
 	                    	<field name='from_date'/>
 	                    	<field name='to_date'/>
-	                    	<field name='so_hoa_don'/>
-	                    	<field name='so_hop_dong'/>
 	                    	<field name='ma_bang_chiettinh_chiphi_sua'/>
-	                    </group>
-	                    <group colspan='4' string="Biển số xe">
-	                    	<field name='bien_so_xe_ids' nolabel='1'/>
 	                    </group>
 	                    <group colspan='4' string="Chi nhánh">
 	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
@@ -246,6 +372,50 @@
             <field name="target">new</field>
         </record>
 		
+<!-- Báo cáo công nợ theo loại bảo hiểm -->
+        <record id="view_congno_theo_loai_baohiem_report" model="ir.ui.view">
+            <field name="name">congno.theo.bang.chiettinh.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo công nợ theo loại bảo hiểm" version="7.0">
+                	<sheet version="7.0">
+                		<group col='4' colspan='2'>
+	                    	<field name='from_date'/>
+	                    	<field name='to_date'/>
+	                    </group>
+	                    <group colspan='4' string="Loại bảo hiểm">
+	                    	<field name='loai_bao_hiem_ids' nolabel='1'/>
+	                    </group>
+	                    <group colspan='4' string="Chi nhánh">
+	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
+                    	</group>
+                    	<group colspan='4' string="Đội xe">
+	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    </group>
+	                    <group colspan='4' string="Bãi giao ca">
+	                    	<field name='bai_giaoca_ids' nolabel='1'/>
+	                    </group>
+	                    <group colspan='4' string="Đối tượng">
+	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_loaibaohiem_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_congno_theo_loai_baohiem" model="ir.actions.act_window">
+            <field name="name">Báo cáo công nợ theo loại bảo hiểm</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_congno_theo_loai_baohiem_report"/>
+            <field name="target">new</field>
+        </record>
 		
     </data>
 </openerp>

@@ -317,5 +317,24 @@
             <field name="view_id" ref="view_lichsu_giaodich_tree"/>
         </record>
 
+<!-- Loại bảo hiểm -->    
+    	<record id="view_loai_bao_hiem_tree" model="ir.ui.view">
+            <field name="name">loai.bao.hiem.tree</field>
+            <field name="model">loai.bao.hiem</field>
+            <field name="arch" type="xml">
+                <tree string="Loại bảo hiểm" editable='top'>
+                    <field name="name"/>
+                    <field name="so_taikhoan"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_bao_hiem" model="ir.actions.act_window">
+            <field name="name">Loại bảo hiểm</field>
+            <field name="res_model">loai.bao.hiem</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_bao_hiem_tree"/>
+        </record>
+
 	</data>
 </openerp>

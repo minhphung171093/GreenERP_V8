@@ -66,7 +66,6 @@ class account_invoice(osv.osv):
             
         if context.get('default_mlg_type', False) and context['default_mlg_type']=='no_doanh_thu':
             vals = [('taixe','Lái xe'),
-                ('nhadautu','Nhà đầu tư'),
                 ]
             
         if context.get('default_mlg_type', False) and context['default_mlg_type']=='chi_ho_dien_thoai':
@@ -142,6 +141,7 @@ class account_invoice(osv.osv):
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm', readonly=True, states={'draft': [('readonly', False)]}),
+        'loai_baohiem_id': fields.many2one('loai.bao.hiem', 'Loại bảo hiểm', readonly=True, states={'draft': [('readonly', False)]}),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
         'chinhanh_ndt_id': fields.many2one('account.account','Chi nhánh', readonly=True, states={'draft': [('readonly', False)]}),
         'so_bien_ban_vi_pham':fields.char('Số biên bản vi phạm',size = 64, readonly=True, states={'draft': [('readonly', False)]}),

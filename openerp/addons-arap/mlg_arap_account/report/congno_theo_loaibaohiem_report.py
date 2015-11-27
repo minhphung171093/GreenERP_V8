@@ -130,6 +130,14 @@ class Parser(report_sxw.rml_parse):
                 and ai.bien_so_xe_id in %s 
             '''%(bien_so_xe_ids)
             
+        loai_bao_hiem_ids = wizard_data['loai_bao_hiem_ids']
+        if loai_bao_hiem_ids:
+            loai_bao_hiem_ids = str(loai_bao_hiem_ids).replace('[', '(')
+            loai_bao_hiem_ids = str(loai_bao_hiem_ids).replace(']', ')')
+            sql+='''
+                and ai.loai_baohiem_id in %s 
+            '''%(loai_bao_hiem_ids)
+            
         ma_bang_chiettinh_chiphi_sua = wizard_data['ma_bang_chiettinh_chiphi_sua']
         if ma_bang_chiettinh_chiphi_sua:
             sql+='''
