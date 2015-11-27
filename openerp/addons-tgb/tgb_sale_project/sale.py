@@ -76,6 +76,7 @@ class sale_order_line(osv.osv):
         'line_no': fields.integer('No.'),
         'project_id': fields.many2one('list.project','Project', ondelete='cascade'),
         'mark_up': fields.float('Mark Up (%)'),
+        'assembly_cost': fields.boolean('Assembly Cost'),
         'quantity': fields.float('Quantity'),
         'product_quantity': fields.function(_get_product_quantity,string='Product Quantity',type='float', store={
                 'sale.order.line': (lambda self, cr, uid, ids, c={}: ids, ['quantity','project_id'], 10),
@@ -105,6 +106,7 @@ class sale_order_line(osv.osv):
             vals = {
                 'name': product.name,
                 'product_uom': product.uom_id.id,
+                'price_unit': product.list_price,
             }
         return {'value':vals}
     

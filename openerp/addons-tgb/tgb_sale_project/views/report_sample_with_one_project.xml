@@ -104,7 +104,14 @@
                         <td>
                         	<span t-field="l.name"/><br/>
                         	<span t-foreach="l.project_line" t-as="p">
-                        		<span t-field="p.quantity"/><span> </span><span t-field="p.product_id.description"/><br/>
+                        		<span t-if="not p.assembly_cost">
+	                        		<span t-field="p.quantity"/>
+	                        		<span> </span>
+	                        		<span>, </span>
+	                        		<span t-field="p.product_id.name"/>
+	                        		<span t-field="p.product_id.description"/>
+	                        		<br/>
+	                        	</span>
                         	</span>
                         </td>
                         <td class="text-center">

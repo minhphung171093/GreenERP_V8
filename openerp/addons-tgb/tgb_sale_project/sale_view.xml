@@ -44,6 +44,7 @@
 			                                    <field name="discount" invisible='1' groups="sale.group_discount_per_so_line"/>
 			                                    <field name="price_subtotal" invisible='1'/>
 			                                    <field name="project_id" invisible='1' options="{'no_create': True}"/>
+			                                    <field name="assembly_cost"/>
 											</tree>
 										</field>
 									</group>
