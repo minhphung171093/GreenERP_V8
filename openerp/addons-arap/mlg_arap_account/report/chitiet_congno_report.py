@@ -57,8 +57,8 @@ class Parser(report_sxw.rml_parse):
             mlg_type = wizard_data['mlg_type']
             sql = '''
                 select partner_id from account_invoice where date_invoice between '%s' and '%s' and chinhanh_id=%s
-                    and state in ('open','paid') 
-            '''%(period.date_start,period.date_stop,chinhanh_id[0])
+                    and state in ('open','paid') and mlg_type='%s' 
+            '''%(period.date_start,period.date_stop,chinhanh_id[0],mlg_type)
             doi_xe_ids = wizard_data['doi_xe_ids']
             if doi_xe_ids:
                 doi_xe_ids = str(doi_xe_ids).replace('[', '(')

@@ -62,6 +62,7 @@ class account_move_line(osv.osv):
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
         'thu_chi': fields.function(_get_thu_chi,type='char', string='Thu/Chi', store=True),
         'con_lai': fields.function(_get_con_lai,type='float', string='Còn lại', store=True),
+        'fusion_id': fields.char('Fusion ID', size=1024),
     }
     
 account_move_line()

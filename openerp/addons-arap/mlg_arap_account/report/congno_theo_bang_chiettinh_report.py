@@ -59,6 +59,7 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         to_date = wizard_data['to_date']
+        chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select ai.name as ma_giaodich, ai.date_invoice as ngay_giaodich, cn.code as ma_chinhanh, cn.name as ten_chinhanh,
                 rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, ldt.name as loai_doituong, dx.code as ma_doixe,
@@ -77,59 +78,9 @@ class Parser(report_sxw.rml_parse):
                 left join dieuhanh_bai_giaoca dhbgc on bgc.dieuhanh_id = dhbgc.id
                 left join account_account cn on ai.chinhanh_id = cn.id
                 left join bien_so_xe bsx on ai.bien_so_xe_id = bsx.id
-                where ai.date_invoice between '%s' and '%s' and ai.mlg_type not in ('chi_no_doanh_thu','chi_dien_thoai','chi_bao_hiem','phai_tra_ky_quy','tam_ung','chi_ho') 
-        '''%(from_date,to_date)
+                where ai.state='open' and ai.chinhanh_id=%s and ai.date_invoice between '%s' and '%s' and ai.mlg_type not in ('chi_no_doanh_thu','chi_dien_thoai','chi_bao_hiem','phai_tra_ky_quy','tam_ung','chi_ho') 
+        '''%(chinhanh_id[0],from_date,to_date)
         
-        partner_ids = wizard_data['partner_ids']
-        if partner_ids:
-            partner_ids = str(partner_ids).replace('[', '(')
-            partner_ids = str(partner_ids).replace(']', ')')
-            sql+='''
-                and ai.partner_id in %s 
-            '''%(partner_ids)
-        
-        doi_xe_ids = wizard_data['doi_xe_ids']
-        if doi_xe_ids:
-            doi_xe_ids = str(doi_xe_ids).replace('[', '(')
-            doi_xe_ids = str(doi_xe_ids).replace(']', ')')
-            sql+='''
-                and ai.account_id in %s 
-            '''%(doi_xe_ids)
-            
-        bai_giaoca_ids = wizard_data['bai_giaoca_ids']
-        if bai_giaoca_ids:
-            bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
-            bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
-            sql+='''
-                and ai.bai_giaoca_id in %s 
-            '''%(bai_giaoca_ids)
-            
-        chinhanh_ids = wizard_data['chinhanh_ids']
-        if chinhanh_ids:
-            chinhanh_ids = str(chinhanh_ids).replace('[', '(')
-            chinhanh_ids = str(chinhanh_ids).replace(']', ')')
-            sql+='''
-                and ai.chinhanh_id in %s 
-            '''%(chinhanh_ids)
-        
-        so_hoa_don = wizard_data['so_hoa_don']
-        if so_hoa_don:
-            sql+='''
-                and ai.so_hoa_don like '%'''+so_hoa_don+'''%' '''
-            
-        so_hop_dong = wizard_data['so_hop_dong']
-        if so_hop_dong:
-            sql+='''
-                and ai.so_hop_dong like '%'''+so_hop_dong+'''%' '''
-            
-        bien_so_xe_ids = wizard_data['bien_so_xe_ids']
-        if bien_so_xe_ids:
-            bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
-            bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
-            sql+='''
-                and ai.bien_so_xe_id in %s 
-            '''%(bien_so_xe_ids)
-            
         ma_bang_chiettinh_chiphi_sua = wizard_data['ma_bang_chiettinh_chiphi_sua']
         if ma_bang_chiettinh_chiphi_sua:
             sql+='''

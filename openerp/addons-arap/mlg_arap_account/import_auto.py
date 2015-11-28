@@ -929,7 +929,7 @@ class import_congno_tudong(osv.osv):
                             '''%(data['ma_doi_tuong'],chinhanh_ids[0])
                             cr.execute(sql)
                             for kyquy in cr.dictfetchall():
-                                cr.execute('update thu_ky_quy set so_tien=%s where id=%s',(data['so_tien_da_thu'],kyquy['id'],))
+                                cr.execute('update thu_ky_quy set so_tien=%s,sotien_conlai=%s where id=%s',(data['so_tien_da_thu'],data['so_tien_da_thu'],kyquy['id'],))
                                 kyquy_obj.bt_thu(cr, uid, kyquy['id'])
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
@@ -1035,10 +1035,10 @@ class import_congno_tudong(osv.osv):
                                 if not amount or sotiendathu<=0:
                                     break
                                 
-                                sql='''
-                                    update account_invoice set fusion_id='%s' where id=%s
-                                '''%(data['TRANSACTION_NUMBER'],invoice['id'])
-                                cr.execute(sql)
+#                                 sql='''
+#                                     update account_invoice set fusion_id='%s' where id=%s
+#                                 '''%(data['TRANSACTION_NUMBER'],invoice['id'])
+#                                 cr.execute(sql)
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
                                 
                                 ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
@@ -1053,6 +1053,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': invoice['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'fusion_id': data['TRANSACTION_NUMBER'],
                                 }
                                 
                                 context = {
@@ -1184,10 +1185,10 @@ class import_congno_tudong(osv.osv):
                                     amount = invoice['residual']
                                 if not amount or sotiendathu<=0:
                                     break
-                                sql='''
-                                    update account_invoice set fusion_id='%s' where id=%s
-                                '''%(data['TRANSACTION_NUMBER'],invoice['id'])
-                                cr.execute(sql)
+#                                 sql='''
+#                                     update account_invoice set fusion_id='%s' where id=%s
+#                                 '''%(data['TRANSACTION_NUMBER'],invoice['id'])
+#                                 cr.execute(sql)
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
                                 
                                 ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
@@ -1202,6 +1203,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': invoice['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'fusion_id': data['TRANSACTION_NUMBER'],
                                 }
                                 
                                 context = {

@@ -73,8 +73,6 @@
                 		<h1>
                 			<label string='Mã phiếu đề xuất'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
-                			<label for='fusion_id' class="oe_inline"/>
-                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -105,6 +103,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
 	                                    <field name="debit" string="Nợ"/>
@@ -231,8 +230,6 @@
                 		<h1>
                 			<label string='Mã phiếu đề xuất'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
-                			<label for='fusion_id' class="oe_inline"/>
-                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
@@ -264,6 +261,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
 	                                    <field name="debit" string="Nợ"/>
@@ -389,8 +387,6 @@
                 		<h1>
                 			<label string='Mã phiếu đề xuất'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
-                			<label for='fusion_id' class="oe_inline"/>
-                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -423,6 +419,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
 	                                    <field name="debit" string="Nợ"/>
@@ -549,8 +546,6 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
-                			<label for='fusion_id' class="oe_inline"/>
-                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -583,6 +578,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
 	                                    <field name="debit" string="Nợ"/>
@@ -707,8 +703,6 @@
                 		<h1>
                 			<label string='Mã phiếu đề xuất'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
-                			<label for='fusion_id' class="oe_inline"/>
-                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
@@ -742,6 +736,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
 	                                    <field name="debit" string="Nợ"/>
@@ -867,8 +862,6 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
-                			<label for='fusion_id' class="oe_inline"/>
-                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
@@ -897,6 +890,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
 	                                    <field name="debit" string="Nợ"/>
@@ -932,7 +926,7 @@
             </field>
         </record>
         <record id="action_chi_ho" model="ir.actions.act_window">
-            <field name="name">Chi hộ</field>
+            <field name="name">Phải trả chi hộ</field>
             <field name="res_model">account.invoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

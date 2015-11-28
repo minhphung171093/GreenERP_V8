@@ -87,16 +87,18 @@ class output_congno_tudong(osv.osv):
         DECLARE
             rec_cn        record;
             rec_aml       record;
+            rec_lbh       record;
             bal_data      fin_output_theodoanhsothu_oracle_data%ROWTYPE;
             loaicongno    numeric;
             sotien        numeric;
+            tencongno     character varying(250);
         BEGIN
             for rec_cn in execute '
                     select id,code,name from account_account where parent_id in (select id from account_account where code=''1'')
                         and id in (select parent_id from account_account where id in (select account_id from account_move_line where date between $1 and $2))
                 ' using $1, $2
             loop
-                for loaicongno in 1..9
+                for loaicongno in 1..10
                 loop
                     if loaicongno=1 then
                         sotien = 0;
@@ -320,6 +322,36 @@ class output_congno_tudong(osv.osv):
                             bal_data.ghichu='';
                             return next bal_data;
                         end if;
+                    end if;
+                    
+                    if loaicongno=10 then
+                        for rec_lbh in execute '
+                            select id,name,so_taikhoan from loai_bao_hiem
+                        '
+                        loop
+                            sotien = 0;
+                            tencongno = 'AR_'||rec_lbh.name;
+                            for rec_aml in execute '
+                                select sum(credit) as sotien
+                                    from account_move_line
+                                    where move_id in (select move_id from account_voucher
+                                        where reference in (select name from account_invoice
+                                            where mlg_type=''phai_thu_bao_hiem'' and state in (''open'',''paid'') and loai_baohiem_id=$3 ))
+                                    and date between $1 and $2
+                            ' using $1, $2,rec_lbh.id
+                            loop
+                                sotien = sotien + coalesce(rec_aml.sotien, 0);
+                            end loop;
+                            if sotien <> 0 then
+                                bal_data.chinhanh=rec_cn.name;
+                                bal_data.machinhanh=rec_cn.code;
+                                bal_data.loaicongno=tencongno;
+                                bal_data.taikhoan=rec_lbh.so_taikhoan;
+                                bal_data.sotien=sotien;
+                                bal_data.ghichu='';
+                                return next bal_data;
+                            end if;
+                        end loop;
                     end if;
                     
                 end loop;

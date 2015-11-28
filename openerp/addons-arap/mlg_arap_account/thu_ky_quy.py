@@ -41,6 +41,7 @@ class thu_ky_quy(osv.osv):
         'user_id': fields.many2one('res.users', 'Nhân viên thu', readonly=True, states={'draft': [('readonly', False)]}),
         'dien_giai': fields.text('Diễn giải', readonly=True, states={'draft': [('readonly', False)]}),
         'so_tien': fields.float('Số tiền',digits=(16,0), required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'sotien_conlai': fields.float('Số tiền còn lại',digits=(16,0)),
         'name': fields.char('Số'),
         'currency_id': fields.many2one('res.currency','Đơn vị tiền tệ'),
         'loai_doituong': fields.selection([('taixe','Lái xe'),
@@ -58,13 +59,14 @@ class thu_ky_quy(osv.osv):
             vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'thu_ky_quy', context=context) or '/'
 #         user = self.pool.get('res.users').browse(cr, uid, uid)
 #         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+        if vals.get('so_tien',False):
+            vals.update({'sotien_conlai': vals['so_tien']})
         return super(thu_ky_quy, self).create(cr, uid, vals, context)
     
-#     def write(self, cr, uid, ids, vals, context=None):
-#         for line in self.browse(cr, uid, ids):
-#             user = line.user_id
-#             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-#         return super(thu_ky_quy, self).write(cr, uid, ids, vals, context)
+    def write(self, cr, uid, ids, vals, context=None):
+        if vals.get('so_tien',False):
+            vals.update({'sotien_conlai': vals['so_tien']})
+        return super(thu_ky_quy, self).write(cr, uid, ids, vals, context)
     
     def _get_chinhanh(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid)

@@ -59,6 +59,7 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         to_date = wizard_data['to_date']
+        chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select ai.name as ma_giaodich, ai.date_invoice as ngay_giaodich, cn.code as ma_chinhanh, cn.name as ten_chinhanh,
                 rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, ldt.name as loai_doituong, dx.code as ma_doixe,
@@ -77,8 +78,8 @@ class Parser(report_sxw.rml_parse):
                 left join dieuhanh_bai_giaoca dhbgc on bgc.dieuhanh_id = dhbgc.id
                 left join account_account cn on ai.chinhanh_id = cn.id
                 left join bien_so_xe bsx on ai.bien_so_xe_id = bsx.id
-                where ai.date_invoice between '%s' and '%s' and ai.mlg_type not in ('chi_no_doanh_thu','chi_dien_thoai','chi_bao_hiem','phai_tra_ky_quy','tam_ung','chi_ho') 
-        '''%(from_date,to_date)
+                where ai.state='open' and ai.chinhanh_id=%s and ai.date_invoice between '%s' and '%s' and ai.mlg_type not in ('chi_no_doanh_thu','chi_dien_thoai','chi_bao_hiem','phai_tra_ky_quy','tam_ung','chi_ho') 
+        '''%(chinhanh_id[0],from_date,to_date)
         
         partner_ids = wizard_data['partner_ids']
         if partner_ids:

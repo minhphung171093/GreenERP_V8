@@ -204,25 +204,12 @@
             <field name="model">danhsach.congno</field>
             <field name="arch" type="xml">
                 <form string="Báo cáo công nợ theo số hợp đồng" version="7.0">
-                	<sheet version="7.0">
-	                	<group col='4' colspan='2'>
-	                    	<field name='from_date'/>
-	                    	<field name='to_date'/>
-	                    	<field name='so_hop_dong'/>
-	                    </group>
-	                    <group colspan='4' string="Chi nhánh">
-	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
-                    	</group>
-                    	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
-	                    </group>
-	                    <group colspan='4' string="Bãi giao ca">
-	                    	<field name='bai_giaoca_ids' nolabel='1'/>
-	                    </group>
-	                    <group colspan='4' string="Đối tượng">
-	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
-	                    </group>
-                    </sheet>
+                	<group col='4' colspan='2'>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    	<field name='so_hop_dong'/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    </group>
                     <footer>
                         <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_sohopdong_report'}"/>
                         hoặc
@@ -247,25 +234,12 @@
             <field name="model">danhsach.congno</field>
             <field name="arch" type="xml">
                 <form string="Báo cáo công nợ theo số hóa đơn" version="7.0">
-                	<sheet version="7.0">
-	                	<group col='4' colspan='2'>
-	                    	<field name='from_date'/>
-	                    	<field name='to_date'/>
-	                    	<field name='so_hoa_don'/>
-	                    </group>
-	                    <group colspan='4' string="Chi nhánh">
-	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
-                    	</group>
-                    	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
-	                    </group>
-	                    <group colspan='4' string="Bãi giao ca">
-	                    	<field name='bai_giaoca_ids' nolabel='1'/>
-	                    </group>
-	                    <group colspan='4' string="Đối tượng">
-	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
-	                    </group>
-                    </sheet>
+                	<group col='4' colspan='2'>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    	<field name='so_hoa_don'/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    </group>
                     <footer>
                         <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_sohoadon_report'}"/>
                         hoặc
@@ -294,21 +268,10 @@
 	                	<group col='4' colspan='2'>
 	                    	<field name='from_date'/>
 	                    	<field name='to_date'/>
+	                    	<field name='chinhanh_id' readonly='1'/>
 	                    </group>
 	                    <group colspan='4' string="Biển số xe">
 	                    	<field name='bien_so_xe_ids' nolabel='1'/>
-	                    </group>
-	                    <group colspan='4' string="Chi nhánh">
-	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
-                    	</group>
-                    	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
-	                    </group>
-	                    <group colspan='4' string="Bãi giao ca">
-	                    	<field name='bai_giaoca_ids' nolabel='1'/>
-	                    </group>
-	                    <group colspan='4' string="Đối tượng">
-	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
 	                    </group>
                     </sheet>
                     <footer>
@@ -335,25 +298,12 @@
             <field name="model">danhsach.congno</field>
             <field name="arch" type="xml">
                 <form string="Báo cáo công nợ theo bảng chiết tính" version="7.0">
-                	<sheet version="7.0">
-	                	<group col='4' colspan='2'>
-	                    	<field name='from_date'/>
-	                    	<field name='to_date'/>
-	                    	<field name='ma_bang_chiettinh_chiphi_sua'/>
-	                    </group>
-	                    <group colspan='4' string="Chi nhánh">
-	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
-                    	</group>
-                    	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
-	                    </group>
-	                    <group colspan='4' string="Bãi giao ca">
-	                    	<field name='bai_giaoca_ids' nolabel='1'/>
-	                    </group>
-	                    <group colspan='4' string="Đối tượng">
-	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
-	                    </group>
-                    </sheet>
+                	<group col='4' colspan='2'>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    	<field name='ma_bang_chiettinh_chiphi_sua'/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    </group>
                     <footer>
                         <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_bang_chiettinh_report'}"/>
                         hoặc
@@ -378,27 +328,12 @@
             <field name="model">danhsach.congno</field>
             <field name="arch" type="xml">
                 <form string="Báo cáo công nợ theo loại bảo hiểm" version="7.0">
-                	<sheet version="7.0">
-                		<group col='4' colspan='2'>
-	                    	<field name='from_date'/>
-	                    	<field name='to_date'/>
-	                    </group>
-	                    <group colspan='4' string="Loại bảo hiểm">
-	                    	<field name='loai_bao_hiem_ids' nolabel='1'/>
-	                    </group>
-	                    <group colspan='4' string="Chi nhánh">
-	                    	<field name='chinhanh_ids' nolabel='1' domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_ids)"/>
-                    	</group>
-                    	<group colspan='4' string="Đội xe">
-	                    	<field name='doi_xe_ids' nolabel='1' domain="[('type','=','other')]" on_change="onchange_doi_xe(doi_xe_ids)"/>
-	                    </group>
-	                    <group colspan='4' string="Bãi giao ca">
-	                    	<field name='bai_giaoca_ids' nolabel='1'/>
-	                    </group>
-	                    <group colspan='4' string="Đối tượng">
-	                    	<field name='partner_ids' nolabel='1' domain="[('customer','=',True)]"/>
-	                    </group>
-                    </sheet>
+            		<group col='4' colspan='2'>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    	<field name='loai_bao_hiem_id'/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    </group>
                     <footer>
                         <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_loaibaohiem_report'}"/>
                         hoặc

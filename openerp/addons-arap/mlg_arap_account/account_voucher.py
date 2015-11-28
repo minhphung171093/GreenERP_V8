@@ -45,6 +45,7 @@ class account_voucher(osv.osv):
                                       ('tam_ung','Tạm ứng'),
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
+        'fusion_id': fields.char('Fusion ID', size=1024),
     }
     def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
         """
@@ -183,6 +184,7 @@ class account_voucher(osv.osv):
                 'bai_giaoca_id': line.bai_giaoca_id and line.bai_giaoca_id.id or False,
                 # Them loại công no tren voucher line
                 'mlg_type': line.mlg_type,
+                'fusion_id': line.fusion_id,
             }
             remaining_amount -= rs['amount']
             #in case a corresponding move_line hasn't been found, we now try to assign the voucher amount
@@ -266,6 +268,9 @@ class account_voucher(osv.osv):
             # them bai_giaoca_id
             if voucher.mlg_type:
                 cr.execute(''' update account_move_line set mlg_type=%s where move_id=%s ''',(voucher.mlg_type,move_id,))
+                
+            if voucher.fusion_id:
+                cr.execute(''' update account_move_line set fusion_id=%s where move_id=%s ''',(voucher.fusion_id,move_id,))
             
             if voucher.journal_id.entry_posted:
                 move_pool.post(cr, uid, [move_id], context={})
@@ -297,6 +302,7 @@ class account_voucher_line(osv.osv):
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('tam_ung','Tạm ứng'),
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
+        'fusion_id': fields.char('Fusion ID', size=1024),
     }
     
 account_voucher_line()

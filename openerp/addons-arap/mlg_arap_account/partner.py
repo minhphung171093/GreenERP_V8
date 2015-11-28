@@ -60,7 +60,7 @@ class res_partner(osv.osv):
             }
             if partner.taixe or partner.nhanvienvanphong:
                 sql = '''
-                    select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from thu_ky_quy where partner_id=%s and state='paid'
+                    select case when sum(sotien_conlai)!=0 then sum(sotien_conlai) else 0 end sotien from thu_ky_quy where partner_id=%s and state='paid'
                 '''%(partner.id)
                 cr.execute(sql)
                 res[partner.id]['sotien_dathu'] = cr.fetchone()[0]
@@ -123,6 +123,15 @@ class res_partner(osv.osv):
             res[partner.id] = 'DONE'
         return res
     
+    def _get_show_ctkq_ndt(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for partner in self.browse(cr, uid, ids, context=context):
+            res[partner.id] = False
+            for chinhanh in partner.chinhanh_line:
+                if chinhanh.sotien_conlai>0:
+                    res[partner.id] = True
+                    break
+        return res
     
     _columns = {
         'property_account_payable': fields.property(
@@ -160,18 +169,19 @@ class res_partner(osv.osv):
         'sotien_dathu': fields.function(_get_sotien, string='Số tiền đã thu', multi='sotien',
             store={
                 'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
-                'thu.ky.quy': (_get_partner, ['state', 'so_tien', 'partner_id'], 10),
+                'thu.ky.quy': (_get_partner, ['state', 'so_tien', 'partner_id','sotien_conlai'], 10),
             },type='float',digits=(16,0)),
         'sotien_conlai': fields.function(_get_sotien, string='Số tiền còn lại', multi='sotien',
             store={
                 'res.partner': (lambda self, cr, uid, ids, c={}: ids, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
-                'thu.ky.quy': (_get_partner, ['state', 'so_tien', 'partner_id'], 10),
+                'thu.ky.quy': (_get_partner, ['state', 'so_tien', 'partner_id','sotien_conlai'], 10),
             },type='float',digits=(16,0)),
         'ky_quy_ids': fields.function(_get_kyquy, relation='thu.ky.quy',type='many2many', string='Ký quỹ', readonly=True),
         'tinh_congno': fields.function(_get_congno, type='char', string='Tính công nợ', readonly=True),
         'congno_line': fields.one2many('tong.cong.no', 'partner_id','Chi tiết công nợ', readonly=True),
         'loai_doituong_lienket': fields.selection([('baohiem','Bảo hiểm'),('congty_thanhvien','Công ty thành viên')],'Loại đối tượng liên kết'),
         'doituong_lienket': fields.char('Mã đối tượng liên kết', size=1024),
+        'show_ctkq_ndt': fields.function(_get_show_ctkq_ndt,type='boolean',string='Hiện ctkq ndt'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):
@@ -284,6 +294,165 @@ class res_partner(osv.osv):
 #             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
 #         return super(res_partner, self).write(cr, uid, ids, vals, context)
     
+    def cantru_kyquy(self, cr, uid, ids, context=None):
+        kyquy_obj = self.pool.get('thu.ky.quy')
+        voucher_obj = self.pool.get('account.voucher')
+        ngay_thanh_toan=time.strftime('%Y-%m-%d')
+        for partner in self.browse(cr, uid, ids):
+            if partner.taixe or partner.nhanvienvanphong:
+                sql = '''
+                    select id, sotien_conlai
+                        from thu_ky_quy
+                        
+                        where sotien_conlai>0 and chinhanh_id=%s and partner_id=%s and state='paid'
+                        
+                        order by ngay_thu,id
+                '''%(partner.chinhanh_id.id,partner.id)
+                cr.execute(sql)
+                for kyquy in cr.dictfetchall():
+                    sotien_conlai = kyquy['sotien_conlai']
+                    sotien_cantru = 0
+                    sql = '''
+                        select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                        
+                            from account_invoice
+                        
+                            where state='open' and type='out_invoice' and chinhanh_id=%s and partner_id=%s
+                            
+                            order by date_invoice,id
+                    '''%(partner.chinhanh_id.id,partner.id)
+                    cr.execute(sql)
+                    for line in cr.dictfetchall():
+                        if sotien_conlai>line['residual']:
+                            amount = line['residual']
+                            sotien_conlai = sotien_conlai-line['residual']
+                        else:
+                            amount = sotien_conlai
+                            sotien_conlai = 0
+                        sotien_cantru+=amount
+                        if not amount:
+                            break
+                        
+                        journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
+                            
+                        vals = {
+                            'amount': amount,
+                            'partner_id': line['partner_id'],
+                            'reference': line['name'],
+                            'bai_giaoca_id': line['bai_giaoca_id'],
+                            'mlg_type': line['mlg_type'],
+                            'type': 'receipt',
+                            'chinhanh_id': line['chinhanh_id'],
+                            'journal_id': journal_ids[0],
+                            'date': ngay_thanh_toan,
+                        }
+                        
+                        context = {
+                            'payment_expected_currency': line['currency_id'],
+                            'default_partner_id': line['partner_id'],
+                            'default_amount': amount,
+                            'default_reference': line['name'],
+                            'default_bai_giaoca_id': line['bai_giaoca_id'],
+                            'default_mlg_type': line['mlg_type'],
+                            'close_after_process': True,
+                            'invoice_type': line['type'],
+                            'invoice_id': line['id'],
+                            'default_type': 'receipt',
+                            'default_chinhanh_id': line['chinhanh_id'],
+                            'type': 'receipt',
+                        }
+                        vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],line['partner_id'],journal_ids[0],amount,line['currency_id'],'receipt',ngay_thanh_toan,context)['value']
+                        vals.update(vals_onchange_partner)
+                        vals.update(
+                            voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,line['partner_id'],ngay_thanh_toan,amount,'receipt',line['company_id'],context)['value']
+                        )
+                        line_cr_ids = []
+                        for l in vals['line_cr_ids']:
+                            line_cr_ids.append((0,0,l))
+                        vals.update({'line_cr_ids':line_cr_ids})
+                        voucher_id = voucher_obj.create(cr, uid, vals)
+                        voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                    
+                    kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':kyquy['sotien_conlai']-sotien_cantru})
+                    
+            if partner.nhadautu:
+                for chinhanh in partner.chinhanh_line:
+                    sql = '''
+                        select id, sotien_conlai
+                            from thu_ky_quy
+                            
+                            where sotien_conlai>0 and chinhanh_id=%s and partner_id=%s and state='paid'
+                            
+                            order by ngay_thu,id
+                    '''%(chinhanh.chinhanh_id.id,partner.id)
+                    cr.execute(sql)
+                    for kyquy in cr.dictfetchall():
+                        sotien_conlai = kyquy['sotien_conlai']
+                        sotien_cantru = 0
+                        sql = '''
+                            select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                            
+                                from account_invoice
+                            
+                                where state='open' and type='out_invoice' and chinhanh_id=%s and partner_id=%s
+                                
+                                order by date_invoice,id
+                        '''%(chinhanh.chinhanh_id.id,partner.id)
+                        cr.execute(sql)
+                        for line in cr.dictfetchall():
+                            if sotien_conlai>line['residual']:
+                                amount = line['residual']
+                                sotien_conlai = sotien_conlai-line['residual']
+                            else:
+                                amount = sotien_conlai
+                                sotien_conlai = 0
+                            sotien_cantru+=amount
+                            if not amount:
+                                break
+                            
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
+                                
+                            vals = {
+                                'amount': amount,
+                                'partner_id': line['partner_id'],
+                                'reference': line['name'],
+                                'bai_giaoca_id': line['bai_giaoca_id'],
+                                'mlg_type': line['mlg_type'],
+                                'type': 'receipt',
+                                'chinhanh_id': line['chinhanh_id'],
+                                'journal_id': journal_ids[0],
+                                'date': ngay_thanh_toan,
+                            }
+                            
+                            context = {
+                                'payment_expected_currency': line['currency_id'],
+                                'default_partner_id': line['partner_id'],
+                                'default_amount': amount,
+                                'default_reference': line['name'],
+                                'default_bai_giaoca_id': line['bai_giaoca_id'],
+                                'default_mlg_type': line['mlg_type'],
+                                'close_after_process': True,
+                                'invoice_type': line['type'],
+                                'invoice_id': line['id'],
+                                'default_type': 'receipt',
+                                'default_chinhanh_id': line['chinhanh_id'],
+                                'type': 'receipt',
+                            }
+                            vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],line['partner_id'],journal_ids[0],amount,line['currency_id'],'receipt',ngay_thanh_toan,context)['value']
+                            vals.update(vals_onchange_partner)
+                            vals.update(
+                                voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,line['partner_id'],ngay_thanh_toan,amount,'receipt',line['company_id'],context)['value']
+                            )
+                            line_cr_ids = []
+                            for l in vals['line_cr_ids']:
+                                line_cr_ids.append((0,0,l))
+                            vals.update({'line_cr_ids':line_cr_ids})
+                            voucher_id = voucher_obj.create(cr, uid, vals)
+                            voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                        
+                        kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':kyquy['sotien_conlai']-sotien_cantru})
+        return True
+    
 res_partner()
 
 class chi_nhanh_line(osv.osv):
@@ -298,7 +467,7 @@ class chi_nhanh_line(osv.osv):
                 'sotien_conlai': 0,
             }
             sql = '''
-                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien from thu_ky_quy where partner_id=%s and chinhanh_id=%s and state='paid'
+                select case when sum(sotien_conlai)!=0 then sum(sotien_conlai) else 0 end sotien from thu_ky_quy where partner_id=%s and chinhanh_id=%s and state='paid'
             '''%(chinhanhline.partner_id.id,chinhanhline.chinhanh_id.id)
             cr.execute(sql)
             res[chinhanhline.id]['sotien_dathu'] = cr.fetchone()[0]
