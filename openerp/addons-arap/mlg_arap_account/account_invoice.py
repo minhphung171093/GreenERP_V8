@@ -163,6 +163,7 @@ class account_invoice(osv.osv):
 #                                     string='Balance',help="Remaining amount due."),
         'fusion_id': fields.char('Fusion ID', size=1024),
         'invisible_button_cancel': fields.function(_get_invisible_button_cancel, type='boolean', string='Invisible Button Cancel'),
+        'ref_number': fields.char('Ref NUMBER', size=1024),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

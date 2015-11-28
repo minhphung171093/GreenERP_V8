@@ -24,6 +24,7 @@ class Parser(report_sxw.rml_parse):
         super(Parser, self).__init__(cr, uid, name, context=context)
         pool = pooler.get_pool(self.cr.dbname)
         self.tongtien = 0
+        self.ref_number = False
         self.localcontext.update({
             'get_sohoadon': self.get_sohoadon,
             'get_line': self.get_line,
@@ -33,6 +34,7 @@ class Parser(report_sxw.rml_parse):
             'convert_amount': self.convert_amount,
             'convert': self.convert,
             'get_biensoxe': self.get_biensoxe,
+            'get_ref_number': self.get_ref_number,
         })
         
     def convert(self, amount):
@@ -83,6 +85,10 @@ class Parser(report_sxw.rml_parse):
     def get_tongtien(self):
         return self.tongtien
     
+    def get_ref_number(self):
+        self.ref_number = time.strftime('%Y%m%d%H%M%S')
+        return self.ref_number
+    
     def convert_amount(self, amount):
         a = format(int(amount),',')
 #         return a.replace(',',' ')
@@ -97,7 +103,7 @@ class Parser(report_sxw.rml_parse):
         
         res = []
         sql = '''
-            select ai.name as maphieu,rp.name as tendoituong, ai.mlg_type as loaicongno, ai.so_tien as sotien
+            select ai.id as id,ai.name as maphieu,rp.ma_doi_tuong as madoituong,rp.name as tendoituong, ai.mlg_type as loaicongno, ai.so_tien as sotien
                 from account_invoice ai
                 left join res_partner rp on ai.partner_id = rp.id
                 
@@ -124,10 +130,15 @@ class Parser(report_sxw.rml_parse):
         for line in self.cr.dictfetchall():
             res.append({
                 'maphieu': line['maphieu'],
+                'madoituong': line['madoituong'],
                 'tendoituong': line['tendoituong'],
 #                 'loaicongno': self.get_loaicongno(line['loaicongno']),
                 'sotien': self.convert_amount(line['sotien']),
             })
+            sql = '''
+                update account_invoice set ref_number='%s' where id=%s
+            '''%(self.ref_number,line['id'])
+            self.cr.execute(sql)
             self.tongtien+=line['sotien']
         return res
     

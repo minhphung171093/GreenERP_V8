@@ -230,6 +230,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label string='Ref NUMBER'/>
+                			<field name="ref_number" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
                 		<group col="4" colspan="2">
 	                    	<group>
@@ -390,6 +392,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label string='Ref NUMBER'/>
+                			<field name="ref_number" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
@@ -868,6 +872,8 @@
                 		<h1>
                 			<label string='Tạo mới công nợ xưởng'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label string='Ref NUMBER'/>
+                			<field name="ref_number" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>

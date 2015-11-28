@@ -993,35 +993,43 @@ class import_congno_tudong(osv.osv):
                             if not invoices:
                                 sql = '''
                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where so_hoa_don='%s' and state='open' and type='out_invoice'
+                                        from account_invoice where ref_number='%s' and state='open' and type='out_invoice'
                                         order by date_invoice
                                 '''%(data['REQUEST_REF_NUMBER'])
                                 cr.execute(sql)
                                 invoices = cr.dictfetchall()
-                            if not invoices:
-                                sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and state='open' and type='out_invoice'
-                                        order by date_invoice
-                                '''%(data['REQUEST_REF_NUMBER'])
-                                cr.execute(sql)
-                                invoices = cr.dictfetchall()
-                            if not invoices:
-                                sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and state='open' and type='out_invoice'
-                                        order by date_invoice
-                                '''%(data['REQUEST_REF_NUMBER'])
-                                cr.execute(sql)
-                                invoices = cr.dictfetchall()
-                            if not invoices:
-                                sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where so_hop_dong='%s' and state='open' and type='out_invoice'
-                                        order by date_invoice
-                                '''%(data['REQUEST_REF_NUMBER'])
-                                cr.execute(sql)
-                                invoices = cr.dictfetchall()    
+#                             if not invoices:
+#                                 sql = '''
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+#                                         from account_invoice where so_hoa_don='%s' and state='open' and type='out_invoice'
+#                                         order by date_invoice
+#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 cr.execute(sql)
+#                                 invoices = cr.dictfetchall()
+#                             if not invoices:
+#                                 sql = '''
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+#                                         from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and state='open' and type='out_invoice'
+#                                         order by date_invoice
+#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 cr.execute(sql)
+#                                 invoices = cr.dictfetchall()
+#                             if not invoices:
+#                                 sql = '''
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+#                                         from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and state='open' and type='out_invoice'
+#                                         order by date_invoice
+#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 cr.execute(sql)
+#                                 invoices = cr.dictfetchall()
+#                             if not invoices:
+#                                 sql = '''
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+#                                         from account_invoice where so_hop_dong='%s' and state='open' and type='out_invoice'
+#                                         order by date_invoice
+#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 cr.execute(sql)
+#                                 invoices = cr.dictfetchall()    
                             if not invoices:
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
                             
