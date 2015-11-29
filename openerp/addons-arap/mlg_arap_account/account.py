@@ -63,6 +63,8 @@ class account_account(osv.osv):
         return super(account_account, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=None, count=count)
     
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
         if context is None:
             context = {}
         if not name:
