@@ -305,7 +305,7 @@
                     <field name="nhap_xuat"/>
                     <field name="tudong_bangtay"/>
                     <field name="trang_thai"/>
-                    <field name="noidung_loi" invisible='1'/>
+                    <field name="noidung_loi"/>
                 </tree>
             </field>
         </record>

@@ -36,7 +36,9 @@ from glob import glob
 from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
-
+IMPORTING = '/Importing/'
+DONE = '/Done/'
+ERROR = '/Error/'
 class import_congno_tudong(osv.osv):
     _name = 'import.congno.tudong'
 
@@ -55,8 +57,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_no_xuong')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -65,7 +67,9 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                         
                         for data in file_data:
+                            noidung_loi = ''
                             if data['so_tien'] <= 0:
+                                noidung_loi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -75,6 +79,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
+                                noidung_loi = 'Không tìm thấy chi nhánh'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -84,6 +89,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
+                                noidung_loi = 'Không tìm thấy đối tượng'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -112,6 +118,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
+                                noidung_loi = 'Không tìm thấy biển số xe'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             mx = data['ma_xuong']
@@ -119,6 +126,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             ma_xuong_ids = cr.fetchone()
                             if mx and not ma_xuong_ids:
+                                noidung_loi = 'Không tìm thấy mã xưởng'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy mã xưởng')
                             
                             date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
@@ -156,7 +164,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -164,7 +172,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -183,8 +191,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_htkd')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -193,7 +201,9 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                         
                         for data in file_data:
+                            noidung_loi = ''
                             if data['so_tien'] <= 0:
+                                noidung_loi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -203,6 +213,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
+                                noidung_loi = 'Không tìm thấy chi nhánh'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -212,6 +223,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
+                                noidung_loi = 'Không tìm thấy đối tượng'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -240,6 +252,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
+                                noidung_loi = 'Không tìm thấy biển số xe'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
@@ -275,7 +288,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -283,7 +296,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Thu phí thương hiệu (HTKD)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Thu phí thương hiệu (HTKD)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -302,8 +315,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_htkd')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -312,7 +325,9 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                         
                         for data in file_data:
+                            noidung_loi=''
                             if data['so_tien'] <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -322,6 +337,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
+                                noidung_loi='Không tìm thấy chi nhánh'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -331,6 +347,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
+                                noidung_loi='Không tìm thấy đối tượng'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -359,6 +376,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
+                                noidung_loi='Không tìm thấy biển số xe'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
 
                             date_invoice=datetime.strptime(data['ngay_phat_sinh'],'%d/%m/%Y').strftime('%Y-%m-%d')
@@ -403,7 +421,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -411,7 +429,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Trả góp xe (HTKD)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Trả góp xe (HTKD)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -431,8 +449,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_shift')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -441,12 +459,13 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
-                            
+                            noidung_loi=''
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
+                                noidung_loi='Không tìm thấy biển số xe'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                                 
                             sql = '''
@@ -469,6 +488,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
@@ -531,7 +551,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -539,7 +559,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Thu phí thương hiệu (SHIFT)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Thu phí thương hiệu (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -559,8 +579,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_shift')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -569,12 +589,13 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
-                                
+                            noidung_loi=''
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
+                                noidung_loi='Không tìm thấy biển số xe'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
 
                             sql = '''
@@ -597,6 +618,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
@@ -659,7 +681,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -667,7 +689,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Trả góp xe (SHIFT)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Trả góp xe (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -687,8 +709,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -697,6 +719,7 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            noidung_loi=''
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
@@ -707,6 +730,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
@@ -769,7 +793,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -777,7 +801,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Phạt vi phạm (HISTAFF)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Phạt vi phạm (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -797,8 +821,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -807,6 +831,7 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            noidung_loi=''
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
@@ -817,6 +842,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
@@ -879,7 +905,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -887,7 +913,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Phải thu tạm ứng (HISTAFF)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Phải thu tạm ứng (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -903,8 +929,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','phai_thu_ky_quy')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -913,7 +939,9 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            noidung_loi=''
                             if data['so_tien_da_thu'] <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id from account_account where code='%s' limit 1
@@ -921,6 +949,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
+                                noidung_loi='Không tìm thấy chi nhánh'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
 
                             sql = '''
@@ -943,7 +972,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -951,7 +980,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Phải thu ký quỹ (HISTAFF)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Phải thu ký quỹ (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -971,8 +1000,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','fustion_phaithu')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -981,7 +1010,9 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            noidung_loi=''
                             if data['ACCTD_AMOUNT'] <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -1031,6 +1062,7 @@ class import_congno_tudong(osv.osv):
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()    
                             if not invoices:
+                                noidung_loi='Không tìm thấy công nợ'
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
                             
                             sotiendathu = float(data['ACCTD_AMOUNT'])
@@ -1103,7 +1135,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -1111,7 +1143,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Fustion (ORACLE)','Thu','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Fustion (ORACLE)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -1131,8 +1163,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','fustion_phaitra')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -1141,7 +1173,9 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            noidung_loi=''
                             if data['ACCTD_AMOUNT'] <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -1183,6 +1217,7 @@ class import_congno_tudong(osv.osv):
                                 cr.execute(sql)
                                 invoices = cr.dictfetchall()    
                             if not invoices:
+                                noidung_loi='Không tìm thấy công nợ'
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
                             
                             sotiendathu = float(data['ACCTD_AMOUNT'])
@@ -1252,7 +1287,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -1260,7 +1295,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Fustion (ORACLE)','Trả','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Fustion (ORACLE)','Trả','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))
@@ -1279,8 +1314,8 @@ class import_congno_tudong(osv.osv):
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','chi_ho')])
 
             for dir_path in import_obj.browse(cr, uid, import_ids):
-                path = dir_path.name+'/Importing/'
-                done_path = dir_path.name+'/Done/'
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
     
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
@@ -1289,7 +1324,9 @@ class import_congno_tudong(osv.osv):
                         file_data = csvUti._read_file(f_path)
                     
                         for data in file_data:
+                            noidung_loi=''
                             if data['so_tien'] <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -1299,6 +1336,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
+                                noidung_loi='Không tìm thấy chi nhánh'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -1308,6 +1346,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
+                                noidung_loi='Không tìm thấy đối tượng'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -1336,6 +1375,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
+                                noidung_loi='Không tìm thấy biển số xe'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             date_invoice=datetime.strptime(data['ngay_phat_sinh'],'%d/%m/%Y').strftime('%Y-%m-%d')
@@ -1371,7 +1411,7 @@ class import_congno_tudong(osv.osv):
                             'noidung_loi': '',
                         })
                     except Exception, e:
-                        error_path = dir_path.name+'/Error/'
+                        error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -1379,7 +1419,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Chi góp xe (HTKD)','Trả','Nhập','Tự động','Lỗi',''
+                             error_path+f_path.split('/')[-1],'Chi góp xe (HTKD)','Trả','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         raise osv.except_osv(_('Warning!'), str(e))

@@ -36,7 +36,9 @@ from glob import glob
 # from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
-
+IMPORTING = '/Importing/'
+DONE = '/Done/'
+ERROR = '/Error/'
 class import_congno_manually(osv.osv):
     _name = 'import.congno.manually'
     
@@ -103,8 +105,8 @@ class import_congno_manually(osv.osv):
                 if not import_ids:
                     raise osv.except_osv(_('Cảnh báo!'), 'Chưa cấu hình thư mục để nhập vào')
                 dir_path = import_obj.browse(cr, uid, import_ids[0]).name
-                path = dir_path+'/Importing/'
-                done_path = dir_path+'/Done/'
+                path = dir_path+IMPORTING
+                done_path = dir_path+DONE
                 bin_value = (this.datas).decode('base64')
                 f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y-%m-%d %H:%M:%S')+this.datas_fname[-4:]) or ''
                 file_path = path+f_name
@@ -190,7 +192,7 @@ class import_congno_manually(osv.osv):
                         'noidung_loi': '',
                     })
                 except Exception, e:
-                    error_path = dir_path+'/Error/'
+                    error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
                         insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -220,8 +222,8 @@ class import_congno_manually(osv.osv):
                 if not import_ids:
                     raise osv.except_osv(_('Cảnh báo!'), 'Chưa cấu hình thư mục để nhập vào')
                 dir_path = import_obj.browse(cr, uid, import_ids[0]).name
-                path = dir_path+'/Importing/'
-                done_path = dir_path+'/Done/'
+                path = dir_path+IMPORTING
+                done_path = dir_path+DONE
                 bin_value = (this.datas).decode('base64')
                 f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y-%m-%d %H:%M:%S')+this.datas_fname[-4:]) or ''
                 file_path = path+f_name
@@ -312,7 +314,7 @@ class import_congno_manually(osv.osv):
                         'noidung_loi': '',
                     })
                 except Exception, e:
-                    error_path = dir_path+'/Error/'
+                    error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
                         insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
@@ -342,8 +344,8 @@ class import_congno_manually(osv.osv):
                 if not import_ids:
                     raise osv.except_osv(_('Cảnh báo!'), 'Chưa cấu hình thư mục để nhập vào')
                 dir_path = import_obj.browse(cr, uid, import_ids[0]).name
-                path = dir_path+'/Importing/'
-                done_path = dir_path+'/Done/'
+                path = dir_path+IMPORTING
+                done_path = dir_path+DONE
                 bin_value = (this.datas).decode('base64')
                 f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y-%m-%d %H:%M:%S')+this.datas_fname[-4:]) or ''
                 file_path = path+f_name
@@ -447,7 +449,7 @@ class import_congno_manually(osv.osv):
                         'noidung_loi': '',
                     })
                 except Exception, e:
-                    error_path = dir_path+'/Error/'
+                    error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
                         insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)

@@ -218,7 +218,7 @@ class lichsu_giaodich(osv.osv):
         'nhap_xuat': fields.text('Nhập/Xuất'),
         'tudong_bangtay': fields.text('Tự động/Bằng tay'),
         'trang_thai': fields.text('Trạng thái'),
-        'noidung_loi': fields.text('Nội dung lỗi'),
+        'noidung_loi': fields.text('Ghi chú'),
     }
 lichsu_giaodich()
 
