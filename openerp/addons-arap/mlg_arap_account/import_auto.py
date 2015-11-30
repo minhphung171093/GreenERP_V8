@@ -46,6 +46,38 @@ class import_congno_tudong(osv.osv):
         'name': fields.date('Tên', required=True),
     }
     
+    def send_mail(self, cr, uid, lead_email, msg_id,context=None):
+        mail_message_pool = self.pool.get('mail.message')
+        mail_mail = self.pool.get('mail.mail')
+        msg = mail_message_pool.browse(cr, SUPERUSER_ID, msg_id, context=context)
+        body_html = msg.body
+        # email_from: partner-user alias or partner email or mail.message email_from
+        if msg.author_id and msg.author_id.user_ids and msg.author_id.user_ids[0].alias_domain and msg.author_id.user_ids[0].alias_name:
+            email_from = '%s <%s@%s>' % (msg.author_id.name, msg.author_id.user_ids[0].alias_name, msg.author_id.user_ids[0].alias_domain)
+        elif msg.author_id:
+            email_from = '%s <%s>' % (msg.author_id.name, msg.author_id.email)
+        else:
+            email_from = msg.email_from
+
+        references = False
+        if msg.parent_id:
+            references = msg.parent_id.message_id
+
+        mail_values = {
+            'mail_message_id': msg.id,
+            'auto_delete': True,
+            'body_html': body_html,
+            'email_from': email_from,
+            'email_to' : lead_email,
+            'references': references,
+        }
+        email_notif_id = mail_mail.create(cr, uid, mail_values, context=context)
+        try:
+             mail_mail.send(cr, uid, [email_notif_id], context=context)
+        except Exception:
+            a = 1
+        return True
+    
     def import_phaithu_thunoxuong_bdsc(self, cr, uid, context=None):
         import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
         invoice_obj = self.pool.get('account.invoice')
@@ -166,15 +198,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                             1,ngay,1,time.ngay,time.ngay,
                              error_path+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Thu nợ xưởng (BDSC)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))

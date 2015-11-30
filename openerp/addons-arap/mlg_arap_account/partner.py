@@ -158,7 +158,7 @@ class res_partner(osv.osv):
         'nhadautu': fields.boolean('Nhà đầu tư'),
         'nhadautugiantiep': fields.boolean('Nhà đầu tư gián tiếp'),
         'nhanvienvanphong': fields.boolean('Nhân viên văn phòng'),
-        'chinhanh_line': fields.one2many('chi.nhanh.line','partner_id','Chi nhánh'),
+        'chinhanh_line': fields.one2many('chi.nhanh.line','partner_id','Chi nhánh NDT'),
         'cmnd': fields.char('Số CMND', size=1024),
         'mst': fields.char('Mã số thuế', size=1024),
         'giayphep_kinhdoanh': fields.char('Mã số giấy phép kinh doanh', size=1024),
@@ -521,14 +521,15 @@ class chi_nhanh_line(osv.osv):
     
     def _check_chinhanh_id(self, cr, uid, ids, context=None):
         for cnl in self.browse(cr, uid, ids, context=context):
-            sql = '''
-                select id from chi_nhanh_line where id != %s and nhom_chinhanh_id=%s and partner_id=%s
-            '''%(cnl.id,cnl.nhom_chinhanh_id.id,cnl.partner_id.id)
-            cr.execute(sql)
-            cnl_ids = [row[0] for row in cr.fetchall()]
-            if cnl_ids:  
-                raise osv.except_osv(_('Cảnh báo!'),_('Không được phép chọn hai chi nhánh đầu tư giống nhau cho cùng một nhà đầu tư!'))
-                return False
+            if cnl.partner_id and cnl.partner_id.nhadautu:
+                sql = '''
+                    select id from chi_nhanh_line where id != %s and nhom_chinhanh_id=%s and partner_id=%s
+                '''%(cnl.id,cnl.nhom_chinhanh_id.id,cnl.partner_id.id)
+                cr.execute(sql)
+                cnl_ids = [row[0] for row in cr.fetchall()]
+                if cnl_ids:  
+                    raise osv.except_osv(_('Cảnh báo!'),_('Không được phép chọn hai chi nhánh đầu tư giống nhau cho cùng một nhà đầu tư!'))
+                    return False
         return True
     _constraints = [
         (_check_chinhanh_id, 'Identical Data', ['chinhanh_id']),

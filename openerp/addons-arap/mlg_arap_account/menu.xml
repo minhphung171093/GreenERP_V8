@@ -332,11 +332,6 @@
 					name="Biển số xe"
 					parent="menu_danhmuc_dungchung" sequence="15"/>
 					
-				<menuitem id="menu_ir_cron_act_mlg"
-					name="Cấu hình tự động"
-					action="ir_cron_act_mlg"
-					parent="menu_danhmuc_dungchung" sequence="20"/>
-					
 				<menuitem id="menu_action_lichsu_giaodich"
 					name="Lịch sử giao dịch"
 					action="action_lichsu_giaodich"
@@ -346,42 +341,6 @@
 					name="Công nợ đầu kỳ"
 					action="action_congno_dauky"
 					parent="menu_danhmuc_dungchung" sequence="30"/>
-					
-				<menuitem action="base.action_currency_form"
-					id="base.menu_action_currency_form"
-					parent="menu_danhmuc_dungchung" sequence="35" groups="base.group_multi_currency"/>
-			
-			<menuitem id="account.menu_finance_entries"
-				name="Journal Entries"
-				parent="menu_root_quanly" sequence="15"/>
-			
-			<menuitem id="account.periodical_processing_journal_entries_validation"
-				name="Draft Entries"
-				parent="menu_root_quanly" sequence="16"/>
-
-			<menuitem id="account.menu_account_end_year_treatments"
-				name="End of Period"
-				parent="menu_root_quanly" sequence="17"/>
-			
-			<menuitem id="menu_cauhinh"
-				name="Cấu hình"
-				parent="menu_root_quanly" sequence="20"/>
-				
-				<menuitem id="account.next_id_23"
-					name="Periods"
-					parent="menu_cauhinh" sequence="20"/>
-					
-				<menuitem id="account.menu_journals"
-					name="Journals"
-					parent="menu_cauhinh" sequence="30"/>
-					
-				<menuitem id="account.account_account_menu"
-					name="Accounts"
-					parent="menu_cauhinh" sequence="40"/>
-					
-				<!--<menuitem id="account.menu_configuration_misc"
-					name="Miscellaneous"
-					parent="menu_cauhinh" sequence="50"/>-->
 					
 		<menuitem id="menu_root_luocdo"
 			name="Lược Đồ" sequence="15"/>
@@ -480,5 +439,54 @@
 					action="action_congno_theo_loai_baohiem"
 					name="Theo loại bảo hiểm"
 					parent="menu_baocao_cong_no_thu" sequence="25"/>
+					
+		<menuitem id="menu_root_cauhinh_arap"
+			name="Cấu Hình ARAP" sequence="25"/>
+			
+			<menuitem id="menu_cauhinh_arap"
+				name="Cấu hình ARAP"
+				parent="menu_root_cauhinh_arap" sequence="5"/>
+				
+				<menuitem action="base.action_currency_form"
+					id="base.menu_action_currency_form"
+					parent="menu_cauhinh_arap" sequence="5" groups="base.group_multi_currency"/>
+					
+				<menuitem id="menu_ir_cron_act_mlg"
+					name="Cấu hình tự động"
+					action="ir_cron_act_mlg"
+					parent="menu_cauhinh_arap" sequence="10"/>
+					
+				<menuitem id="menu_action_res_users"
+					name="Người dùng"
+					action="base.action_res_users"
+					parent="menu_cauhinh_arap" sequence="15"/>
+					
+			<menuitem id="account.menu_finance_entries"
+				name="Journal Entries"
+				parent="menu_root_cauhinh_arap" sequence="15"/>
+			
+			<menuitem id="account.periodical_processing_journal_entries_validation"
+				name="Draft Entries"
+				parent="menu_root_cauhinh_arap" sequence="16"/>
+
+			<menuitem id="account.menu_account_end_year_treatments"
+				name="End of Period"
+				parent="menu_root_cauhinh_arap" sequence="17"/>
+			
+			<menuitem id="menu_cauhinh"
+				name="Cấu hình"
+				parent="menu_root_cauhinh_arap" sequence="20"/>
+				
+				<menuitem id="account.next_id_23"
+					name="Periods"
+					parent="menu_cauhinh" sequence="20"/>
+					
+				<menuitem id="account.menu_journals"
+					name="Journals"
+					parent="menu_cauhinh" sequence="30"/>
+					
+				<menuitem id="account.account_account_menu"
+					name="Accounts"
+					parent="menu_cauhinh" sequence="40"/>
 	</data>
 </openerp>

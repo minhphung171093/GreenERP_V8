@@ -141,6 +141,7 @@
             <field name="arch" type="xml">
                 <tree string="Biển số xe" editable='top'>
                     <field name="name"/>
+                    <field name="bai_giaoca_id"/>
                 </tree>
             </field>
         </record>

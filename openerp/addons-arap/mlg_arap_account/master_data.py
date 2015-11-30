@@ -85,6 +85,7 @@ class bien_so_xe(osv.osv):
     _name = "bien.so.xe"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'bai_giaoca_id': fields.many2one('bai.giaoca','Bãi giao ca'),
     }
     
 #     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
