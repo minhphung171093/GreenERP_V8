@@ -13,7 +13,6 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
@@ -21,7 +20,6 @@
                     	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
                     	<filter name="group_by_account_id" string="Đội xe" context="{'group_by':'account_id'}"/>
                     	<filter name="group_by_bai_giaoca_id" string="Bãi giao ca" context="{'group_by':'bai_giaoca_id'}"/>
-                    	<filter name="group_by_journal_id" string="Phương thức thanh toán" context="{'group_by':'journal_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
@@ -171,14 +169,12 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
-                    <field name="journal_id" string="Loại giao dịch"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
                     	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
                     	<filter name="group_by_account_id" string="Đội xe" context="{'group_by':'account_id'}"/>
                     	<filter name="group_by_bai_giaoca_id" string="Bãi giao ca" context="{'group_by':'bai_giaoca_id'}"/>
-                    	<filter name="group_by_journal_id" string="Loại giao dịch" context="{'group_by':'journal_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
@@ -332,14 +328,12 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="so_hop_dong"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
                     	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
                     	<filter name="group_by_account_id" string="Tên Phòng ban/Đội xe" context="{'group_by':'account_id'}"/>
-                    	<filter name="group_by_journal_id" string="Phương thức thanh toán" context="{'group_by':'journal_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
@@ -495,13 +489,11 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
                     	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
                     	<filter name="group_by_account_id" string="Tên Phòng ban/Đội xe" context="{'group_by':'account_id'}"/>
-                    	<filter name="group_by_journal_id" string="Phương thức thanh toán" context="{'group_by':'journal_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
@@ -814,13 +806,11 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
                     	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
                     	<filter name="group_by_account_id" string="Đội xe" context="{'group_by':'account_id'}"/>
-                    	<filter name="group_by_journal_id" string="Phương thức thanh toán" context="{'group_by':'journal_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
@@ -978,13 +968,11 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
                     <field name="account_id" string="Đội kinh doanh"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Nhà đầu tư" context="{'group_by':'partner_id'}"/>
                     	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
                     	<filter name="group_by_account_id" string="Đội kinh doanh" context="{'group_by':'account_id'}"/>
-                    	<filter name="group_by_journal_id" string="Phương thức thanh toán" context="{'group_by':'journal_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
@@ -1137,13 +1125,11 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
                     <field name="account_id" string="Đội kinh doanh"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Nhà đầu tư" context="{'group_by':'partner_id'}"/>
                     	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
                     	<filter name="group_by_account_id" string="Đội kinh doanh" context="{'group_by':'account_id'}"/>
-                    	<filter name="group_by_journal_id" string="Phương thức thanh toán" context="{'group_by':'journal_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
@@ -1297,13 +1283,11 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Phòng ban/Đội xe"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
                     	<filter name="group_by_date_invoice" string="Ngày giao dịch" context="{'group_by':'date_invoice'}"/>
                     	<filter name="group_by_account_id" string="Phòng ban/Đội xe" context="{'group_by':'account_id'}"/>
-                    	<filter name="group_by_journal_id" string="Phương thức thanh toán" context="{'group_by':'journal_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
