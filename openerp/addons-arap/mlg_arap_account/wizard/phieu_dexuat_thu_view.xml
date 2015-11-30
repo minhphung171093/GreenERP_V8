@@ -13,7 +13,7 @@
                     	<field name='ngay'/>
                     	<field name='phuongthuc_thanhtoan'/>
                     	<field name='diengiai'/>
-                    	<field name='so_tien'/>
+                    	<field name='so_tien' attrs="{'readonly':[('loai','=','chi')]}"/>
                     	<field name='loai_doituong' invisible='1'/>
                     	<field name='mlg_type' invisible='1'/>
                     	<field name='loai' invisible='1'/>
