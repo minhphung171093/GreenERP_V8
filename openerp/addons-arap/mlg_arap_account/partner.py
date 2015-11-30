@@ -501,7 +501,7 @@ class chi_nhanh_line(osv.osv):
         return result.keys()
     
     _columns = {
-        'partner_id': fields.many2one('res.partner', 'Chi nhánh', required=True, ondelete='cascade'),
+        'partner_id': fields.many2one('res.partner', 'Partner', required=True, ondelete='cascade'),
         'chinhanh_id': fields.many2one('account.account', 'Chi nhánh', required=True),
         'nhom_chinhanh_id': fields.many2one('account.account', 'Chi nhánh đầu tư', required=False),
         

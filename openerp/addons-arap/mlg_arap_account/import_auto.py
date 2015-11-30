@@ -85,6 +85,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_no_xuong')])
 
@@ -187,7 +188,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Thu nợ xưởng (BDSC)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -204,8 +205,8 @@ class import_congno_tudong(osv.osv):
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,ngay,1,time.ngay,time.ngay,
-                             error_path+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         
@@ -214,7 +215,7 @@ class import_congno_tudong(osv.osv):
                             <p>Tên file: %s</p>
                             <p>Loại giao dịch: %s</p>
                             <p>Ghi chú: %s</p>
-                        '''%(ngay,error_path+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)',noidung_loi)
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Thu nợ xưởng (BDSC)',noidung_loi)
                         user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
                         partner = user.partner_id
                         partner.signup_prepare()
@@ -224,7 +225,7 @@ class import_congno_tudong(osv.osv):
                             'partner_ids': [],
                             }
                         lead_email = partner.email
-                        msg_id = self.message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
                         self.send_mail(cr, uid, lead_email, msg_id, context)
                         
                         raise osv.except_osv(_('Warning!'), str(e))
