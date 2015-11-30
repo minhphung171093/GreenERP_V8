@@ -39,7 +39,6 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -56,7 +55,6 @@
             <field name="arch" type="xml">
                 <form string="Nợ doanh thu" version='7.0'>
 					<header>
-	                    <button name="in_phieu" type="object" string="In" class="oe_highlight" context="{'name_report':'form_no_doanh_thu_report'}"/>
 	                    <button name="invoice_open" states="draft" string="Approve" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_open" states="proforma2" string="Approve" groups="base.group_user"/>
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
@@ -198,7 +196,6 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="so_hoa_don" string="Số hóa đơn" />
-                    <field name="journal_id" string="Loại giao dịch"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
@@ -360,7 +357,6 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="so_hop_dong" string="Số hợp đồng"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
@@ -523,7 +519,6 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="loai_kyquy_id" string="Loại ký quỹ"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="period_id" invisible='1'/>
@@ -842,8 +837,8 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="so_hop_dong"/>
+                    <field name="ma_bang_chiettinh_chiphi_sua"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -1006,7 +1001,6 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
                     <field name="account_id" string="Đội kinh doanh"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="so_hop_dong" string="Mã hợp đồng"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
@@ -1166,7 +1160,6 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
                     <field name="account_id" string="Đội kinh doanh"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="so_hop_dong" string="Mã hợp đồng"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
@@ -1327,7 +1320,6 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Phòng ban/Đội xe"/>
-                    <field name="journal_id" string="Phương thức thanh toán"/>
                     <field name="so_hop_dong" string="Mã hợp đồng"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
