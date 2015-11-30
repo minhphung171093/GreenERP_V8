@@ -16,6 +16,7 @@
                     	<field name='so_tien'/>
                     	<field name='loai_doituong' invisible='1'/>
                     	<field name='mlg_type' invisible='1'/>
+                    	<field name='loai' invisible='1'/>
                     </group>
                     <footer>
                         <button name="print_report" string="In phiếu đề xuất" context="{'mlg_type':mlg_type,'loai_doituong':loai_doituong}" type="object" class="oe_highlight"/>
@@ -48,6 +49,7 @@
                     	<field name='diengiai'/>
                     	<field name='so_tien'/>
                     	<field name='loai_doituong' invisible='1'/>
+                    	<field name='loai' invisible='1'/>
                     </group>
                     <footer>
                         <button name="print_thukyquy_report" string="In phiếu đề xuất" context="{'loai_doituong':loai_doituong}" type="object" class="oe_highlight"/>

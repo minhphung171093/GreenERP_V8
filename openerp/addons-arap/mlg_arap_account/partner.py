@@ -162,7 +162,7 @@ class res_partner(osv.osv):
         'cmnd': fields.char('Số CMND', size=1024),
         'mst': fields.char('Mã số thuế', size=1024),
         'giayphep_kinhdoanh': fields.char('Mã số giấy phép kinh doanh', size=1024),
-        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=False),
         'create_user_id': fields.many2one('res.users','User'),
         'sotien_phaithu': fields.float('Số tiền phải thu',digits=(16,0)),
         'sotien_phaithu_dinhky': fields.float('Số tiền phải thu định kỳ',digits=(16,0)),

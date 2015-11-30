@@ -50,7 +50,7 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select partner_id from account_invoice
                 where date_invoice='%s' and chinhanh_id=%s and mlg_type='%s'
-                    and state in ('open') 
+                    and state in ('draft') 
                 
                 group by partner_id
         '''%(date,chinhanh_id[0],mlg_type)
@@ -102,7 +102,7 @@ class Parser(report_sxw.rml_parse):
                 from account_invoice ai
                 left join res_partner rp on rp.id = ai.partner_id
                 
-                where ai.partner_id=%s and ai.state in ('open') and ai.date_invoice='%s' and ai.chinhanh_id=%s
+                where ai.partner_id=%s and ai.state in ('draft') and ai.date_invoice='%s' and ai.chinhanh_id=%s
                     and ai.mlg_type='%s'
         '''%(partner_id,date,chinhanh_id[0],mlg_type)
         self.cr.execute(sql)
@@ -116,7 +116,7 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select case when sum(so_tien)!=0 then sum(so_tien) else 0 end tongtien from account_invoice
                 where date_invoice='%s' and chinhanh_id=%s and mlg_type='%s' and partner_id=%s
-                    and state in ('open') 
+                    and state in ('draft') 
         '''%(date,chinhanh_id[0],mlg_type,partner_id)
         self.cr.execute(sql)
         return self.cr.fetchone()[0]

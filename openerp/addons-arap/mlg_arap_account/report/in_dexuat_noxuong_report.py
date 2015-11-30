@@ -114,7 +114,7 @@ class Parser(report_sxw.rml_parse):
                 from account_invoice ai
                 left join res_partner rp on ai.partner_id = rp.id
                 
-                where mlg_type='thu_no_xuong' 
+                where ai.mlg_type='thu_no_xuong' and ai.state in ('draft','open')  
         '''
         if so_hop_dong:
             sql+='''

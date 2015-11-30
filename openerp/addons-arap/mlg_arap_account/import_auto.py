@@ -1015,48 +1015,48 @@ class import_congno_tudong(osv.osv):
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
-                                select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                    from account_invoice where name='%s' and state='open' and type='out_invoice'
+                                select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+                                    from account_invoice where name='%s' and type='out_invoice'
                                     order by date_invoice
                             '''%(data['REQUEST_REF_NUMBER'])
                             cr.execute(sql)
                             invoices = cr.dictfetchall()
                             if not invoices:
                                 sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where ref_number='%s' and state='open' and type='out_invoice'
+                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+                                        from account_invoice where ref_number='%s' and type='out_invoice'
                                         order by date_invoice
                                 '''%(data['REQUEST_REF_NUMBER'])
                                 cr.execute(sql)
                                 invoices = cr.dictfetchall()
 #                             if not invoices:
 #                                 sql = '''
-#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-#                                         from account_invoice where so_hoa_don='%s' and state='open' and type='out_invoice'
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+#                                         from account_invoice where so_hoa_don='%s' and type='out_invoice'
 #                                         order by date_invoice
 #                                 '''%(data['REQUEST_REF_NUMBER'])
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
 #                                 sql = '''
-#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-#                                         from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and state='open' and type='out_invoice'
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+#                                         from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and type='out_invoice'
 #                                         order by date_invoice
 #                                 '''%(data['REQUEST_REF_NUMBER'])
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
 #                                 sql = '''
-#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-#                                         from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and state='open' and type='out_invoice'
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+#                                         from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and type='out_invoice'
 #                                         order by date_invoice
 #                                 '''%(data['REQUEST_REF_NUMBER'])
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
 #                                 sql = '''
-#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-#                                         from account_invoice where so_hop_dong='%s' and state='open' and type='out_invoice'
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+#                                         from account_invoice where so_hop_dong='%s' and type='out_invoice'
 #                                         order by date_invoice
 #                                 '''%(data['REQUEST_REF_NUMBER'])
 #                                 cr.execute(sql)
@@ -1066,63 +1066,74 @@ class import_congno_tudong(osv.osv):
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
                             
                             sotiendathu = float(data['ACCTD_AMOUNT'])
+                            loai = data['TYPE']
+                            if not loai and loai not in ['Thu','thu','chi','Chi']:
+                                noidung_loi='Không tìm thấy TYPE'
+                                raise osv.except_osv(_('Warning!'), 'Không tìm thấy TYPE')
+                            
                             for invoice in invoices:
-                                if invoice['residual']>sotiendathu:
-                                    amount = sotiendathu
-                                else:
-                                    amount = invoice['residual']
+                                if loai in ['Chi','chi'] and invoice['state']!='draft':
+                                    noidung_loi='Phiếu đã chi rồi'
+                                    raise osv.except_osv(_('Warning!'), 'Phiếu đã chi rồi')
+                                if loai in ['Chi','chi'] and invoice['state']=='draft':
+                                    wf_service.trg_validate(uid, 'account.invoice', invoice['id'], 'invoice_open', cr)
+                                
+                                if loai in ['Thu','thu'] and invoice['state']!='open':
+                                    noidung_loi='Phiếu chưa được chi'
+                                    raise osv.except_osv(_('Warning!'), 'Phiếu chưa được chi')
+                                if loai in ['Thu','thu'] and invoice['state']=='open':
+                                    if invoice['residual']>sotiendathu:
+                                        amount = sotiendathu
+                                    else:
+                                        amount = invoice['residual']
+                                        
+                                    if not amount or sotiendathu<=0:
+                                        break
                                     
-                                if not amount or sotiendathu<=0:
-                                    break
-                                
-#                                 sql='''
-#                                     update account_invoice set fusion_id='%s' where id=%s
-#                                 '''%(data['TRANSACTION_NUMBER'],invoice['id'])
-#                                 cr.execute(sql)
-                                journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
-                                
-                                ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
-                                
-                                vals = {
-                                    'amount': amount,
-                                    'partner_id': invoice['partner_id'],
-                                    'reference': invoice['name'],
-                                    'bai_giaoca_id': invoice['bai_giaoca_id'],
-                                    'mlg_type': invoice['mlg_type'],
-                                    'type': 'receipt',
-                                    'chinhanh_id': invoice['chinhanh_id'],
-                                    'journal_id': journal_ids[0],
-                                    'date': ngay_thanh_toan,
-                                    'fusion_id': data['TRANSACTION_NUMBER'],
-                                }
-                                
-                                context = {
-                                    'payment_expected_currency': invoice['currency_id'],
-                                    'default_partner_id': invoice['partner_id'],
-                                    'default_amount': amount,
-                                    'default_reference': invoice['name'],
-                                    'default_bai_giaoca_id': invoice['bai_giaoca_id'],
-                                    'default_mlg_type': invoice['mlg_type'],
-                                    'close_after_process': True,
-                                    'invoice_type': invoice['type'],
-                                    'invoice_id': invoice['id'],
-                                    'default_type': 'receipt',
-                                    'default_chinhanh_id': invoice['chinhanh_id'],
-                                    'type': 'receipt',
-                                }
-                                vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],amount,invoice['currency_id'],'receipt',ngay_thanh_toan,context)['value']
-                                vals.update(vals_onchange_partner)
-                                vals.update(
-                                    voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,invoice['partner_id'],ngay_thanh_toan,amount,'receipt',invoice['company_id'],context)['value']
-                                )
-                                line_cr_ids = []
-                                for l in vals['line_cr_ids']:
-                                    line_cr_ids.append((0,0,l))
-                                vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
-                                
-                                sotiendathu = sotiendathu - amount
+                                    journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
+                                    
+                                    ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
+                                    
+                                    vals = {
+                                        'amount': amount,
+                                        'partner_id': invoice['partner_id'],
+                                        'reference': invoice['name'],
+                                        'bai_giaoca_id': invoice['bai_giaoca_id'],
+                                        'mlg_type': invoice['mlg_type'],
+                                        'type': 'receipt',
+                                        'chinhanh_id': invoice['chinhanh_id'],
+                                        'journal_id': journal_ids[0],
+                                        'date': ngay_thanh_toan,
+                                        'fusion_id': data['TRANSACTION_NUMBER'],
+                                    }
+                                    
+                                    context = {
+                                        'payment_expected_currency': invoice['currency_id'],
+                                        'default_partner_id': invoice['partner_id'],
+                                        'default_amount': amount,
+                                        'default_reference': invoice['name'],
+                                        'default_bai_giaoca_id': invoice['bai_giaoca_id'],
+                                        'default_mlg_type': invoice['mlg_type'],
+                                        'close_after_process': True,
+                                        'invoice_type': invoice['type'],
+                                        'invoice_id': invoice['id'],
+                                        'default_type': 'receipt',
+                                        'default_chinhanh_id': invoice['chinhanh_id'],
+                                        'type': 'receipt',
+                                    }
+                                    vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],amount,invoice['currency_id'],'receipt',ngay_thanh_toan,context)['value']
+                                    vals.update(vals_onchange_partner)
+                                    vals.update(
+                                        voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,invoice['partner_id'],ngay_thanh_toan,amount,'receipt',invoice['company_id'],context)['value']
+                                    )
+                                    line_cr_ids = []
+                                    for l in vals['line_cr_ids']:
+                                        line_cr_ids.append((0,0,l))
+                                    vals.update({'line_cr_ids':line_cr_ids})
+                                    voucher_id = voucher_obj.create(cr, uid, vals)
+                                    voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                    
+                                    sotiendathu = sotiendathu - amount
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),

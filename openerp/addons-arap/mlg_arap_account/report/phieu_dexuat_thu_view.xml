@@ -23,7 +23,7 @@
 			id="pdxt_no_doanh_thu_taixe" 
 			model="account.invoice" 
 			name="pdxt_no_doanh_thu_taixe"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_lx.odt"/>
 	
 <!-- Phiếu đề xuất thu nợ doanh thu nhà đầu tư-->
@@ -47,7 +47,7 @@
 			id="pdxt_no_doanh_thu_nhadautu" 
 			model="account.invoice" 
 			name="pdxt_no_doanh_thu_nhadautu"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_ndt.odt"/>
 
 <!-- Phiếu đề xuất thu chi hộ điện thoại lái xe-->
@@ -71,7 +71,7 @@
 			id="pdxt_chi_ho_dien_thoai_taixe" 
 			model="account.invoice" 
 			name="pdxt_chi_ho_dien_thoai_taixe"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_chihodienthoai_lx.odt"/>
 
 <!-- Phiếu đề xuất thu chi hộ điện thoại nhân viên văn phòng-->
@@ -95,7 +95,7 @@
 			id="pdxt_chi_ho_dien_thoai_nhanvienvanphong" 
 			model="account.invoice" 
 			name="pdxt_chi_ho_dien_thoai_nhanvienvanphong"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_chihodienthoai_nvvp.odt"/>
 
 <!-- Phiếu đề xuất thu bảo hiểm nhà đầu tư-->
@@ -119,7 +119,7 @@
 			id="pdxt_phai_thu_bao_hiem_nhadautu" 
 			model="account.invoice" 
 			name="pdxt_phai_thu_bao_hiem_nhadautu"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_thubaohiem_ndt.odt"/>
 
 <!-- Phiếu đề xuất thu phạt vi phạm lái xe-->
@@ -143,7 +143,7 @@
 			id="pdxt_phat_vi_pham_taixe" 
 			model="account.invoice" 
 			name="pdxt_phat_vi_pham_taixe"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_phatvipham_lx.odt"/>
 	        
 <!-- Phiếu đề xuất thu phạt vi phạm nhân viên văn phòng-->
@@ -167,7 +167,7 @@
 			id="pdxt_phat_vi_pham_nhanvienvanphong" 
 			model="account.invoice" 
 			name="pdxt_phat_vi_pham_nhanvienvanphong"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_phatvipham_nvvp.odt"/>
 	        
 <!-- Phiếu đề xuất thu thu nợ xưởng lái xe-->
@@ -191,7 +191,7 @@
 			id="pdxt_thu_no_xuong_taixe" 
 			model="account.invoice" 
 			name="pdxt_thu_no_xuong_taixe"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_lx.odt"/>
 	        
 <!-- Phiếu đề xuất thu thu nợ xưởng nhà đầu tư-->
@@ -215,7 +215,7 @@
 			id="pdxt_thu_no_xuong_nhadautu" 
 			model="account.invoice" 
 			name="pdxt_thu_no_xuong_nhadautu"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_ndt.odt"/>
 	        
 <!-- Phiếu đề xuất thu thu nợ xưởng nhân viên văn phòng-->
@@ -239,7 +239,7 @@
 			id="pdxt_thu_no_xuong_nhanvienvanphong" 
 			model="account.invoice" 
 			name="pdxt_thu_no_xuong_nhanvienvanphong"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_nvvp.odt"/>
 
 <!-- Phiếu đề xuất thu thu phí thương hiệu lái xe-->
@@ -263,7 +263,7 @@
 			id="pdxt_thu_phi_thuong_hieu_taixe" 
 			model="account.invoice" 
 			name="pdxt_thu_phi_thuong_hieu_taixe"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_lx.odt"/>
 	        
 <!-- Phiếu đề xuất thu thu phí thương hiệu nhà đầu tư-->
@@ -287,7 +287,7 @@
 			id="pdxt_thu_phi_thuong_hieu_nhadautu" 
 			model="account.invoice" 
 			name="pdxt_thu_phi_thuong_hieu_nhadautu"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_ndt.odt"/>
 	        
 <!-- Phiếu đề xuất thu thu phí thương hiệu nhân viên văn phòng-->
@@ -311,7 +311,7 @@
 			id="pdxt_thu_phi_thuong_hieu_nhanvienvanphong" 
 			model="account.invoice" 
 			name="pdxt_thu_phi_thuong_hieu_nhanvienvanphong"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_nvvp.odt"/>
 
 <!-- Phiếu đề xuất thu trả góp xe lái xe-->
@@ -335,7 +335,7 @@
 			id="pdxt_tra_gop_xe_taixe" 
 			model="account.invoice" 
 			name="pdxt_tra_gop_xe_taixe"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_tragopxe_lx.odt"/>
 	        
 <!-- Phiếu đề xuất thu trả góp xe nhà đầu tư-->
@@ -359,7 +359,7 @@
 			id="pdxt_tra_gop_xe_nhadautu" 
 			model="account.invoice" 
 			name="pdxt_tra_gop_xe_nhadautu"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_tragopxe_ndt.odt"/>
 	        
 <!-- Phiếu đề xuất thu trả góp xe nhân viên văn phòng-->
@@ -383,7 +383,7 @@
 			id="pdxt_tra_gop_xe_nhanvienvanphong" 
 			model="account.invoice" 
 			name="pdxt_tra_gop_xe_nhanvienvanphong"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_tragopxe_nvvp.odt"/>
 
 <!-- Phiếu đề xuất thu phải thu tạm ứng lái xe-->
@@ -407,7 +407,7 @@
 			id="pdxt_hoan_tam_ung_taixe" 
 			model="account.invoice" 
 			name="pdxt_hoan_tam_ung_taixe"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_hoantamung_lx.odt"/>
 	        
 <!-- Phiếu đề xuất thu phải thu tạm ứng nhà đầu tư-->
@@ -431,7 +431,7 @@
 			id="pdxt_hoan_tam_ung_nhadautu" 
 			model="account.invoice" 
 			name="pdxt_hoan_tam_ung_nhadautu"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_hoantamung_ndt.odt"/>
 	        
 <!-- Phiếu đề xuất thu phải thu tạm ứng nhân viên văn phòng-->
@@ -455,7 +455,7 @@
 			id="pdxt_hoan_tam_ung_nhanvienvanphong" 
 			model="account.invoice" 
 			name="pdxt_hoan_tam_ung_nhanvienvanphong"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_hoantamung_nvvp.odt"/>
 
 <!-- Phiếu đề xuất thu phải thu ký quỹ lái xe-->
@@ -479,7 +479,7 @@
 			id="pdxt_kyquy_taixe" 
 			model="thu.ky.quy" 
 			name="pdxt_kyquy_taixe"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_lx.odt"/>
 	        
 <!-- Phiếu đề xuất thu phải thu ký quỹ nhà đầu tư-->
@@ -503,7 +503,7 @@
 			id="pdxt_kyquy_nhadautu" 
 			model="thu.ky.quy" 
 			name="pdxt_kyquy_nhadautu"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_ndt.odt"/>
 	        
 <!-- Phiếu đề xuất thu phải thu ký quỹ nhân viên văn phòng-->
@@ -527,7 +527,7 @@
 			id="pdxt_kyquy_nhanvienvanphong" 
 			model="thu.ky.quy" 
 			name="pdxt_kyquy_nhanvienvanphong"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_nvvp.odt"/>
 
 <!-- Phiếu đề xuất trả phải trả ký quỹ lái xe-->
@@ -575,7 +575,7 @@
 			id="pdxt_phai_tra_ky_quy_nhadautu" 
 			model="account.invoice" 
 			name="pdxt_phai_tra_ky_quy_nhadautu"
-	        string="Phiếu đề xuất thu"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_tra_trakyquy_ndt.odt"/>
 	        
 <!-- Phiếu đề xuất trả phải trả ký quỹ nhân viên văn phòng-->
@@ -599,7 +599,7 @@
 			id="pdxt_phai_tra_ky_quy_nhanvienvanphong" 
 			model="account.invoice" 
 			name="pdxt_phai_tra_ky_quy_nhanvienvanphong"
-	        string="Phiếu đề xuất trả"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_tra_trakyquy_nvvp.odt"/>
 	        
 <!-- Phiếu đề xuất trả chi hộ-->
@@ -623,7 +623,7 @@
 			id="pdxt_chi_ho" 
 			model="account.invoice" 
 			name="pdxt_chi_ho"
-	        string="Phiếu đề xuất trả"
+	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_tra_chi_ho.odt"/>
 
 	</data>

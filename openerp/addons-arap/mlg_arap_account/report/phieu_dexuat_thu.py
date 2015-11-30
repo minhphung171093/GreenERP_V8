@@ -32,7 +32,16 @@ class Parser(report_sxw.rml_parse):
             'get_ngay': self.get_ngay,
             'get_diengiai': self.get_diengiai,
             'get_phuongthuc_thanhtoan': self.get_phuongthuc_thanhtoan,
+            'get_loai': self.get_loai,
         })
+        
+    def get_loai(self):
+        wizard_data = self.localcontext['data']['form']
+        loai=wizard_data['loai']
+        if loai=='thu':
+            return 'THU'
+        else:
+            return 'CHI'
         
     def get_sotien(self):
         wizard_data = self.localcontext['data']['form']

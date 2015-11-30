@@ -22,6 +22,8 @@ class phieu_de_xuat(osv.osv_memory):
                         'loai_doituong': invoice.loai_doituong,
                         'mlg_type': invoice.mlg_type,
                         })
+            if context.get('default_loai', False) and context['default_loai']=='chi':
+                res.update({'so_tien': invoice.so_tien})
         if context.get('active_id', False) and context.get('active_model')=='thu.ky.quy':
             kyquy_obj = self.pool.get('thu.ky.quy')
             kyquy = kyquy_obj.browse(cr, uid, context['active_id'])
@@ -29,7 +31,6 @@ class phieu_de_xuat(osv.osv_memory):
                         'partner_id': kyquy.partner_id.id,
                         'loai_doituong': kyquy.loai_doituong,
                         })    
-        
         return res
     
     _columns = {
@@ -54,6 +55,7 @@ class phieu_de_xuat(osv.osv_memory):
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('tam_ung','Tạm ứng'),
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
+        'loai': fields.selection([('thu','Thu'),('chi','Chi')],'Loại'),
     }
     
     _defaults = {
