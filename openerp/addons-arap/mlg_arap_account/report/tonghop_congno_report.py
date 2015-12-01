@@ -33,6 +33,8 @@ class Parser(report_sxw.rml_parse):
             'get_nocuoiky': self.get_nocuoiky,
             'get_tongcongno': self.get_tongcongno,
             'get_loaidoituong': self.get_loaidoituong,
+            'get_thang': self.get_thang,
+            'get_chinhanh': self.get_chinhanh,
         })
         
     def convert_date(self, date):
@@ -40,6 +42,19 @@ class Parser(report_sxw.rml_parse):
             date = datetime.strptime(date, DATE_FORMAT)
             return date.strftime('%d/%m/%Y')
         return ''
+    
+    def get_chinhanh(self):
+        wizard_data = self.localcontext['data']['form']
+        chinhanh_id = wizard_data['chinhanh_id']
+        if not chinhanh_id:
+            return {'name':'','code':''}
+        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        return {'name':account.name,'code':account.code}
+    
+    def get_thang(self):
+        wizard_data = self.localcontext['data']['form']
+        period_id = wizard_data['period_id']
+        return period_id and period_id[1] or ''
     
     def convert_amount(self, amount):
         a = format(int(amount),',')
@@ -108,7 +123,7 @@ class Parser(report_sxw.rml_parse):
             self.cr.execute(sql)
             for partner_id in self.cr.fetchall():
                 if partner_id not in partner_ids:
-                    partner_ids.append(partner_id)
+                    partner_ids.append(partner_id[0])
             return partner_ids
     
     def get_title_doituong(self, partner_id):

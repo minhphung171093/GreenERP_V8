@@ -33,6 +33,9 @@ class Parser(report_sxw.rml_parse):
             'get_title': self.get_title,
             'get_nocuoiky': self.get_nocuoiky,
             'get_tongcongno': self.get_tongcongno,
+            'get_thang': self.get_thang,
+            'get_payment': self.get_payment,
+            'get_chinhanh': self.get_chinhanh,
         })
         
     def convert_date(self, date):
@@ -44,6 +47,19 @@ class Parser(report_sxw.rml_parse):
     def convert_amount(self, amount):
         a = format(int(amount),',')
         return a
+    
+    def get_thang(self):
+        wizard_data = self.localcontext['data']['form']
+        period_id = wizard_data['period_id']
+        return period_id and period_id[1] or ''
+    
+    def get_chinhanh(self):
+        wizard_data = self.localcontext['data']['form']
+        chinhanh_id = wizard_data['chinhanh_id']
+        if not chinhanh_id:
+            return {'name':'','code':''}
+        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        return {'name':account.name,'code':account.code}
     
     def get_doituong(self):
         wizard_data = self.localcontext['data']['form']
@@ -82,7 +98,7 @@ class Parser(report_sxw.rml_parse):
             self.cr.execute(sql)
             for partner_id in self.cr.fetchall():
                 if partner_id not in partner_ids:
-                    partner_ids.append(partner_id)
+                    partner_ids.append(partner_id[0])
             return partner_ids
     
     def get_title(self):
@@ -163,8 +179,8 @@ class Parser(report_sxw.rml_parse):
         period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
         mlg_type = wizard_data['mlg_type']
         sql = '''
-            select ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
-                ai.so_tien as no, (ai.so_tien-ai.residual) as co
+            select ai.id as invoice_id,ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
+                ai.so_tien as no, (ai.so_tien-ai.residual) as co,ai.fusion_id as fusion_id
             
                 from account_invoice ai
                 left join res_partner rp on rp.id = ai.partner_id
@@ -174,6 +190,12 @@ class Parser(report_sxw.rml_parse):
         '''%(partner_id,period.date_start,period.date_stop,chinhanh_id[0],mlg_type)
         self.cr.execute(sql)
         return self.cr.dictfetchall()
+    
+    def get_payment(self, invoice_id):
+        if not invoice_id:
+            return []
+        invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
+        return invoice.payment_ids
             
     
     

@@ -45,7 +45,7 @@ class account_voucher(osv.osv):
                                       ('tam_ung','Tạm ứng'),
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
-        'fusion_id': fields.char('Fusion ID', size=1024),
+        'fusion_id': fields.char('Fusion Thu', size=1024),
     }
     def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
         """
@@ -302,7 +302,7 @@ class account_voucher_line(osv.osv):
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('tam_ung','Tạm ứng'),
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
-        'fusion_id': fields.char('Fusion ID', size=1024),
+        'fusion_id': fields.char('Fusion Thu', size=1024),
     }
     
 account_voucher_line()

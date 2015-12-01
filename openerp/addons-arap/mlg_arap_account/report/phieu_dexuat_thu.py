@@ -33,6 +33,9 @@ class Parser(report_sxw.rml_parse):
             'get_diengiai': self.get_diengiai,
             'get_phuongthuc_thanhtoan': self.get_phuongthuc_thanhtoan,
             'get_loai': self.get_loai,
+            'get_ghichu': self.get_ghichu,
+            'get_datenow': self.get_datenow,
+            'get_user': self.get_user,
         })
         
     def get_loai(self):
@@ -43,6 +46,10 @@ class Parser(report_sxw.rml_parse):
         else:
             return 'CHI'
         
+    def get_user(self):
+        user = self.pool.get('res.users').browse(self.cr, self.uid, self.uid)
+        return user.name
+        
     def get_sotien(self):
         wizard_data = self.localcontext['data']['form']
         so_tien = wizard_data['so_tien']
@@ -52,6 +59,14 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         diengiai = wizard_data['diengiai']
         return diengiai
+    
+    def get_ghichu(self,o):
+        wizard_data = self.localcontext['data']['form']
+        loai=wizard_data['loai']
+        if loai=='chi':
+            return o.dien_giai
+        else:
+            return ''
     
     def get_phuongthuc_thanhtoan(self):
         wizard_data = self.localcontext['data']['form']
@@ -67,6 +82,11 @@ class Parser(report_sxw.rml_parse):
             return self.convert_date(ngay)
         else:
             return ''
+    
+    def get_datenow(self):
+        date = time.strftime(DATE_FORMAT)
+        date = datetime.strptime(date, DATE_FORMAT)
+        return date.strftime('%d/%m/%Y')
     
     def convert_date(self, date):
         if date:

@@ -161,7 +161,7 @@ class account_invoice(osv.osv):
         'thu_cho_doituong_id': fields.many2one('res.partner','Thu cho đối tượng'),
 #         'residual': fields.function(_compute_residual,type='float',digits=dp.get_precision('Account'), store=True,
 #                                     string='Balance',help="Remaining amount due."),
-        'fusion_id': fields.char('Fusion ID', size=1024),
+        'fusion_id': fields.char('Fusion Chi', size=1024),
         'invisible_button_cancel': fields.function(_get_invisible_button_cancel, type='boolean', string='Invisible Button Cancel'),
         'ref_number': fields.char('Ref NUMBER', size=1024),
     }

@@ -1278,6 +1278,10 @@ class import_congno_tudong(osv.osv):
                                     raise osv.except_osv(_('Warning!'), 'Phiếu đã chi rồi')
                                 if loai in ['Chi','chi'] and invoice['state']=='draft':
                                     wf_service.trg_validate(uid, 'account.invoice', invoice['id'], 'invoice_open', cr)
+                                    sql = '''
+                                        update account_invoice set fusion_id='%s' where id=%s
+                                    '''%(data['TRANSACTION_NUMBER'],invoice['id'])
+                                    cr.execute(sql)
                                 
                                 if loai in ['Thu','thu'] and invoice['state']!='open':
                                     noidung_loi='Phiếu chưa được chi'
