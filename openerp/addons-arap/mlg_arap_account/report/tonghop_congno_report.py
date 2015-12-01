@@ -122,7 +122,7 @@ class Parser(report_sxw.rml_parse):
             '''%(period_id[0],chinhanh_id[0],mlg_type)
             self.cr.execute(sql)
             for partner_id in self.cr.fetchall():
-                if partner_id not in partner_ids:
+                if partner_id[0] not in partner_ids:
                     partner_ids.append(partner_id[0])
             return partner_ids
     
