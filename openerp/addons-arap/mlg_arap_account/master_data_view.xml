@@ -271,6 +271,28 @@
             <field name="view_id" ref="base.ir_cron_view_tree"/>
         </record>
 
+<!-- Thêm action trong quản lý -->
+		<record id="sequence_view_tree_inherit" model="ir.ui.view">
+            <field name="name">ir.sequence.tree.inherit</field>
+            <field name="model">ir.sequence</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.sequence_view_tree"/>
+            <field name="arch" type="xml">
+	        	<xpath expr="//field[@name='name']" position="after">
+	        		<field name="mlg" invisible='1'/>
+	        	</xpath>
+            </field>
+        </record>
+		<record id="ir_sequence_act_mlg" model="ir.actions.act_window">
+            <field name="name">Thông số tự động</field>
+            <field name="res_model">ir.sequence</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'active_test': False}</field>
+            <field name="domain">[('mlg','=',True)]</field>
+            <field name="view_id" ref="base.sequence_view_tree"/>
+        </record>
+
 <!-- Lịch sử giao dịch -->
 		<record id="view_lichsu_giaodich_filter" model="ir.ui.view">
             <field name="name">lichsu.giaodich.select</field>

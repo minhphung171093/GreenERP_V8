@@ -240,6 +240,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_htkd')])
 
@@ -332,7 +333,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Thu phí thương hiệu (HTKD)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -343,15 +344,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Thu phí thương hiệu (HTKD)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Thu phí thương hiệu (HTKD)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Thu phí thương hiệu (HTKD)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Thu phí thương hiệu (HTKD)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -364,6 +385,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_htkd')])
 
@@ -465,7 +487,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Trả góp xe (HTKD)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -476,15 +498,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Trả góp xe (HTKD)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Trả góp xe (HTKD)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Trả góp xe (HTKD)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Trả góp xe (HTKD)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -498,6 +540,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_shift')])
 
@@ -595,7 +638,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Thu phí thương hiệu (SHIFT)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -606,15 +649,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Thu phí thương hiệu (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Thu phí thương hiệu (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Thu phí thương hiệu (SHIFT)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Thu phí thương hiệu (SHIFT)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -628,6 +691,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_shift')])
 
@@ -725,7 +789,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Trả góp xe (SHIFT)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -736,15 +800,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Trả góp xe (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Trả góp xe (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Trả góp xe (SHIFT)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Trả góp xe (SHIFT)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -758,6 +842,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham')])
 
@@ -837,7 +922,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Phạt vi phạm (HISTAFF)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -848,15 +933,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Phạt vi phạm (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Phạt vi phạm (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Phạt vi phạm (HISTAFF)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Phạt vi phạm (HISTAFF)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -870,6 +975,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung')])
 
@@ -949,7 +1055,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Phải thu tạm ứng (HISTAFF)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -960,15 +1066,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Phải thu tạm ứng (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Phải thu tạm ứng (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Phải thu tạm ứng (HISTAFF)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Phải thu tạm ứng (HISTAFF)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -978,6 +1104,7 @@ class import_congno_tudong(osv.osv):
         import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
         kyquy_obj = self.pool.get('thu.ky.quy')
         lichsu_obj = self.pool.get('lichsu.giaodich')
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','phai_thu_ky_quy')])
 
@@ -1016,7 +1143,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Phải thu ký quỹ (HISTAFF)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -1027,15 +1154,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Phải thu ký quỹ (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Phải thu ký quỹ (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Phải thu ký quỹ (HISTAFF)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Phải thu ký quỹ (HISTAFF)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -1049,6 +1196,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','fustion_phaithu')])
 
@@ -1190,7 +1338,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Fustion (ORACLE)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
@@ -1201,15 +1349,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Fustion (ORACLE)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Fustion (ORACLE)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Fustion (ORACLE)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Phải thu Fustion (ORACLE)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -1223,6 +1391,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','fustion_phaitra')])
 
@@ -1342,7 +1511,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Fustion (ORACLE)',
                             'thu_tra': 'Trả',
                             'nhap_xuat': 'Nhập',
@@ -1353,15 +1522,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Fustion (ORACLE)','Trả','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Fustion (ORACLE)','Trả','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Fustion (ORACLE)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Phải trả Fustion (ORACLE)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))
@@ -1374,6 +1563,7 @@ class import_congno_tudong(osv.osv):
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
         wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
         try:
             import_ids = import_obj.search(cr, uid, [('mlg_type','=','chi_ho')])
 
@@ -1466,7 +1656,7 @@ class import_congno_tudong(osv.osv):
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-                            'ten_file': done_path+f_path.split('/')[-1],
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
                             'loai_giaodich': 'Chi góp xe (HTKD)',
                             'thu_tra': 'Trả',
                             'nhap_xuat': 'Nhập',
@@ -1477,15 +1667,35 @@ class import_congno_tudong(osv.osv):
                     except Exception, e:
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
                         sql = '''
                             insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
                             values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
                             commit;
                         '''%(
-                             1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                             error_path+f_path.split('/')[-1],'Chi góp xe (HTKD)','Trả','Nhập','Tự động','Lỗi',noidung_loi
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Chi góp xe (HTKD)','Trả','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Chi góp xe (HTKD)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Chi góp xe (HTKD)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        
                         raise osv.except_osv(_('Warning!'), str(e))
         except Exception, e:
             raise osv.except_osv(_('Warning!'), str(e))

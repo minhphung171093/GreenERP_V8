@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data noupdate="1">
+	<data noupdate="0">
 
         <record id="type_no_doanh_thu" model="ir.sequence.type">
             <field name="name">Nợ doanh thu</field>
@@ -13,6 +13,7 @@
             <field name="prefix">NDT/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_chi_ho_dien_thoai" model="ir.sequence.type">
@@ -26,6 +27,7 @@
             <field name="prefix">CHDT/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_phai_thu_bao_hiem" model="ir.sequence.type">
@@ -39,6 +41,7 @@
             <field name="prefix">PTBH/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_phai_thu_ky_quy" model="ir.sequence.type">
@@ -52,6 +55,7 @@
             <field name="prefix">PThuKQ/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_phat_vi_pham" model="ir.sequence.type">
@@ -65,6 +69,7 @@
             <field name="prefix">PVP/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_thu_no_xuong" model="ir.sequence.type">
@@ -78,6 +83,7 @@
             <field name="prefix">TNX/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_thu_phi_thuong_hieu" model="ir.sequence.type">
@@ -91,6 +97,7 @@
             <field name="prefix">TPTH/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_tra_gop_xe" model="ir.sequence.type">
@@ -104,6 +111,7 @@
             <field name="prefix">TGX/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_hoan_tam_ung" model="ir.sequence.type">
@@ -117,6 +125,7 @@
             <field name="prefix">HTU/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_chi_no_doanh_thu" model="ir.sequence.type">
@@ -130,6 +139,7 @@
             <field name="prefix">CNDT/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_chi_dien_thoai" model="ir.sequence.type">
@@ -143,6 +153,7 @@
             <field name="prefix">CDT/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_chi_bao_hiem" model="ir.sequence.type">
@@ -156,6 +167,7 @@
             <field name="prefix">CBH/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_phai_tra_ky_quy" model="ir.sequence.type">
@@ -169,6 +181,7 @@
             <field name="prefix">PTKQ/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_tam_ung" model="ir.sequence.type">
@@ -182,6 +195,7 @@
             <field name="prefix">TU/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_thu_ky_quy" model="ir.sequence.type">
@@ -195,6 +209,7 @@
             <field name="prefix">TKQ/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
         <record id="type_chi_ho" model="ir.sequence.type">
@@ -208,6 +223,7 @@
             <field name="prefix">CH/%(month)s/%(year)s/</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
+            <field name="mlg" eval="True"/>
         </record>
         
     </data>

@@ -312,21 +312,6 @@
 					name="Nợ hạng mức"
 					parent="menu_danhmuc_dungchung" sequence="9"/>
 					
-				<menuitem id="menu_action_cauhinh_thumuc_import"
-					action="action_cauhinh_thumuc_import"
-					name="Thư mục nhập (bằng tay)"
-					parent="menu_danhmuc_dungchung" sequence="10"/>
-					
-				<menuitem id="menu_action_cauhinh_thumuc_import_tudong"
-					action="action_cauhinh_thumuc_import_tudong"
-					name="Thư mục nhập (tự động)"
-					parent="menu_danhmuc_dungchung" sequence="12"/>
-					
-				<menuitem id="menu_action_cauhinh_thumuc_output_tudong"
-					action="action_cauhinh_thumuc_output_tudong"
-					name="Thư mục xuất (tự động)"
-					parent="menu_danhmuc_dungchung" sequence="13"/>
-					
 				<menuitem id="menu_action_bien_so_xe"
 					action="action_bien_so_xe"
 					name="Biển số xe"
@@ -456,10 +441,30 @@
 					action="ir_cron_act_mlg"
 					parent="menu_cauhinh_arap" sequence="10"/>
 					
+				<menuitem id="menu_ir_sequence_act_mlg"
+					name="Thông số tự động"
+					action="ir_sequence_act_mlg"
+					parent="menu_cauhinh_arap" sequence="12"/>
+					
 				<menuitem id="menu_action_res_users"
 					name="Người dùng"
 					action="base.action_res_users"
 					parent="menu_cauhinh_arap" sequence="15"/>
+					
+				<menuitem id="menu_action_cauhinh_thumuc_import"
+					action="action_cauhinh_thumuc_import"
+					name="Thư mục nhập (bằng tay)"
+					parent="menu_cauhinh_arap" sequence="20"/>
+					
+				<menuitem id="menu_action_cauhinh_thumuc_import_tudong"
+					action="action_cauhinh_thumuc_import_tudong"
+					name="Thư mục nhập (tự động)"
+					parent="menu_cauhinh_arap" sequence="25"/>
+					
+				<menuitem id="menu_action_cauhinh_thumuc_output_tudong"
+					action="action_cauhinh_thumuc_output_tudong"
+					name="Thư mục xuất (tự động)"
+					parent="menu_cauhinh_arap" sequence="30"/>
 					
 			<menuitem id="account.menu_finance_entries"
 				name="Journal Entries"

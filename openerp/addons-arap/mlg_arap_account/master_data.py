@@ -209,6 +209,15 @@ class ir_cron(osv.osv):
     
 ir_cron()
     
+class ir_sequence(osv.osv):
+    _inherit = "ir.sequence"
+    
+    _columns = {
+        'mlg': fields.boolean('Mai Linh'),
+    }
+    
+ir_sequence()
+    
 class lichsu_giaodich(osv.osv):
     _name = "lichsu.giaodich"
     _columns = {
