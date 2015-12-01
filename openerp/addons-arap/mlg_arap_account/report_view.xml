@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	
+    	<report
+            id="base.res_partner_address_report"
+            menu="False"
+            model="res.partner"
+            name="res.partner"
+            string="Labels"
+            xml="base/res/res_partner_report_address.xml"
+            xsl="base/res/res_partner_report_address.xsl"
+            groups="base.group_no_one"/>
+				
+		<report 
+            id="account.action_report_print_overdue"
+            menu="False"
+            model="res.partner"
+            report_type="qweb-pdf"
+            string="Due Payments"
+            name="account.report_overdue"
+            file="account.report_overdue"
+        />
+		
+		<report 
+            id="account.account_invoices"
+            menu="False"
+            model="account.invoice"
+            string="Invoices"
+            report_type="qweb-pdf"
+            name="account.report_invoice"
+            file="account.report_invoice"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+        />
+		
+	</data>
+</openerp>

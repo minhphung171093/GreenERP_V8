@@ -661,5 +661,12 @@
             </field>
         </record>
         
+        <record model="ir.values" id="account.ir_values_account_partner_ledger">
+           <field name="key2" eval="'client_print_multi'"/>
+           <field name="model" eval="''"/>
+           <field name="name">Print Partner Ledger</field>
+           <field name="value" eval="'ir.actions.act_window,'"/>
+       </record>
+        
     </data>
 </openerp>
