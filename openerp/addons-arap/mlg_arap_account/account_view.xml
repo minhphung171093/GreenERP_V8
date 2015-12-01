@@ -34,6 +34,19 @@
 	        	</xpath>
             </field>
         </record>
-
+		
+		<record id="view_account_search_inherit" model="ir.ui.view">
+            <field name="name">account.account.search.inherit</field>
+            <field name="model">account.account</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_account_search"/>
+            <field name="arch" type="xml">
+	        	<filter string="Receivable Accounts" position="replace">
+                </filter>
+                <filter string="Payable Accounts" position="replace">
+                </filter>
+            </field>
+        </record>
+		
 	</data>
 </openerp>

@@ -14,6 +14,23 @@
 	        	</xpath>
             </field>
         </record>
+		
+		<record id="view_account_journal_search_inherit" model="ir.ui.view">
+            <field name="name">account.journal.search.inherit</field>
+            <field name="model">account.journal</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_account_journal_search"/>
+            <field name="arch" type="xml">
+	        	<filter string="Sale" position="replace">
+                </filter>
+                <filter string="Purchase" position="replace">
+                </filter>
+                <filter string="Liquidity" position="replace">
+                </filter>
+                <filter string="Others" position="replace">
+                </filter>
+            </field>
+        </record>
 
 <!-- Chỉnh sửa journal items -->
 		<act_window

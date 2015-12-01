@@ -11,6 +11,16 @@
             <field name="arch" type="xml">
                 <filter string="Account" position="replace">
                 </filter>
+                <filter string="Unbalanced" position="replace">
+                </filter>
+                <filter string="Unposted" position="replace">
+                </filter>
+                <filter string="Posted" position="replace">
+                </filter>
+                <filter string="Unreconciled" position="replace">
+                </filter>
+                <filter string="Next Partner to Reconcile" position="replace">
+                </filter>
                 <filter string="Partner" position="replace">
                 	<filter name="doi_xe" string="Đội xe" icon="terp-folder-green" context="{'group_by':'account_id'}"/>
                 	<filter name="thuchi" string="Thu/Chi" icon="terp-go-month" domain="[]" context="{'group_by':'thu_chi'}"/>
@@ -54,6 +64,41 @@
 	        	<xpath expr="//field[@name='credit']" position="after">
 	        		<field name="con_lai"/>
 	        	</xpath>
+            </field>
+        </record>
+
+<!-- Chỉnh sửa action -->
+	<record id="account.action_account_moves_all_a" model="ir.actions.act_window">
+            <field name="context">{'journal_type':'cash'}</field>
+            <field name="name">Journal Items</field>
+            <field name="res_model">account.move.line</field>
+            <field name="view_id" ref="account.view_move_line_tree"/>
+            <field name="view_mode">tree_account_move_line_quickadd,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Select the period and the journal you want to fill.
+              </p><p>
+                This view can be used by accountants in order to quickly record
+                entries in Odoo. If you want to record a supplier invoice,
+                start by recording the line of the expense account. Odoo
+                will propose to you automatically the Tax related to this
+                account and the counterpart "Account Payable".
+              </p>
+            </field>
+        </record>
+
+		<record id="view_account_move_filter_inherit" model="ir.ui.view">
+            <field name="name">account.move.filter.inherit</field>
+            <field name="model">account.move</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="account.view_account_move_filter"/>
+            <field name="arch" type="xml">
+                <filter string="Unposted" position="replace">
+                </filter>
+                <filter string="Posted" position="replace">
+                </filter>
+                <filter string="To Review" position="replace">
+                </filter>
             </field>
         </record>
 
