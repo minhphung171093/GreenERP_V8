@@ -23,7 +23,7 @@ class phieu_de_xuat(osv.osv_memory):
                         'mlg_type': invoice.mlg_type,
                         })
             if context.get('default_loai', False) and context['default_loai']=='chi':
-                res.update({'so_tien': invoice.so_tien})
+                res.update({'so_tien': invoice.so_tien,'diengiai':invoice.dien_giai})
         if context.get('active_id', False) and context.get('active_model')=='thu.ky.quy':
             kyquy_obj = self.pool.get('thu.ky.quy')
             kyquy = kyquy_obj.browse(cr, uid, context['active_id'])

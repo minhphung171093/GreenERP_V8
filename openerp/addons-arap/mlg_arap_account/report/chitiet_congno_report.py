@@ -89,6 +89,7 @@ class Parser(report_sxw.rml_parse):
                 sql+='''
                     and bai_giaoca_id in %s 
                 '''%(bai_giaoca_ids)
+            sql += ''' group by partner_id '''
             self.cr.execute(sql)
             partner_ids = [r[0] for r in self.cr.fetchall()]
             sql = '''

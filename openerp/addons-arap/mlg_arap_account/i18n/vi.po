@@ -13683,7 +13683,7 @@ msgstr ""
 #: selection:base.setup.terminology,partner:0
 #, python-format
 msgid "Customer"
-msgstr ""
+msgstr "Đối tượng"
 
 #. module: account
 #: view:website:account.report_invoice_document
@@ -28038,7 +28038,7 @@ msgstr ""
 #: view:account.invoice:mlg_arap_account.view_tra_gop_xe_form
 #: model:ir.ui.menu,name:payment.root_payment_menu
 msgid "Payments"
-msgstr ""
+msgstr "Lịch sử thanh toán"
 
 #. module: account
 #: field:res.company,paypal_account:0
@@ -28088,7 +28088,7 @@ msgstr ""
 #: selection:account.invoice,state:0
 #: selection:payment.transaction,state:0
 msgid "Pending"
-msgstr ""
+msgstr "Đợi"
 
 #. module: account
 #: view:account.analytic.account:account.view_account_analytic_account_search

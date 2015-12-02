@@ -35,6 +35,7 @@ class Parser(report_sxw.rml_parse):
             'get_loaidoituong': self.get_loaidoituong,
             'get_thang': self.get_thang,
             'get_chinhanh': self.get_chinhanh,
+            'get_title': self.get_title,
         })
         
     def convert_date(self, date):
@@ -59,6 +60,32 @@ class Parser(report_sxw.rml_parse):
     def convert_amount(self, amount):
         a = format(int(amount),',')
         return a
+    
+    def get_title(self):
+        wizard_data = self.localcontext['data']['form']
+        mlg_type = wizard_data['mlg_type']
+        tt = ''
+        if mlg_type=='no_doanh_thu':
+            tt='NỢ DOANH THU'
+        if mlg_type=='chi_ho_dien_thoai':
+            tt='CHI HỘ ĐIỆN THOẠI'
+        if mlg_type=='phai_thu_bao_hiem':
+            tt='BẢO HIỂM'
+        if mlg_type=='phat_vi_pham':
+            tt='PHẠT VI PHẠM'
+        if mlg_type=='thu_no_xuong':
+            tt='NỢ XƯỞNG'
+        if mlg_type=='thu_phi_thuong_hieu':
+            tt='PHÍ THƯƠNG HIỆU'
+        if mlg_type=='tra_gop_xe':
+            tt='TRẢ GÓP XE'
+        if mlg_type=='hoan_tam_ung':
+            tt='TẠM ỨNG'
+        if mlg_type=='phai_tra_ky_quy':
+            tt='TRẢ KÝ QUỸ'
+        if mlg_type=='chi_ho':
+            tt='CHI HỘ'
+        return tt
     
     def get_loaidoituong(self, mlg_type):
         tt = ''
@@ -114,6 +141,7 @@ class Parser(report_sxw.rml_parse):
                 sql+='''
                     and bai_giaoca_id in %s 
                 '''%(bai_giaoca_ids)
+            sql += ''' group by partner_id '''
             self.cr.execute(sql)
             partner_ids = [r[0] for r in self.cr.fetchall()]
             sql = '''

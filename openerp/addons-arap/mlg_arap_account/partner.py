@@ -193,6 +193,17 @@ class res_partner(osv.osv):
         'create_user_id': lambda self,cr, uid, context: uid,
     }
     
+    def _check_ma_doi_tuong(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('ma_doi_tuong','!=', False),('ma_doi_tuong','=', line.ma_doi_tuong)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_ma_doi_tuong, 'Không được trùng mã đối tượng', ['ma_doi_tuong']),
+    ]
+    
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context is None:
             context = {}

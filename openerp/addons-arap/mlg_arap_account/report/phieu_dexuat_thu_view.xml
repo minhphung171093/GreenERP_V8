@@ -10,7 +10,7 @@
 	        <field name="report_name">pdxt_no_doanh_thu_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -34,7 +34,7 @@
 	        <field name="report_name">pdxt_no_doanh_thu_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_ndt.odt</field>
 	        <field name="parser_state">loc</field>
@@ -58,7 +58,7 @@
 	        <field name="report_name">pdxt_chi_ho_dien_thoai_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_chihodienthoai_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -82,7 +82,7 @@
 	        <field name="report_name">pdxt_chi_ho_dien_thoai_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_chihodienthoai_nvvp.odt</field>
 	        <field name="parser_state">loc</field>
@@ -106,7 +106,7 @@
 	        <field name="report_name">pdxt_phai_thu_bao_hiem_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thubaohiem_ndt.odt</field>
 	        <field name="parser_state">loc</field>
@@ -130,7 +130,7 @@
 	        <field name="report_name">pdxt_phat_vi_pham_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_phatvipham_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -154,7 +154,7 @@
 	        <field name="report_name">pdxt_phat_vi_pham_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_phatvipham_nvvp.odt</field>
 	        <field name="parser_state">loc</field>
@@ -178,7 +178,7 @@
 	        <field name="report_name">pdxt_thu_no_xuong_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -202,7 +202,7 @@
 	        <field name="report_name">pdxt_thu_no_xuong_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_ndt.odt</field>
 	        <field name="parser_state">loc</field>
@@ -226,7 +226,7 @@
 	        <field name="report_name">pdxt_thu_no_xuong_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thunoxuong_nvvp.odt</field>
 	        <field name="parser_state">loc</field>
@@ -250,7 +250,7 @@
 	        <field name="report_name">pdxt_thu_phi_thuong_hieu_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -274,7 +274,7 @@
 	        <field name="report_name">pdxt_thu_phi_thuong_hieu_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_ndt.odt</field>
 	        <field name="parser_state">loc</field>
@@ -298,7 +298,7 @@
 	        <field name="report_name">pdxt_thu_phi_thuong_hieu_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_thuphithuonghieu_nvvp.odt</field>
 	        <field name="parser_state">loc</field>
@@ -322,7 +322,7 @@
 	        <field name="report_name">pdxt_tra_gop_xe_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_tragopxe_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -346,7 +346,7 @@
 	        <field name="report_name">pdxt_tra_gop_xe_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_tragopxe_ndt.odt</field>
 	        <field name="parser_state">loc</field>
@@ -370,7 +370,7 @@
 	        <field name="report_name">pdxt_tra_gop_xe_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_tragopxe_nvvp.odt</field>
 	        <field name="parser_state">loc</field>
@@ -394,7 +394,7 @@
 	        <field name="report_name">pdxt_hoan_tam_ung_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_hoantamung_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -418,7 +418,7 @@
 	        <field name="report_name">pdxt_hoan_tam_ung_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_hoantamung_ndt.odt</field>
 	        <field name="parser_state">loc</field>
@@ -442,7 +442,7 @@
 	        <field name="report_name">pdxt_hoan_tam_ung_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_hoantamung_nvvp.odt</field>
 	        <field name="parser_state">loc</field>
@@ -466,7 +466,7 @@
 	        <field name="report_name">pdxt_kyquy_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_kyquy_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -490,7 +490,7 @@
 	        <field name="report_name">pdxt_kyquy_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_kyquy_ndt.odt</field>
 	        <field name="parser_state">loc</field>
@@ -514,7 +514,7 @@
 	        <field name="report_name">pdxt_kyquy_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_kyquy_nvvp.odt</field>
 	        <field name="parser_state">loc</field>
@@ -538,7 +538,7 @@
 	        <field name="report_name">pdxt_phai_tra_ky_quy_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_tra_trakyquy_lx.odt</field>
 	        <field name="parser_state">loc</field>
@@ -562,7 +562,7 @@
 	        <field name="report_name">pdxt_phai_tra_ky_quy_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_tra_trakyquy_ndt.odt</field>
 	        <field name="parser_state">loc</field>
@@ -586,7 +586,7 @@
 	        <field name="report_name">pdxt_phai_tra_ky_quy_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_tra_trakyquy_nvvp.odt</field>
 	        <field name="parser_state">loc</field>
@@ -610,7 +610,7 @@
 	        <field name="report_name">pdxt_chi_ho</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
 	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_tra_chi_ho.odt</field>
 	        <field name="parser_state">loc</field>

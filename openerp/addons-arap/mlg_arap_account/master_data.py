@@ -30,6 +30,18 @@ class thungan_bai_giaoca(osv.osv):
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
     }
+    
+    def _check_name(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('name','!=', False),('name','=', line.name)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_name, 'Không được trùng mã đối tượng', ['name']),
+    ]
+    
 thungan_bai_giaoca()
 
 class dieuhanh_bai_giaoca(osv.osv):
@@ -37,6 +49,18 @@ class dieuhanh_bai_giaoca(osv.osv):
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
     }
+    
+    def _check_name(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('name','!=', False),('name','=', line.name)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_name, 'Không được trùng tên', ['name']),
+    ]
+    
 dieuhanh_bai_giaoca()
 
 class loai_doi_tuong(osv.osv):
@@ -52,6 +76,18 @@ class loai_ky_quy(osv.osv):
         'name': fields.char('Tên', size=1024, required=True),
         'description': fields.char('Mô tả', size=1024),
     }
+    
+    def _check_name(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('name','!=', False),('name','=', line.name)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_name, 'Không được trùng tên', ['name']),
+    ]
+    
 loai_ky_quy()
 
 class loai_vi_pham(osv.osv):
@@ -60,6 +96,18 @@ class loai_vi_pham(osv.osv):
         'name': fields.char('Tên', size=1024, required=True),
         'description': fields.char('Mô tả', size=1024),
     }
+    
+    def _check_name(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('name','!=', False),('name','=', line.name)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_name, 'Không được trùng tên', ['name']),
+    ]
+    
 loai_vi_pham()
 
 class loai_tam_ung(osv.osv):
@@ -67,6 +115,18 @@ class loai_tam_ung(osv.osv):
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
     }
+    
+    def _check_name(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('name','!=', False),('name','=', line.name)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_name, 'Không được trùng tên', ['name']),
+    ]
+    
 loai_tam_ung()
 
 class bai_giaoca(osv.osv):
@@ -79,6 +139,17 @@ class bai_giaoca(osv.osv):
         'account_id': fields.many2one('account.account', 'Đội xe', required=True),
     }
     
+    def _check_code(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('code','!=', False),('code','=', line.code)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_code, 'Không được trùng mã', ['code']),
+    ]
+    
 bai_giaoca()
 
 class bien_so_xe(osv.osv):
@@ -87,6 +158,17 @@ class bien_so_xe(osv.osv):
         'name': fields.char('Tên', size=1024, required=True),
         'bai_giaoca_id': fields.many2one('bai.giaoca','Bãi giao ca'),
     }
+    
+    def _check_name(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('name','!=', False),('name','=', line.name)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_name, 'Không được trùng tên', ['name']),
+    ]
     
 #     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
 #         if context is None:
@@ -125,6 +207,17 @@ class ma_xuong(osv.osv):
             name = '['+(record.code or '')+']'+' '+(record.name or '')
             res.append((record.id, name))
         return res
+    
+    def _check_code(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('code','!=', False),('code','=', line.code)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_code, 'Không được trùng mã', ['code']),
+    ]
     
 ma_xuong()
 
@@ -220,6 +313,7 @@ ir_sequence()
     
 class lichsu_giaodich(osv.osv):
     _name = "lichsu.giaodich"
+    _order = 'name desc'
     _columns = {
         'name': fields.datetime('Ngày'),
         'ten_file': fields.text('Tên file'),
@@ -238,6 +332,18 @@ class loai_bao_hiem(osv.osv):
         'name': fields.char('Tên', size=1024, required=True),
         'so_taikhoan': fields.char('Số tài khoản', size=1024, required=True),
     }
+    
+    def _check_name(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('name','!=', False),('name','=', line.name)])
+            if object_ids:
+                return False
+        return True
+
+    _constraints = [
+        (_check_name, 'Không được trùng mã', ['name']),
+    ]
+    
 loai_bao_hiem()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
