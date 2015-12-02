@@ -14,3 +14,13 @@ access_mlg_arap_account_12,ql.bao.hiem,mlg_arap_account.model_ql_bao_hiem,base.g
 access_mlg_arap_account_13,thu_ky_quy,mlg_arap_account.model_thu_ky_quy,base.group_user,1,1,1,1
 access_mlg_arap_account_14,tong.cong.no,mlg_arap_account.model_tong_cong_no,base.group_user,1,1,1,1
 access_mlg_arap_account_15,loai.bao.hiem,mlg_arap_account.model_loai_bao_hiem,base.group_user,1,1,1,1
+access_mlg_arap_account_16,import.congno.tudong,mlg_arap_account.model_import_congno_tudong,base.group_user,1,1,1,1
+access_mlg_arap_account_17,congno.dauky,mlg_arap_account.model_congno_dauky,base.group_user,1,1,1,1
+access_mlg_arap_account_18,congno.dauky.line,mlg_arap_account.model_congno_dauky_line,base.group_user,1,1,1,1
+access_mlg_arap_account_19,import.congno.tudong,mlg_arap_account.model_import_congno_tudong,base.group_user,1,1,1,1
+access_mlg_arap_account_20,import.congno.manually,mlg_arap_account.model_import_congno_manually,base.group_user,1,1,1,1
+access_mlg_arap_account_21,cauhinh.thumuc.import,mlg_arap_account.model_cauhinh_thumuc_import,base.group_user,1,1,1,1
+access_mlg_arap_account_22,cauhinh.thumuc.import.tudong,mlg_arap_account.model_cauhinh_thumuc_import_tudong,base.group_user,1,1,1,1
+access_mlg_arap_account_23,cauhinh.thumuc.output.tudong,mlg_arap_account.model_cauhinh_thumuc_output_tudong,base.group_user,1,1,1,1
+access_mlg_arap_account_24,lichsu.giaodich,mlg_arap_account.model_lichsu_giaodich,base.group_user,1,1,1,1
+access_mlg_arap_account_25,output.congno.tudong,mlg_arap_account.model_output_congno_tudong,base.group_user,1,1,1,1
