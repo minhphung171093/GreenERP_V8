@@ -58,7 +58,6 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
                     	<button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action" groups="base.group_no_one"/>
-                    	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
@@ -539,7 +538,6 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action" groups="base.group_no_one"/>
-                    	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
@@ -699,7 +697,6 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action" groups="base.group_no_one"/>
-                    	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
@@ -861,7 +858,6 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action" groups="base.group_no_one"/>
-                    	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
@@ -1024,7 +1020,6 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action" groups="base.group_no_one"/>
-                    	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
@@ -1183,7 +1178,6 @@
 	                    <button name="invoice_pay_customer" type="object" string="Register Payment"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action" groups="base.group_no_one"/>
-                    	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Cancel Invoice" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
