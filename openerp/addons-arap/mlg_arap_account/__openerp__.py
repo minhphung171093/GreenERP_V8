@@ -26,6 +26,7 @@
     'sequence': 1,
     'depends': ['mlg_arap_base','account_accountant','account_cancel','report_aeroo','web_readonly_bypass'],
     'data': [
+        'security/account_security.xml',
         'security/ir.model.access.csv',
         'report/danhsach_congno_view.xml',
         'report/chitiet_congno_view.xml',
