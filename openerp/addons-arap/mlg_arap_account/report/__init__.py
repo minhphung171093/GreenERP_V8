@@ -8,3 +8,4 @@ import chitiet_congno_report
 import congno_vuotdinhmuc_report
 import congno_dangmo_report
 import tonghop_congno_report
+import chitiet_congno_mot_doituong_report

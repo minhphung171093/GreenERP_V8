@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Báo cáo chi tiết công nợ cho một đối tượng -->
+        <record id="view_chitiet_congno_mot_doituong_report" model="ir.ui.view">
+            <field name="name">chitiet.report</field>
+            <field name="model">chitiet.congno.mot.doituong</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo chi tiết công nợ cho một đối tượng" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='period_id' required='1' domain="[('special','!=',True)]"/>
+	                    	<field name='chinhanh_id' readonly='1'/>
+	                    	<field name='loai_doituong'/>
+	                    	<field name='loai_congno_ids' widget="many2many_tags" options="{'no_create': True}"/>
+	                    	<field name='partner_id' context="{'cong_no_thu':1,'loai_doituong':loai_doituong}" options="{'no_create': True}"/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'chitiet_congno_mot_doituong_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_chitiet_congno_mot_doituong" model="ir.actions.act_window">
+            <field name="name">Báo cáo chi tiết công nợ cho một đối tượng</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">chitiet.congno.mot.doituong</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_chitiet_congno_mot_doituong_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+    </data>
+</openerp>
+

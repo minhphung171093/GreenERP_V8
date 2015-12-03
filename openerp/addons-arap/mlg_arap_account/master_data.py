@@ -70,6 +70,13 @@ class loai_doi_tuong(osv.osv):
     }
 loai_doi_tuong()
 
+class loai_cong_no(osv.osv):
+    _name = "loai.cong.no"
+    _columns = {
+        'name': fields.char('Tên', size=1024, required=True),
+    }
+loai_cong_no()
+
 class loai_ky_quy(osv.osv):
     _name = "loai.ky.quy"
     _columns = {

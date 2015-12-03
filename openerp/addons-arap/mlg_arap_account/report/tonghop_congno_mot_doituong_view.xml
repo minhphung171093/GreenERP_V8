@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+<!-- Tổng hợp công nợ một đối tượng -->
+    	<record id="tonghop_congno_mot_doituong_report" model="ir.actions.report.xml">
+	        <field name="name">tonghop_congno_mot_doituong_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">tonghop.congno.mot.doituong</field>
+	        <field name="report_name">tonghop_congno_mot_doituong_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/tonghop_congno_mot_doituong_report.py</field>
+	        <field name="report_rml">mlg_arap_account/report/tonghop_congno_mot_doituong_report.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="tonghop_congno_mot_doituong_report" 
+			model="tonghop.congno.mot.doituong" 
+			name="tonghop_congno_mot_doituong_report"
+	        string="Tổng hợp công nợ một đối tượng"
+	        rml="mlg_arap_account/report/tonghop_congno_mot_doituong_report.odt"/> 	
+	        
+	        
+	</data>
+</openerp>

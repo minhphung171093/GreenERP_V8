@@ -1166,8 +1166,8 @@ instance.web.Sidebar = instance.web.Widget.extend({
         this._super(parent);
         this.view = this.getParent();
         this.sections = [
-            { 'name' : 'print', 'label' : _t('Print'), },
-            { 'name' : 'other', 'label' : _t('More'), }
+            { 'name' : 'print', 'label' : _t('Print'), 'uid':self.session.uid, },
+            { 'name' : 'other', 'label' : _t('More'), 'uid':self.session.uid, }
         ];
         this.items = {
             'print' : [],
