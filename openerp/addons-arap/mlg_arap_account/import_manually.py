@@ -36,9 +36,9 @@ from glob import glob
 # from datetime import datetime, timedelta
 
 _logger = logging.getLogger(__name__)
-IMPORTING = '/Importing/'
-DONE = '/Done/'
-ERROR = '/Error/'
+IMPORTING = '/importing/'
+DONE = '/done/'
+ERROR = '/error/'
 class import_congno_manually(osv.osv):
     _name = 'import.congno.manually'
     
