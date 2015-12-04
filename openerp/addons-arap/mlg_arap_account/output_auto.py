@@ -483,6 +483,7 @@ class output_congno_tudong(osv.osv):
                 invoice_obj = self.pool.get('account.invoice')
                 date_start = time.strftime('%Y-%m-01')
                 date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
+                date_now = time.strftime('%Y-%m-%d')
                 csvUti = lib_csv.csv_ultilities()
                 headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_hop_dong','ma_chiet_tinh','ma_xuong','so_tien','dien_giai','ngay_thanh_toan','so_tien_da_thu']
                 contents = []
@@ -497,8 +498,8 @@ class output_congno_tudong(osv.osv):
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         left join ma_xuong mx on mx.id=ai.ma_xuong_id
                         
-                        where ai.mlg_type='thu_no_xuong' and state in ('open','paid')
-                '''
+                        where ai.mlg_type='thu_no_xuong' and state in ('open','paid') and date(ai.write_date)='%s'
+                '''%(date_now)
                 cr. execute(sql)
                 for line in cr.dictfetchall():
                     loai_doituong=''
@@ -514,9 +515,9 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
-                            if payment.date>=date_start and payment.date<=date_end:
-                                ngay_thanh_toan_arr = payment.date.split('-')
-                                ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
+#                             if payment.date>=date_start and payment.date<=date_end:
+                            if payment.date==date_now:
+                                ngay_thanh_toan=datetime.strptime(payment.date,'%Y-%m-%d').strftime('%d/%m/%Y')
                                 contents.append({
                                     'chi_nhanh': line['chi_nhanh'],
                                     'ma_chi_nhanh': line['ma_chi_nhanh'],
@@ -569,6 +570,7 @@ class output_congno_tudong(osv.osv):
                 invoice_obj = self.pool.get('account.invoice')
                 date_start = time.strftime('%Y-%m-01')
                 date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
+                date_now = time.strftime('%Y-%m-%d')
                 csvUti = lib_csv.csv_ultilities()
                 headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_hop_dong','so_tien','dien_giai','ngay_thanh_toan','so_tien_da_thu']
                 contents = []
@@ -583,8 +585,8 @@ class output_congno_tudong(osv.osv):
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         left join ma_xuong mx on mx.id=ai.ma_xuong_id
                         
-                        where ai.mlg_type='thu_phi_thuong_hieu' and state in ('open','paid')
-                '''
+                        where ai.mlg_type='thu_phi_thuong_hieu' and state in ('open','paid') and date(ai.write_date)='%s'
+                '''%(date_now)
                 cr. execute(sql)
                 for line in cr.dictfetchall():
                     loai_doituong=''
@@ -600,9 +602,9 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
-                            if payment.date>=date_start and payment.date<=date_end:
-                                ngay_thanh_toan_arr = payment.date.split('-')
-                                ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
+#                             if payment.date>=date_start and payment.date<=date_end:
+                            if payment.date==date_now:
+                                ngay_thanh_toan=datetime.strptime(payment.date,'%Y-%m-%d').strftime('%d/%m/%Y')
                                 contents.append({
                                     'chi_nhanh': line['chi_nhanh'],
                                     'ma_chi_nhanh': line['ma_chi_nhanh'],
@@ -653,6 +655,7 @@ class output_congno_tudong(osv.osv):
                 invoice_obj = self.pool.get('account.invoice')
                 date_start = time.strftime('%Y-%m-01')
                 date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
+                date_now = time.strftime('%Y-%m-%d')
                 csvUti = lib_csv.csv_ultilities()
                 headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_phat_sinh','bien_so_xe','so_hop_dong','so_tien','don_vi_chi','dien_giai','ngay_thanh_toan','so_tien_da_thu']
                 contents = []
@@ -668,8 +671,8 @@ class output_congno_tudong(osv.osv):
                         left join ma_xuong mx on mx.id=ai.ma_xuong_id
                         left join res_partner dvc on dvc.id=ai.thu_cho_doituong_id
                         
-                        where ai.mlg_type='tra_gop_xe' and state in ('open','paid')
-                '''
+                        where ai.mlg_type='tra_gop_xe' and state in ('open','paid') and date(ai.write_date)='%s'
+                '''%(date_now)
                 cr. execute(sql)
                 for line in cr.dictfetchall():
                     loai_doituong=''
@@ -685,9 +688,9 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
-                            if payment.date>=date_start and payment.date<=date_end:
-                                ngay_thanh_toan_arr = payment.date.split('-')
-                                ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
+#                             if payment.date>=date_start and payment.date<=date_end:
+                            if payment.date==date_now:
+                                ngay_thanh_toan=datetime.strptime(payment.date,'%Y-%m-%d').strftime('%d/%m/%Y')
                                 contents.append({
                                     'chi_nhanh': line['chi_nhanh'],
                                     'ma_chi_nhanh': line['ma_chi_nhanh'],
@@ -887,7 +890,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='phat_vi_pham' and state='open'
+                        where ai.mlg_type='phat_vi_pham' and state='open' and ai.loai_doituong='nhanvienvanphong'
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
                 '''
@@ -953,7 +956,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='hoan_tam_ung' and state='open'
+                        where ai.mlg_type='hoan_tam_ung' and state='open' and ai.loai_doituong='nhanvienvanphong'
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
                 '''
@@ -1019,7 +1022,7 @@ class output_congno_tudong(osv.osv):
                         rp.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cn.name as ten_chi_nhanh, cn.code as ma_chi_nhanh
                         from res_partner rp
                         left join account_account cn on cn.id=rp.chinhanh_id
-                        where rp.sotien_conlai>0
+                        where rp.sotien_conlai>0 and rp.nhanvienvanphong = True
                 '''
                 cr.execute(sql)
                 for partner in cr.dictfetchall():
@@ -1066,40 +1069,40 @@ class output_congno_tudong(osv.osv):
                             'ngay_thu': time.strftime('%Y-%m-%d'),
                         }
                         kyquy_obj.create(cr, uid, vals)
-                sql = '''
-                    select rp.id as id,rp.ma_doi_tuong as ma_doi_tuong,rp.name as name,cnl.chinhanh_id as chinhanh_id, cn.code as ma_chi_nhanh,
-                        cn.name as ten_chi_nhanh,cnl.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cnl.sotien_conlai as sotien_conlai
-                        
-                        from chi_nhanh_line cnl
-                        left join res_partner rp on rp.id=cnl.partner_id
-                        left join account_account cn on cn.id=cnl.chinhanh_id
-                        
-                        where cnl.sotien_conlai>0
-                '''
-                cr.execute(sql)
-                for ndt in cr.dictfetchall():
-                    if ndt['sotien_phaithu_dinhky']<=ndt['sotien_conlai']:
-                        sotien=ndt['sotien_phaithu_dinhky']
-                    else:
-                        sotien=ndt['sotien_conlai']
-                    loai_doituong='nhadautu'
-                    contents.append({
-                        'chi_nhanh': ndt['ten_chi_nhanh'],
-                        'ma_chi_nhanh': ndt['ma_chi_nhanh'],
-                        'loai_doi_tuong': 'Nhà đầu tư',
-                        'ma_doi_tuong': ndt['ma_doi_tuong'],
-                        'ten_doi_tuong': ndt['name'],
-                        'so_tien': sotien,
-                        'dien_giai': '',
-                    })
-                    vals = {
-                        'chinhanh_id': ndt['chinhanh_id'],
-                        'loai_doituong': loai_doituong,
-                        'partner_id': ndt['id'],
-                        'so_tien': sotien,
-                        'ngay_thu': time.strftime('%Y-%m-%d'),
-                    }
-                    kyquy_obj.create(cr, uid, vals)
+#                 sql = '''
+#                     select rp.id as id,rp.ma_doi_tuong as ma_doi_tuong,rp.name as name,cnl.chinhanh_id as chinhanh_id, cn.code as ma_chi_nhanh,
+#                         cn.name as ten_chi_nhanh,cnl.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cnl.sotien_conlai as sotien_conlai
+#                         
+#                         from chi_nhanh_line cnl
+#                         left join res_partner rp on rp.id=cnl.partner_id
+#                         left join account_account cn on cn.id=cnl.chinhanh_id
+#                         
+#                         where cnl.sotien_conlai>0
+#                 '''
+#                 cr.execute(sql)
+#                 for ndt in cr.dictfetchall():
+#                     if ndt['sotien_phaithu_dinhky']<=ndt['sotien_conlai']:
+#                         sotien=ndt['sotien_phaithu_dinhky']
+#                     else:
+#                         sotien=ndt['sotien_conlai']
+#                     loai_doituong='nhadautu'
+#                     contents.append({
+#                         'chi_nhanh': ndt['ten_chi_nhanh'],
+#                         'ma_chi_nhanh': ndt['ma_chi_nhanh'],
+#                         'loai_doi_tuong': 'Nhà đầu tư',
+#                         'ma_doi_tuong': ndt['ma_doi_tuong'],
+#                         'ten_doi_tuong': ndt['name'],
+#                         'so_tien': sotien,
+#                         'dien_giai': '',
+#                     })
+#                     vals = {
+#                         'chinhanh_id': ndt['chinhanh_id'],
+#                         'loai_doituong': loai_doituong,
+#                         'partner_id': ndt['id'],
+#                         'so_tien': sotien,
+#                         'ngay_thu': time.strftime('%Y-%m-%d'),
+#                     }
+#                     kyquy_obj.create(cr, uid, vals)
                         
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
@@ -1239,6 +1242,7 @@ class output_congno_tudong(osv.osv):
             if output_ids:
                 date_start = time.strftime('%Y-%m-01')
                 date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
+                date_now = time.strftime('%Y-%m-%d')
                 csvUti = lib_csv.csv_ultilities()
                 headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_phat_sinh','bien_so_xe','so_tien','so_hop_dong','dien_giai','ngay_thanh_toan','so_tien_da_chi']
                 contents = []
@@ -1251,8 +1255,8 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
-                        where ai.mlg_type='chi_ho' and state in ('open','paid')
-                '''
+                        where ai.mlg_type='chi_ho' and state in ('open','paid') and date(ai.write_date)='%s'
+                '''%(date_now)
                 cr. execute(sql)
                 for line in cr.dictfetchall():
                     loai_doituong=''
@@ -1266,9 +1270,9 @@ class output_congno_tudong(osv.osv):
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
                         for payment in invoice.payment_ids:
-                            if payment.date>=date_start and payment.date<=date_end:
-                                ngay_thanh_toan_arr = payment.date.split('-')
-                                ngay_thanh_toan = ngay_thanh_toan_arr[2]+'/'+ngay_thanh_toan_arr[1]+'/'+ngay_thanh_toan_arr[0]
+#                             if payment.date>=date_start and payment.date<=date_end:
+                            if payment.date==date_now:
+                                ngay_thanh_toan=datetime.strptime(payment.date,'%Y-%m-%d').strftime('%d/%m/%Y')
                                 contents.append({
                                     'chi_nhanh': line['chi_nhanh'],
                                     'ma_chi_nhanh': line['ma_chi_nhanh'],

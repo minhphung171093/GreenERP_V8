@@ -51,6 +51,7 @@
         'wizard/tonghop_congno_view.xml',
         'wizard/chitiet_congno_mot_doituong_view.xml',
         'wizard/tonghop_congno_mot_doituong_view.xml',
+        'wizard/alert_form_view.xml',
         'account_data.xml',
         'master_data_view.xml',
         'ql_baohiem_view.xml',

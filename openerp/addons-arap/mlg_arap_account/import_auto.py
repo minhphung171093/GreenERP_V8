@@ -589,6 +589,7 @@ class import_congno_tudong(osv.osv):
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
+                                    sotiendathu = 0
                                 else:
                                     amount = line['residual']
                                     sotiendathu = sotiendathu-line['residual']
@@ -635,6 +636,11 @@ class import_congno_tudong(osv.osv):
                                 vals.update({'line_cr_ids':line_cr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                
+                            if sotiendathu>0:
+                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
+                            
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -740,6 +746,7 @@ class import_congno_tudong(osv.osv):
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
+                                    sotiendathu = 0
                                 else:
                                     amount = line['residual']
                                     sotiendathu = sotiendathu-line['residual']
@@ -786,6 +793,9 @@ class import_congno_tudong(osv.osv):
                                 vals.update({'line_cr_ids':line_cr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                            if sotiendathu>0:
+                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -873,6 +883,7 @@ class import_congno_tudong(osv.osv):
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
+                                    sotiendathu = 0
                                 else:
                                     amount = line['residual']
                                     sotiendathu = sotiendathu-line['residual']
@@ -919,6 +930,9 @@ class import_congno_tudong(osv.osv):
                                 vals.update({'line_cr_ids':line_cr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                            if sotiendathu>0:
+                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1006,6 +1020,7 @@ class import_congno_tudong(osv.osv):
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
+                                    sotiendathu = 0
                                 else:
                                     amount = line['residual']
                                     sotiendathu = sotiendathu-line['residual']
@@ -1052,6 +1067,9 @@ class import_congno_tudong(osv.osv):
                                 vals.update({'line_cr_ids':line_cr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                            if sotiendathu>0:
+                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1289,6 +1307,7 @@ class import_congno_tudong(osv.osv):
                                 if loai in ['Thu','thu'] and invoice['state']=='open':
                                     if invoice['residual']>sotiendathu:
                                         amount = sotiendathu
+                                        
                                     else:
                                         amount = invoice['residual']
                                         
@@ -1339,6 +1358,9 @@ class import_congno_tudong(osv.osv):
                                     voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
                                     
                                     sotiendathu = sotiendathu - amount
+                            if sotiendathu>0:
+                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1421,38 +1443,38 @@ class import_congno_tudong(osv.osv):
                             '''%(data['REQUEST_REF_NUMBER'])
                             cr.execute(sql)
                             invoices = cr.dictfetchall()
-                            if not invoices:
-                                sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where so_hoa_don='%s' and state='open' and type='in_invoice'
-                                        order by date_invoice
-                                '''%(data['REQUEST_REF_NUMBER'])
-                                cr.execute(sql)
-                                invoices = cr.dictfetchall()
-                            if not invoices:
-                                sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and state='open' and type='in_invoice'
-                                        order by date_invoice
-                                '''%(data['REQUEST_REF_NUMBER'])
-                                cr.execute(sql)
-                                invoices = cr.dictfetchall()
-                            if not invoices:
-                                sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and state='open' and type='in_invoice'
-                                        order by date_invoice
-                                '''%(data['REQUEST_REF_NUMBER'])
-                                cr.execute(sql)
-                                invoices = cr.dictfetchall()
-                            if not invoices:
-                                sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
-                                        from account_invoice where so_hop_dong='%s' and state='open' and type='in_invoice'
-                                        order by date_invoice
-                                '''%(data['REQUEST_REF_NUMBER'])
-                                cr.execute(sql)
-                                invoices = cr.dictfetchall()    
+#                             if not invoices:
+#                                 sql = '''
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+#                                         from account_invoice where so_hoa_don='%s' and state='open' and type='in_invoice'
+#                                         order by date_invoice
+#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 cr.execute(sql)
+#                                 invoices = cr.dictfetchall()
+#                             if not invoices:
+#                                 sql = '''
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+#                                         from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and state='open' and type='in_invoice'
+#                                         order by date_invoice
+#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 cr.execute(sql)
+#                                 invoices = cr.dictfetchall()
+#                             if not invoices:
+#                                 sql = '''
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+#                                         from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and state='open' and type='in_invoice'
+#                                         order by date_invoice
+#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 cr.execute(sql)
+#                                 invoices = cr.dictfetchall()
+#                             if not invoices:
+#                                 sql = '''
+#                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+#                                         from account_invoice where so_hop_dong='%s' and state='open' and type='in_invoice'
+#                                         order by date_invoice
+#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 cr.execute(sql)
+#                                 invoices = cr.dictfetchall()    
                             if not invoices:
                                 noidung_loi='Không tìm thấy công nợ'
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
@@ -1512,6 +1534,9 @@ class import_congno_tudong(osv.osv):
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
                                 sotiendathu = sotiendathu - amount
+                            if sotiendathu>0:
+                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),

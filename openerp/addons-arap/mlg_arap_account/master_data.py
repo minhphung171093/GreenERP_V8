@@ -312,6 +312,24 @@ class ir_cron(osv.osv):
         'mlg': fields.boolean('Mai Linh'),
     }
     
+    def run_manually(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            self._callback(cr, line.user_id.id, line.model, line.function, line.args, line.id)
+            
+        res = self.pool.get('ir.model.data').get_object_reference(cr, uid, 
+                                                'mlg_arap_account', 'alert_warning_form_view')
+        return {
+                    'name': 'Thông báo',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'view_id': res[1],
+                    'res_model': 'alert.warning.form',
+                    'domain': [],
+                    'context': {'default_name':'Thành công'},
+                    'type': 'ir.actions.act_window',
+                    'target': 'new',
+                }
+    
 ir_cron()
     
 class ir_sequence(osv.osv):

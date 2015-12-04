@@ -280,6 +280,19 @@
 	        	</xpath>
             </field>
         </record>
+        <record id="ir_cron_view_inherit" model="ir.ui.view">
+            <field name="name">ir.cron.tree.inherit</field>
+            <field name="model">ir.cron</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.ir_cron_view"/>
+            <field name="arch" type="xml">
+	        	<xpath expr="//sheet" position="before">
+	        		<header>
+	                    <button name="run_manually" type='object' string="Kích hoạt bằng tay" class="oe_highlight"/>
+					</header>
+	        	</xpath>
+            </field>
+        </record>
 		<record id="ir_cron_act_mlg" model="ir.actions.act_window">
             <field name="name">Cấu hình tự động</field>
             <field name="res_model">ir.cron</field>

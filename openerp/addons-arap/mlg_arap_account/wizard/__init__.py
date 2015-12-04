@@ -12,3 +12,4 @@ import congno_dangmo
 import tonghop_congno
 import chitiet_congno_mot_doituong
 import tonghop_congno_mot_doituong
+import alert_form

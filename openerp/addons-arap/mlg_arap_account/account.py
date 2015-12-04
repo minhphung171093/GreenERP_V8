@@ -28,6 +28,10 @@ from openerp.exceptions import except_orm, Warning, RedirectWarning
 class account_account(osv.osv):
     _inherit = "account.account"
     
+    _defaults = {
+        'reconcile': True,
+    }
+    
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context is None:
             context = {}
