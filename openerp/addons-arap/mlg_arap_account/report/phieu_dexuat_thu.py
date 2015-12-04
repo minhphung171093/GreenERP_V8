@@ -23,6 +23,7 @@ class Parser(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
         super(Parser, self).__init__(cr, uid, name, context=context)
         pool = pooler.get_pool(self.cr.dbname)
+        self.ip = ''
         self.localcontext.update({
             'convert_date': self.convert_date,
             'convert_amount': self.convert_amount,
@@ -36,6 +37,7 @@ class Parser(report_sxw.rml_parse):
             'get_ghichu': self.get_ghichu,
             'get_datenow': self.get_datenow,
             'get_user': self.get_user,
+            '_get_ipaddress': self._get_ipaddress,
         })
         
     def get_loai(self):
@@ -46,6 +48,9 @@ class Parser(report_sxw.rml_parse):
         else:
             return 'CHI'
         
+    def _get_ipaddress(self):
+        return ''
+    
     def get_user(self):
         user = self.pool.get('res.users').browse(self.cr, self.uid, self.uid)
         return user.name
@@ -84,9 +89,9 @@ class Parser(report_sxw.rml_parse):
             return ''
     
     def get_datenow(self):
-        date = time.strftime(DATE_FORMAT)
-        date = datetime.strptime(date, DATE_FORMAT)
-        return date.strftime('%d/%m/%Y')
+#         date = time.strftime(DATE_FORMAT)
+        date = datetime.now() + timedelta(hours=7)
+        return date.strftime('%d/%m/%Y %H:%M:%S')
     
     def convert_date(self, date):
         if date:

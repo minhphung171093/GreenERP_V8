@@ -11,7 +11,6 @@
                 	<field name="name"/>
                     <field name="chinhanh_id"/>
                     <field name="partner_id"/>
-                    <field name="user_id"/>
                     <field name="so_tien"/>
                     <field name="ngay_thu"/>
                     <field name="dien_giai"/>
@@ -19,7 +18,6 @@
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
                     	<filter name="group_by_ngay_thu" string="Ngày thu" context="{'group_by':'ngay_thu'}"/>
-                    	<filter name="group_by_user_id" string="Nhân viên thu" context="{'group_by':'user_id'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
@@ -34,7 +32,6 @@
                 	<field name="name"/>
                     <field name="chinhanh_id"/>
                     <field name="partner_id"/>
-                    <field name="user_id"/>
                     <field name="ngay_thu"/>
                     <field name="so_tien"/>
                     <field name="bien_so_xe_id"/>
@@ -67,7 +64,6 @@
 		                    </group>
 		                    <group>
 			                    <field name="ngay_thu"/>
-			                    <field name="user_id"/>
 			                    <field name="bien_so_xe_id"/>
 			                    <field name="loai_kyquy_id" options="{'no_create': True}"/>
 		                    </group>

@@ -9,10 +9,10 @@
 	        <field name="model">tonghop.congno</field>
 	        <field name="report_name">tonghop_congno_report</field>
 	        <field name="report_type">aeroo</field>
-	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/tonghop_congno_report.py</field>
-	        <field name="report_rml">mlg_arap_account/report/tonghop_congno_report.odt</field>
+	        <field name="report_rml">mlg_arap_account/report/tonghop_congno_report.ods</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -25,7 +25,7 @@
 			model="tonghop.congno" 
 			name="tonghop_congno_report"
 	        string="Tổng hợp công nợ"
-	        rml="mlg_arap_account/report/tonghop_congno_report.odt"/> 	
+	        rml="mlg_arap_account/report/tonghop_congno_report.ods"/> 	
 	        
 	        
 	</data>

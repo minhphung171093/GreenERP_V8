@@ -28,6 +28,8 @@ class Parser(report_sxw.rml_parse):
             'convert_amount': self.convert_amount,
             'convert': self.convert,
             'get_line': self.get_line,
+            'get_from_date': self.get_from_date,
+            'get_to_date': self.get_to_date,
         })
         
     def get_line(self):
@@ -44,6 +46,16 @@ class Parser(report_sxw.rml_parse):
         if date:
             date = datetime.strptime(date, DATE_FORMAT)
             return date.strftime('%d/%m/%Y')
+    
+    def get_from_date(self):
+        wizard_data = self.localcontext['data']['form']
+        from_date = wizard_data['from_date']
+        return self.convert_date(from_date)
+    
+    def get_to_date(self):
+        wizard_data = self.localcontext['data']['form']
+        to_date = wizard_data['to_date']
+        return self.convert_date(to_date)
     
     def convert(self, amount):
         amount_text = amount_to_text_vn.amount_to_text(amount, 'vn')

@@ -30,44 +30,57 @@
             <field name="name">Tạm ứng khác</field>
         </record>
         
+    </data>
+    <data noupdate="0">
+    
         <record id="loai_cong_no_no_doanh_thu" model="loai.cong.no">
             <field name="name">Nợ doanh thu</field>
+            <field name="code">no_doanh_thu</field>
         </record>
         
         <record id="loai_cong_no_chi_ho_dien_thoai" model="loai.cong.no">
             <field name="name">Phải thu chi hộ điện thoại</field>
+            <field name="code">chi_ho_dien_thoai</field>
         </record>
         
         <record id="loai_cong_no_phai_thu_bao_hiem" model="loai.cong.no">
             <field name="name">Phải thu bảo hiểm</field>
+            <field name="code">phai_thu_bao_hiem</field>
         </record>
         
         <record id="loai_cong_no_phat_vi_pham" model="loai.cong.no">
             <field name="name">Phạt vi phạm</field>
+            <field name="code">phat_vi_pham</field>
         </record>
         
         <record id="loai_cong_no_thu_no_xuong" model="loai.cong.no">
             <field name="name">Thu nợ xưởng</field>
+            <field name="code">thu_no_xuong</field>
         </record>
         
         <record id="loai_cong_no_thu_phi_thuong_hieu" model="loai.cong.no">
             <field name="name">Thu phí thương hiệu</field>
+            <field name="code">thu_phi_thuong_hieu</field>
         </record>
         
         <record id="loai_cong_no_tra_gop_xe" model="loai.cong.no">
             <field name="name">Trả góp xe</field>
+            <field name="code">tra_gop_xe</field>
         </record>
         
         <record id="loai_cong_no_hoan_tam_ung" model="loai.cong.no">
             <field name="name">Phải thu tạm ứng</field>
+            <field name="code">hoan_tam_ung</field>
         </record>
         
         <record id="loai_cong_no_phai_tra_ky_quy" model="loai.cong.no">
             <field name="name">Phải trả ký quỹ</field>
+            <field name="code">phai_tra_ky_quy</field>
         </record>
         
         <record id="loai_cong_no_chi_ho" model="loai.cong.no">
             <field name="name">Phải trả chi hộ</field>
+            <field name="code">chi_ho</field>
         </record>
         
     </data>

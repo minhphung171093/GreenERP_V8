@@ -74,7 +74,12 @@ class loai_cong_no(osv.osv):
     _name = "loai.cong.no"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'code': fields.char('Mã', size=1024),
     }
+
+    def init(self, cr):
+        cr.execute('''update ir_model_data set noupdate='f' where model='loai.cong.no' and module='mlg_arap_account'; ''')
+    
 loai_cong_no()
 
 class loai_ky_quy(osv.osv):

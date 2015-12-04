@@ -104,14 +104,14 @@ class Parser(report_sxw.rml_parse):
             return (partner.ma_doi_tuong or '')+'_'+(partner.name or '')
         return ''
     
-    def get_nodauky(self, congno):
+    def get_nodauky(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
-        if congno:
+        if mlg_type:
             period_id = wizard_data['period_id']
             period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             partner_id = wizard_data['partner_id']
-            mlg_type = self.get_title_congno(congno)
+#             mlg_type = self.get_title_congno(congno)
             sql = '''
                 select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
                     from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
@@ -124,14 +124,14 @@ class Parser(report_sxw.rml_parse):
     def get_tongcongno(self):
         return self.tongcongno
     
-    def get_nocuoiky(self, congno):
+    def get_nocuoiky(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
-        if congno:
+        if mlg_type:
             period_id = wizard_data['period_id']
             period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             partner_id = wizard_data['partner_id']
-            mlg_type = self.get_title_congno(congno)
+#             mlg_type = self.get_title_congno(congno)
             sql = '''
                 select case when sum(residual)!=0 then sum(residual) else 0 end notrongky
                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
@@ -139,18 +139,18 @@ class Parser(report_sxw.rml_parse):
             '''%(mlg_type,chinhanh_id[0],partner_id[0],period.date_start,period.date_stop)
             self.cr.execute(sql)
             notrongky = self.cr.fetchone()[0]
-            nodauky = self.get_nodauky(congno)
+            nodauky = self.get_nodauky(mlg_type)
             nocuoiky = nodauky+notrongky
             self.tongcongno += nocuoiky
             return nocuoiky
         return 0
     
-    def get_chitiet_congno(self, congno):
+    def get_chitiet_congno(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
         period_id = wizard_data['period_id']
         chinhanh_id = wizard_data['chinhanh_id']
         partner_id = wizard_data['partner_id']
-        mlg_type = self.get_title_congno(congno)
+#         mlg_type = self.get_title_congno(congno)
         period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
         sql = '''
             select rp.ma_doi_tuong as madoituong,rp.name as tendoituong,

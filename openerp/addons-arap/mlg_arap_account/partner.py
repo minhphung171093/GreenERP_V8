@@ -199,9 +199,33 @@ class res_partner(osv.osv):
             if object_ids:
                 return False
         return True
+    
+    def _check_cmnd(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd)])
+            if object_ids:
+                return False
+        return True
 
+    def _check_mst(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('mst','!=', False),('mst','=', line.mst)])
+            if object_ids:
+                return False
+        return True
+    
+    def _check_gpkd(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('giayphep_kinhdoanh','!=', False),('giayphep_kinhdoanh','=', line.giayphep_kinhdoanh)])
+            if object_ids:
+                return False
+        return True
+    
     _constraints = [
         (_check_ma_doi_tuong, 'Không được trùng mã đối tượng', ['ma_doi_tuong']),
+        (_check_cmnd, 'Không được trùng CMND', ['cmnd']),
+        (_check_mst, 'Không được trùng MST', ['mst']),
+        (_check_gpkd, 'Không được trùng giấy phép kinh doanh', ['giayphep_kinhdoanh']),
     ]
     
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):

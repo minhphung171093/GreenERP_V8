@@ -353,7 +353,7 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
-                    <field name="so_hop_dong" string="Số hợp đồng"/>
+                    <field name="so_hoa_don"/>
                     <field name="mlg_type" invisible='1'/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>

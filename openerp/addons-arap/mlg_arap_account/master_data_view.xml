@@ -96,7 +96,26 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_loai_ky_quy_tree"/>
         </record>
-        
+
+<!-- Loại công nợ -->    
+    	<record id="view_loai_cong_no_tree" model="ir.ui.view">
+            <field name="name">loai.cong.no.tree</field>
+            <field name="model">loai.cong.no</field>
+            <field name="arch" type="xml">
+                <tree string="Loại công nợ" editable='top'>
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_cong_no" model="ir.actions.act_window">
+            <field name="name">Loại công nợ</field>
+            <field name="res_model">loai.cong.no</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_cong_no_tree"/>
+        </record>
+            
 <!-- Loại tạm ứng -->    
     	<record id="view_loai_tam_ung_tree" model="ir.ui.view">
             <field name="name">loai.tam.ung.tree</field>

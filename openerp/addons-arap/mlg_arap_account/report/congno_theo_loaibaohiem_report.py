@@ -26,12 +26,21 @@ class Parser(report_sxw.rml_parse):
             'get_line': self.get_line,
             'convert_date': self.convert_date,
             'get_loaicongno': self.get_loaicongno,
+            'get_chinhanh': self.get_chinhanh,
         })
         
     def convert_date(self, date):
         if date:
             date = datetime.strptime(date, DATE_FORMAT)
             return date.strftime('%d/%m/%Y')
+    
+    def get_chinhanh(self):
+        wizard_data = self.localcontext['data']['form']
+        chinhanh_id = wizard_data['chinhanh_id']
+        if not chinhanh_id:
+            return {'name':'','code':''}
+        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        return {'name':account.name,'code':account.code}
     
     def get_loaicongno(self, loaicongno):
         lcn = ''
@@ -66,7 +75,7 @@ class Parser(report_sxw.rml_parse):
                 dx.name as ten_doixe, bgc.code as ma_baigiaoca, bgc.name as ten_baigiaoca, tnbgc.name as thungan_baigiaoca,
                 dhbgc.name as dieuhanh_baigiaoca, ail.price_unit as sotien, ail.name as diengiai,ai.mlg_type as loaicongno,
                 ai.so_hop_dong as so_hop_dong, bsx.name as bien_so_xe, ai.so_hoa_don as so_hoa_don,lbh.name as loaibaohiem,
-                ai.ma_bang_chiettinh_chiphi_sua as ma_bang_chiettinh_chiphi_sua
+                ai.ma_bang_chiettinh_chiphi_sua as ma_bang_chiettinh_chiphi_sua,ai.residual as sotienconlai,(ai.so_tien-ai.residual) as sotiendathu
                 
                 from account_invoice_line ail
                 left join account_invoice ai on ail.invoice_id = ai.id

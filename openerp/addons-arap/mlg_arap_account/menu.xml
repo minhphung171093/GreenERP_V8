@@ -177,16 +177,6 @@
 					action="action_in_dexuat_noxuong_report"
 					parent="menu_in_dexuat" sequence="20"/>
 					
-				<menuitem id="menu_action_doanh_so_thu_wizard"
-					name="Doanh số thu"
-					action="action_doanh_so_thu_wizard"
-					parent="menu_in_dexuat" sequence="25"/>
-					
-				<menuitem id="menu_action_doanh_so_tra_wizard"
-					name="Doanh số trả"
-					action="action_doanh_so_tra_wizard"
-					parent="menu_in_dexuat" sequence="30"/>
-					
 			<menuitem id="menu_import_cong_no_thu"
 				name="Import"
 				parent="menu_root_congno" sequence="20"/>
@@ -435,6 +425,20 @@
 					name="Theo loại bảo hiểm"
 					parent="menu_baocao_cong_no_thu" sequence="25"/>
 					
+			<menuitem id="menu_baocao_doanhso"
+				name="Báo cáo doanh số"
+				parent="menu_root_baocao" sequence="15"/>
+				
+				<menuitem id="menu_action_doanh_so_thu_wizard"
+					name="Doanh số đã thu"
+					action="action_doanh_so_thu_wizard"
+					parent="menu_baocao_doanhso" sequence="5"/>
+					
+				<menuitem id="menu_action_doanh_so_tra_wizard"
+					name="Doanh số đã chi"
+					action="action_doanh_so_tra_wizard"
+					parent="menu_baocao_doanhso" sequence="10"/>
+					
 		<menuitem id="menu_root_cauhinh_arap"
 			name="Cấu Hình ARAP" sequence="25"/>
 			
@@ -503,5 +507,10 @@
 				<menuitem id="account.account_account_menu"
 					name="Accounts"
 					parent="menu_cauhinh" sequence="40"/>
+					
+		<menuitem id="menu_action_loai_cong_no"
+			action="action_loai_cong_no"
+			name="Loại công nợ"
+			parent="base.menu_custom" sequence="40"/>
 	</data>
 </openerp>

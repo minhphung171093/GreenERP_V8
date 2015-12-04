@@ -9,10 +9,10 @@
 	        <field name="model">congno.vuotdinhmuc</field>
 	        <field name="report_name">congno_vuotdinhmuc_report</field>
 	        <field name="report_type">aeroo</field>
-	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/congno_vuotdinhmuc_report.py</field>
-	        <field name="report_rml">mlg_arap_account/report/congno_vuotdinhmuc_report.odt</field>
+	        <field name="report_rml">mlg_arap_account/report/congno_vuotdinhmuc_report.ods</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -25,7 +25,7 @@
 			model="congno.vuotdinhmuc" 
 			name="congno_vuotdinhmuc_report"
 	        string="Công nợ vượt định mức"
-	        rml="mlg_arap_account/report/congno_vuotdinhmuc_report.odt"/> 	
+	        rml="mlg_arap_account/report/congno_vuotdinhmuc_report.ods"/> 	
 	        
 	        
 	</data>

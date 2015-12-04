@@ -31,6 +31,7 @@ class Parser(report_sxw.rml_parse):
             'get_loai_congno': self.get_loai_congno,
             'get_tongcong': self.get_tongcong,
             'get_sotien_dinhmuc': self.get_sotien_dinhmuc,
+            'get_chinhanh': self.get_chinhanh,
         })
         
     def convert_date(self, date):
@@ -42,6 +43,14 @@ class Parser(report_sxw.rml_parse):
     def convert_amount(self, amount):
         a = format(int(amount),',')
         return a
+    
+    def get_chinhanh(self):
+        wizard_data = self.localcontext['data']['form']
+        chinhanh_id = wizard_data['chinhanh_id']
+        if not chinhanh_id:
+            return {'name':'','code':''}
+        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        return {'name':account.name,'code':account.code}
     
     def get_sotien_dinhmuc(self):
         wizard_data = self.localcontext['data']['form']
