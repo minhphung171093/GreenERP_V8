@@ -197,6 +197,8 @@ class WebRequest(object):
             threading.current_thread().dbname = self.db
         if self.session.uid:
             threading.current_thread().uid = self.session.uid
+        if type(self.context) == dict:
+            self.context['remote_addr'] = self.httprequest.remote_addr
 
     @lazy_property
     def env(self):

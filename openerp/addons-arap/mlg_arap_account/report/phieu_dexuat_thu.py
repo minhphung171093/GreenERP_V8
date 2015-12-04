@@ -23,7 +23,7 @@ class Parser(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
         super(Parser, self).__init__(cr, uid, name, context=context)
         pool = pooler.get_pool(self.cr.dbname)
-        self.ip = ''
+        self.context = context
         self.localcontext.update({
             'convert_date': self.convert_date,
             'convert_amount': self.convert_amount,
@@ -49,6 +49,9 @@ class Parser(report_sxw.rml_parse):
             return 'CHI'
         
     def _get_ipaddress(self):
+        if self.context.get('remote_addr', False):
+            print self.context['remote_addr']
+            return self.context['remote_addr']
         return ''
     
     def get_user(self):
