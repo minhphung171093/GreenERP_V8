@@ -15,18 +15,24 @@ class doanh_so_tra_wizard(osv.osv_memory):
     _columns = {
         'from_date': fields.date('Ngày bắt đầu', required=True),
         'to_date': fields.date('Ngày kết thúc', required=True),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
     }
+    
+    def _get_chinhanh(self, cr, uid, context=None):
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        return user.chinhanh_id and user.chinhanh_id.id or False
     
     _defaults = {
         'from_date': time.strftime('%Y-%m-01'),
-        'to_date': lambda *a: str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
+        'to_date': lambda *a: str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10],
+        'chinhanh_id': _get_chinhanh,
     }
     
     def review_report(self, cr, uid, ids, context=None):
         this = self.browse(cr, uid, ids[0])
         sql = '''
-            select * from fin_output_theodoanhsotra_oracle('%s','%s')
-        '''%(this.from_date,this.to_date)
+            select * from fin_output_theodoanhsotra_oracle('%s','%s',%s)
+        '''%(this.from_date,this.to_date,this.chinhanh_id.id)
         cr.execute(sql)
         doanhsotra_line = []
         for line in cr.dictfetchall():
@@ -41,6 +47,7 @@ class doanh_so_tra_wizard(osv.osv_memory):
         vals = {
             'from_date': this.from_date,
             'to_date': this.to_date,
+            'chinhanh_id': this.chinhanh_id.id,
             'doanhsotra_line':doanhsotra_line,
         }
         report_id = self.pool.get('doanh.so.tra').create(cr, uid, vals)
@@ -76,7 +83,7 @@ class doanh_so_tra(osv.osv_memory):
         'from_date': fields.date('Ngày bắt đầu'),
         'to_date': fields.date('Ngày kết thúc'),
         'doanhsotra_line': fields.one2many('doanh.so.tra.line', 'doanhsotra_id', 'Chi tiết'),
-        
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
     }
     
     def print_report(self, cr, uid, ids, context=None):

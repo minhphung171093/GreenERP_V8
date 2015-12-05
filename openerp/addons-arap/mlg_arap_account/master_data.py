@@ -270,17 +270,24 @@ class cauhinh_thumuc_import_tudong(osv.osv):
     _columns = {
         'name': fields.char('Đường dẫn', size=2048, required=True),
         'mlg_type': fields.selection([
-                                      ('phai_thu_ky_quy','Phải thu ký quỹ (HISTAFF)'),
-                                      ('phat_vi_pham','Phạt vi phạm (HISTAFF)'),
                                       ('thu_no_xuong','Thu nợ xưởng (BDSC)'),
-                                      ('thu_phi_thuong_hieu_htkd','Thu phí thương hiệu (HTKD)'),
-                                      ('thu_phi_thuong_hieu_shift','Thu phí thương hiệu (SHIFT)'),
-                                      ('tra_gop_xe_htkd','Trả góp xe (HTKD)'),
-                                      ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
+                                      ('phat_vi_pham','Phạt vi phạm (HISTAFF)'),
                                       ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
+                                      ('phai_thu_ky_quy','Phải thu ký quỹ (HISTAFF)'),
+                                      ('thu_phi_thuong_hieu_htkd','Thu phí thương hiệu (HTKD)'),
+                                      ('tra_gop_xe_htkd','Trả góp xe (HTKD)'),
+                                      ('chi_ho','Chi góp xe (HTKD)'),
                                       ('fustion_phaithu','Phải thu Fustion (ORACLE)'),
                                       ('fustion_phaitra','Phải trả Fustion (ORACLE)'),
-                                      ('chi_ho','Chi góp xe (HTKD)')
+                                      ('no_doanh_thu_shift','Nợ doanh thu (SHIFT)'),
+                                      ('chi_ho_dien_thoai_shift','Phải thu chi hộ điện thoại (SHIFT)'),
+                                      ('phai_thu_bao_hiem_shift','Phải thu bảo hiểm (SHIFT)'),
+                                      ('phat_vi_pham_shift','Phạt vi phạm (SHIFT)'),
+                                      ('thu_no_xuong_shift','Thu nợ xưởng (SHIFT)'),
+                                      ('thu_phi_thuong_hieu_shift','Thu phí thương hiệu (SHIFT)'),
+                                      ('hoan_tam_ung_shift','Phải thu tạm ứng (SHIFT)'),
+                                      ('phai_thu_ky_quy_shift','Phải thu ký quỹ (SHIFT)'),
+                                      ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
                                       ],'Loại công nợ', required=True),
     }
 cauhinh_thumuc_import_tudong()
@@ -290,17 +297,24 @@ class cauhinh_thumuc_output_tudong(osv.osv):
     _columns = {
         'name': fields.char('Đường dẫn', size=2048, required=True),
         'mlg_type': fields.selection([
-                                      ('phai_thu_ky_quy','Phải thu ký quỹ (HISTAFF)'),
-                                      ('phat_vi_pham','Phạt vi phạm (HISTAFF)'),
                                       ('thu_no_xuong','Thu nợ xưởng (BDSC)'),
-                                      ('thu_phi_thuong_hieu_htkd','Thu phí thương hiệu (HTKD)'),
-                                      ('thu_phi_thuong_hieu_shift','Thu phí thương hiệu (SHIFT)'),
-                                      ('tra_gop_xe_htkd','Trả góp xe (HTKD)'),
-                                      ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
+                                      ('phat_vi_pham','Phạt vi phạm (HISTAFF)'),
                                       ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
+                                      ('phai_thu_ky_quy','Phải thu ký quỹ (HISTAFF)'),
+                                      ('thu_phi_thuong_hieu_htkd','Thu phí thương hiệu (HTKD)'),
+                                      ('tra_gop_xe_htkd','Trả góp xe (HTKD)'),
+                                      ('chi_ho','Chi góp xe (HTKD)'),
                                       ('oracle_phaithu','Doanh số thu (ORACLE)'),
                                       ('oracle_phaitra','Doanh số trả (ORACLE)'),
-                                      ('chi_ho','Chi góp xe (HTKD)')
+                                      ('no_doanh_thu_shift','Nợ doanh thu (SHIFT)'),
+                                      ('chi_ho_dien_thoai_shift','Phải thu chi hộ điện thoại (SHIFT)'),
+                                      ('phai_thu_bao_hiem_shift','Phải thu bảo hiểm (SHIFT)'),
+                                      ('phat_vi_pham_shift','Phạt vi phạm (SHIFT)'),
+                                      ('thu_no_xuong_shift','Thu nợ xưởng (SHIFT)'),
+                                      ('thu_phi_thuong_hieu_shift','Thu phí thương hiệu (SHIFT)'),
+                                      ('hoan_tam_ung_shift','Phải thu tạm ứng (SHIFT)'),
+                                      ('phai_thu_ky_quy_shift','Phải thu ký quỹ (SHIFT)'),
+                                      ('tra_gop_xe_shift','Trả góp xe (SHIFT)'),
                                       ],'Loại công nợ', required=True),
     }
 cauhinh_thumuc_output_tudong()

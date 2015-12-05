@@ -30,15 +30,17 @@ class Parser(report_sxw.rml_parse):
             'get_line': self.get_line,
             'get_from_date': self.get_from_date,
             'get_to_date': self.get_to_date,
+            'get_chinhanh': self.get_chinhanh,
         })
         
     def get_line(self):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         to_date = wizard_data['to_date']
+        chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
-            select * from fin_output_theodoanhsothu_oracle('%s','%s')
-        '''%(from_date,to_date)
+            select * from fin_output_theodoanhsothu_oracle('%s','%s',%s)
+        '''%(from_date,to_date,chinhanh_id[0])
         self.cr.execute(sql)
         return self.cr.dictfetchall()
     
@@ -46,6 +48,14 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         return self.convert_date(from_date)
+    
+    def get_chinhanh(self):
+        wizard_data = self.localcontext['data']['form']
+        chinhanh_id = wizard_data['chinhanh_id']
+        if not chinhanh_id:
+            return {'name':'','code':''}
+        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        return {'name':account.name,'code':account.code}
     
     def get_to_date(self):
         wizard_data = self.localcontext['data']['form']

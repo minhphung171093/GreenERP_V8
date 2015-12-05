@@ -78,10 +78,10 @@ class output_congno_tudong(osv.osv):
     
     def fin_output_theodoanhsothu_oracle(self, cr):
         sql = '''
-        DROP FUNCTION IF EXISTS fin_output_theodoanhsothu_oracle(date, date) CASCADE;
+        DROP FUNCTION IF EXISTS fin_output_theodoanhsothu_oracle(date, date, integer) CASCADE;
         commit;
         
-        CREATE OR REPLACE FUNCTION fin_output_theodoanhsothu_oracle(date, date)
+        CREATE OR REPLACE FUNCTION fin_output_theodoanhsothu_oracle(date, date, integer)
           RETURNS SETOF fin_output_theodoanhsothu_oracle_data AS
         $BODY$
         DECLARE
@@ -94,11 +94,12 @@ class output_congno_tudong(osv.osv):
             tencongno     character varying(250);
         BEGIN
             for rec_cn in execute '
-                    select id,code,name from account_account where parent_id in (select id from account_account where code=''1'')
-                        and id in (select parent_id from account_account where id in (select account_id from account_move_line where date between $1 and $2))
-                ' using $1, $2
+                    select id,code,name from account_account where id=$1
+                        
+                        group by id,code,name
+                ' using $3
             loop
-                for loaicongno in 1..10
+                for loaicongno in 1..11
                 loop
                     if loaicongno=1 then
                         sotien = 0;
@@ -107,9 +108,9 @@ class output_congno_tudong(osv.osv):
                                 from account_move_line
                                 where move_id in (select move_id from account_voucher
                                     where reference in (select name from account_invoice
-                                        where mlg_type=''no_doanh_thu'' and state in (''open'',''paid'')))
+                                        where mlg_type=''no_doanh_thu'' and chinhanh_id=$3 and state in (''open'',''paid'')))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -133,9 +134,9 @@ class output_congno_tudong(osv.osv):
                                     where reference in (select name from account_invoice
                                         where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
                                             where name=''Tạm ứng công tác'')
-                                            and state in (''open'',''paid'') and loai_doituong=''nhanvienvanphong''))
+                                            and state in (''open'',''paid'') and chinhanh_id=$3 and loai_doituong=''nhanvienvanphong''))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -159,9 +160,9 @@ class output_congno_tudong(osv.osv):
                                     where reference in (select name from account_invoice
                                         where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
                                             where name=''Tạm ứng công tác'')
-                                            and state in (''open'',''paid'') and loai_doituong=''taixe''))
+                                            and state in (''open'',''paid'') and chinhanh_id=$3 and loai_doituong=''taixe''))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -185,9 +186,9 @@ class output_congno_tudong(osv.osv):
                                     where reference in (select name from account_invoice
                                         where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
                                             where name=''Tạm ứng khó khăn'')
-                                            and state in (''open'',''paid'') and loai_doituong=''nhanvienvanphong''))
+                                            and state in (''open'',''paid'') and chinhanh_id=$3 and loai_doituong=''nhanvienvanphong''))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -211,9 +212,9 @@ class output_congno_tudong(osv.osv):
                                     where reference in (select name from account_invoice
                                         where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
                                             where name=''Tạm ứng khó khăn'')
-                                            and state in (''open'',''paid'') and loai_doituong=''taixe''))
+                                            and state in (''open'',''paid'') and chinhanh_id=$3 and loai_doituong=''taixe''))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -235,9 +236,9 @@ class output_congno_tudong(osv.osv):
                                 from account_move_line
                                 where move_id in (select move_id from account_voucher
                                     where reference in (select name from account_invoice
-                                        where mlg_type=''phat_vi_pham'' and state in (''open'',''paid'') ))
+                                        where mlg_type=''phat_vi_pham'' and chinhanh_id=$3 and state in (''open'',''paid'') ))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -259,9 +260,9 @@ class output_congno_tudong(osv.osv):
                                 from account_move_line
                                 where move_id in (select move_id from account_voucher
                                     where reference in (select name from account_invoice
-                                        where mlg_type=''tra_gop_xe'' and state in (''open'',''paid'') ))
+                                        where mlg_type=''tra_gop_xe'' and chinhanh_id=$3 and state in (''open'',''paid'') ))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -283,9 +284,9 @@ class output_congno_tudong(osv.osv):
                                 from account_move_line
                                 where move_id in (select move_id from account_voucher
                                     where reference in (select name from account_invoice
-                                        where mlg_type=''thu_phi_thuong_hieu'' and state in (''open'',''paid'') ))
+                                        where mlg_type=''thu_phi_thuong_hieu'' and chinhanh_id=$3 and state in (''open'',''paid'') ))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2, rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -307,9 +308,9 @@ class output_congno_tudong(osv.osv):
                                 from account_move_line
                                 where move_id in (select move_id from account_voucher
                                     where reference in (select name from account_invoice
-                                        where mlg_type=''thu_no_xuong'' and state in (''open'',''paid'') ))
+                                        where mlg_type=''thu_no_xuong'' and chinhanh_id=$3 and state in (''open'',''paid'') ))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -336,9 +337,9 @@ class output_congno_tudong(osv.osv):
                                     from account_move_line
                                     where move_id in (select move_id from account_voucher
                                         where reference in (select name from account_invoice
-                                            where mlg_type=''phai_thu_bao_hiem'' and state in (''open'',''paid'') and loai_baohiem_id=$3 ))
+                                            where mlg_type=''phai_thu_bao_hiem'' and chinhanh_id=$4 and state in (''open'',''paid'') and loai_baohiem_id=$3 ))
                                     and date between $1 and $2
-                            ' using $1, $2,rec_lbh.id
+                            ' using $1, $2,rec_lbh.id,rec_cn.id
                             loop
                                 sotien = sotien + coalesce(rec_aml.sotien, 0);
                             end loop;
@@ -354,6 +355,30 @@ class output_congno_tudong(osv.osv):
                         end loop;
                     end if;
                     
+                    if loaicongno=11 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(credit) as sotien
+                                from account_move_line
+                                where move_id in (select move_id from account_voucher
+                                    where reference in (select name from account_invoice
+                                        where mlg_type=''chi_ho_dien_thoai'' and chinhanh_id=$3 and state in (''open'',''paid'')))
+                                and date between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phải thu chi hộ điện thoại';
+                            bal_data.taikhoan='1388021';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
                 end loop;
             end loop;
 
@@ -362,7 +387,7 @@ class output_congno_tudong(osv.osv):
           LANGUAGE plpgsql VOLATILE
           COST 100
           ROWS 1000000;
-        ALTER FUNCTION fin_output_theodoanhsothu_oracle(date, date)
+        ALTER FUNCTION fin_output_theodoanhsothu_oracle(date, date, integer)
           OWNER TO '''+config['db_user']+''';
         '''
         cr.execute(sql)
@@ -392,10 +417,10 @@ class output_congno_tudong(osv.osv):
     
     def fin_output_theodoanhsotra_oracle(self, cr):
         sql = '''
-        DROP FUNCTION IF EXISTS fin_output_theodoanhsotra_oracle(date, date) CASCADE;
+        DROP FUNCTION IF EXISTS fin_output_theodoanhsotra_oracle(date, date, integer) CASCADE;
         commit;
         
-        CREATE OR REPLACE FUNCTION fin_output_theodoanhsotra_oracle(date, date)
+        CREATE OR REPLACE FUNCTION fin_output_theodoanhsotra_oracle(date, date, integer)
           RETURNS SETOF fin_output_theodoanhsotra_oracle_data AS
         $BODY$
         DECLARE
@@ -406,9 +431,9 @@ class output_congno_tudong(osv.osv):
             sotien        numeric;
         BEGIN
             for rec_cn in execute '
-                    select id,code,name from account_account where parent_id in (select id from account_account where code=''1'')
-                        and id in (select parent_id from account_account where id in (select account_id from account_move_line where date between $1 and $2))
-                ' using $1, $2
+                    select id,code,name from account_account where id=$1
+                    group by id,code,name
+                ' using $3
             loop
                 for loaicongno in 1..2
                 loop
@@ -419,9 +444,9 @@ class output_congno_tudong(osv.osv):
                                 from account_move_line
                                 where move_id in (select move_id from account_voucher
                                     where reference in (select name from account_invoice
-                                        where mlg_type=''phai_tra_ky_quy'' and state in (''open'',''paid'')))
+                                        where mlg_type=''phai_tra_ky_quy'' and chinhanh_id=$3 and state in (''open'',''paid'')))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2, rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -443,9 +468,9 @@ class output_congno_tudong(osv.osv):
                                 from account_move_line
                                 where move_id in (select move_id from account_voucher
                                     where reference in (select name from account_invoice
-                                        where mlg_type=''chi_ho'' and state in (''open'',''paid'')))
+                                        where mlg_type=''chi_ho'' and chinhanh_id=$3 and state in (''open'',''paid'')))
                                 and date between $1 and $2
-                        ' using $1, $2
+                        ' using $1, $2,rec_cn.id
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
@@ -468,7 +493,7 @@ class output_congno_tudong(osv.osv):
           LANGUAGE plpgsql VOLATILE
           COST 100
           ROWS 1000000;
-        ALTER FUNCTION fin_output_theodoanhsotra_oracle(date, date)
+        ALTER FUNCTION fin_output_theodoanhsotra_oracle(date, date, integer)
           OWNER TO '''+config['db_user']+''';
         '''
         cr.execute(sql)
@@ -498,7 +523,7 @@ class output_congno_tudong(osv.osv):
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         left join ma_xuong mx on mx.id=ai.ma_xuong_id
                         
-                        where ai.mlg_type='thu_no_xuong' and state in ('open','paid') and date(ai.write_date)='%s'
+                        where ai.mlg_type='thu_no_xuong' and state in ('open','paid') and date(timezone('UTC',ai.write_date))='%s'
                 '''%(date_now)
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -585,7 +610,7 @@ class output_congno_tudong(osv.osv):
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         left join ma_xuong mx on mx.id=ai.ma_xuong_id
                         
-                        where ai.mlg_type='thu_phi_thuong_hieu' and state in ('open','paid') and date(ai.write_date)='%s'
+                        where ai.mlg_type='thu_phi_thuong_hieu' and state in ('open','paid') and date(timezone('UTC',ai.write_date))='%s'
                 '''%(date_now)
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -671,7 +696,7 @@ class output_congno_tudong(osv.osv):
                         left join ma_xuong mx on mx.id=ai.ma_xuong_id
                         left join res_partner dvc on dvc.id=ai.thu_cho_doituong_id
                         
-                        where ai.mlg_type='tra_gop_xe' and state in ('open','paid') and date(ai.write_date)='%s'
+                        where ai.mlg_type='tra_gop_xe' and state in ('open','paid') and date(timezone('UTC',ai.write_date))='%s'
                 '''%(date_now)
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -733,6 +758,353 @@ class output_congno_tudong(osv.osv):
             raise osv.except_osv(_('Warning!'), str(e))
         return True
 
+    def output_phaithu_nodoanhthu_shift(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','no_doanh_thu_shift')])
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','dien_giai']
+                contents = []
+                sql = '''
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                        sum(ai.residual) as so_tien
+                        
+                        from account_invoice ai 
+                        left join account_account cn on cn.id=ai.chinhanh_id
+                        left join res_partner dt on dt.id=ai.partner_id
+                        
+                        where ai.mlg_type='no_doanh_thu' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                '''
+                cr. execute(sql)
+                for line in cr.dictfetchall():
+                    loai_doituong=''
+                    if line['loai_doituong']=='taixe':
+                        loai_doituong = 'Lái xe'
+                    if line['loai_doituong']=='nhadautu':
+                        loai_doituong = 'Nhà đầu tư'
+                    if line['loai_doituong']=='nhanvienvanphong':
+                        loai_doituong = 'Nhân viên văn phòng'
+                    contents.append({
+                        'chi_nhanh': line['chi_nhanh'],
+                        'ma_chi_nhanh': line['ma_chi_nhanh'],
+                        'loai_doi_tuong': loai_doituong,
+                        'ma_doi_tuong': line['ma_doi_tuong'],
+                        'ten_doi_tuong': line['ten_doi_tuong'],
+                        'ngay_giao_dich': '',
+                        'so_tien': line['so_tien'],
+                        'dien_giai': '',
+                    })
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'no_doanh_thu_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Nợ doanh thu (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Nợ doanh thu (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
+    def output_phaithu_chihodienthoai_shift(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','chi_ho_dien_thoai_shift')])
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','so_hoa_don','so_dien_thoai','dien_giai']
+                contents = []
+                sql = '''
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                        sum(ai.residual) as so_tien, ai.so_hoa_don as so_hoa_don, ai.so_dien_thoai as so_dien_thoai
+                        
+                        from account_invoice ai 
+                        left join account_account cn on cn.id=ai.chinhanh_id
+                        left join res_partner dt on dt.id=ai.partner_id
+                        
+                        where ai.mlg_type='chi_ho_dien_thoai' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name, ai.so_hoa_don, ai.so_dien_thoai
+                '''
+                cr. execute(sql)
+                for line in cr.dictfetchall():
+                    loai_doituong=''
+                    if line['loai_doituong']=='taixe':
+                        loai_doituong = 'Lái xe'
+                    if line['loai_doituong']=='nhadautu':
+                        loai_doituong = 'Nhà đầu tư'
+                    if line['loai_doituong']=='nhanvienvanphong':
+                        loai_doituong = 'Nhân viên văn phòng'
+                    contents.append({
+                        'chi_nhanh': line['chi_nhanh'],
+                        'ma_chi_nhanh': line['ma_chi_nhanh'],
+                        'loai_doi_tuong': loai_doituong,
+                        'ma_doi_tuong': line['ma_doi_tuong'],
+                        'ten_doi_tuong': line['ten_doi_tuong'],
+                        'ngay_giao_dich': '',
+                        'so_tien': line['so_tien'],
+                        'so_hoa_don': line['so_hoa_don'],
+                        'so_dien_thoai': line['so_dien_thoai'],
+                        'dien_giai': '',
+                    })
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'chi_ho_dien_thoai_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Phải thu chi hộ điện thoại (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Phải thu chi hộ điện thoại (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
+    def output_phaithu_phaithubaohiem_shift(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','phai_thu_bao_hiem_shift')])
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_tien','so_hoa_don','dien_giai']
+                contents = []
+                sql = '''
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                        bsx.name as bien_so_xe,sum(ai.residual) as so_tien, ai.so_hoa_don as so_hoa_don
+                        
+                        from account_invoice ai 
+                        left join account_account cn on cn.id=ai.chinhanh_id
+                        left join res_partner dt on dt.id=ai.partner_id
+                        left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
+                        
+                        where ai.mlg_type='phai_thu_bao_hiem' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hoa_don
+                '''
+                cr. execute(sql)
+                for line in cr.dictfetchall():
+                    loai_doituong=''
+                    if line['loai_doituong']=='taixe':
+                        loai_doituong = 'Lái xe'
+                    if line['loai_doituong']=='nhadautu':
+                        loai_doituong = 'Nhà đầu tư'
+                    if line['loai_doituong']=='nhanvienvanphong':
+                        loai_doituong = 'Nhân viên văn phòng'
+                    contents.append({
+                        'chi_nhanh': line['chi_nhanh'],
+                        'ma_chi_nhanh': line['ma_chi_nhanh'],
+                        'loai_doi_tuong': loai_doituong,
+                        'ma_doi_tuong': line['ma_doi_tuong'],
+                        'ten_doi_tuong': line['ten_doi_tuong'],
+                        'ngay_giao_dich': '',
+                        'bien_so_xe': line['bien_so_xe'],
+                        'so_tien': line['so_tien'],
+                        'so_hoa_don': line['so_hoa_don'],
+                        'dien_giai': '',
+                    })
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'phai_thu_bao_hiem_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Phải thu bảo hiểm (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Phải thu bảo hiểm (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
+    def output_phaithu_phatvipham_shift(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham_shift')])
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','dien_giai']
+                contents = []
+                sql = '''
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                        sum(ai.residual) as so_tien
+                        
+                        from account_invoice ai 
+                        left join account_account cn on cn.id=ai.chinhanh_id
+                        left join res_partner dt on dt.id=ai.partner_id
+                        
+                        where ai.mlg_type='phat_vi_pham' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                '''
+                cr. execute(sql)
+                for line in cr.dictfetchall():
+                    loai_doituong=''
+                    if line['loai_doituong']=='taixe':
+                        loai_doituong = 'Lái xe'
+                    if line['loai_doituong']=='nhadautu':
+                        loai_doituong = 'Nhà đầu tư'
+                    if line['loai_doituong']=='nhanvienvanphong':
+                        loai_doituong = 'Nhân viên văn phòng'
+                    contents.append({
+                        'chi_nhanh': line['chi_nhanh'],
+                        'ma_chi_nhanh': line['ma_chi_nhanh'],
+                        'loai_doi_tuong': loai_doituong,
+                        'ma_doi_tuong': line['ma_doi_tuong'],
+                        'ten_doi_tuong': line['ten_doi_tuong'],
+                        'ngay_giao_dich': '',
+                        'so_tien': line['so_tien'],
+                        'dien_giai': '',
+                    })
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'phat_vi_pham_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Phạt vi phạm (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Phạt vi phạm (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
+    def output_phaithu_thunoxuong_shift(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','thu_no_xuong_shift')])
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_tien','so_hop_dong','ma_chiet_tinh','ma_xuong','dien_giai']
+                contents = []
+                sql = '''
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                        bsx.name as bien_so_xe,sum(ai.residual) as so_tien, ai.so_hop_dong as so_hop_dong,ai.ma_bang_chiettinh_chiphi_sua as ma_chiet_tinh,
+                        mx.code as ma_xuong
+                        
+                        from account_invoice ai 
+                        left join account_account cn on cn.id=ai.chinhanh_id
+                        left join res_partner dt on dt.id=ai.partner_id
+                        left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
+                        left join ma_xuong mx on mx.id=ai.ma_xuong_id
+                        
+                        where ai.mlg_type='thu_no_xuong' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hop_dong,ai.ma_bang_chiettinh_chiphi_sua,mx.code
+                '''
+                cr. execute(sql)
+                for line in cr.dictfetchall():
+                    loai_doituong=''
+                    if line['loai_doituong']=='taixe':
+                        loai_doituong = 'Lái xe'
+                    if line['loai_doituong']=='nhadautu':
+                        loai_doituong = 'Nhà đầu tư'
+                    if line['loai_doituong']=='nhanvienvanphong':
+                        loai_doituong = 'Nhân viên văn phòng'
+                    contents.append({
+                        'chi_nhanh': line['chi_nhanh'],
+                        'ma_chi_nhanh': line['ma_chi_nhanh'],
+                        'loai_doi_tuong': loai_doituong,
+                        'ma_doi_tuong': line['ma_doi_tuong'],
+                        'ten_doi_tuong': line['ten_doi_tuong'],
+                        'ngay_giao_dich': '',
+                        'bien_so_xe': line['bien_so_xe'],
+                        'so_tien': line['so_tien'],
+                        'so_hop_dong': line['so_hop_dong'],
+                        'ma_chiet_tinh': line['ma_chiet_tinh'],
+                        'ma_xuong': line['ma_xuong'],
+                        'dien_giai': '',
+                    })
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'thu_no_xuong_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Thu nợ xưởng (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Thu nợ xưởng (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
     def output_phaithu_thuphithuonghieu_shift(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
         lichsu_obj = self.pool.get('lichsu.giaodich')
@@ -751,7 +1123,7 @@ class output_congno_tudong(osv.osv):
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         
-                        where ai.mlg_type='thu_phi_thuong_hieu' and state='open'
+                        where ai.mlg_type='thu_phi_thuong_hieu' and state='open' and (dt.taixe = True or dt.nhadautu = True)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hop_dong
                 '''
@@ -803,6 +1175,132 @@ class output_congno_tudong(osv.osv):
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
+    def output_phaithu_kyquy_shift(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','phai_thu_ky_quy_shift')])
+            kyquy_obj = self.pool.get('thu.ky.quy')
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                contents = []
+                
+                sql = '''
+                    select rp.id as id,rp.name as name,rp.chinhanh_id as chinhanh_id,rp.ma_doi_tuong as ma_doi_tuong,rp.taixe as taixe,
+                        rp.nhanvienvanphong as nhanvienvanphong,rp.sotien_conlai as sotien_conlai,
+                        rp.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cn.name as ten_chi_nhanh, cn.code as ma_chi_nhanh
+                        from res_partner rp
+                        left join account_account cn on cn.id=rp.chinhanh_id
+                        where rp.sotien_conlai>0 and rp.taixe = True
+                '''
+                cr.execute(sql)
+                for partner in cr.dictfetchall():
+                    if partner['sotien_phaithu_dinhky']<=partner['sotien_conlai']:
+                        sotien=partner['sotien_phaithu_dinhky']
+                    else:
+                        sotien=partner['sotien_conlai']
+                    loai_doituong=''
+                    if partner['taixe']==True:
+                        loai_doituong='taixe'
+                        contents.append({
+                            'chi_nhanh': partner['ten_chi_nhanh'],
+                            'ma_chi_nhanh': partner['ma_chi_nhanh'],
+                            'loai_doi_tuong': 'Lái xe',
+                            'ma_doi_tuong': partner['ma_doi_tuong'],
+                            'ten_doi_tuong': partner['name'],
+                            'so_tien': sotien,
+                            'dien_giai': '',
+                        })
+                        vals = {
+                            'chinhanh_id': partner['chinhanh_id'],
+                            'loai_doituong': loai_doituong,
+                            'partner_id': partner['id'],
+                            'so_tien': sotien,
+                            'ngay_thu': time.strftime('%Y-%m-%d'),
+                        }
+                        kyquy_obj.create(cr, uid, vals)
+                    if partner['nhanvienvanphong']==True:
+                        loai_doituong='nhanvienvanphong'
+                        contents.append({
+                            'chi_nhanh': partner['ten_chi_nhanh'],
+                            'ma_chi_nhanh': partner['ma_chi_nhanh'],
+                            'loai_doi_tuong': 'Nhân viên văn phòng',
+                            'ma_doi_tuong': partner['ma_doi_tuong'],
+                            'ten_doi_tuong': partner['name'],
+                            'so_tien': sotien,
+                            'dien_giai': '',
+                        })
+                        vals = {
+                            'chinhanh_id': partner['chinhanh_id'],
+                            'loai_doituong': loai_doituong,
+                            'partner_id': partner['id'],
+                            'so_tien': sotien,
+                            'ngay_thu': time.strftime('%Y-%m-%d'),
+                        }
+                        kyquy_obj.create(cr, uid, vals)
+                sql = '''
+                    select rp.id as id,rp.ma_doi_tuong as ma_doi_tuong,rp.name as name,cnl.chinhanh_id as chinhanh_id, cn.code as ma_chi_nhanh,
+                        cn.name as ten_chi_nhanh,cnl.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cnl.sotien_conlai as sotien_conlai
+                         
+                        from chi_nhanh_line cnl
+                        left join res_partner rp on rp.id=cnl.partner_id
+                        left join account_account cn on cn.id=cnl.chinhanh_id
+                         
+                        where cnl.sotien_conlai>0
+                '''
+                cr.execute(sql)
+                for ndt in cr.dictfetchall():
+                    if ndt['sotien_phaithu_dinhky']<=ndt['sotien_conlai']:
+                        sotien=ndt['sotien_phaithu_dinhky']
+                    else:
+                        sotien=ndt['sotien_conlai']
+                    loai_doituong='nhadautu'
+                    contents.append({
+                        'chi_nhanh': ndt['ten_chi_nhanh'],
+                        'ma_chi_nhanh': ndt['ma_chi_nhanh'],
+                        'loai_doi_tuong': 'Nhà đầu tư',
+                        'ma_doi_tuong': ndt['ma_doi_tuong'],
+                        'ten_doi_tuong': ndt['name'],
+                        'so_tien': sotien,
+                        'dien_giai': '',
+                    })
+                    vals = {
+                        'chinhanh_id': ndt['chinhanh_id'],
+                        'loai_doituong': loai_doituong,
+                        'partner_id': ndt['id'],
+                        'so_tien': sotien,
+                        'ngay_thu': time.strftime('%Y-%m-%d'),
+                    }
+                    kyquy_obj.create(cr, uid, vals)
+                        
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'ky_quy_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Phải thu ký quỹ (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Phải thu ký quỹ (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
     def output_phaithu_tragopxe_shift(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
         lichsu_obj = self.pool.get('lichsu.giaodich')
@@ -821,7 +1319,7 @@ class output_congno_tudong(osv.osv):
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         
-                        where ai.mlg_type='tra_gop_xe' and state='open'
+                        where ai.mlg_type='tra_gop_xe' and state='open' and (dt.taixe = True or dt.nhadautu = True)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hop_dong
                 '''
@@ -1000,6 +1498,73 @@ class output_congno_tudong(osv.osv):
             '''%(
                  1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
                  error_path+f_path.split('/')[-1],'Phải thi tạm ứng (HISTAFF)','Thu','Xuất','Tự động','Lỗi',''
+            )
+            cr.execute(sql)
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
+    def output_phaithu_phaithutamung_shift(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung_shift')])
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','dien_giai']
+                contents = []
+                sql = '''
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                        sum(ai.residual) as so_tien
+                        
+                        from account_invoice ai 
+                        left join account_account cn on cn.id=ai.chinhanh_id
+                        left join res_partner dt on dt.id=ai.partner_id
+                        
+                        where ai.mlg_type='hoan_tam_ung' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                '''
+                cr. execute(sql)
+                for line in cr.dictfetchall():
+                    loai_doituong=''
+                    if line['loai_doituong']=='taixe':
+                        loai_doituong = 'Lái xe'
+                    if line['loai_doituong']=='nhadautu':
+                        loai_doituong = 'Nhà đầu tư'
+                    if line['loai_doituong']=='nhanvienvanphong':
+                        loai_doituong = 'Nhân viên văn phòng'
+                    contents.append({
+                        'chi_nhanh': line['chi_nhanh'],
+                        'ma_chi_nhanh': line['ma_chi_nhanh'],
+                        'loai_doi_tuong': loai_doituong,
+                        'ma_doi_tuong': line['ma_doi_tuong'],
+                        'ten_doi_tuong': line['ten_doi_tuong'],
+                        'ngay_giao_dich': '',
+                        'so_tien': line['so_tien'],
+                        'dien_giai': '',
+                    })
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'phai_thu_tam_ung_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Phải thu tạm ứng (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 error_path+f_path.split('/')[-1],'Phải thu tạm ứng (SHIFT)','Thu','Xuất','Tự động','Lỗi',''
             )
             cr.execute(sql)
             raise osv.except_osv(_('Warning!'), str(e))
@@ -1255,7 +1820,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
-                        where ai.mlg_type='chi_ho' and state in ('open','paid') and date(ai.write_date)='%s'
+                        where ai.mlg_type='chi_ho' and state in ('open','paid') and date(timezone('UTC',ai.write_date))='%s'
                 '''%(date_now)
                 cr. execute(sql)
                 for line in cr.dictfetchall():

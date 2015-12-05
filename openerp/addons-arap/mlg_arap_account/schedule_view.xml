@@ -80,6 +80,71 @@
             <field name="mlg" eval="True"/>
         </record>
             
+<!-- Import phải thu - nợ doanh thu SHIFT-->        
+        <record model="ir.cron" id="import_phaithu_nodoanhthu_shift_cron">
+            <field name="name">Import phải thu - nợ doanh thu (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_nodoanhthu_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+        
+<!-- Import phải thu - phải thu chi hộ điện thoại SHIFT-->        
+        <record model="ir.cron" id="import_phaithu_chihodienthoai_shift_cron">
+            <field name="name">Import phải thu - phải thu chi hộ điện thoại (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_chihodienthoai_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+      
+<!-- Import phải thu - phải thu bảo hiểm SHIFT-->        
+        <record model="ir.cron" id="import_phaithu_phaithubaohiem_shift_cron">
+            <field name="name">Import phải thu - phải thu bảo hiểm (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_phaithubaohiem_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+
+<!-- Import phải thu - phạt vi phạm SHIFT-->        
+        <record model="ir.cron" id="import_phaithu_phatvipham_shift_cron">
+            <field name="name">Import phải thu - phạt vi phạm (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_phatvipham_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+
+<!-- Import phải thu - thu nợ xưởng SHIFT-->        
+        <record model="ir.cron" id="import_phaithu_thunoxuong_shift_cron">
+            <field name="name">Import phải thu - thu nợ xưởng (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_thunoxuong_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+    
 <!-- Import phải thu - thu phí thương hiệu SHIFT-->        
         <record model="ir.cron" id="import_phaithu_thuphithuonghieu_shift_cron">
             <field name="name">Import phải thu - thu phí thương hiệu (SHIFT)</field>
@@ -102,6 +167,32 @@
             <field name="doall" eval="True"/>
             <field name="model" eval="'import.congno.tudong'"/>
             <field name="function" eval="'import_phaithu_tragopxe_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+        
+<!-- Import phải thu - phải thu tạm ứng (SHIFT) -->        
+        <record model="ir.cron" id="import_phaithu_phaithutamung_shift_cron">
+            <field name="name">Import phải thu - phải thu tạm ứng (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_phaithutamung_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+        
+<!-- Import phải thu - thu ký quỹ (SHIFT) -->        
+        <record model="ir.cron" id="import_phaithu_kyquy_shift_cron">
+            <field name="name">Import phải thu - thu ký quỹ (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_kyquy_shift'"/>
             <field name="args" eval="'()'" />
             <field name="mlg" eval="True"/>
         </record>
@@ -223,6 +314,71 @@
             <field name="mlg" eval="True"/>
         </record>
         
+<!-- Output phải thu - nợ doanh thu SHIFT -->        
+        <record model="ir.cron" id="output_phaithu_nodoanhthu_shift_cron">
+            <field name="name">Output phải thu - nợ doanh thu (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_nodoanhthu_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+
+<!-- Output phải thu - phải thu chi hộ điện thoại SHIFT -->        
+        <record model="ir.cron" id="output_phaithu_chihodienthoai_shift_cron">
+            <field name="name">Output phải thu - phải thu chi hộ điện thoại (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_chihodienthoai_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+
+<!-- Output phải thu - phải thu bảo hiểm SHIFT -->        
+        <record model="ir.cron" id="output_phaithu_phaithubaohiem_shift_cron">
+            <field name="name">Output phải thu - phải thu bảo hiểm (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_phaithubaohiem_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+    
+<!-- Output phải thu - phạt vi phạm SHIFT -->        
+        <record model="ir.cron" id="output_phaithu_phatvipham_shift_cron">
+            <field name="name">Output phải thu - phạt vi phạm (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_phatvipham_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+
+<!-- Output phải thu - thu nợ xưởng SHIFT -->        
+        <record model="ir.cron" id="output_phaithu_thunoxuong_shift_cron">
+            <field name="name">Output phải thu - thu nợ xưởng (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_thunoxuong_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+
 <!-- Output phải thu - thu phí thương hiệu SHIFT -->        
         <record model="ir.cron" id="output_phaithu_thuphithuonghieu_shift_cron">
             <field name="name">Output phải thu - thu phí thương hiệu (SHIFT)</field>
@@ -245,6 +401,32 @@
             <field name="doall" eval="True"/>
             <field name="model" eval="'output.congno.tudong'"/>
             <field name="function" eval="'output_phaithu_tragopxe_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+
+<!-- Output phải thu - phải thu tạm ứng SHIFT -->        
+        <record model="ir.cron" id="output_phaithu_phaithutamung_shift_cron">
+            <field name="name">Output phải thu - phải thu tạm ứng (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_phaithutamung_shift'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+
+<!-- Output phải thu - thu ký quỹ (SHIFT) -->        
+        <record model="ir.cron" id="output_phaithu_kyquy_shift_cron">
+            <field name="name">Output phải thu - thu ký quỹ (SHIFT)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'output.congno.tudong'"/>
+            <field name="function" eval="'output_phaithu_kyquy_shift'"/>
             <field name="args" eval="'()'" />
             <field name="mlg" eval="True"/>
         </record>
