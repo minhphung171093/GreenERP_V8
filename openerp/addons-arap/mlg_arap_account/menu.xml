@@ -432,6 +432,21 @@
 					name="Theo loại bảo hiểm"
 					parent="menu_baocao_theo_danhmuc" sequence="5"/>
 					
+				<menuitem id="menu_action_congno_theo_loaivipham"
+					action="action_congno_theo_loaivipham"
+					name="Theo loại vi phạm"
+					parent="menu_baocao_theo_danhmuc" sequence="10"/>
+					
+				<menuitem id="menu_action_congno_theo_loaitamung"
+					action="action_congno_theo_loaitamung"
+					name="Theo loại tạm ứng"
+					parent="menu_baocao_theo_danhmuc" sequence="15"/>
+					
+				<menuitem id="menu_action_congno_theo_loaikyquy"
+					action="action_congno_theo_loaikyquy"
+					name="Theo loại ký quỹ"
+					parent="menu_baocao_theo_danhmuc" sequence="20"/>
+					
 			<menuitem id="menu_baocao_doanhso"
 				name="Báo cáo doanh số"
 				parent="menu_root_baocao" sequence="15"/>

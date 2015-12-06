@@ -27,6 +27,7 @@ class Parser(report_sxw.rml_parse):
             'convert_date': self.convert_date,
             'get_loaicongno': self.get_loaicongno,
             'get_chinhanh': self.get_chinhanh,
+            'get_loaidoituong': self.get_loaidoituong,
         })
         
     def convert_date(self, date):
@@ -64,6 +65,22 @@ class Parser(report_sxw.rml_parse):
             lcn = u'Phải thu tạm ứng'
         return lcn
     
+    def get_loaidoituong(self, partner_id):
+        ldt = ''
+        if partner_id:
+            sql = '''
+                select taixe,nhadautu,nhanvienvanphong from res_partner where id=%s
+            '''%(partner_id)
+            self.cr.execute(sql)
+            partner = self.cr.fetchone()
+            if partner and partner[0]:
+                ldt = u'Lái xe'
+            if partner and partner[1]:
+                ldt = u'Nhà đầu tư'
+            if partner and partner[2]:
+                ldt = u'Nhân viên văn phòng'
+        return ldt
+    
     def get_line(self):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
@@ -71,7 +88,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select ai.name as ma_giaodich, ai.date_invoice as ngay_giaodich, cn.code as ma_chinhanh, cn.name as ten_chinhanh,
-                rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, ldt.name as loai_doituong, dx.code as ma_doixe,
+                rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, ldt.name as loai_doituong, dx.code as ma_doixe,rp.id as partner_id,
                 dx.name as ten_doixe, bgc.code as ma_baigiaoca, bgc.name as ten_baigiaoca, tnbgc.name as thungan_baigiaoca,
                 dhbgc.name as dieuhanh_baigiaoca, ail.price_unit as sotien, ail.name as diengiai,ai.mlg_type as loaicongno,
                 ai.so_hop_dong as so_hop_dong, bsx.name as bien_so_xe, ai.so_hoa_don as so_hoa_don,lbh.name as loaibaohiem,

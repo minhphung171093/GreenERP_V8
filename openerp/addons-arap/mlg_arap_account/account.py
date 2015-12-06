@@ -28,6 +28,12 @@ from openerp.exceptions import except_orm, Warning, RedirectWarning
 class account_account(osv.osv):
     _inherit = "account.account"
     
+    _columns = {
+        'loai_doituong': fields.selection([('taixe','Lái xe'),
+                                           ('nhadautu','Nhà đầu tư'),
+                                           ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),
+    }
+    
     _defaults = {
         'reconcile': True,
     }

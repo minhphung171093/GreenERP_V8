@@ -23,6 +23,9 @@ class danhsach_congno(osv.osv_memory):
         'loai_bao_hiem_id': fields.many2one('loai.bao.hiem','Loại bảo hiểm'),
         'so_hop_dong': fields.char('Số hợp đồng', size=1024),
         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã chiết tính'),
+        'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
+        'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng'),
+        'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

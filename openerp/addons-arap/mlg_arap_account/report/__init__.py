@@ -9,3 +9,6 @@ import congno_vuotdinhmuc_report
 import congno_dangmo_report
 import tonghop_congno_report
 import chitiet_congno_mot_doituong_report
+import congno_theo_loaivipham_report
+import congno_theo_loaitamung_report
+import congno_theo_loaikyquy_report
