@@ -101,7 +101,12 @@ class import_congno_tudong(osv.osv):
                         
                         for data in file_data:
                             noidung_loi = ''
-                            if data['so_tien'] <= 0:
+                            try:
+                                st = float(data['so_tien'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            if float(data['so_tien']) <= 0:
                                 noidung_loi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
@@ -257,7 +262,12 @@ class import_congno_tudong(osv.osv):
                         
                         for data in file_data:
                             noidung_loi = ''
-                            if data['so_tien'] <= 0:
+                            try:
+                                st = float(data['so_tien'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            if float(data['so_tien']) <= 0:
                                 noidung_loi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
@@ -403,7 +413,12 @@ class import_congno_tudong(osv.osv):
                         
                         for data in file_data:
                             noidung_loi=''
-                            if data['so_tien'] <= 0:
+                            try:
+                                st = float(data['so_tien'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            if float(data['so_tien']) <= 0:
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
@@ -559,6 +574,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
@@ -566,10 +590,7 @@ class import_congno_tudong(osv.osv):
                                         and mlg_type='no_doanh_thu' and state='open' 
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'])
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -698,7 +719,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
-                                
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
@@ -717,10 +746,6 @@ class import_congno_tudong(osv.osv):
                                 order by date_invoice
                             '''
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -849,6 +874,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                             cr.execute(sql)
@@ -875,10 +909,6 @@ class import_congno_tudong(osv.osv):
                                 order by date_invoice
                             '''
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -1007,6 +1037,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
@@ -1014,10 +1053,6 @@ class import_congno_tudong(osv.osv):
                                         and mlg_type='phat_vi_pham' and state='open' 
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'])
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -1146,6 +1181,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                             cr.execute(sql)
@@ -1188,10 +1232,6 @@ class import_congno_tudong(osv.osv):
                                 order by date_invoice
                             '''
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -1320,6 +1360,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                             cr.execute(sql)
@@ -1346,10 +1395,6 @@ class import_congno_tudong(osv.osv):
                                 order by date_invoice
                             '''
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -1478,6 +1523,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where name='%s' '''%(bsx)
                             cr.execute(sql)
@@ -1504,10 +1558,6 @@ class import_congno_tudong(osv.osv):
                                 order by date_invoice
                             '''
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -1634,6 +1684,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
@@ -1641,10 +1700,6 @@ class import_congno_tudong(osv.osv):
                                         and mlg_type='hoan_tam_ung' and state='open' 
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'])
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -1769,7 +1824,12 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
-                            if data['so_tien_da_thu'] <= 0:
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            if float(data['so_tien_da_thu']) <= 0:
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
@@ -1862,6 +1922,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
@@ -1870,10 +1939,7 @@ class import_congno_tudong(osv.osv):
                                     order by date_invoice
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'])
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -2000,6 +2066,15 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
@@ -2008,10 +2083,6 @@ class import_congno_tudong(osv.osv):
                                     order by date_invoice
                             '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'])
                             cr.execute(sql)
-                            sotiendathu = float(data['so_tien_da_thu'])
-                            if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -2134,7 +2205,12 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
-                            if data['so_tien_da_thu'] <= 0:
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            if float(data['so_tien_da_thu']) <= 0:
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
@@ -2227,7 +2303,13 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
-                            if data['ACCTD_AMOUNT'] <= 0:
+                            try:
+                                st = float(data['ACCTD_AMOUNT'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['ACCTD_AMOUNT'])
+                            if sotiendathu <= 0:
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
@@ -2281,7 +2363,6 @@ class import_congno_tudong(osv.osv):
                                 noidung_loi='Không tìm thấy công nợ'
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
                             
-                            sotiendathu = float(data['ACCTD_AMOUNT'])
                             loai = data['TYPE']
                             if not loai and loai not in ['Thu','thu','chi','Chi']:
                                 noidung_loi='Không tìm thấy TYPE'
@@ -2431,7 +2512,13 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
-                            if data['ACCTD_AMOUNT'] <= 0:
+                            try:
+                                st = float(data['ACCTD_AMOUNT'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['ACCTD_AMOUNT'])
+                            if sotiendathu <= 0:
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
@@ -2607,7 +2694,12 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
-                            if data['so_tien'] <= 0:
+                            try:
+                                st = float(data['so_tien'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            if float(data['so_tien']) <= 0:
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}

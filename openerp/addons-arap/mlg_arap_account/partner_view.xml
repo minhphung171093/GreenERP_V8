@@ -577,7 +577,7 @@
 	                        	<field name="chinhanh_line" nolabel='1'>
 				                    <tree editable='bottom'>
 					                    <field name="chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','1')]"/>
-					                    <field name="nhom_chinhanh_id" invisible='1' options="{'no_create': True}" domain="[('parent_id.code','=','222')]"/>
+					                    <field name="nhom_chinhanh_id" invisible='1' options="{'no_create': True}" domain="[('parent_id.code','=','22')]"/>
 				                    </tree>
 								</field>	                    		
 	                        </page>

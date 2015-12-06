@@ -79,6 +79,7 @@ class output_congno_tudong(osv.osv):
     def fin_output_theodoanhsothu_oracle(self, cr):
         sql = '''
         DROP FUNCTION IF EXISTS fin_output_theodoanhsothu_oracle(date, date, integer) CASCADE;
+        delete from pg_proc where proname='fin_output_theodoanhsothu_oracle';
         commit;
         
         CREATE OR REPLACE FUNCTION fin_output_theodoanhsothu_oracle(date, date, integer)
@@ -418,6 +419,7 @@ class output_congno_tudong(osv.osv):
     def fin_output_theodoanhsotra_oracle(self, cr):
         sql = '''
         DROP FUNCTION IF EXISTS fin_output_theodoanhsotra_oracle(date, date, integer) CASCADE;
+        delete from pg_proc where proname='fin_output_theodoanhsotra_oracle';
         commit;
         
         CREATE OR REPLACE FUNCTION fin_output_theodoanhsotra_oracle(date, date, integer)

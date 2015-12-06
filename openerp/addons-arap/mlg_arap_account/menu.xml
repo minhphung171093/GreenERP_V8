@@ -73,6 +73,9 @@
 		<record model="ir.ui.menu" id="base.menu_base_partner">
 			<field name="active" eval="False"/>
 		</record>
+		<record model="ir.ui.menu" id="base.menu_action_currency_form">
+			<field name="active" eval="False"/>
+		</record>
 		
 		<menuitem id="menu_root_doituong"
 			name="Đối Tượng" sequence="1"/>
@@ -392,7 +395,7 @@
 					parent="menu_chitiet_congno" sequence="15"/>
 					
 				<menuitem id="menu_action_congno_dangmo"
-					name="Công nợ đang mở"
+					name="Công nợ đang chờ"
 					action="action_congno_dangmo"
 					parent="menu_chitiet_congno" sequence="20"/>
 			
@@ -420,10 +423,14 @@
 					name="Theo bảng chiết tính"
 					parent="menu_baocao_cong_no_thu" sequence="20"/>
 					
+			<menuitem id="menu_baocao_theo_danhmuc"
+				name="Báo cáo theo danh mục"
+				parent="menu_root_baocao" sequence="13"/>
+					
 				<menuitem id="menu_action_congno_theo_loai_baohiem"
 					action="action_congno_theo_loai_baohiem"
 					name="Theo loại bảo hiểm"
-					parent="menu_baocao_cong_no_thu" sequence="25"/>
+					parent="menu_baocao_theo_danhmuc" sequence="5"/>
 					
 			<menuitem id="menu_baocao_doanhso"
 				name="Báo cáo doanh số"
@@ -446,10 +453,6 @@
 				name="Cấu hình ARAP"
 				parent="menu_root_cauhinh_arap" sequence="5"/>
 				
-				<menuitem action="base.action_currency_form"
-					id="base.menu_action_currency_form"
-					parent="menu_cauhinh_arap" sequence="5" groups="base.group_multi_currency"/>
-					
 				<menuitem id="menu_ir_cron_act_mlg"
 					name="Cấu hình tự động"
 					action="ir_cron_act_mlg"

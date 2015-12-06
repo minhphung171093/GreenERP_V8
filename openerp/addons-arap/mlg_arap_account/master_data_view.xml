@@ -288,7 +288,7 @@
             <field name="arch" type="xml">
 	        	<xpath expr="//sheet" position="before">
 	        		<header>
-	                    <button name="run_manually" type='object' string="Kích hoạt bằng tay" class="oe_highlight"/>
+	                    <button name="run_manually" type='object' string="Kích hoạt bằng tay" class="oe_highlight" groups="base.group_no_one"/>
 					</header>
 	        	</xpath>
             </field>

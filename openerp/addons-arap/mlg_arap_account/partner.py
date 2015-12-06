@@ -43,7 +43,7 @@ class res_partner(osv.osv):
                 res.update({'loai_doituong_id': loai[0]})
         if context.get('matdinh_receivable_payable', False):
             sql = '''
-                select id from account_account where code='200' limit 1
+                select id from account_account where code='20' limit 1
             '''
             cr.execute(sql)
             account_id = cr.fetchone()

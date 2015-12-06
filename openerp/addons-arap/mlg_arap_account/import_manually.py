@@ -119,7 +119,13 @@ class import_congno_manually(osv.osv):
                 
                     for data in file_data:
                         vals = {}
-                        if data['so_tien'] <= 0:
+                        try:
+                            st = float(data['so_tien'])
+                        except Exception, e:
+                            noidung_loi = 'Số tiền không đúng định dạng'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                        if float(data['so_tien']) <= 0:
+                            noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         sql = '''
                             select id from account_account where code='%s' limit 1
@@ -192,6 +198,7 @@ class import_congno_manually(osv.osv):
                         'noidung_loi': '',
                     })
                 except Exception, e:
+                    cr.rollback()
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
@@ -203,7 +210,7 @@ class import_congno_manually(osv.osv):
                          error_path+f_path.split('/')[-1],'Phải thu chi hộ điện thoại','Thu','Nhập','Bằng tay','Lỗi',''
                     )
                     cr.execute(sql)
-                    raise osv.except_osv(_('Warning!'), str(e))
+                    cr.commit()
             except Exception, e:
                 raise osv.except_osv(_('Warning!'), str(e))
         return self.write(cr, uid, ids, {'state':'done'})
@@ -235,7 +242,13 @@ class import_congno_manually(osv.osv):
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
-                        if data['so_tien'] <= 0:
+                        try:
+                            st = float(data['so_tien'])
+                        except Exception, e:
+                            noidung_loi = 'Số tiền không đúng định dạng'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                        if float(data['so_tien']) <= 0:
+                            noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         vals = {}
                         sql = '''
@@ -314,6 +327,7 @@ class import_congno_manually(osv.osv):
                         'noidung_loi': '',
                     })
                 except Exception, e:
+                    cr.rollback()
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
@@ -325,7 +339,7 @@ class import_congno_manually(osv.osv):
                          error_path+f_path.split('/')[-1],'Phải thu bảo hiểm','Thu','Nhập','Bằng tay','Lỗi',''
                     )
                     cr.execute(sql)
-                    raise osv.except_osv(_('Warning!'), str(e))
+                    cr.commit()
             except Exception, e:
                 raise osv.except_osv(_('Warning!'), str(e))
         return self.write(cr, uid, ids, {'state':'done'})
@@ -357,7 +371,13 @@ class import_congno_manually(osv.osv):
                     file_data = csvUti._read_file(file_path)
                 
                     for data in file_data:
-                        if data['so_tien'] <= 0:
+                        try:
+                            st = float(data['so_tien'])
+                        except Exception, e:
+                            noidung_loi = 'Số tiền không đúng định dạng'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                        if float(data['so_tien']) <= 0:
+                            noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         account_id = False
                         vals = {}
@@ -449,6 +469,7 @@ class import_congno_manually(osv.osv):
                         'noidung_loi': '',
                     })
                 except Exception, e:
+                    cr.rollback()
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
@@ -460,7 +481,7 @@ class import_congno_manually(osv.osv):
                          error_path+f_path.split('/')[-1],'Thu nợ xưởng','Thu','Nhập','Bằng tay','Lỗi',''
                     )
                     cr.execute(sql)
-                    raise osv.except_osv(_('Warning!'), str(e))
+                    cr.commit()
             except Exception, e:
                 raise osv.except_osv(_('Warning!'), str(e))
         return self.write(cr, uid, ids, {'state':'done'})
