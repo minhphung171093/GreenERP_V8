@@ -367,6 +367,20 @@ class ir_sequence(osv.osv):
         'mlg': fields.boolean('Mai Linh'),
     }
     
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
+            
+        return self.name_get(cr, user, ids, context=context)
+    
 ir_sequence()
     
 class lichsu_giaodich(osv.osv):

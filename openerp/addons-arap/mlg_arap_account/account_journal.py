@@ -30,6 +30,7 @@ class account_journal(osv.osv):
     
     _columns = {
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
+        'code': fields.char('Code', size=64, required=True, help="The code will be displayed on reports."),
     }
     
 account_journal()
