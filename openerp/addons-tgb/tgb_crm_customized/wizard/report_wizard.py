@@ -757,12 +757,12 @@ class report_wizard_agm_strike_off_templates(osv.osv_memory):
         if context.get('agm_strike_off_templates',False) and context['agm_strike_off_templates']:
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
             
-            report_filename='Company Info 20150627'
-            report_extention='.xls'
-            report_name='company_info_20150627'
-            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'company_info_20150627_fname': report_val['datas_fname'],
-                        'company_info_20150627_datas': report_val['db_datas']})
+#             report_filename='Company Info 20150627'
+#             report_extention='.xls'
+#             report_name='company_info_20150627'
+#             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+#             res.update({'company_info_20150627_fname': report_val['datas_fname'],
+#                         'company_info_20150627_datas': report_val['db_datas']})
             
             report_filename='Strike off_Acra_Resolution'
             report_extention='.doc'
