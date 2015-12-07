@@ -199,6 +199,7 @@ class import_congno_manually(osv.osv):
                     })
                 except Exception, e:
                     cr.rollback()
+                    noidungloi = str(e).replace("'","''")
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
@@ -207,7 +208,7 @@ class import_congno_manually(osv.osv):
                         commit;
                     '''%(
                          1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                         error_path+f_path.split('/')[-1],'Phải thu chi hộ điện thoại','Thu','Nhập','Bằng tay','Lỗi',''
+                         error_path+f_name.split('/')[-1],'Phải thu chi hộ điện thoại','Thu','Nhập','Bằng tay','Lỗi',noidungloi
                     )
                     cr.execute(sql)
                     cr.commit()
@@ -302,6 +303,7 @@ class import_congno_manually(osv.osv):
                             'mlg_type': 'phai_thu_bao_hiem',
                             'type': 'out_invoice',
                             'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                            'account_id': account_id,
                             'loai_doituong': loai_doituong,
                             'partner_id': partner_id,
                             'date_invoice': data['ngay_giao_dich'],
@@ -328,6 +330,7 @@ class import_congno_manually(osv.osv):
                     })
                 except Exception, e:
                     cr.rollback()
+                    noidungloi = str(e).replace("'","''")
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
@@ -336,7 +339,7 @@ class import_congno_manually(osv.osv):
                         commit;
                     '''%(
                          1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                         error_path+f_path.split('/')[-1],'Phải thu bảo hiểm','Thu','Nhập','Bằng tay','Lỗi',''
+                         error_path+f_name.split('/')[-1],'Phải thu bảo hiểm','Thu','Nhập','Bằng tay','Lỗi',noidungloi
                     )
                     cr.execute(sql)
                     cr.commit()
@@ -470,6 +473,7 @@ class import_congno_manually(osv.osv):
                     })
                 except Exception, e:
                     cr.rollback()
+                    noidungloi = str(e).replace("'","''")
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
@@ -478,7 +482,7 @@ class import_congno_manually(osv.osv):
                         commit;
                     '''%(
                          1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                         error_path+f_path.split('/')[-1],'Thu nợ xưởng','Thu','Nhập','Bằng tay','Lỗi',''
+                         error_path+f_name.split('/')[-1],'Thu nợ xưởng','Thu','Nhập','Bằng tay','Lỗi',noidungloi
                     )
                     cr.execute(sql)
                     cr.commit()
