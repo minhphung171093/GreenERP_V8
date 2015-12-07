@@ -9,11 +9,12 @@ from openerp.report import report_sxw
 from openerp.osv import osv
 from openerp.tools.translate import _
 import random
-from datetime import datetime
+from datetime import datetime,timedelta
 from dateutil.relativedelta import relativedelta
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 DATE_FORMAT = "%Y-%m-%d"
-
+from dateutil.tz import tzlocal
+from tzlocal import get_localzone
 class Parser(report_sxw.rml_parse):
         
     def __init__(self, cr, uid, name, context):
@@ -25,27 +26,43 @@ class Parser(report_sxw.rml_parse):
             'convert_date_d_B_Y': self.convert_date_d_B_Y,
             'get_upper': self.get_upper,
             'get_2directorin1line': self.get_2directorin1line,
+            'get_1directorin1line': self.get_1directorin1line,
+            'get_timenow_12h': self.get_timenow_12h,
         })
         
     def get_datenow(self):
         return time.strftime('%d/%m/%Y')
+    
+    def get_timenow_12h(self):
+        date = datetime.now()+timedelta(hours=8)
+        timenow = date.strftime('%I:%M %p')
+        return timenow
     
     def get_upper(self, a):
         if a:
             return a.upper()
         return ''
     
+    def get_1directorin1line(self, partner_id):
+        res = []
+        sql = '''
+            select name from res_partner where upper(function)='DIRECTOR' and parent_id=%s
+        '''%(partner_id)
+        self.cr.execute(sql)
+        return self.cr.dictfetchall()
+    
     def get_2directorin1line(self, partner_id):
         res = []
         sql = '''
-            select name from res_partner where upper(function)='%s' and parent_id=%s
-        '''%('DIRECTOR',partner_id)
+            select name,nric from res_partner where upper(function)='DIRECTOR' and parent_id=%s
+        '''%(partner_id)
         self.cr.execute(sql)
         for seq,contact in enumerate(self.cr.dictfetchall()):
             if seq%2==0:
-                res.append({'director1':contact['name'],'director2':''})
+                res.append({'director1':contact['name'],'director2':'','nric1':contact['nric'],'nric2':''})
             else:
                 res[seq-1]['director2']=contact['name']
+                res[seq-1]['nric2']=contact['nric']
         return res
     
     def convert_date_d_B_Y(self,date):
