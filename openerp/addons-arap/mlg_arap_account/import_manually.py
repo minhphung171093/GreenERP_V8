@@ -108,7 +108,7 @@ class import_congno_manually(osv.osv):
                 path = dir_path+IMPORTING
                 done_path = dir_path+DONE
                 bin_value = (this.datas).decode('base64')
-                f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y-%m-%d %H:%M:%S')+this.datas_fname[-4:]) or ''
+                f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y%m%d%H%M%S')+this.datas_fname[-4:]) or ''
                 file_path = path+f_name
                 open(file_path,'wb').write(bin_value)
                 
@@ -233,7 +233,7 @@ class import_congno_manually(osv.osv):
                 path = dir_path+IMPORTING
                 done_path = dir_path+DONE
                 bin_value = (this.datas).decode('base64')
-                f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y-%m-%d %H:%M:%S')+this.datas_fname[-4:]) or ''
+                f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y%m%d%H%M%S')+this.datas_fname[-4:]) or ''
                 file_path = path+f_name
                 open(file_path,'wb').write(bin_value)
                 
@@ -364,7 +364,7 @@ class import_congno_manually(osv.osv):
                 path = dir_path+IMPORTING
                 done_path = dir_path+DONE
                 bin_value = (this.datas).decode('base64')
-                f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y-%m-%d %H:%M:%S')+this.datas_fname[-4:]) or ''
+                f_name = this.datas_fname and (this.datas_fname[:-4]+'_'+time.strftime('%Y%m%d%H%M%S')+this.datas_fname[-4:]) or ''
                 file_path = path+f_name
                 open(file_path,'wb').write(bin_value)
                 

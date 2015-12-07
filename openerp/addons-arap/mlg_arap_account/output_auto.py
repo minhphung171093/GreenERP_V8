@@ -563,7 +563,7 @@ class output_congno_tudong(osv.osv):
                                 })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'thu_no_xuong_bdsc_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'thu_no_xuong_bdsc_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -651,7 +651,7 @@ class output_congno_tudong(osv.osv):
                                 })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'thu_phi_thuong_hieu_htkd_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'thu_phi_thuong_hieu_htkd_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -740,7 +740,7 @@ class output_congno_tudong(osv.osv):
                                 })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'tra_gop_xe_htkd_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'tra_gop_xe_htkd_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -809,7 +809,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'no_doanh_thu_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'no_doanh_thu_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -880,7 +880,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'chi_ho_dien_thoai_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'chi_ho_dien_thoai_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -952,7 +952,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'phai_thu_bao_hiem_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'phai_thu_bao_hiem_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1021,7 +1021,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'phat_vi_pham_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'phat_vi_pham_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1097,7 +1097,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'thu_no_xuong_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'thu_no_xuong_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1169,7 +1169,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'thu_phi_thuong_hieu_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'thu_phi_thuong_hieu_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1297,7 +1297,7 @@ class output_congno_tudong(osv.osv):
                         
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'ky_quy_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'ky_quy_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1369,7 +1369,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'tra_gop_xe_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'tra_gop_xe_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1437,7 +1437,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'phat_vi_pham_histaff_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'phat_vi_pham_histaff_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1505,7 +1505,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'phai_thu_tam_ung_histaff_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'phai_thu_tam_ung_histaff_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1574,7 +1574,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'phai_thu_tam_ung_shift_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'phai_thu_tam_ung_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1702,7 +1702,7 @@ class output_congno_tudong(osv.osv):
                         
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'ky_quy_histaff_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'ky_quy_histaff_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1755,7 +1755,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'doanh_so_thu_oracle_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'doanh_so_thu_oracle_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1808,7 +1808,7 @@ class output_congno_tudong(osv.osv):
                     })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'doanh_so_tra_oracle_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'doanh_so_tra_oracle_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -1891,7 +1891,7 @@ class output_congno_tudong(osv.osv):
                                 })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
-                        path_file_name = path.name+'/'+'chi_gop_xe_htkd_'+time.strftime('%Y_%m_%d_%H_%M_%S')+'.csv'
+                        path_file_name = path.name+'/'+'chi_gop_xe_htkd_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
                         csvUti._write_file(contents,headers,path_file_name )
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
