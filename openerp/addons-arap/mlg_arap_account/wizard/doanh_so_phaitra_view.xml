@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Doanh số phải trả wizard -->
+        <record id="view_doanh_so_phaitra_wizard_form" model="ir.ui.view">
+            <field name="name">doanh.so.phaitra.wizard.form</field>
+            <field name="model">doanh.so.phaitra.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Doanh số phải chi" version="7.0">
+                	<group col='4' colspan='2'>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="Xuất ra excel" type="object" class="oe_highlight"/>
+                        hoặc
+                        <button name="review_report" string="Xem trước" type="object" class="oe_highlight"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>     
+        <record id="action_doanh_so_phaitra_wizard" model="ir.actions.act_window">
+            <field name="name">Doanh số phải chi</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">doanh.so.phaitra.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_doanh_so_phaitra_wizard_form"/>
+            <field name="context">{'readonly_by_pass': ['chinhanh_id']}</field>
+            <field name="target">new</field>
+        </record>
+	        
+<!-- Doanh số phải trả -->
+        <record id="view_doanh_so_phaitra_form" model="ir.ui.view">
+            <field name="name">doanh.so.phaitra.form</field>
+            <field name="model">doanh.so.phaitra</field>
+            <field name="arch" type="xml">
+                <form string="Doanh số phải chi" version="7.0" create='false' edit='false' delete='false'>
+                    <header>
+                        <button name="print_report" string="Xuất ra excel" type="object" class="oe_highlight"/>
+                    </header>
+                    <div class="oe_text_center">
+                    	<br/>
+                    	<h1>Doanh số phải chi</h1>
+                    	<field name='chinhanh_id'/>
+                	</div>
+                	<group col='4' colspan='2'>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <group>
+                    	<field name='doanhsophaitra_line' colspan='4' nolabel='1'>
+                    		<tree>
+                    			<field name='loaicongno'/>
+                    			<field name='taikhoan'/>
+                    			<field name='sotien'/>
+                    			<field name='ghichu'/>
+                    		</tree>
+                    	</field>
+                    </group>
+                </form>
+            </field>
+        </record>
+	        
+    </data>
+</openerp>
+

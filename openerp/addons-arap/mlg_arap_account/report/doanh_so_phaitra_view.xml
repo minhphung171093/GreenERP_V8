@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+<!-- Doanh số phải trả Wizard-->
+    	<record id="doanh_so_phaitra_wizard_report" model="ir.actions.report.xml">
+	        <field name="name">doanh_so_phaitra_wizard_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">doanh.so.phaitra.wizard</field>
+	        <field name="report_name">doanh_so_phaitra_wizard_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/doanh_so_phaitra.py</field>
+	        <field name="report_rml">mlg_arap_account/report/doanh_so_phaitra_wizard_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="doanh_so_phaitra_wizard_report" 
+			model="doanh.so.phaitra.wizard" 
+			name="doanh_so_phaitra_wizard_report"
+	        string="Doanh số phải trả"
+	        rml="mlg_arap_account/report/doanh_so_phaitra_wizard_report.ods"/>
+	        
+<!-- Doanh số phải trả-->
+    	<record id="doanh_so_phaitra_report" model="ir.actions.report.xml">
+	        <field name="name">doanh_so_phaitra_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">doanh.so.phaitra</field>
+	        <field name="report_name">doanh_so_phaitra_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/doanh_so_phaitra.py</field>
+	        <field name="report_rml">mlg_arap_account/report/doanh_so_phaitra_report.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="True"
+			id="doanh_so_phaitra_report" 
+			model="doanh.so.phaitra" 
+			name="doanh_so_phaitra_report"
+	        string="Doanh số phải trả"
+	        rml="mlg_arap_account/report/doanh_so_phaitra_report.ods"/>
+	</data>
+</openerp>

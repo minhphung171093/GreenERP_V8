@@ -49,8 +49,12 @@ class output_congno_tudong(osv.osv):
     def init(self, cr):
         self.fin_output_theodoanhsothu_oracle_data(cr)
         self.fin_output_theodoanhsotra_oracle_data(cr)
+        self.fin_output_theodoanhsophaithu_oracle_data(cr)
+        self.fin_output_theodoanhsophaitra_oracle_data(cr)
         self.fin_output_theodoanhsothu_oracle(cr)
         self.fin_output_theodoanhsotra_oracle(cr)
+        self.fin_output_theodoanhsophaithu_oracle(cr)
+        self.fin_output_theodoanhsophaitra_oracle(cr)
         cr.commit()
         return True
     
@@ -394,6 +398,313 @@ class output_congno_tudong(osv.osv):
         cr.execute(sql)
         return True
     
+    def fin_output_theodoanhsophaithu_oracle_data(self, cr):
+        cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsophaithu_oracle_data')")
+        res = cr.fetchone()
+        if res and res[0]:
+            cr.execute('''delete from pg_type where typname = 'fin_output_theodoanhsophaithu_oracle_data';
+                            delete from pg_class where relname='fin_output_theodoanhsophaithu_oracle_data';
+                            commit;''')
+        sql = '''
+        CREATE TYPE fin_output_theodoanhsophaithu_oracle_data AS
+           (chinhanh character varying(1024),
+            machinhanh character varying(250),
+            loaicongno character varying(250),
+            taikhoan character varying(250),
+            sotien numeric,
+            ghichu character varying(250)
+            );
+        ALTER TYPE fin_output_theodoanhsophaithu_oracle_data
+          OWNER TO '''+config['db_user']+''';
+        '''
+        cr.execute(sql)
+        return True
+    
+    def fin_output_theodoanhsophaithu_oracle(self, cr):
+        sql = '''
+        DROP FUNCTION IF EXISTS fin_output_theodoanhsophaithu_oracle(date, date, integer) CASCADE;
+        delete from pg_proc where proname='fin_output_theodoanhsophaithu_oracle';
+        commit;
+        
+        CREATE OR REPLACE FUNCTION fin_output_theodoanhsophaithu_oracle(date, date, integer)
+          RETURNS SETOF fin_output_theodoanhsophaithu_oracle_data AS
+        $BODY$
+        DECLARE
+            rec_cn        record;
+            rec_aml       record;
+            rec_lbh       record;
+            bal_data      fin_output_theodoanhsophaithu_oracle_data%ROWTYPE;
+            loaicongno    numeric;
+            sotien        numeric;
+            tencongno     character varying(250);
+        BEGIN
+            for rec_cn in execute '
+                    select id,code,name from account_account where id=$1
+                        
+                        group by id,code,name
+                ' using $3
+            loop
+                for loaicongno in 1..11
+                loop
+                    if loaicongno=1 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''no_doanh_thu'' and chinhanh_id=$3 and state in (''open'')
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Nợ doanh thu';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=2 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
+                                    where name=''Tạm ứng công tác'')
+                                and state in (''open'') and chinhanh_id=$3 and loai_doituong=''nhanvienvanphong''
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Tạm ứng_Công tác_Nhân viên';
+                            bal_data.taikhoan='1411012';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=3 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
+                                    where name=''Tạm ứng công tác'')
+                                    and state in (''open'') and chinhanh_id=$3 and loai_doituong=''taixe''
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Tạm ứng_Công tác_Lái xe';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=4 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
+                                    where name=''Tạm ứng khó khăn'')
+                                    and state in (''open'') and chinhanh_id=$3 and loai_doituong=''nhanvienvanphong''
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Tạm ứng_Hoàn cảnh_Nhân viên';
+                            bal_data.taikhoan='1411012';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=5 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''hoan_tam_ung'' and loai_tamung_id in (select id from loai_tam_ung
+                                    where name=''Tạm ứng khó khăn'')
+                                    and state in (''open'') and chinhanh_id=$3 and loai_doituong=''taixe''
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Tạm ứng_Hoàn cảnh_Lái xe';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=6 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''phat_vi_pham'' and chinhanh_id=$3 and state in (''open'')
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phạt vi phạm';
+                            bal_data.taikhoan='7111018';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=7 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''tra_gop_xe'' and chinhanh_id=$3 and state in (''open'')
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Trả góp mua xe';
+                            bal_data.taikhoan='3387018';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=8 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''thu_phi_thuong_hieu'' and chinhanh_id=$3 and state in (''open'')
+                                and date_invoice between $1 and $2
+                        ' using $1, $2, rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phí thương hiệu';
+                            bal_data.taikhoan='3387012';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=9 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''thu_no_xuong'' and chinhanh_id=$3 and state in (''open'')
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Nợ xưởng sửa chữa';
+                            bal_data.taikhoan='5113021';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=10 then
+                        for rec_lbh in execute '
+                            select id,name,so_taikhoan from loai_bao_hiem
+                        '
+                        loop
+                            sotien = 0;
+                            tencongno = 'AR_'||rec_lbh.name;
+                            for rec_aml in execute '
+                                select sum(residual) as sotien from account_invoice
+                                    where mlg_type=''phai_thu_bao_hiem'' and chinhanh_id=$4 and state in (''open'') and loai_baohiem_id=$3
+                                    and date_invoice between $1 and $2
+                            ' using $1, $2,rec_lbh.id,rec_cn.id
+                            loop
+                                sotien = sotien + coalesce(rec_aml.sotien, 0);
+                            end loop;
+                            if sotien <> 0 then
+                                bal_data.chinhanh=rec_cn.name;
+                                bal_data.machinhanh=rec_cn.code;
+                                bal_data.loaicongno=tencongno;
+                                bal_data.taikhoan=rec_lbh.so_taikhoan;
+                                bal_data.sotien=sotien;
+                                bal_data.ghichu='';
+                                return next bal_data;
+                            end if;
+                        end loop;
+                    end if;
+                    
+                    if loaicongno=11 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''chi_ho_dien_thoai'' and chinhanh_id=$3 and state in (''open'')
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phải thu chi hộ điện thoại';
+                            bal_data.taikhoan='1388021';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                end loop;
+            end loop;
+
+            return;
+        END; $BODY$
+          LANGUAGE plpgsql VOLATILE
+          COST 100
+          ROWS 1000000;
+        ALTER FUNCTION fin_output_theodoanhsophaithu_oracle(date, date, integer)
+          OWNER TO '''+config['db_user']+''';
+        '''
+        cr.execute(sql)
+        return True
+    
     def fin_output_theodoanhsotra_oracle_data(self, cr):
         cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsotra_oracle_data')")
         res = cr.fetchone()
@@ -500,6 +811,107 @@ class output_congno_tudong(osv.osv):
         '''
         cr.execute(sql)
         return True
+    
+    def fin_output_theodoanhsophaitra_oracle_data(self, cr):
+        cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsophaitra_oracle_data')")
+        res = cr.fetchone()
+        if res and res[0]:
+            cr.execute('''delete from pg_type where typname = 'fin_output_theodoanhsophaitra_oracle_data';
+                            delete from pg_class where relname='fin_output_theodoanhsophaitra_oracle_data';
+                            commit;''')
+        sql = '''
+        CREATE TYPE fin_output_theodoanhsophaitra_oracle_data AS
+           (chinhanh character varying(1024),
+            machinhanh character varying(250),
+            loaicongno character varying(250),
+            taikhoan character varying(250),
+            sotien numeric,
+            ghichu character varying(250)
+            );
+        ALTER TYPE fin_output_theodoanhsophaitra_oracle_data
+          OWNER TO '''+config['db_user']+''';
+        '''
+        cr.execute(sql)
+        return True
+    
+    def fin_output_theodoanhsophaitra_oracle(self, cr):
+        sql = '''
+        DROP FUNCTION IF EXISTS fin_output_theodoanhsophaitra_oracle(date, date, integer) CASCADE;
+        delete from pg_proc where proname='fin_output_theodoanhsophaitra_oracle';
+        commit;
+        
+        CREATE OR REPLACE FUNCTION fin_output_theodoanhsophaitra_oracle(date, date, integer)
+          RETURNS SETOF fin_output_theodoanhsophaitra_oracle_data AS
+        $BODY$
+        DECLARE
+            rec_cn        record;
+            rec_aml       record;
+            bal_data      fin_output_theodoanhsophaitra_oracle_data%ROWTYPE;
+            loaicongno    numeric;
+            sotien        numeric;
+        BEGIN
+            for rec_cn in execute '
+                    select id,code,name from account_account where id=$1
+                    group by id,code,name
+                ' using $3
+            loop
+                for loaicongno in 1..2
+                loop
+                    if loaicongno=1 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''phai_tra_ky_quy'' and chinhanh_id=$3 and state in (''open'')
+                                and date_invoice between $1 and $2
+                        ' using $1, $2, rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phải trả ký quỹ';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                    if loaicongno=2 then
+                        sotien = 0;
+                        for rec_aml in execute '
+                            select sum(residual) as sotien from account_invoice
+                                where mlg_type=''chi_ho'' and chinhanh_id=$3 and state in (''open'')
+                                and date_invoice between $1 and $2
+                        ' using $1, $2,rec_cn.id
+                        loop
+                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                        end loop;
+                        if sotien <> 0 then
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno='AR_Phải trả chi hộ';
+                            bal_data.taikhoan='1411011';
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
+                        end if;
+                    end if;
+                    
+                end loop;
+            end loop;
+
+            return;
+        END; $BODY$
+          LANGUAGE plpgsql VOLATILE
+          COST 100
+          ROWS 1000000;
+        ALTER FUNCTION fin_output_theodoanhsophaitra_oracle(date, date, integer)
+          OWNER TO '''+config['db_user']+''';
+        '''
+        cr.execute(sql)
+        return True 
     
     def output_phaithu_thunoxuong_bdsc(self, cr, uid, context=None):
         output_obj = self.pool.get('cauhinh.thumuc.output.tudong')

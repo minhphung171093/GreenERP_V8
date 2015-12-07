@@ -12,3 +12,5 @@ import chitiet_congno_mot_doituong_report
 import congno_theo_loaivipham_report
 import congno_theo_loaitamung_report
 import congno_theo_loaikyquy_report
+import doanh_so_phaithu
+import doanh_so_phaitra

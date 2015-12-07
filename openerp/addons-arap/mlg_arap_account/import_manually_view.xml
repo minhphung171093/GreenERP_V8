@@ -29,7 +29,7 @@
             		<group>
 					<label for="datas" string="Chọn tập tin"/>
 						<div>
-							<field name="datas" filename="datas_fname"/>
+							<field name="datas" filename="datas_fname" required='1'/>
                         	<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
                         </div>
             		</group>

@@ -64,7 +64,7 @@ class import_congno_manually(osv.osv):
     _columns = {
         'name': fields.date('Ngày', required=False,states={'done': [('readonly', True)]}),
         'datas_fname': fields.char('File Name',size=256),
-        'datas': fields.function(_data_get, fnct_inv=_data_set, string='GL Account', type="binary", nodrop=True,states={'done': [('readonly', True)]}),
+        'datas': fields.function(_data_get, fnct_inv=_data_set, string='Chọn tập tin', type="binary", nodrop=True,states={'done': [('readonly', True)]}),
         'store_fname': fields.char('Stored Filename', size=256),
         'db_datas': fields.binary('Database Data'),
         'file_size': fields.integer('File Size'),

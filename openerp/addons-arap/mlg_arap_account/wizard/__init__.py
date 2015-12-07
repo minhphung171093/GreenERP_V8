@@ -13,3 +13,5 @@ import tonghop_congno
 import chitiet_congno_mot_doituong
 import tonghop_congno_mot_doituong
 import alert_form
+import doanh_so_phaithu
+import doanh_so_phaitra
