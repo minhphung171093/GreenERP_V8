@@ -24,6 +24,7 @@ from openerp.osv import fields, osv, expression
 from openerp.tools.translate import _
 import time
 from openerp.exceptions import except_orm, Warning, RedirectWarning
+from datetime import datetime, timedelta
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -31,6 +32,15 @@ sys.setdefaultencoding('utf-8')
 class account_invoice(osv.osv):
     _inherit = "account.invoice"
     
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(account_invoice, self).default_get(cr, uid, fields, context=context)
+        if context.get('default_mlg_type', False) and context['default_mlg_type']=='no_doanh_thu':
+            date = datetime.now() + timedelta(days=-1)
+            res.update({'date_invoice': date.strftime('%Y-%m-%d'),
+                        })
+        return res
     
     def _compute_residual(self):
         self.residual = 0.0

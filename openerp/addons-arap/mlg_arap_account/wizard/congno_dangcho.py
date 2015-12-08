@@ -14,7 +14,8 @@ class congno_dangcho(osv.osv_memory):
     _name = "congno.dangcho"
     
     _columns = {
-        'date': fields.date('Ngày', required=True),
+        'from_date': fields.date('Ngày bắt đầu', required=True),
+        'to_date': fields.date('Ngày kết thúc', required=True),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
@@ -35,7 +36,8 @@ class congno_dangcho(osv.osv_memory):
     _defaults = {
         'chinhanh_id': _get_chinhanh,
         'mlg_type': 'no_doanh_thu',
-        'date': time.strftime('%Y-%m-%d'),
+        'from_date': time.strftime('%Y-%m-%d'),
+        'to_date': time.strftime('%Y-%m-%d'),
     }
     
     def print_report(self, cr, uid, ids, context=None):
