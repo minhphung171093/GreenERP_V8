@@ -6,6 +6,9 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 import openerp.tools
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, float_compare
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class chitiet_congno(osv.osv_memory):
     _name = "chitiet.congno"

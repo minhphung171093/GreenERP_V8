@@ -26,6 +26,9 @@ import time
 from openerp.exceptions import except_orm, Warning, RedirectWarning
 from datetime import datetime,timedelta
 from dateutil.relativedelta import relativedelta
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class congno_dauky(osv.osv):
     _name = "congno.dauky"

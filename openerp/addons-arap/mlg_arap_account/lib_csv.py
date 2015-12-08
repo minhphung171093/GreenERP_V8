@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 import csv
 import glob
 import os
@@ -6,6 +7,9 @@ import collections
 import shutil
 import ntpath
 import time
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class csv_ultilities():
     
@@ -112,7 +116,8 @@ class csv_ultilities():
                 writer = csv.DictWriter(csvfile, fieldnames=headers)
                 writer.writeheader()
                 writer.writerows(content)
-                
+                #for row in content:
+                #    writer.writerow({k:v.encode('utf8') for k,v in row.items()}) 
                 return True
 
        return result

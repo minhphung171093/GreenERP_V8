@@ -23,6 +23,9 @@
 #ENGLISH
 #-------------------------------------------------------------
 from openerp.tools.translate import _
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 to_19 = ( u'không', u'một', u'hai', u'ba', u'bốn', u'năm', u'sáu',
           u'bảy', u'tám', u'chín', u'mười', u'mười một', u'mười hai', u'mười ba',

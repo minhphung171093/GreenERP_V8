@@ -20,6 +20,9 @@
 ##############################################################################
 
 from openerp.osv import fields, osv
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class account_chart(osv.osv_memory):
     _inherit = "account.chart"

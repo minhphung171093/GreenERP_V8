@@ -25,6 +25,9 @@ import time
 from openerp.osv import fields, osv
 from openerp import api
 from openerp.tools.translate import _
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class res_users(osv.osv):
     _inherit = 'res.users'

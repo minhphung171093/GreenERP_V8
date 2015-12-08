@@ -17,6 +17,9 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from openerp.addons.mlg_arap_account.report import amount_to_text_vn
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class Parser(report_sxw.rml_parse):
         

@@ -37,6 +37,9 @@ from dateutil.relativedelta import relativedelta
 # from datetime import datetime, timedelta
 from openerp.tools import config
 _logger = logging.getLogger(__name__)
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 class output_congno_tudong(osv.osv):

@@ -34,6 +34,9 @@ from openerp import netsvc
 from glob import glob
 
 from datetime import datetime, timedelta
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 _logger = logging.getLogger(__name__)
 IMPORTING = '/importing/'

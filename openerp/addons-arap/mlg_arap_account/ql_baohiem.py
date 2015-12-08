@@ -24,6 +24,9 @@ from openerp.osv import fields, osv, expression
 from openerp.tools.translate import _
 import time
 from openerp.exceptions import except_orm, Warning, RedirectWarning
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class ql_bao_hiem(osv.osv):
     _name = "ql.bao.hiem"

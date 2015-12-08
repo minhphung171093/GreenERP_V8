@@ -32,6 +32,9 @@ import logging
 from openerp.addons.mlg_arap_account import lib_csv
 from openerp import netsvc
 from glob import glob
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 # from datetime import datetime, timedelta
 
