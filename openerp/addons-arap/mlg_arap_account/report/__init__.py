@@ -6,7 +6,7 @@ import doanh_so_thu
 import doanh_so_tra
 import chitiet_congno_report
 import congno_vuotdinhmuc_report
-import congno_dangmo_report
+import congno_dangcho_report
 import tonghop_congno_report
 import chitiet_congno_mot_doituong_report
 import congno_theo_loaivipham_report
@@ -14,3 +14,4 @@ import congno_theo_loaitamung_report
 import congno_theo_loaikyquy_report
 import doanh_so_phaithu
 import doanh_so_phaitra
+import congno_dangchothu_report

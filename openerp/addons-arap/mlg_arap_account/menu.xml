@@ -394,10 +394,15 @@
 					action="action_congno_vuotdinhmuc"
 					parent="menu_chitiet_congno" sequence="15"/>
 					
-				<menuitem id="menu_action_congno_dangmo"
+				<menuitem id="menu_action_congno_dangcho"
 					name="Công nợ đang chờ"
-					action="action_congno_dangmo"
+					action="action_congno_dangcho"
 					parent="menu_chitiet_congno" sequence="20"/>
+					
+				<menuitem id="menu_action_congno_dangchothu"
+					name="Công nợ đang chờ thu"
+					action="action_congno_dangchothu"
+					parent="menu_chitiet_congno" sequence="25"/>
 			
 			<menuitem id="menu_baocao_cong_no_thu"
 				name="Báo cáo công nợ"

@@ -10,8 +10,8 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-class congno_dangmo(osv.osv_memory):
-    _name = "congno.dangmo"
+class congno_dangchothu(osv.osv_memory):
+    _name = "congno.dangchothu"
     
     _columns = {
         'date': fields.date('Ngày', required=True),
@@ -42,11 +42,11 @@ class congno_dangmo(osv.osv_memory):
         if context is None:
             context = {}
         datas = {'ids': context.get('active_ids', [])}
-        datas['model'] = 'congno.dangmo'
+        datas['model'] = 'congno.dangchothu'
         datas['form'] = self.read(cr, uid, ids)[0]
         datas['form'].update({'active_id':context.get('active_ids',False)})
         name_report = context['name_report']
         return {'type': 'ir.actions.report.xml', 'report_name': name_report, 'datas': datas}
         
-congno_dangmo()
+congno_dangchothu()
 
