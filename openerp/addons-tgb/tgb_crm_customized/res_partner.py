@@ -104,6 +104,8 @@ class res_partner(osv.osv):
         'estimate_chargeable_income_ids':fields.one2many('document.collection','partner_estimate_id','Estimate Chargeable Income'),
         'annual_report_preparation_ids':fields.one2many('document.collection','partner_annual_id','Annual Report Preparation'),
         
+        'chairman':fields.boolean('Chairman'),
+        
         'uen':fields.char('UEN'),
         'chinese_name':fields.char('Chinese Name'),
         'incorporation_date':fields.date('Incorporation Date'),

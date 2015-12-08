@@ -28,6 +28,9 @@ class Parser(report_sxw.rml_parse):
             'get_2directorin1line': self.get_2directorin1line,
             'get_1directorin1line': self.get_1directorin1line,
             'get_timenow_12h': self.get_timenow_12h,
+            'get_chairman': self.get_chairman,
+            'get_secretary': self.get_secretary,
+            'convert_date_d_m_Y': self.convert_date_d_m_Y,
         })
         
     def get_datenow(self):
@@ -42,6 +45,29 @@ class Parser(report_sxw.rml_parse):
         if a:
             return a.upper()
         return ''
+    
+    def get_secretary(self, partner_id):
+        sql = '''
+            select name from res_partner where upper(function)='SECRETARY' and parent_id=%s
+        '''%(partner_id)
+        self.cr.execute(sql)
+        partner = self.cr.fetchall()
+        return partner and partner[0] or ''
+    
+    def get_chairman(self, partner_id):
+        partner = []
+        sql = '''
+            select name from res_partner where upper(function)='DIRECTOR' and parent_id=%s and chairman=True
+        '''%(partner_id)
+        self.cr.execute(sql)
+        partner = self.cr.fetchall()
+        if not partner:
+            sql = '''
+                select name from res_partner where upper(function)='DIRECTOR' and parent_id=%s order by id limit 1
+            '''%(partner_id)
+            self.cr.execute(sql)
+            partner = self.cr.fetchall()
+        return partner and partner[0] or ''
     
     def get_1directorin1line(self, partner_id):
         res = []
@@ -68,6 +94,11 @@ class Parser(report_sxw.rml_parse):
     def convert_date_d_B_Y(self,date):
         if date:
             return datetime.strptime(date,'%Y-%m-%d').strftime('%d-%B-%Y')
+        return ''
+    
+    def convert_date_d_m_Y(self,date):
+        if date:
+            return datetime.strptime(date,'%Y-%m-%d').strftime('%d/%m/%Y')
         return ''
     
     def get_company_full_address(self, company_id):
