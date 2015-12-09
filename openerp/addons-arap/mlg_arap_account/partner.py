@@ -131,7 +131,7 @@ class res_partner(osv.osv):
         for partner in self.browse(cr, uid, ids, context=context):
             res[partner.id] = False
             for chinhanh in partner.chinhanh_line:
-                if chinhanh.sotien_conlai>0:
+                if chinhanh.sotien_dathu>0:
                     res[partner.id] = True
                     break
         return res
