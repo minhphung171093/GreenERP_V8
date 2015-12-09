@@ -8,7 +8,7 @@
             <field name="res_model">account.account</field>
             <field name="view_type">tree</field>
             <field name="view_id" ref="account.view_account_tree"/>
-            <field name="domain">[('parent_id','=',False),('code','not in',['1111','1112'])]</field>
+            <field name="domain">[('parent_id','=',False),('code','not in',['TG_PT','TG_PC'])]</field>
         </record>
 
         <record id="view_account_tree_inherit" model="ir.ui.view">
