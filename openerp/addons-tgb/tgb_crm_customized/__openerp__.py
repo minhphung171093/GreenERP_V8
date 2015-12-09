@@ -34,6 +34,7 @@
         'report/agm/agm_strike_off_templates/agm_strike_off_templates_report_view.xml',
         'report/agm/agm_ye_blank/agm_ye_blank_report_view.xml',
         'report/eci_template/eci_template_report_view.xml',
+        'report/appointment_letters/appointment_letters_report_view.xml',
         'wizard/report_wizard_view.xml',
         'res_partner_view.xml',
         'hr_employee_view.xml',

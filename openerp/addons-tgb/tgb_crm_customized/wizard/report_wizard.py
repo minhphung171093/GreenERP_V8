@@ -1028,4 +1028,92 @@ class report_wizard_eci_template(osv.osv_memory):
     
 report_wizard_eci_template()
 
+class report_wizard_appointment_letters(osv.osv_memory):
+    _name = 'report.wizard.appointment.letters'
+    
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_appointment_letters, self).default_get(cr, uid, fields, context=context)
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+#         if context.get('eci_template',False) and context['eci_template']:
+        partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+        
+        report_filename='Format_Appointment Letter - Responsibilities'
+        report_extention='.doc'
+        report_name='format_appointment_letter_responsibilities'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_appointment_letter_responsibilities_fname': report_val['datas_fname'],
+                    'format_appointment_letter_responsibilities_datas': report_val['db_datas']})
+        
+        report_filename='Format_Corp Sercretary fee'
+        report_extention='.doc'
+        report_name='format_corp_sercretary_fee'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_corp_sercretary_fee_fname': report_val['datas_fname'],
+                    'format_corp_sercretary_fee_datas': report_val['db_datas']})
+        
+        report_filename='Format_Letter of confirmation of accounts'
+        report_extention='.doc'
+        report_name='format_letter_of_confirmation_of_accounts'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_letter_of_confirmation_of_accounts_fname': report_val['datas_fname'],
+                    'format_letter_of_confirmation_of_accounts_datas': report_val['db_datas']})
+        
+        report_filename='Format_Request handover secretary doc'
+        report_extention='.doc'
+        report_name='format_request_handover_secretary_doc'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_request_handover_secretary_doc_fname': report_val['datas_fname'],
+                    'format_request_handover_secretary_doc_datas': report_val['db_datas']})
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'format_appointment_letter_responsibilities_fname': fields.char('File Name',size=256),
+        'format_appointment_letter_responsibilities_datas': fields.binary('Database Data'),
+        
+        'format_corp_sercretary_fee_fname': fields.char('File Name',size=256),
+        'format_corp_sercretary_fee_datas': fields.binary('Database Data'),
+        
+        'format_letter_of_confirmation_of_accounts_fname': fields.char('File Name',size=256),
+        'format_letter_of_confirmation_of_accounts_datas': fields.binary('Database Data'),
+        
+        'format_request_handover_secretary_doc_fname': fields.char('File Name',size=256),
+        'format_request_handover_secretary_doc_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_appointment_letters()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

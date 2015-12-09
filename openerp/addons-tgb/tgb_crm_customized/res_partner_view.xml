@@ -207,5 +207,14 @@
             <field name="model">res.partner</field>
         </record>
 
+		<record model="ir.values" id="wizard_report_partner_appointment_letters">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Appointment Letters</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_appointment_letters'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+
     </data>
 </openerp>

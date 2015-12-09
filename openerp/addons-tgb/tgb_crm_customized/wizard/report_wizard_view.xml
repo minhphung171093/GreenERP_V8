@@ -498,5 +498,42 @@
             <field name="context">{'eci_template': 1}</field>
         </record>
         
+<!-- Appointment Letters -->        
+        <record id="wizard_report_form_appointment_letters" model="ir.ui.view">
+            <field name="name">report.wizard.form.appointment.letters</field>
+            <field name="model">report.wizard.appointment.letters</field>
+            <field name="arch" type="xml">
+                <form string="Appointment Letters" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="format_appointment_letter_responsibilities_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="format_corp_sercretary_fee_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="format_letter_of_confirmation_of_accounts_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="format_request_handover_secretary_doc_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="format_appointment_letter_responsibilities_datas" filename="format_appointment_letter_responsibilities_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="format_corp_sercretary_fee_datas" filename="format_corp_sercretary_fee_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="format_letter_of_confirmation_of_accounts_datas" filename="format_letter_of_confirmation_of_accounts_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="format_request_handover_secretary_doc_datas" filename="format_request_handover_secretary_doc_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_appointment_letters" model="ir.actions.act_window">
+            <field name="name">Appointment Letters</field>
+            <field name="res_model">report.wizard.appointment.letters</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_appointment_letters"/>
+            <field name="context">{'eci_template': 1}</field>
+        </record>
+        
     </data>
 </openerp>
