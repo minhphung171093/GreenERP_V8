@@ -188,7 +188,7 @@ class import_congno_manually(osv.osv):
                         invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
                         invoice_id = invoice_obj.create(cr, uid, vals)
-                        wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+#                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                     csvUti._moveFiles([file_path],done_path)
                     lichsu_obj.create(cr, uid, {
                         'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -319,7 +319,7 @@ class import_congno_manually(osv.osv):
                         invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
                         invoice_id = invoice_obj.create(cr, uid, vals)
-                        wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+#                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                     csvUti._moveFiles([file_path],done_path)
                     lichsu_obj.create(cr, uid, {
                         'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -462,7 +462,7 @@ class import_congno_manually(osv.osv):
                         invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
                         invoice_id = invoice_obj.create(cr, uid, vals)
-                        wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+#                         wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
                     csvUti._moveFiles([file_path],done_path)
                     lichsu_obj.create(cr, uid, {
                         'name': time.strftime('%Y-%m-%d %H:%M:%S'),
