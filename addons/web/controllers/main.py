@@ -35,7 +35,9 @@ from openerp.tools.translate import _
 from openerp import http
 
 from openerp.http import request, serialize_exception as _serialize_exception
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 _logger = logging.getLogger(__name__)
 
 if hasattr(sys, 'frozen'):
