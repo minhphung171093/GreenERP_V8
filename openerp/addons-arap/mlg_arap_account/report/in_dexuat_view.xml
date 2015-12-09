@@ -10,7 +10,7 @@
 	        <field name="report_name">in_dexuat_dienthoai_report</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/in_dexuat_dienthoai_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/in_dexuat_dienthoai_report.odt</field>
 	        <field name="parser_state">loc</field>
@@ -35,7 +35,7 @@
 	        <field name="report_name">in_dexuat_baohiem_report</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/in_dexuat_baohiem_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/in_dexuat_baohiem_report.odt</field>
 	        <field name="parser_state">loc</field>
@@ -60,7 +60,7 @@
 	        <field name="report_name">in_dexuat_noxuong_report</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">mlg_arap_account/report/in_dexuat_noxuong_report.py</field>
 	        <field name="report_rml">mlg_arap_account/report/in_dexuat_noxuong_report.odt</field>
 	        <field name="parser_state">loc</field>
