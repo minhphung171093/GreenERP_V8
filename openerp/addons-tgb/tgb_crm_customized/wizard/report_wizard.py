@@ -1116,4 +1116,1130 @@ class report_wizard_appointment_letters(osv.osv_memory):
     
 report_wizard_appointment_letters()
 
+class report_wizard_appointment_of_secretary(osv.osv_memory):
+    _name = 'report.wizard.appointment.of.secretary'
+    
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_appointment_of_secretary, self).default_get(cr, uid, fields, context=context)
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+#         if context.get('eci_template',False) and context['eci_template']:
+        partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+        
+        report_filename='Request handover secretary doc - Han Dian'
+        report_extention='.doc'
+        report_name='request_handover_secretary_doc_han_dian'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'request_handover_secretary_doc_han_dian_fname': report_val['datas_fname'],
+                    'request_handover_secretary_doc_han_dian_datas': report_val['db_datas']})
+        
+        report_filename='Termination Letter of Corp Sec with Amicorp_Aquavina Investment'
+        report_extention='.doc'
+        report_name='termination_letter_of_corp_amicorp_aquavina_investment'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'termination_letter_of_corp_amicorp_aquavina_investment_fname': report_val['datas_fname'],
+                    'termination_letter_of_corp_amicorp_aquavina_investment_datas': report_val['db_datas']})
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'request_handover_secretary_doc_han_dian_fname': fields.char('File Name',size=256),
+        'request_handover_secretary_doc_han_dian_datas': fields.binary('Database Data'),
+        
+        'termination_letter_of_corp_amicorp_aquavina_investment_fname': fields.char('File Name',size=256),
+        'termination_letter_of_corp_amicorp_aquavina_investment_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_appointment_of_secretary()
+
+class report_wizard_change_of_company_name(osv.osv_memory):
+    _name = 'report.wizard.change.of.company.name'
+    
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_change_of_company_name, self).default_get(cr, uid, fields, context=context)
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+#         if context.get('eci_template',False) and context['eci_template']:
+        partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+        
+        report_filename='Format_Change Co Name_Attendance List'
+        report_extention='.doc'
+        report_name='format_change_co_name_attendance_list'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_change_co_name_attendance_list_fname': report_val['datas_fname'],
+                    'format_change_co_name_attendance_list_datas': report_val['db_datas']})
+        
+        report_filename='Format_Change Co Name_Minutes'
+        report_extention='.doc'
+        report_name='format_change_co_name_minutes'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_change_co_name_minutes_fname': report_val['datas_fname'],
+                    'format_change_co_name_minutes_datas': report_val['db_datas']})
+        
+        report_filename='Format_Change Co Name__Notice of EGM'
+        report_extention='.doc'
+        report_name='format_change_co_name_notice_of_egm'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_change_co_name_notice_of_egm_fname': report_val['datas_fname'],
+                    'format_change_co_name_notice_of_egm_datas': report_val['db_datas']})
+        
+        report_filename='Format_Change Co Name_Resolution'
+        report_extention='.doc'
+        report_name='format_change_co_name_resolution'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_change_co_name_resolution_fname': report_val['datas_fname'],
+                    'format_change_co_name_resolution_datas': report_val['db_datas']})
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'format_change_co_name_attendance_list_fname': fields.char('File Name',size=256),
+        'format_change_co_name_attendance_list_datas': fields.binary('Database Data'),
+        
+        'format_change_co_name_minutes_fname': fields.char('File Name',size=256),
+        'format_change_co_name_minutes_datas': fields.binary('Database Data'),
+        
+        'format_change_co_name_notice_of_egm_fname': fields.char('File Name',size=256),
+        'format_change_co_name_notice_of_egm_datas': fields.binary('Database Data'),
+        
+        'format_change_co_name_resolution_fname': fields.char('File Name',size=256),
+        'format_change_co_name_resolution_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_change_of_company_name()
+
+class report_wizard_1st_directors_resolution_format(osv.osv_memory):
+    _name = 'report.wizard.1st.directors.resolution.format'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_1st_directors_resolution_format, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+        if context.get('1st_directors_resolution_format',False) and context['1st_directors_resolution_format']:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+            
+            report_filename='1st resolution_One Director'
+            report_extention='.doc'
+            report_name='1st_resolution_one_director'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'1st_resolution_one_director_fname': report_val['datas_fname'],
+                        '1st_resolution_one_director_datas': report_val['db_datas']})
+            
+            report_filename='1st resolution_Two Directors'
+            report_extention='.doc'
+            report_name='1st_resolution_two_directors'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'1st_resolution_two_directors_fname': report_val['datas_fname'],
+                        '1st_resolution_two_directors_datas': report_val['db_datas']})
+            
+            report_filename='Format_Statutory Records & Doc - Ack letter'
+            report_extention='.doc'
+            report_name='format_statutory_records_doc_ack_letter'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'format_statutory_records_doc_ack_letter_fname': report_val['datas_fname'],
+                        'format_statutory_records_doc_ack_letter_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        '1st_resolution_one_director_fname': fields.char('File Name',size=256),
+        '1st_resolution_one_director_datas': fields.binary('Database Data'),
+        
+        '1st_resolution_two_directors_fname': fields.char('File Name',size=256),
+        '1st_resolution_two_directors_datas': fields.binary('Database Data'),
+        
+        'format_statutory_records_doc_ack_letter_fname': fields.char('File Name',size=256),
+        'format_statutory_records_doc_ack_letter_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_1st_directors_resolution_format()
+
+class report_wizard_forms_45_49(osv.osv_memory):
+    _name = 'report.wizard.forms.45.49'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_forms_45_49, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+        if context.get('forms_45_49',False) and context['forms_45_49']:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+
+            report_filename='forms_45_491'
+            report_extention='.doc'
+            report_name='forms_45_491'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'forms_45_491_fname': report_val['datas_fname'],
+                        'forms_45_491_datas': report_val['db_datas']})
+            
+            report_filename='forms_45_492'
+            report_extention='.doc'
+            report_name='forms_45_492'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'forms_45_492_fname': report_val['datas_fname'],
+                        'forms_45_492_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'forms_45_491_fname': fields.char('File Name',size=256),
+        'forms_45_491_datas': fields.binary('Database Data'),
+        
+        'forms_45_492_fname': fields.char('File Name',size=256),
+        'forms_45_492_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_forms_45_49()
+
+class report_wizard_share_certificates_one(osv.osv_memory):
+    _name = 'report.wizard.share.certificates.one'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_share_certificates_one, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+        if context.get('share_certificates_one',False) and context['share_certificates_one']:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+
+            report_filename='Share cert 1_xx shares_Format03_Our Reg Office'
+            report_extention='.doc'
+            report_name='share_cert_1_xx_shares_format03_our_reg_office'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'share_cert_1_xx_shares_format03_our_reg_office_fname': report_val['datas_fname'],
+                        'share_cert_1_xx_shares_format03_our_reg_office_datas': report_val['db_datas']})
+            
+            report_filename='Share cert 1_xx shares_Format04'
+            report_extention='.doc'
+            report_name='share_cert_1_xx_shares_format04'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'share_cert_1_xx_shares_format04_fname': report_val['datas_fname'],
+                        'share_cert_1_xx_shares_format04_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'share_cert_1_xx_shares_format03_our_reg_office_fname': fields.char('File Name',size=256),
+        'share_cert_1_xx_shares_format03_our_reg_office_datas': fields.binary('Database Data'),
+        
+        'share_cert_1_xx_shares_format04_fname': fields.char('File Name',size=256),
+        'share_cert_1_xx_shares_format04_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_share_certificates_one()
+
+class report_wizard_share_certificates_two(osv.osv_memory):
+    _name = 'report.wizard.share.certificates.two'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_share_certificates_two, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+        if context.get('share_certificates_two',False) and context['share_certificates_two']:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+
+            report_filename='Share cert 1_xx shares_Format01'
+            report_extention='.doc'
+            report_name='share_cert_1_xx_shares_format01'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'share_cert_1_xx_shares_format01_fname': report_val['datas_fname'],
+                        'share_cert_1_xx_shares_format01_datas': report_val['db_datas']})
+            
+            report_filename='Share cert 1_xx shares_Format02_Our Reg Office'
+            report_extention='.doc'
+            report_name='share_cert_1_xx_shares_format02_our_reg_office'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'share_cert_1_xx_shares_format02_our_reg_office_fname': report_val['datas_fname'],
+                        'share_cert_1_xx_shares_format02_our_reg_office_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'share_cert_1_xx_shares_format01_fname': fields.char('File Name',size=256),
+        'share_cert_1_xx_shares_format01_datas': fields.binary('Database Data'),
+        
+        'share_cert_1_xx_shares_format02_our_reg_office_fname': fields.char('File Name',size=256),
+        'share_cert_1_xx_shares_format02_our_reg_office_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_share_certificates_two()
+
+class report_wizard_issue_shares(osv.osv_memory):
+    _name = 'report.wizard.issue.shares'
+    
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_issue_shares, self).default_get(cr, uid, fields, context=context)
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+#         if context.get('eci_template',False) and context['eci_template']:
+        partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+        
+        report_filename='Format_Attendance List_ Issue shares'
+        report_extention='.doc'
+        report_name='format_attendance_list_issue_shares'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_attendance_list_issue_shares_fname': report_val['datas_fname'],
+                    'format_attendance_list_issue_shares_datas': report_val['db_datas']})
+        
+        report_filename='Format_Director Resolution_ Issue shares'
+        report_extention='.doc'
+        report_name='format_director_resolution_issue_shares'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_director_resolution_issue_shares_fname': report_val['datas_fname'],
+                    'format_director_resolution_issue_shares_datas': report_val['db_datas']})
+        
+        report_filename='Format_Letter_Consent of Waiver_ Issue shares'
+        report_extention='.doc'
+        report_name='format_letter_consent_of_waiver_issue_shares'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_letter_consent_of_waiver_issue_shares_fname': report_val['datas_fname'],
+                    'format_letter_consent_of_waiver_issue_shares_datas': report_val['db_datas']})
+        
+        report_filename='Format_Minutes of EGM_Issue shares'
+        report_extention='.doc'
+        report_name='format_minutes_of_egm_issue_shares'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_minutes_of_egm_issue_shares_fname': report_val['datas_fname'],
+                    'format_minutes_of_egm_issue_shares_datas': report_val['db_datas']})
+        
+        report_filename='Format_Notice of EGM_ Issue shares'
+        report_extention='.doc'
+        report_name='format_notice_of_egm_issue_shares'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_notice_of_egm_issue_shares_fname': report_val['datas_fname'],
+                    'format_notice_of_egm_issue_shares_datas': report_val['db_datas']})
+        
+        report_filename='Format_Paid-up Capital Application_ ___k shares'
+        report_extention='.doc'
+        report_name='format_paid_up_capital_application_k_shares'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_paid_up_capital_application_k_shares_fname': report_val['datas_fname'],
+                    'format_paid_up_capital_application_k_shares_datas': report_val['db_datas']})
+        
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'format_attendance_list_issue_shares_fname': fields.char('File Name',size=256),
+        'format_attendance_list_issue_shares_datas': fields.binary('Database Data'),
+        
+        'format_director_resolution_issue_shares_fname': fields.char('File Name',size=256),
+        'format_director_resolution_issue_shares_datas': fields.binary('Database Data'),
+        
+        'format_letter_consent_of_waiver_issue_shares_fname': fields.char('File Name',size=256),
+        'format_letter_consent_of_waiver_issue_shares_datas': fields.binary('Database Data'),
+        
+        'format_minutes_of_egm_issue_shares_fname': fields.char('File Name',size=256),
+        'format_minutes_of_egm_issue_shares_datas': fields.binary('Database Data'),
+        
+        'format_notice_of_egm_issue_shares_fname': fields.char('File Name',size=256),
+        'format_notice_of_egm_issue_shares_datas': fields.binary('Database Data'),
+        
+        'format_paid_up_capital_application_k_shares_fname': fields.char('File Name',size=256),
+        'format_paid_up_capital_application_k_shares_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_issue_shares()
+
+class report_wizard_resignation_director_secretary(osv.osv_memory):
+    _name = 'report.wizard.resignation.director.secretary'
+    
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_resignation_director_secretary, self).default_get(cr, uid, fields, context=context)
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+#         if context.get('eci_template',False) and context['eci_template']:
+        partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+        
+        report_filename='Format_Resignation letter_Director Name'
+        report_extention='.doc'
+        report_name='format_resignation_letter_director_name'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_resignation_letter_director_name_fname': report_val['datas_fname'],
+                    'format_resignation_letter_director_name_datas': report_val['db_datas']})
+        
+        report_filename='Format_Resolution_Resign Director and Appoint Secretary'
+        report_extention='.doc'
+        report_name='format_resolution_resign_director_and_appoint_secretary'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'format_resolution_resign_director_and_appoint_secretary_fname': report_val['datas_fname'],
+                    'format_resolution_resign_director_and_appoint_secretary_datas': report_val['db_datas']})
+        
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'format_resignation_letter_director_name_fname': fields.char('File Name',size=256),
+        'format_resignation_letter_director_name_datas': fields.binary('Database Data'),
+        
+        'format_resolution_resign_director_and_appoint_secretary_fname': fields.char('File Name',size=256),
+        'format_resolution_resign_director_and_appoint_secretary_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_resignation_director_secretary()
+
+class report_wizard_resolution_form(osv.osv_memory):
+    _name = 'report.wizard.resolution.form'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_resolution_form, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+#         if context.get('resolution_form',False) and context['resolution_form']:
+        partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+
+        report_filename='resolution_form1'
+        report_extention='.doc'
+        report_name='resolution_form1'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'resolution_form1_fname': report_val['datas_fname'],
+                    'resolution_form1_datas': report_val['db_datas']})
+        
+        report_filename='resolution_form2'
+        report_extention='.doc'
+        report_name='resolution_form2'
+        report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+        res.update({'resolution_form2_fname': report_val['datas_fname'],
+                    'resolution_form2_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'resolution_form1_fname': fields.char('File Name',size=256),
+        'resolution_form1_datas': fields.binary('Database Data'),
+        
+        'resolution_form2_fname': fields.char('File Name',size=256),
+        'resolution_form2_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_resolution_form()
+
+class report_wizard_share_transfer(osv.osv_memory):
+    _name = 'report.wizard.share.transfer'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_share_transfer, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+        if context.get('share_transfer',False) and context['share_transfer']:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+
+            report_filename='share_transfer1'
+            report_extention='.doc'
+            report_name='share_transfer1'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'share_transfer1_fname': report_val['datas_fname'],
+                        'share_transfer1_datas': report_val['db_datas']})
+            
+            report_filename='share_transfer2'
+            report_extention='.doc'
+            report_name='share_transfer2'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'share_transfer2_fname': report_val['datas_fname'],
+                        'share_transfer2_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'share_transfer1_fname': fields.char('File Name',size=256),
+        'share_transfer1_datas': fields.binary('Database Data'),
+        
+        'share_transfer2_fname': fields.char('File Name',size=256),
+        'share_transfer2_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_share_transfer()
+
+class report_wizard_format_egm_dated_xxxx(osv.osv_memory):
+    _name = 'report.wizard.format.egm.dated.xxxx'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_format_egm_dated_xxxx, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+        if context.get('format_egm_dated_xxxx',False) and context['format_egm_dated_xxxx']:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+
+            report_filename='Attendance List_Transfer of shares_'
+            report_extention='.doc'
+            report_name='attendance_list_transfer_of_shares'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'attendance_list_transfer_of_shares_fname': report_val['datas_fname'],
+                        'attendance_list_transfer_of_shares_datas': report_val['db_datas']})
+            
+            report_filename='Letter_Consent of Waiver'
+            report_extention='.doc'
+            report_name='letter_consent_of_waiver'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'letter_consent_of_waiver_fname': report_val['datas_fname'],
+                        'letter_consent_of_waiver_datas': report_val['db_datas']})
+            
+            report_filename='Minutes_Transfer of Shares'
+            report_extention='.doc'
+            report_name='minutes_transfer_of_shares'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'minutes_transfer_of_shares_fname': report_val['datas_fname'],
+                        'minutes_transfer_of_shares_datas': report_val['db_datas']})
+            
+            report_filename='Notice of EGM_Transfer of Shares'
+            report_extention='.doc'
+            report_name='notice_of_egm_transfer_of_shares'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'notice_of_egm_transfer_of_shares_fname': report_val['datas_fname'],
+                        'notice_of_egm_transfer_of_shares_datas': report_val['db_datas']})
+            
+            report_filename='Resolution_Transfer of Shares'
+            report_extention='.doc'
+            report_name='resolution_transfer_of_shares'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'resolution_transfer_of_shares_fname': report_val['datas_fname'],
+                        'resolution_transfer_of_shares_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'attendance_list_transfer_of_shares_fname': fields.char('File Name',size=256),
+        'attendance_list_transfer_of_shares_datas': fields.binary('Database Data'),
+        
+        'letter_consent_of_waiver_fname': fields.char('File Name',size=256),
+        'letter_consent_of_waiver_datas': fields.binary('Database Data'),
+        
+        'minutes_transfer_of_shares_fname': fields.char('File Name',size=256),
+        'minutes_transfer_of_shares_datas': fields.binary('Database Data'),
+        
+        'notice_of_egm_transfer_of_shares_fname': fields.char('File Name',size=256),
+        'notice_of_egm_transfer_of_shares_datas': fields.binary('Database Data'),
+        
+        'resolution_transfer_of_shares_fname': fields.char('File Name',size=256),
+        'resolution_transfer_of_shares_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_format_egm_dated_xxxx()
+
+class report_wizard_strike_off_egm_templates(osv.osv_memory):
+    _name = 'report.wizard.strike.off.egm.templates'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_strike_off_egm_templates, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+        if context.get('strike_off_egm_templates',False) and context['strike_off_egm_templates']:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+
+            report_filename='Strike off_Acra_Resolution'
+            report_extention='.doc'
+            report_name='strike_off_acra_resolution'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_acra_resolution_fname': report_val['datas_fname'],
+                        'strike_off_acra_resolution_datas': report_val['db_datas']})
+            
+            report_filename='Strike off_Agreement Letter'
+            report_extention='.doc'
+            report_name='strike_off_agreement_letter'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_agreement_letter_fname': report_val['datas_fname'],
+                        'strike_off_agreement_letter_datas': report_val['db_datas']})
+            
+            report_filename='Strike off_Appointment Letter'
+            report_extention='.doc'
+            report_name='strike_off_appointment_letter'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_appointment_letter_fname': report_val['datas_fname'],
+                        'strike_off_appointment_letter_datas': report_val['db_datas']})
+            
+            report_filename='strike off declaration'
+            report_extention='.doc'
+            report_name='strike_off_declaration'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_declaration_fname': report_val['datas_fname'],
+                        'strike_off_declaration_datas': report_val['db_datas']})
+            
+            report_filename='Strike off_letter'
+            report_extention='.doc'
+            report_name='strike_off_letter'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_letter_fname': report_val['datas_fname'],
+                        'strike_off_letter_datas': report_val['db_datas']})
+            
+            report_filename='Strike off_Letter to IRAS'
+            report_extention='.doc'
+            report_name='strike_off_letter_to_iras'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_letter_to_iras_fname': report_val['datas_fname'],
+                        'strike_off_letter_to_iras_datas': report_val['db_datas']})
+            
+            report_filename='Strike off_Minutes'
+            report_extention='.doc'
+            report_name='strike_off_minutes'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_minutes_fname': report_val['datas_fname'],
+                        'strike_off_minutes_datas': report_val['db_datas']})
+            
+            report_filename='Strike off_Notice'
+            report_extention='.doc'
+            report_name='strike_off_notice'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_notice_fname': report_val['datas_fname'],
+                        'strike_off_notice_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'strike_off_acra_resolution_fname': fields.char('File Name',size=256),
+        'strike_off_acra_resolution_datas': fields.binary('Database Data'),
+        
+        'strike_off_agreement_letter_fname': fields.char('File Name',size=256),
+        'strike_off_agreement_letter_datas': fields.binary('Database Data'),
+        
+        'strike_off_appointment_letter_fname': fields.char('File Name',size=256),
+        'strike_off_appointment_letter_datas': fields.binary('Database Data'),
+        
+        'strike_off_declaration_fname': fields.char('File Name',size=256),
+        'strike_off_declaration_datas': fields.binary('Database Data'),
+        
+        'strike_off_letter_fname': fields.char('File Name',size=256),
+        'strike_off_letter_datas': fields.binary('Database Data'),
+        
+        'strike_off_letter_to_iras_fname': fields.char('File Name',size=256),
+        'strike_off_letter_to_iras_datas': fields.binary('Database Data'),
+        
+        'strike_off_minutes_fname': fields.char('File Name',size=256),
+        'strike_off_minutes_datas': fields.binary('Database Data'),
+        
+        'strike_off_notice_fname': fields.char('File Name',size=256),
+        'strike_off_notice_datas': fields.binary('Database Data'),
+        
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_strike_off_egm_templates()
+
+class report_wizard_strike_off_sample(osv.osv_memory):
+    _name = 'report.wizard.strike.off.sample'
+    def default_get(self, cr, uid, fields, context=None):
+        if context is None:
+            context = {}
+        res = super(report_wizard_strike_off_sample, self).default_get(cr, uid, fields, context=context)
+        partner_id = False
+        if not res.get('partner_id', False) and context.get('active_id',False):
+            res.update({'partner_id':context['active_id']})
+            partner_id = context['active_id']
+        if not partner_id:
+            partner_id = res['partner_id']
+        if context.get('strike_off_sample',False) and context['strike_off_sample']:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
+
+            report_filename='Agreement _Strike off'
+            report_extention='.doc'
+            report_name='agreement_strike_off'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'agreement_strike_off_fname': report_val['datas_fname'],
+                        'agreement_strike_off_datas': report_val['db_datas']})
+            
+            report_filename='Appointment Letter_Flavors Whisky'
+            report_extention='.doc'
+            report_name='appointment_letter_flavors_whisky'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'appointment_letter_flavors_whisky_fname': report_val['datas_fname'],
+                        'appointment_letter_flavors_whisky_datas': report_val['db_datas']})
+            
+            report_filename='EGM - Notice strike off'
+            report_extention='.doc'
+            report_name='egm_notice_strike_off'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'egm_notice_strike_off_fname': report_val['datas_fname'],
+                        'egm_notice_strike_off_datas': report_val['db_datas']})
+            
+            report_filename='Flavors Whisky - strike off letter'
+            report_extention='.doc'
+            report_name='flavors_whisky_strike_off_letter'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'flavors_whisky_strike_off_letter_fname': report_val['datas_fname'],
+                        'flavors_whisky_strike_off_letter_datas': report_val['db_datas']})
+            
+            report_filename='Letter to IRAS'
+            report_extention='.doc'
+            report_name='letter_to_irsa'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'letter_to_irsa_fname': report_val['datas_fname'],
+                        'letter_to_irsa_datas': report_val['db_datas']})
+            
+            report_filename='Minutes'
+            report_extention='.doc'
+            report_name='minutes'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'minutes_fname': report_val['datas_fname'],
+                        'minutes_datas': report_val['db_datas']})
+            
+            report_filename='Request handover secretary doc - Flavors Whisky'
+            report_extention='.doc'
+            report_name='request_handover_secretary_doc_flavors_whisky'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'request_handover_secretary_doc_flavors_whisky_fname': report_val['datas_fname'],
+                        'request_handover_secretary_doc_flavors_whisky_datas': report_val['db_datas']})
+            
+            report_filename='Resolution  strike off EGM'
+            report_extention='.doc'
+            report_name='resolution_strike_off_egm'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'resolution_strike_off_egm_fname': report_val['datas_fname'],
+                        'resolution_strike_off_egm_datas': report_val['db_datas']})
+            
+            report_filename='strike off declaration_Flavors Apple_Goh Hock Leong'
+            report_extention='.doc'
+            report_name='strike_off_declaration_flavors_apple_goh_hock_leong'
+            report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
+            res.update({'strike_off_declaration_flavors_apple_goh_hock_leong_fname': report_val['datas_fname'],
+                        'strike_off_declaration_flavors_apple_goh_hock_leong_datas': report_val['db_datas']})
+            
+        return res
+    
+    _columns = {
+        'name': fields.char('Name',size=1024),
+        'partner_id': fields.many2one('res.partner','Partner'),
+        
+        'agreement_strike_off_fname': fields.char('File Name',size=256),
+        'agreement_strike_off_datas': fields.binary('Database Data'),
+        
+        'appointment_letter_flavors_whisky_fname': fields.char('File Name',size=256),
+        'appointment_letter_flavors_whisky_datas': fields.binary('Database Data'),
+        
+        'egm_notice_strike_off_fname': fields.char('File Name',size=256),
+        'egm_notice_strike_off_datas': fields.binary('Database Data'),
+        
+        'flavors_whisky_strike_off_letter_fname': fields.char('File Name',size=256),
+        'flavors_whisky_strike_off_letter_datas': fields.binary('Database Data'),
+        
+        'letter_to_irsa_fname': fields.char('File Name',size=256),
+        'letter_to_irsa_datas': fields.binary('Database Data'),
+        
+        'minutes_fname': fields.char('File Name',size=256),
+        'minutes_datas': fields.binary('Database Data'),
+        
+        'request_handover_secretary_doc_flavors_whisky_fname': fields.char('File Name',size=256),
+        'request_handover_secretary_doc_flavors_whisky_datas': fields.binary('Database Data'),
+        
+        'resolution_strike_off_egm_fname': fields.char('File Name',size=256),
+        'resolution_strike_off_egm_datas': fields.binary('Database Data'),
+        
+        'strike_off_declaration_flavors_apple_goh_hock_leong_fname': fields.char('File Name',size=256),
+        'strike_off_declaration_flavors_apple_goh_hock_leong_datas': fields.binary('Database Data'),
+    }
+    
+    def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
+        ir_actions_report = self.pool.get('ir.actions.report.xml')
+        matching_reports = ir_actions_report.search(cr, uid, [('name','=',report_name)])
+        if matching_reports:
+            report = ir_actions_report.browse(cr, uid, matching_reports[0])
+            report_service = 'report.' + report.report_name
+            service = netsvc.LocalService(report_service)
+            result = False
+            try:
+                (result, format) = service.create(cr, uid, [record.id], {'model': model}, context=context)
+            except:
+                pass
+            if result:
+                eval_context = {'time': time, 'object': record}
+                if not report.attachment or not eval(report.attachment, eval_context):
+                    result = base64.b64encode(result)
+                    file_name = re.sub(r'[^a-zA-Z0-9_-]', ' ', report_filename)
+                    file_name += report_extention
+                    return {
+                        'db_datas': result,
+                        'datas_fname': file_name,
+                    }
+        return {'db_datas': False,
+                'datas_fname': False}
+    
+report_wizard_strike_off_sample()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

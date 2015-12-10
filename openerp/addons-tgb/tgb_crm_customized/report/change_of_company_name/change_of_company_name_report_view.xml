@@ -2,17 +2,17 @@
 <openerp>
 	<data>
 	
-<!-- Appointment Letters -->
-        <record id="format_appointment_letter_responsibilities" model="ir.actions.report.xml">
-	        <field name="name">format_appointment_letter_responsibilities</field>
+<!-- Change of Company Name -->
+        <record id="format_change_co_name_attendance_list" model="ir.actions.report.xml">
+	        <field name="name">format_change_co_name_attendance_list</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">format_appointment_letter_responsibilities</field>
+	        <field name="report_name">format_change_co_name_attendance_list</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">tgb_crm_customized/report/partner_report.py</field>
-	        <field name="report_rml">tgb_crm_customized/report/appointment_letters/format_appointment_letter_responsibilities.odt</field>
+	        <field name="report_rml">tgb_crm_customized/report/change_of_company_name/format_change_co_name_attendance_list.odt</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -20,22 +20,22 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="format_appointment_letter_responsibilities"
+			id="format_change_co_name_attendance_list"
 			model="res.partner"
-			name="format_appointment_letter_responsibilities"
-	        string="format_appointment_letter_responsibilities"
-	        rml="tgb_crm_customized/report/appointment_letters/format_appointment_letter_responsibilities.odt"/>
+			name="format_change_co_name_attendance_list"
+	        string="format_change_co_name_attendance_list"
+	        rml="tgb_crm_customized/report/change_of_company_name/format_change_co_name_attendance_list.odt"/>
 	        
-        <record id="format_corp_sercretary_fee" model="ir.actions.report.xml">
-	        <field name="name">format_corp_sercretary_fee</field>
+        <record id="format_change_co_name_minutes" model="ir.actions.report.xml">
+	        <field name="name">format_change_co_name_minutes</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">format_corp_sercretary_fee</field>
+	        <field name="report_name">format_change_co_name_minutes</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">tgb_crm_customized/report/partner_report.py</field>
-	        <field name="report_rml">tgb_crm_customized/report/appointment_letters/format_corp_sercretary_fee.odt</field>
+	        <field name="report_rml">tgb_crm_customized/report/change_of_company_name/format_change_co_name_minutes.odt</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -43,22 +43,22 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="format_corp_sercretary_fee"
+			id="format_change_co_name_minutes"
 			model="res.partner"
-			name="format_corp_sercretary_fee"
-	        string="format_corp_sercretary_fee"
-	        rml="tgb_crm_customized/report/appointment_letters/format_corp_sercretary_fee.odt"/>
+			name="format_change_co_name_minutes"
+	        string="format_change_co_name_minutes"
+	        rml="tgb_crm_customized/report/change_of_company_name/format_change_co_name_minutes.odt"/>
 	        
-        <record id="format_letter_of_confirmation_of_accounts" model="ir.actions.report.xml">
-	        <field name="name">format_letter_of_confirmation_of_accounts</field>
+        <record id="format_change_co_name_notice_of_egm" model="ir.actions.report.xml">
+	        <field name="name">format_change_co_name_notice_of_egm</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">format_letter_of_confirmation_of_accounts</field>
+	        <field name="report_name">format_change_co_name_notice_of_egm</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">tgb_crm_customized/report/partner_report.py</field>
-	        <field name="report_rml">tgb_crm_customized/report/appointment_letters/format_letter_of_confirmation_of_accounts.odt</field>
+	        <field name="report_rml">tgb_crm_customized/report/change_of_company_name/format_change_co_name_notice_of_egm.odt</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -66,22 +66,22 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="format_letter_of_confirmation_of_accounts"
+			id="format_change_co_name_notice_of_egm"
 			model="res.partner"
-			name="format_letter_of_confirmation_of_accounts"
-	        string="format_letter_of_confirmation_of_accounts"
-	        rml="tgb_crm_customized/report/appointment_letters/format_letter_of_confirmation_of_accounts.odt"/>
+			name="format_change_co_name_notice_of_egm"
+	        string="format_change_co_name_notice_of_egm"
+	        rml="tgb_crm_customized/report/change_of_company_name/format_change_co_name_notice_of_egm.odt"/>
 	        
-        <record id="format_request_handover_secretary_doc" model="ir.actions.report.xml">
-	        <field name="name">format_request_handover_secretary_doc</field>
+        <record id="format_change_co_name_resolution" model="ir.actions.report.xml">
+	        <field name="name">format_change_co_name_resolution</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">format_request_handover_secretary_doc</field>
+	        <field name="report_name">format_change_co_name_resolution</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
 	        <field name="parser_loc">tgb_crm_customized/report/partner_report.py</field>
-	        <field name="report_rml">tgb_crm_customized/report/appointment_letters/format_request_handover_secretary_doc.odt</field>
+	        <field name="report_rml">tgb_crm_customized/report/change_of_company_name/format_change_co_name_resolution.odt</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -89,11 +89,11 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="format_request_handover_secretary_doc"
+			id="format_change_co_name_resolution"
 			model="res.partner"
-			name="format_request_handover_secretary_doc"
-	        string="format_request_handover_secretary_doc"
-	        rml="tgb_crm_customized/report/appointment_letters/format_request_handover_secretary_doc.odt"/>
-
+			name="format_change_co_name_resolution"
+	        string="format_change_co_name_resolution"
+	        rml="tgb_crm_customized/report/change_of_company_name/format_change_co_name_resolution.odt"/>
+	        
 	</data>
 </openerp>

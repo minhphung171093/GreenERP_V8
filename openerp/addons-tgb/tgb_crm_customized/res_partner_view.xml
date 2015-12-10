@@ -215,6 +215,78 @@
             <field name="key">action</field>
             <field name="model">res.partner</field>
         </record>
+        
+        <record model="ir.values" id="wizard_report_partner_appointment_of_secretary">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Appointment of Secretary</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_appointment_of_secretary'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+        
+        <record model="ir.values" id="wizard_report_partner_change_of_company_name">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Change of Company Name</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_change_of_company_name'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
 
+		<record model="ir.values" id="wizard_report_partner_incorporation_1st_resolution_two_directors">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Incorporation_1st Resolution_Two Directors</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_incorporation_1st_resolution_two_directors'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+
+		<record model="ir.values" id="wizard_report_partner_issue_shares">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Issue shares</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_issue_shares'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+        
+        <record model="ir.values" id="wizard_report_partner_resignation_director_secretary">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Resignation of Director and Secretary</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_resignation_director_secretary'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+        
+        <record model="ir.values" id="wizard_report_partner_resolution_form">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">resolution form</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_resolution_form'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+        
+        <record model="ir.values" id="wizard_report_partner_share_transfer">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">share transfer</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_share_transfer'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+		
+		<record model="ir.values" id="wizard_report_partner_strike_off_egm_templates">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Strike off_EGM_Templates</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_wizard_report_strike_off_egm_templates'))" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+		
     </data>
 </openerp>

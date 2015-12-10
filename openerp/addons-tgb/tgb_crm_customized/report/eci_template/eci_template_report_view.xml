@@ -2,17 +2,17 @@
 <openerp>
 	<data>
 	
-<!-- Appointment Letters -->
-        <record id="format_appointment_letter_responsibilities" model="ir.actions.report.xml">
-	        <field name="name">format_appointment_letter_responsibilities</field>
+<!-- ECI Form (For Company) YA 2016 (2) -->
+        <record id="eci_form_for_company_ya_2016" model="ir.actions.report.xml">
+	        <field name="name">eci_form_for_company_ya_2016</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">format_appointment_letter_responsibilities</field>
+	        <field name="report_name">eci_form_for_company_ya_2016</field>
 	        <field name="report_type">aeroo</field>
-	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
 	        <field name="parser_loc">tgb_crm_customized/report/partner_report.py</field>
-	        <field name="report_rml">tgb_crm_customized/report/appointment_letters/format_appointment_letter_responsibilities.odt</field>
+	        <field name="report_rml">tgb_crm_customized/report/eci_template/eci_form_for_company_ya_2016.ods</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -20,22 +20,23 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="format_appointment_letter_responsibilities"
+			id="eci_form_for_company_ya_2016"
 			model="res.partner"
-			name="format_appointment_letter_responsibilities"
-	        string="format_appointment_letter_responsibilities"
-	        rml="tgb_crm_customized/report/appointment_letters/format_appointment_letter_responsibilities.odt"/>
+			name="eci_form_for_company_ya_2016"
+	        string="eci_form_for_company_ya_2016"
+	        rml="tgb_crm_customized/report/eci_template/eci_form_for_company_ya_2016.ods"/>
 	        
-        <record id="format_corp_sercretary_fee" model="ir.actions.report.xml">
-	        <field name="name">format_corp_sercretary_fee</field>
+<!-- ECI Form (For Tax Agent) YA 2016 -->
+        <record id="eci_form_for_tax_agent_ya_2016" model="ir.actions.report.xml">
+	        <field name="name">eci_form_for_tax_agent_ya_2016</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">format_corp_sercretary_fee</field>
+	        <field name="report_name">eci_form_for_tax_agent_ya_2016</field>
 	        <field name="report_type">aeroo</field>
-	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
 	        <field name="parser_loc">tgb_crm_customized/report/partner_report.py</field>
-	        <field name="report_rml">tgb_crm_customized/report/appointment_letters/format_corp_sercretary_fee.odt</field>
+	        <field name="report_rml">tgb_crm_customized/report/eci_template/eci_form_for_tax_agent_ya_2016.ods</field>
 	        <field name="parser_state">loc</field>
 	        <field name="tml_source">file</field>
 	        <field name="attachment_use" eval="0"/>
@@ -43,57 +44,11 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="format_corp_sercretary_fee"
+			id="eci_form_for_tax_agent_ya_2016"
 			model="res.partner"
-			name="format_corp_sercretary_fee"
-	        string="format_corp_sercretary_fee"
-	        rml="tgb_crm_customized/report/appointment_letters/format_corp_sercretary_fee.odt"/>
-	        
-        <record id="format_letter_of_confirmation_of_accounts" model="ir.actions.report.xml">
-	        <field name="name">format_letter_of_confirmation_of_accounts</field>
-	        <field name="type">ir.actions.report.xml</field>
-	        <field name="model">res.partner</field>
-	        <field name="report_name">format_letter_of_confirmation_of_accounts</field>
-	        <field name="report_type">aeroo</field>
-	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
-	        <field name="parser_loc">tgb_crm_customized/report/partner_report.py</field>
-	        <field name="report_rml">tgb_crm_customized/report/appointment_letters/format_letter_of_confirmation_of_accounts.odt</field>
-	        <field name="parser_state">loc</field>
-	        <field name="tml_source">file</field>
-	        <field name="attachment_use" eval="0"/>
-    	</record>		    
-		<report 
-			auto="False" 
-			menu="False"
-			id="format_letter_of_confirmation_of_accounts"
-			model="res.partner"
-			name="format_letter_of_confirmation_of_accounts"
-	        string="format_letter_of_confirmation_of_accounts"
-	        rml="tgb_crm_customized/report/appointment_letters/format_letter_of_confirmation_of_accounts.odt"/>
-	        
-        <record id="format_request_handover_secretary_doc" model="ir.actions.report.xml">
-	        <field name="name">format_request_handover_secretary_doc</field>
-	        <field name="type">ir.actions.report.xml</field>
-	        <field name="model">res.partner</field>
-	        <field name="report_name">format_request_handover_secretary_doc</field>
-	        <field name="report_type">aeroo</field>
-	        <field name="in_format">oo-odt</field>
-	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
-	        <field name="parser_loc">tgb_crm_customized/report/partner_report.py</field>
-	        <field name="report_rml">tgb_crm_customized/report/appointment_letters/format_request_handover_secretary_doc.odt</field>
-	        <field name="parser_state">loc</field>
-	        <field name="tml_source">file</field>
-	        <field name="attachment_use" eval="0"/>
-    	</record>		    
-		<report 
-			auto="False" 
-			menu="False"
-			id="format_request_handover_secretary_doc"
-			model="res.partner"
-			name="format_request_handover_secretary_doc"
-	        string="format_request_handover_secretary_doc"
-	        rml="tgb_crm_customized/report/appointment_letters/format_request_handover_secretary_doc.odt"/>
+			name="eci_form_for_tax_agent_ya_2016"
+	        string="eci_form_for_tax_agent_ya_2016"
+	        rml="tgb_crm_customized/report/eci_template/eci_form_for_tax_agent_ya_2016.ods"/>
 
 	</data>
 </openerp>
