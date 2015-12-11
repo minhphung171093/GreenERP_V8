@@ -1063,26 +1063,26 @@
                 	<group>
                 		<button string="Strike off Sample" type="action" name="%(action_wizard_report_strike_off_sample)d" context="{'default_partner_id':partner_id,'strike_off_sample':1}"/>
 	                </group>
-                	<field name="strike_off_acra_resolution_fname" invisible="1" class="oe_inline oe_right"/>
-                	<field name="strike_off_agreement_letter_fname" invisible="1" class="oe_inline oe_right"/>
-                	<field name="strike_off_appointment_letter_fname" invisible="1" class="oe_inline oe_right"/>
-                	<field name="strike_off_declaration_fname" invisible="1" class="oe_inline oe_right"/>
-                	<field name="strike_off_letter_fname" invisible="1" class="oe_inline oe_right"/>
-                	<field name="strike_off_letter_to_iras_fname" invisible="1" class="oe_inline oe_right"/>
-                	<field name="strike_off_minutes_fname" invisible="1" class="oe_inline oe_right"/>
-                	<field name="strike_off_notice_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="egm_strike_off_acra_resolution_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="egm_strike_off_agreement_letter_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="egm_strike_off_appointment_letter_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="egm_strike_off_declaration_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="egm_strike_off_letter_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="egm_strike_off_letter_to_iras_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="egm_strike_off_minutes_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="egm_strike_off_notice_fname" invisible="1" class="oe_inline oe_right"/>
 	                <group col='4' colspan='2'>
 	                	<group>
-	                		<field name="strike_off_acra_resolution_datas" filename="strike_off_acra_resolution_fname" nolabel='1' readonly='1' colspan='2'/>
-	                		<field name="strike_off_agreement_letter_datas" filename="strike_off_agreement_letter_fname" nolabel='1' readonly='1' colspan='2'/>
-	                		<field name="strike_off_appointment_letter_datas" filename="strike_off_appointment_letter_fname" nolabel='1' readonly='1' colspan='2'/>
-	                		<field name="strike_off_declaration_datas" filename="strike_off_declaration_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="egm_strike_off_acra_resolution_datas" filename="egm_strike_off_acra_resolution_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="egm_strike_off_agreement_letter_datas" filename="egm_strike_off_agreement_letter_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="egm_strike_off_appointment_letter_datas" filename="egm_strike_off_appointment_letter_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="egm_strike_off_declaration_datas" filename="egm_strike_off_declaration_fname" nolabel='1' readonly='1' colspan='2'/>
 	                	</group>
 	                	<group>
-	                		<field name="strike_off_letter_datas" filename="strike_off_letter_fname" nolabel='1' readonly='1' colspan='2'/>
-	                		<field name="strike_off_letter_to_iras_datas" filename="strike_off_letter_to_iras_fname" nolabel='1' readonly='1' colspan='2'/>
-	                		<field name="strike_off_minutes_datas" filename="strike_off_minutes_fname" nolabel='1' readonly='1' colspan='2'/>
-	                		<field name="strike_off_notice_datas" filename="strike_off_notice_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="egm_strike_off_letter_datas" filename="egm_strike_off_letter_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="egm_strike_off_letter_to_iras_datas" filename="egm_strike_off_letter_to_iras_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="egm_strike_off_minutes_datas" filename="egm_strike_off_minutes_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="egm_strike_off_notice_datas" filename="egm_strike_off_notice_fname" nolabel='1' readonly='1' colspan='2'/>
 	                	</group>
 	                </group>
 	                <footer>

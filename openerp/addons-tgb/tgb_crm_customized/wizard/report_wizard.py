@@ -1990,59 +1990,59 @@ class report_wizard_strike_off_egm_templates(osv.osv_memory):
 
             report_filename='Strike off_Acra_Resolution'
             report_extention='.doc'
-            report_name='strike_off_acra_resolution'
+            report_name='egm_strike_off_acra_resolution'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'strike_off_acra_resolution_fname': report_val['datas_fname'],
-                        'strike_off_acra_resolution_datas': report_val['db_datas']})
+            res.update({'egm_strike_off_acra_resolution_fname': report_val['datas_fname'],
+                        'egm_strike_off_acra_resolution_datas': report_val['db_datas']})
             
             report_filename='Strike off_Agreement Letter'
             report_extention='.doc'
-            report_name='strike_off_agreement_letter'
+            report_name='egm_strike_off_agreement_letter'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'strike_off_agreement_letter_fname': report_val['datas_fname'],
-                        'strike_off_agreement_letter_datas': report_val['db_datas']})
+            res.update({'egm_strike_off_agreement_letter_fname': report_val['datas_fname'],
+                        'egm_strike_off_agreement_letter_datas': report_val['db_datas']})
             
             report_filename='Strike off_Appointment Letter'
             report_extention='.doc'
-            report_name='strike_off_appointment_letter'
+            report_name='egm_strike_off_appointment_letter'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'strike_off_appointment_letter_fname': report_val['datas_fname'],
-                        'strike_off_appointment_letter_datas': report_val['db_datas']})
+            res.update({'egm_strike_off_appointment_letter_fname': report_val['datas_fname'],
+                        'egm_strike_off_appointment_letter_datas': report_val['db_datas']})
             
             report_filename='strike off declaration'
             report_extention='.doc'
-            report_name='strike_off_declaration'
+            report_name='egm_strike_off_declaration'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'strike_off_declaration_fname': report_val['datas_fname'],
-                        'strike_off_declaration_datas': report_val['db_datas']})
+            res.update({'egm_strike_off_declaration_fname': report_val['datas_fname'],
+                        'egm_strike_off_declaration_datas': report_val['db_datas']})
             
             report_filename='Strike off_letter'
             report_extention='.doc'
-            report_name='strike_off_letter'
+            report_name='egm_strike_off_letter'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'strike_off_letter_fname': report_val['datas_fname'],
-                        'strike_off_letter_datas': report_val['db_datas']})
+            res.update({'egm_strike_off_letter_fname': report_val['datas_fname'],
+                        'egm_strike_off_letter_datas': report_val['db_datas']})
             
             report_filename='Strike off_Letter to IRAS'
             report_extention='.doc'
-            report_name='strike_off_letter_to_iras'
+            report_name='egm_strike_off_letter_to_iras'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'strike_off_letter_to_iras_fname': report_val['datas_fname'],
-                        'strike_off_letter_to_iras_datas': report_val['db_datas']})
+            res.update({'egm_strike_off_letter_to_iras_fname': report_val['datas_fname'],
+                        'egm_strike_off_letter_to_iras_datas': report_val['db_datas']})
             
             report_filename='Strike off_Minutes'
             report_extention='.doc'
-            report_name='strike_off_minutes'
+            report_name='egm_strike_off_minutes'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'strike_off_minutes_fname': report_val['datas_fname'],
-                        'strike_off_minutes_datas': report_val['db_datas']})
+            res.update({'egm_strike_off_minutes_fname': report_val['datas_fname'],
+                        'egm_strike_off_minutes_datas': report_val['db_datas']})
             
             report_filename='Strike off_Notice'
             report_extention='.doc'
-            report_name='strike_off_notice'
+            report_name='egm_strike_off_notice'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'strike_off_notice_fname': report_val['datas_fname'],
-                        'strike_off_notice_datas': report_val['db_datas']})
+            res.update({'egm_strike_off_notice_fname': report_val['datas_fname'],
+                        'egm_strike_off_notice_datas': report_val['db_datas']})
             
         return res
     
@@ -2050,29 +2050,29 @@ class report_wizard_strike_off_egm_templates(osv.osv_memory):
         'name': fields.char('Name',size=1024),
         'partner_id': fields.many2one('res.partner','Partner'),
         
-        'strike_off_acra_resolution_fname': fields.char('File Name',size=256),
-        'strike_off_acra_resolution_datas': fields.binary('Database Data'),
+        'egm_strike_off_acra_resolution_fname': fields.char('File Name',size=256),
+        'egm_strike_off_acra_resolution_datas': fields.binary('Database Data'),
         
-        'strike_off_agreement_letter_fname': fields.char('File Name',size=256),
-        'strike_off_agreement_letter_datas': fields.binary('Database Data'),
+        'egm_strike_off_agreement_letter_fname': fields.char('File Name',size=256),
+        'egm_strike_off_agreement_letter_datas': fields.binary('Database Data'),
         
-        'strike_off_appointment_letter_fname': fields.char('File Name',size=256),
-        'strike_off_appointment_letter_datas': fields.binary('Database Data'),
+        'egm_strike_off_appointment_letter_fname': fields.char('File Name',size=256),
+        'egm_strike_off_appointment_letter_datas': fields.binary('Database Data'),
         
-        'strike_off_declaration_fname': fields.char('File Name',size=256),
-        'strike_off_declaration_datas': fields.binary('Database Data'),
+        'egm_strike_off_declaration_fname': fields.char('File Name',size=256),
+        'egm_strike_off_declaration_datas': fields.binary('Database Data'),
         
-        'strike_off_letter_fname': fields.char('File Name',size=256),
-        'strike_off_letter_datas': fields.binary('Database Data'),
+        'egm_strike_off_letter_fname': fields.char('File Name',size=256),
+        'egm_strike_off_letter_datas': fields.binary('Database Data'),
         
-        'strike_off_letter_to_iras_fname': fields.char('File Name',size=256),
-        'strike_off_letter_to_iras_datas': fields.binary('Database Data'),
+        'egm_strike_off_letter_to_iras_fname': fields.char('File Name',size=256),
+        'egm_strike_off_letter_to_iras_datas': fields.binary('Database Data'),
         
-        'strike_off_minutes_fname': fields.char('File Name',size=256),
-        'strike_off_minutes_datas': fields.binary('Database Data'),
+        'egm_strike_off_minutes_fname': fields.char('File Name',size=256),
+        'egm_strike_off_minutes_datas': fields.binary('Database Data'),
         
-        'strike_off_notice_fname': fields.char('File Name',size=256),
-        'strike_off_notice_datas': fields.binary('Database Data'),
+        'egm_strike_off_notice_fname': fields.char('File Name',size=256),
+        'egm_strike_off_notice_datas': fields.binary('Database Data'),
         
     }
     

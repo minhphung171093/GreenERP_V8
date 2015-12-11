@@ -3,11 +3,11 @@
 	<data>
 	
 <!-- Strike off_EGM_Templates -->
-		<record id="strike_off_acra_resolution" model="ir.actions.report.xml">
-	        <field name="name">strike_off_acra_resolution</field>
+		<record id="egm_strike_off_acra_resolution" model="ir.actions.report.xml">
+	        <field name="name">egm_strike_off_acra_resolution</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">strike_off_acra_resolution</field>
+	        <field name="report_name">egm_strike_off_acra_resolution</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -20,17 +20,17 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="strike_off_acra_resolution"
+			id="egm_strike_off_acra_resolution"
 			model="res.partner"
-			name="strike_off_acra_resolution"
-	        string="strike_off_acra_resolution"
+			name="egm_strike_off_acra_resolution"
+	        string="egm_strike_off_acra_resolution"
 	        rml="tgb_crm_customized/report/strike_off_egm_templates/strike_off_acra_resolution.odt"/>
 	        
-        <record id="strike_off_agreement_letter" model="ir.actions.report.xml">
-	        <field name="name">strike_off_agreement_letter</field>
+        <record id="egm_strike_off_agreement_letter" model="ir.actions.report.xml">
+	        <field name="name">egm_strike_off_agreement_letter</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">strike_off_agreement_letter</field>
+	        <field name="report_name">egm_strike_off_agreement_letter</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -43,17 +43,17 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="strike_off_agreement_letter"
+			id="egm_strike_off_agreement_letter"
 			model="res.partner"
-			name="strike_off_agreement_letter"
-	        string="strike_off_agreement_letter"
+			name="egm_strike_off_agreement_letter"
+	        string="egm_strike_off_agreement_letter"
 	        rml="tgb_crm_customized/report/strike_off_egm_templates/strike_off_agreement_letter.odt"/>
 	        
-        <record id="strike_off_appointment_letter" model="ir.actions.report.xml">
-	        <field name="name">strike_off_appointment_letter</field>
+        <record id="egm_strike_off_appointment_letter" model="ir.actions.report.xml">
+	        <field name="name">egm_strike_off_appointment_letter</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">strike_off_appointment_letter</field>
+	        <field name="report_name">egm_strike_off_appointment_letter</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -66,17 +66,17 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="strike_off_appointment_letter"
+			id="egm_strike_off_appointment_letter"
 			model="res.partner"
-			name="strike_off_appointment_letter"
-	        string="strike_off_appointment_letter"
+			name="egm_strike_off_appointment_letter"
+	        string="egm_strike_off_appointment_letter"
 	        rml="tgb_crm_customized/report/strike_off_egm_templates/strike_off_appointment_letter.odt"/>
 	        
-        <record id="strike_off_declaration" model="ir.actions.report.xml">
-	        <field name="name">strike_off_declaration</field>
+        <record id="egm_strike_off_declaration" model="ir.actions.report.xml">
+	        <field name="name">egm_strike_off_declaration</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">strike_off_declaration</field>
+	        <field name="report_name">egm_strike_off_declaration</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -89,17 +89,17 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="strike_off_declaration"
+			id="egm_strike_off_declaration"
 			model="res.partner"
-			name="strike_off_declaration"
-	        string="strike_off_declaration"
+			name="egm_strike_off_declaration"
+	        string="egm_strike_off_declaration"
 	        rml="tgb_crm_customized/report/strike_off_egm_templates/strike_off_declaration.odt"/>
 	        
-        <record id="strike_off_letter" model="ir.actions.report.xml">
-	        <field name="name">strike_off_letter</field>
+        <record id="egm_strike_off_letter" model="ir.actions.report.xml">
+	        <field name="name">egm_strike_off_letter</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">strike_off_letter</field>
+	        <field name="report_name">egm_strike_off_letter</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -112,17 +112,17 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="strike_off_letter"
+			id="egm_strike_off_letter"
 			model="res.partner"
-			name="strike_off_letter"
-	        string="strike_off_letter"
+			name="egm_strike_off_letter"
+	        string="egm_strike_off_letter"
 	        rml="tgb_crm_customized/report/strike_off_egm_templates/strike_off_letter.odt"/>
 	        
-        <record id="strike_off_letter_to_iras" model="ir.actions.report.xml">
-	        <field name="name">strike_off_letter_to_iras</field>
+        <record id="egm_strike_off_letter_to_iras" model="ir.actions.report.xml">
+	        <field name="name">egm_strike_off_letter_to_iras</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">strike_off_letter_to_iras</field>
+	        <field name="report_name">egm_strike_off_letter_to_iras</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -135,17 +135,17 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="strike_off_letter_to_iras"
+			id="egm_strike_off_letter_to_iras"
 			model="res.partner"
-			name="strike_off_letter_to_iras"
-	        string="strike_off_letter_to_iras"
+			name="egm_strike_off_letter_to_iras"
+	        string="egm_strike_off_letter_to_iras"
 	        rml="tgb_crm_customized/report/strike_off_egm_templates/strike_off_letter_to_iras.odt"/>
 	        
-        <record id="strike_off_minutes" model="ir.actions.report.xml">
-	        <field name="name">strike_off_minutes</field>
+        <record id="egm_strike_off_minutes" model="ir.actions.report.xml">
+	        <field name="name">egm_strike_off_minutes</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">strike_off_minutes</field>
+	        <field name="report_name">egm_strike_off_minutes</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -158,17 +158,17 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="strike_off_minutes"
+			id="egm_strike_off_minutes"
 			model="res.partner"
-			name="strike_off_minutes"
-	        string="strike_off_minutes"
+			name="egm_strike_off_minutes"
+	        string="egm_strike_off_minutes"
 	        rml="tgb_crm_customized/report/strike_off_egm_templates/strike_off_minutes.odt"/>
 	        
-        <record id="strike_off_notice" model="ir.actions.report.xml">
-	        <field name="name">strike_off_notice</field>
+        <record id="egm_strike_off_notice" model="ir.actions.report.xml">
+	        <field name="name">egm_strike_off_notice</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">res.partner</field>
-	        <field name="report_name">strike_off_notice</field>
+	        <field name="report_name">egm_strike_off_notice</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-doc'),('compatible_types','=','oo-odt')]"/>
@@ -181,10 +181,10 @@
 		<report 
 			auto="False" 
 			menu="False"
-			id="strike_off_notice"
+			id="egm_strike_off_notice"
 			model="res.partner"
-			name="strike_off_notice"
-	        string="strike_off_notice"
+			name="egm_strike_off_notice"
+	        string="egm_strike_off_notice"
 	        rml="tgb_crm_customized/report/strike_off_egm_templates/strike_off_notice.odt"/>
 	        
 	</data>

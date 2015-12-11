@@ -31,6 +31,10 @@ class Parser(report_sxw.rml_parse):
             'get_chairman': self.get_chairman,
             'get_secretary': self.get_secretary,
             'convert_date_d_m_Y': self.convert_date_d_m_Y,
+            'get_chairman_nric': self.get_chairman_nric,
+            'get_partner_full_address': self.get_partner_full_address,
+            'get_chairman_id': self.get_chairman_id,
+            'get_list_director': self.get_list_director,
         })
         
     def get_datenow(self):
@@ -69,10 +73,52 @@ class Parser(report_sxw.rml_parse):
             partner = self.cr.fetchall()
         return partner and partner[0] or ''
     
+    def get_chairman_id(self, partner_id):
+        partner = []
+        sql = '''
+            select id from res_partner where upper(function)='DIRECTOR' and parent_id=%s and chairman=True
+        '''%(partner_id)
+        self.cr.execute(sql)
+        partner = self.cr.fetchall()
+        if not partner:
+            sql = '''
+                select id from res_partner where upper(function)='DIRECTOR' and parent_id=%s order by id limit 1
+            '''%(partner_id)
+            self.cr.execute(sql)
+            partner = self.cr.fetchall()
+        return partner and partner[0] or ''
+    
+    def get_chairman_nric(self, partner_id):
+        partner = []
+        sql = '''
+            select nric from res_partner where upper(function)='DIRECTOR' and parent_id=%s and chairman=True
+        '''%(partner_id)
+        self.cr.execute(sql)
+        partner = self.cr.fetchall()
+        if not partner:
+            sql = '''
+                select nric from res_partner where upper(function)='DIRECTOR' and parent_id=%s order by id limit 1
+            '''%(partner_id)
+            self.cr.execute(sql)
+            partner = self.cr.fetchall()
+        return partner and partner[0] or ''
+    
+    def get_list_director(self, partner_id):
+        d = ''
+        sql = '''
+            select name from res_partner where upper(function)='DIRECTOR' and parent_id=%s
+        '''%(partner_id)
+        self.cr.execute(sql)
+        for line in self.cr.dictfetchall():
+            d+=line['name']+' & '
+        if d:
+            d = d[:-2] 
+        return d
+    
     def get_1directorin1line(self, partner_id):
         res = []
         sql = '''
-            select name from res_partner where upper(function)='DIRECTOR' and parent_id=%s
+            select name,nric from res_partner where upper(function)='DIRECTOR' and parent_id=%s
         '''%(partner_id)
         self.cr.execute(sql)
         return self.cr.dictfetchall()
@@ -105,6 +151,20 @@ class Parser(report_sxw.rml_parse):
         address = ''
         if company_id and company_id.partner_id:
             partner = company_id.partner_id
+            if partner.street:
+                address += partner.street+' '
+            if partner.street2:
+                address += partner.street2+' '
+            if partner.country_id:
+                address += partner.country_id.name+' '
+            if partner.zip:
+                address += partner.zip+' '
+        return address
+    
+    def get_partner_full_address(self, partner_id):
+        address = ''
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
             if partner.street:
                 address += partner.street+' '
             if partner.street2:
