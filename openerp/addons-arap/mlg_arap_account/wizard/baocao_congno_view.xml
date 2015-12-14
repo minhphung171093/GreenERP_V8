@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Báo cáo công nợ theo hóa đơn -->
+        <record id="view_baocao_congno_theo_hoadon_report" model="ir.ui.view">
+            <field name="name">baocao_congno_theo_hoadon.report</field>
+            <field name="model">baocao.congno</field>
+            <field name="arch" type="xml">
+                <form string="Công nợ theo hóa đơn" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='so_hoa_don' required='1'/>
+                		<newline/>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'baocao_congno_theo_hoadon_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_baocao_congno_theo_hoadon_report" model="ir.actions.act_window">
+            <field name="name">Công nợ theo hóa đơn</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">baocao.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_baocao_congno_theo_hoadon_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+<!-- Báo cáo công nợ theo chiết tính -->
+        <record id="view_baocao_congno_theo_chiettinh_report" model="ir.ui.view">
+            <field name="name">baocao_congno_theo_chiettinh.report</field>
+            <field name="model">baocao.congno</field>
+            <field name="arch" type="xml">
+                <form string="Công nợ theo chiết tính" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='ma_bang_chiettinh_chiphi_sua' required='1'/>
+                		<newline/>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'baocao_congno_theo_chiettinh_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_baocao_congno_theo_chiettinh_report" model="ir.actions.act_window">
+            <field name="name">Công nợ theo chiết tính</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">baocao.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_baocao_congno_theo_chiettinh_report"/>
+            <field name="target">new</field>
+        </record>	        
+
+<!-- Báo cáo công nợ theo hợp đồng -->
+        <record id="view_baocao_congno_theo_hopdong_report" model="ir.ui.view">
+            <field name="name">baocao_congno_theo_hopdong.report</field>
+            <field name="model">baocao.congno</field>
+            <field name="arch" type="xml">
+                <form string="Công nợ theo hợp đồng" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='so_hop_dong' required='1'/>
+                		<newline/>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'baocao_congno_theo_hopdong_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_baocao_congno_theo_hopdong_report" model="ir.actions.act_window">
+            <field name="name">Công nợ theo hợp đồng</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">baocao.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_baocao_congno_theo_hopdong_report"/>
+            <field name="target">new</field>
+        </record>
+
+<!-- Báo cáo công nợ theo biển số xe -->
+        <record id="view_baocao_congno_theo_biensoxe_report" model="ir.ui.view">
+            <field name="name">baocao_congno_theo_biensoxe.report</field>
+            <field name="model">baocao.congno</field>
+            <field name="arch" type="xml">
+                <form string="Công nợ theo biển số xe" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='bien_so_xe_id' required='1'/>
+                		<newline/>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'baocao_congno_theo_biensoxe_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_baocao_congno_theo_biensoxe_report" model="ir.actions.act_window">
+            <field name="name">Công nợ theo biển số xe</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">baocao.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_baocao_congno_theo_biensoxe_report"/>
+            <field name="target">new</field>
+        </record>
+        
+    </data>
+</openerp>
+

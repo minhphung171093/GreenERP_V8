@@ -49,6 +49,7 @@ class account_voucher(osv.osv):
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
         'fusion_id': fields.char('Fusion Thu', size=1024),
+        'loai_giaodich': fields.char('Loại giao dịch', size=1024),
     }
     def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
         """
@@ -188,6 +189,7 @@ class account_voucher(osv.osv):
                 # Them loại công no tren voucher line
                 'mlg_type': line.mlg_type,
                 'fusion_id': line.fusion_id,
+                'loai_giaodich': line.loai_giaodich,
             }
             remaining_amount -= rs['amount']
             #in case a corresponding move_line hasn't been found, we now try to assign the voucher amount
@@ -275,6 +277,9 @@ class account_voucher(osv.osv):
             if voucher.fusion_id:
                 cr.execute(''' update account_move_line set fusion_id=%s where move_id=%s ''',(voucher.fusion_id,move_id,))
             
+            if voucher.loai_giaodich:
+                cr.execute(''' update account_move_line set loai_giaodich=%s where move_id=%s ''',(voucher.loai_giaodich,move_id,))
+            
             if voucher.journal_id.entry_posted:
                 move_pool.post(cr, uid, [move_id], context={})
             # We automatically reconcile the account move lines.
@@ -306,6 +311,7 @@ class account_voucher_line(osv.osv):
                                       ('tam_ung','Tạm ứng'),
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
         'fusion_id': fields.char('Fusion Thu', size=1024),
+        'loai_giaodich': fields.char('Loại giao dịch', size=1024),
     }
     
 account_voucher_line()

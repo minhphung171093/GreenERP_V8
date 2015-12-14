@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Công nợ đang mở -->
+        <record id="view_congno_dangmo_report" model="ir.ui.view">
+            <field name="name">congno.dangmo.form</field>
+            <field name="model">congno.dangmo</field>
+            <field name="arch" type="xml">
+                <form string="Công nợ đang mở" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='date'/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    	<field name='mlg_type' required='1'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_dangmo_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_congno_dangmo" model="ir.actions.act_window">
+            <field name="name">Công nợ đang mở</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">congno.dangmo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_congno_dangmo_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+    </data>
+</openerp>
+

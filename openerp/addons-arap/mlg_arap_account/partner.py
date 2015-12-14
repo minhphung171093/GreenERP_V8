@@ -50,7 +50,7 @@ class res_partner(osv.osv):
             '''
             cr.execute(sql)
             account_id = cr.fetchone()
-            res.update({'property_account_receivable': account_id[0],'property_account_payable': account_id[0]})
+            res.update({'property_account_receivable': account_id[0],'property_account_payable': account_id[0],'account_ht_id': account_id[0]})
         return res
     
     def _get_sotien(self, cr, uid, ids, field_name, arg, context=None):
@@ -375,6 +375,7 @@ class res_partner(osv.osv):
                         'chinhanh_id': line['chinhanh_id'],
                         'journal_id': journal_ids[0],
                         'date': ngay_thanh_toan,
+                        'loai_giaodich': 'Giao dịch cấn trừ ký quỹ',
                     }
                     
                     context = {

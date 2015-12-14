@@ -15,3 +15,4 @@ import congno_theo_loaikyquy_report
 import doanh_so_phaithu
 import doanh_so_phaitra
 import congno_dangchothu_report
+import congno_theo_loainodoanhthu_report

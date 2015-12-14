@@ -14,6 +14,7 @@
                     <field name="account_id" string="Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
+                    <field name="loai_nodoanhthu_id" string="Loại nợ doanh thu"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -37,6 +38,7 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
+                    <field name="loai_nodoanhthu_id" string="Loại nợ doanh thu"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -79,6 +81,7 @@
 			                    <field name="partner_id" options="{'no_create': True}" domain="[('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -86,11 +89,12 @@
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
+			                    <field name="loai_nodoanhthu_id" options="{'no_create': True}"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">
 	                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                    	<newline/>
+	               			<newline/>
 	                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     	</group>
                     	<group>
@@ -101,6 +105,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -144,7 +149,7 @@
             <field name="view_id" ref="view_no_doanh_thu_tree"/>
             <field name="search_view_id" ref="view_no_doanh_thu_filter"/>
             <field name="domain">[('mlg_type','=','no_doanh_thu')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'no_doanh_thu','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_loai_giaodich': 'Giao dịch tạo trực tiếp','default_mlg_type': 'no_doanh_thu','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_no_doanh_thu1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -169,6 +174,7 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
+                    <field name="so_hoa_don" string="Số hóa đơn" />
                     <field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
@@ -238,6 +244,7 @@
 			                    <field name="partner_id" options="{'no_create': True}" domain="[('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -262,6 +269,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -305,7 +313,7 @@
             <field name="view_id" ref="view_chi_ho_dien_thoai_tree"/>
             <field name="search_view_id" ref="view_chi_ho_dien_thoai_filter"/>
             <field name="domain">[('mlg_type','=','chi_ho_dien_thoai')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'chi_ho_dien_thoai','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_loai_giaodich': 'Giao dịch tạo trực tiếp','default_mlg_type': 'chi_ho_dien_thoai','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_chi_ho_dien_thoai1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -331,7 +339,8 @@
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
-                    <field name="so_hop_dong"/>
+                    <field name="so_hoa_don"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -401,6 +410,7 @@
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
 			                    <field name="loai_baohiem_id" required='1' options="{'no_create': True}"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -425,6 +435,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -468,7 +479,7 @@
             <field name="view_id" ref="view_phai_thu_bao_hiem_tree"/>
             <field name="search_view_id" ref="view_phai_thu_bao_hiem_filter"/>
             <field name="domain">[('mlg_type','=','phai_thu_bao_hiem')]</field>
-            <field name="context">{'default_loai_doituong':'nhadautu','readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'phai_thu_bao_hiem', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong':'nhadautu','default_loai_giaodich': 'Giao dịch tạo trực tiếp','readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_mlg_type': 'phai_thu_bao_hiem', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_phai_thu_bao_hiem1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -559,6 +570,7 @@
 			                    <field name="partner_id" options="{'no_create': True}" domain="[('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -583,6 +595,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -626,7 +639,7 @@
             <field name="view_id" ref="view_phai_thu_ky_quy_tree"/>
             <field name="search_view_id" ref="view_phai_thu_ky_quy_filter"/>
             <field name="domain">[('mlg_type','=','phai_thu_ky_quy')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'phai_thu_ky_quy', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_loai_giaodich': 'Giao dịch tạo trực tiếp','default_mlg_type': 'phai_thu_ky_quy', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_phai_thu_ky_quy1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -652,6 +665,8 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Tên Phòng ban/Đội xe"/>
+                    <field name="so_bien_ban_vi_pham" string="Số biên bản vi phạm"/>
+                    <field name="loai_vipham_id" string="Loại vi phạm"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -718,6 +733,7 @@
 			                    <field name="partner_id" options="{'no_create': True}" domain="[('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -743,6 +759,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -786,7 +803,7 @@
             <field name="view_id" ref="view_phat_vi_pham_tree"/>
             <field name="search_view_id" ref="view_phat_vi_pham_filter"/>
             <field name="domain">[('mlg_type','=','phat_vi_pham')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'phat_vi_pham','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_loai_giaodich': 'Giao dịch tạo trực tiếp','default_mlg_type': 'phat_vi_pham','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_phat_vi_pham1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -813,6 +830,9 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
+                    <field name="so_hop_dong"/>
+                    <field name="ma_bang_chiettinh_chiphi_sua"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -881,6 +901,7 @@
 			                    <field name="partner_id" options="{'no_create': True}" domain="[('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -907,6 +928,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -950,7 +972,7 @@
             <field name="view_id" ref="view_thu_no_xuong_tree"/>
             <field name="search_view_id" ref="view_thu_no_xuong_filter"/>
             <field name="domain">[('mlg_type','=','thu_no_xuong')]</field>
-            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'thu_no_xuong','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_loai_giaodich': 'Giao dịch tạo trực tiếp','default_mlg_type': 'thu_no_xuong','default_loai_doituong': 'taixe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_thu_no_xuong1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -976,6 +998,8 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
                     <field name="account_id" string="Đội kinh doanh"/>
+                    <field name="so_hop_dong" string="Mã hợp đồng"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Nhà đầu tư" context="{'group_by':'partner_id'}"/>
@@ -1041,6 +1065,7 @@
 			                    <field name="partner_id" options="{'no_create': True}" domain="[('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -1065,6 +1090,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -1108,7 +1134,7 @@
             <field name="view_id" ref="view_thu_phi_thuong_hieu_tree"/>
             <field name="search_view_id" ref="view_thu_phi_thuong_hieu_filter"/>
             <field name="domain">[('mlg_type','=','thu_phi_thuong_hieu')]</field>
-            <field name="context">{'default_loai_doituong': 'nhadautu','readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'thu_phi_thuong_hieu', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong': 'nhadautu','default_loai_giaodich': 'Giao dịch tạo trực tiếp','readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_mlg_type': 'thu_phi_thuong_hieu', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_thu_phi_thuong_hieu1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -1134,6 +1160,8 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
                     <field name="account_id" string="Đội kinh doanh"/>
+                    <field name="so_hop_dong" string="Mã hợp đồng"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Nhà đầu tư" context="{'group_by':'partner_id'}"/>
@@ -1197,9 +1225,10 @@
 		                    	<field name="chinhanh_id" string="Chi nhánh"/>
 		                    	<field name="loai_doituong" string="Loại đối tượng" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" options="{'no_create': True}" domain="[('customer','=',True)]" string="Đối tượng" context="{'cong_no_thu':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}" on_change="onchange_doituong(partner_id,loai_doituong)"/>
-			                    <field name="thu_cho_doituong_id" domain="[('nhadautugiantiep','=',True)]" options="{'no_create': True}"/>
+			                    <field name="thu_cho_doituong_id" domain="[('nhadautugiantiep','=',True)]" options="{'no_create': True}" context="{'timnhadautugiantiep':1,'form_view_ref':'mlg_arap_account.view_nha_dau_tu_giantiep_form'}"/>
 			                    <field name="chinhanh_ndt_id" invisible='1' context="{'cong_no_thu':1,'partner_id':partner_id}" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh_ndt(chinhanh_ndt_id,partner_id)" attrs="{'invisible':[('loai_doituong','!=','nhadautu')],'required':[('loai_doituong','=','nhadautu')]}"/>
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -1213,8 +1242,9 @@
 	                    </group>
                     	<group col="4" colspan="2">
 	                    	<field name="so_tien" required='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-	                    	<newline/>
+	                    	<field name="sotien_lai" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 	                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+	                    	<field name="sotien_lai_conlai" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     	</group>
                     	<group>
                     		<field name="dien_giai" placeholder="Diễn giải ..." nolabel='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
@@ -1224,6 +1254,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -1231,6 +1262,15 @@
 	                                    <field name="credit" string="Có"/>
 	                                    <field name="amount_currency" groups="base.group_multi_currency"/>
 	                                    <field name="currency_id" groups="base.group_multi_currency"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                        <page string="Lịch sử thu tiền lãi" groups="base.group_user">
+	                            <field name="lichsu_thutienlai_line" readonly='1'>
+	                                <tree string="Lịch sử thu tiền lãi">
+	                                    <field name="ngay"/>
+	                                    <field name="fusion_id"/>
+	                                    <field name="so_tien"/>
 	                                </tree>
 	                            </field>
 	                        </page>
@@ -1267,7 +1307,7 @@
             <field name="view_id" ref="view_tra_gop_xe_tree"/>
             <field name="search_view_id" ref="view_tra_gop_xe_filter"/>
             <field name="domain">[('mlg_type','=','tra_gop_xe')]</field>
-            <field name="context">{'default_loai_doituong': 'nhadautu','readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'tra_gop_xe', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong': 'nhadautu','default_loai_giaodich': 'Giao dịch tạo trực tiếp','readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_mlg_type': 'tra_gop_xe', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_tra_gop_xe1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
@@ -1293,6 +1333,8 @@
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Phòng ban/Đội xe"/>
+                    <field name="so_hop_dong" string="Mã hợp đồng"/>
+                    <field name="bien_so_xe_id"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -1361,6 +1403,7 @@
 			                    <field name="journal_id" invisible='1' string="Phương thức thanh toán" widget ="selection" on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
 			                    <field name="chung_tu_bao_hiem"/>
 			                    <field name="so_tien_tren_ct"/>
+			                    <field name="loai_giaodich" readonly='1'/>
 		                    </group>
 		                    <group>
 			                    <field name="date_invoice" string="Ngày giao dịch" required='1'/>
@@ -1387,6 +1430,7 @@
 	                            <field name="payment_ids">
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
+	                                    <field name="loai_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -1430,7 +1474,7 @@
             <field name="view_id" ref="view_hoan_tam_ung_tree"/>
             <field name="search_view_id" ref="view_hoan_tam_ung_filter"/>
             <field name="domain">[('mlg_type','=','hoan_tam_ung')]</field>
-            <field name="context">{'default_loai_doituong': 'taixe','readonly_by_pass':['chinhanh_id','account_id'],'default_mlg_type': 'hoan_tam_ung', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong': 'taixe','default_loai_giaodich': 'Giao dịch tạo trực tiếp','readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_mlg_type': 'hoan_tam_ung', 'default_type': 'out_invoice'}</field>
         </record>
 		<record id="action_hoan_tam_ung1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>

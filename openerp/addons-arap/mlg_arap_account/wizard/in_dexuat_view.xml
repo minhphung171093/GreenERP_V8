@@ -40,7 +40,7 @@
                 <form string="In đề xuất cho bảo hiểm" version="7.0">
                 	<group col='4' colspan='2'>
                 		<field name='so_hoa_don'/>
-                		<field name='bien_so_xe_id'/>
+                		<field name='bien_so_xe_id' invisible='1'/>
                     	<field name='from_date'/>
                     	<field name='to_date'/>
                     </group>

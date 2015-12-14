@@ -116,6 +116,23 @@
             <field name="view_id" ref="view_loai_cong_no_tree"/>
         </record>
             
+<!-- Loại no doanh thu -->    
+    	<record id="view_loai_no_doanh_thu_tree" model="ir.ui.view">
+            <field name="name">loai.no.doanh.thu.tree</field>
+            <field name="model">loai.no.doanh.thu</field>
+            <field name="arch" type="xml">
+                <tree string="Loại nợ doanh thu" editable='top'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_loai_no_doanh_thu" model="ir.actions.act_window">
+            <field name="name">Loại nợ doanh thu</field>
+            <field name="res_model">loai.no.doanh.thu</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_loai_no_doanh_thu_tree"/>
+        </record>
 <!-- Loại tạm ứng -->    
     	<record id="view_loai_tam_ung_tree" model="ir.ui.view">
             <field name="name">loai.tam.ung.tree</field>
@@ -133,7 +150,6 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_loai_tam_ung_tree"/>
         </record>
-
 <!-- Loại vi phạm -->    
     	<record id="view_loai_vi_pham_tree" model="ir.ui.view">
             <field name="name">loai.vi.pham.tree</field>

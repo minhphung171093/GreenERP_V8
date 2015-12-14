@@ -420,5 +420,22 @@ class loai_bao_hiem(osv.osv):
     ]
     
 loai_bao_hiem()
+class loai_no_doanh_thu(osv.osv):
+    _name = "loai.no.doanh.thu"
+    _columns = {
+        'name': fields.char('Tên', size=1024, required=True),
+    }
+    
+    def _check_name(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('name','!=', False),('name','=', line.name)])
+            if object_ids:
+                return False
+        return True
 
+    _constraints = [
+        (_check_name, 'Không được trùng tên', ['name']),
+    ]
+    
+loai_no_doanh_thu()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

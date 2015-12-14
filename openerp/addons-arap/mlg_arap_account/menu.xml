@@ -76,6 +76,9 @@
 		<record model="ir.ui.menu" id="base.menu_action_currency_form">
 			<field name="active" eval="False"/>
 		</record>
+		<record model="ir.ui.menu" id="base.menu_administration">
+			<field name="groups_id" eval="[(6,0,[ref('base.group_no_one')])]"/>
+		</record>
 		
 		<menuitem id="menu_root_doituong"
 			name="Đối Tượng" sequence="1"/>
@@ -162,7 +165,7 @@
 					parent="menu_cong_no" sequence="30"/>
 			
 			<menuitem id="menu_in_dexuat"
-				name="In đề xuất"
+				name="In đề xuất chi"
 				parent="menu_root_congno" sequence="15"/>
 				
 				<menuitem id="menu_action_in_dexuat_dienthoai_report"
@@ -304,7 +307,12 @@
 					action="action_no_hang_muc"
 					name="Nợ hạng mức"
 					parent="menu_danhmuc_dungchung" sequence="9"/>
-					
+				
+				<menuitem id="menu_action_loai_no_doanh_thu"
+					action="action_loai_no_doanh_thu"
+					name="Loại nợ doanh thu"
+					parent="menu_danhmuc_dungchung" sequence="10"/>
+						
 				<menuitem id="menu_action_bien_so_xe"
 					action="action_bien_so_xe"
 					name="Biển số xe"
@@ -314,11 +322,6 @@
 					name="Lịch sử giao dịch"
 					action="action_lichsu_giaodich"
 					parent="menu_danhmuc_dungchung" sequence="25"/>
-					
-				<menuitem id="menu_action_congno_dauky"
-					name="Công nợ đầu kỳ"
-					action="action_congno_dauky"
-					parent="menu_danhmuc_dungchung" sequence="30"/>
 					
 		<menuitem id="menu_root_luocdo"
 			name="Lược Đồ" sequence="15"/>
@@ -364,6 +367,15 @@
 					name="DS Phạt vi phạm"
 					action="action_phat_vi_pham_report"
 					parent="menu_danhsach_congno" sequence="40"/>-->
+			
+			<menuitem id="menu_congno_dauky"
+				name="Công Nợ Đầu Kỳ"
+				parent="menu_root_baocao" sequence="10"/>
+				
+				<menuitem id="menu_action_congno_dauky"
+					name="Công nợ đầu kỳ"
+					action="action_congno_dauky"
+					parent="menu_congno_dauky" sequence="10"/>
 			
 			<menuitem id="menu_chitiet_congno"
 				name="Báo cáo chi tiết công nợ"
@@ -441,6 +453,11 @@
 					action="action_congno_theo_loaivipham"
 					name="Theo loại vi phạm"
 					parent="menu_baocao_theo_danhmuc" sequence="10"/>
+				
+				<menuitem id="menu_action_congno_theo_loainodoanhthu"
+					action="action_congno_theo_loainodoanhthu"
+					name="Theo loại nợ doanh thu"
+					parent="menu_baocao_theo_danhmuc" sequence="11"/>
 					
 				<menuitem id="menu_action_congno_theo_loaitamung"
 					action="action_congno_theo_loaitamung"
@@ -496,7 +513,8 @@
 				<menuitem id="menu_action_res_users"
 					name="Người dùng"
 					action="base.action_res_users"
-					parent="menu_cauhinh_arap" sequence="15"/>
+					parent="menu_cauhinh_arap" sequence="15"
+					groups="base.group_erp_manager"/>
 					
 				<menuitem id="menu_action_cauhinh_thumuc_import"
 					action="action_cauhinh_thumuc_import"

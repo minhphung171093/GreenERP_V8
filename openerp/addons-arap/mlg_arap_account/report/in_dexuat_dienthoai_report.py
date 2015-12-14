@@ -104,7 +104,7 @@ class Parser(report_sxw.rml_parse):
                 from account_invoice ai
                 left join res_partner rp on ai.partner_id = rp.id
                 
-                where ai.mlg_type='chi_ho_dien_thoai' and ai.state in ('draft','open')   
+                where ai.mlg_type='chi_ho_dien_thoai' and ai.state in ('draft')   
         '''
         if so_hoa_don:
             sql+='''

@@ -28,6 +28,7 @@ import base64
 from openerp import SUPERUSER_ID
 import hashlib
 import os
+from datetime import datetime, timedelta
 import logging
 from openerp.addons.mlg_arap_account import lib_csv
 from openerp import netsvc
@@ -44,6 +45,7 @@ DONE = '/done/'
 ERROR = '/error/'
 class import_congno_manually(osv.osv):
     _name = 'import.congno.manually'
+    _order = 'name desc'
     
     def _data_get(self, cr, uid, ids, name, arg, context=None):
         if context is None:
@@ -101,11 +103,14 @@ class import_congno_manually(osv.osv):
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        noidungloi = ''
         wf_service = netsvc.LocalService("workflow")
         if context.get('import_loai_congno',False):
             try:
                 import_ids = import_obj.search(cr, uid, [('mlg_type','=',context['import_loai_congno'])])
                 if not import_ids:
+                    noidungloi = 'Chưa cấu hình thư mục để nhập vào'
                     raise osv.except_osv(_('Cảnh báo!'), 'Chưa cấu hình thư mục để nhập vào')
                 dir_path = import_obj.browse(cr, uid, import_ids[0]).name
                 path = dir_path+IMPORTING
@@ -125,10 +130,10 @@ class import_congno_manually(osv.osv):
                         try:
                             st = float(data['so_tien'])
                         except Exception, e:
-                            noidung_loi = 'Số tiền không đúng định dạng'
+                            noidungloi = 'Số tiền không đúng định dạng'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                         if float(data['so_tien']) <= 0:
-                            noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                            noidungloi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         sql = '''
                             select id from account_account where code='%s' limit 1
@@ -136,24 +141,34 @@ class import_congno_manually(osv.osv):
                         cr.execute(sql)
                         chinhanh_ids = cr.fetchone()
                         if not chinhanh_ids:
+                            noidungloi = 'Không tìm thấy chi nhánh'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
-                        
+                        if user.chinhanh_id.id != chinhanh_ids[0]:
+                            noidungloi = 'Chi nhánh không trùng với chi nhánh của user đang đăng nhập'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của user đang đăng nhập')
                         sql = '''
-                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong,chinhanh_id
                                 from res_partner where ma_doi_tuong='%s' limit 1
                         '''%(data['ma_doi_tuong'])
                         cr.execute(sql)
                         partner = cr.dictfetchone()
                         if not partner:
+                            noidungloi = 'Không tìm thấy đối tượng'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                         partner_id = partner and partner['id'] or False
                         bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
                         
                         loai_doituong=''
                         if partner['taixe']==True:
+                            if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                noidungloi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             loai_doituong='taixe'
                             account_id = partner and partner['account_ht_id'] or False
                         if partner['nhanvienvanphong']==True:
+                            if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                noidungloi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             loai_doituong='nhanvienvanphong'
                             account_id = partner and partner['account_ht_id'] or False
                         if partner['nhadautu']==True:
@@ -168,6 +183,7 @@ class import_congno_manually(osv.osv):
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
+                            noidungloi = 'Không tìm thấy journal trung gian'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy journal trung gian')
                          
                         vals.update({
@@ -177,13 +193,14 @@ class import_congno_manually(osv.osv):
                             'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
                             'loai_doituong': loai_doituong,
                             'partner_id': partner_id,
-                            'date_invoice': data['ngay_giao_dich'],
+                            'date_invoice': datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d'),
                             'so_hoa_don': data['so_hoa_don'],
                             'so_dien_thoai': data['so_dien_thoai'],
                             'so_tien': data['so_tien'],
                             'dien_giai': data['dien_giai'],
                             'journal_id': journal_ids and journal_ids[0] or False,
                             'bai_giaoca_id': bai_giaoca_id,
+                            'loai_giaodich': 'Giao dịch nhập từ file',
                         })
                         invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
@@ -202,7 +219,7 @@ class import_congno_manually(osv.osv):
                     })
                 except Exception, e:
                     cr.rollback()
-                    noidungloi = str(e).replace("'","''")
+#                     noidungloi = str(e).replace("'","''")
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
@@ -226,11 +243,14 @@ class import_congno_manually(osv.osv):
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
+        user = self.pool.get('res.users').browse(cr, uid, uid)
         wf_service = netsvc.LocalService("workflow")
+        noidungloi = ''
         if context.get('import_loai_congno',False):
             try:
                 import_ids = import_obj.search(cr, uid, [('mlg_type','=',context['import_loai_congno'])])
                 if not import_ids:
+                    noidungloi = 'Chưa cấu hình thư mục để nhập vào'
                     raise osv.except_osv(_('Cảnh báo!'), 'Chưa cấu hình thư mục để nhập vào')
                 dir_path = import_obj.browse(cr, uid, import_ids[0]).name
                 path = dir_path+IMPORTING
@@ -249,10 +269,10 @@ class import_congno_manually(osv.osv):
                         try:
                             st = float(data['so_tien'])
                         except Exception, e:
-                            noidung_loi = 'Số tiền không đúng định dạng'
+                            noidungloi = 'Số tiền không đúng định dạng'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                         if float(data['so_tien']) <= 0:
-                            noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                            noidungloi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         vals = {}
                         sql = '''
@@ -261,24 +281,36 @@ class import_congno_manually(osv.osv):
                         cr.execute(sql)
                         chinhanh_ids = cr.fetchone()
                         if not chinhanh_ids:
+                            noidungloi = 'Không tìm thấy chi nhánh'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                         
+                        if user.chinhanh_id.id != chinhanh_ids[0]:
+                            noidungloi = 'Chi nhánh không trùng với chi nhánh của user đang đăng nhập'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của user đang đăng nhập')
+                        
                         sql = '''
-                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong,chinhanh_id
                                 from res_partner where ma_doi_tuong='%s' limit 1
                         '''%(data['ma_doi_tuong'])
                         cr.execute(sql)
                         partner = cr.dictfetchone()
                         if not partner:
+                            noidungloi = 'Không tìm thấy đối tượng'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                         partner_id = partner and partner['id'] or False
                         bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
                         
                         loai_doituong=''
                         if partner['taixe']==True:
+                            if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                noidungloi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             loai_doituong='taixe'
                             account_id = partner and partner['account_ht_id'] or False
                         if partner['nhanvienvanphong']==True:
+                            if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                noidungloi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             loai_doituong='nhanvienvanphong'
                             account_id = partner and partner['account_ht_id'] or False
                         if partner['nhadautu']==True:
@@ -293,6 +325,7 @@ class import_congno_manually(osv.osv):
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
+                            noidungloi = 'Không tìm thấy journal trung gian'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy journal trung gian')
                         
                         bsx = data['bien_so_xe']
@@ -300,7 +333,19 @@ class import_congno_manually(osv.osv):
                         cr.execute(sql)
                         bien_so_xe_ids = cr.fetchone()
                         if bsx and not bien_so_xe_ids:
+                            noidungloi = 'Không tìm thấy biển số xe'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
+                        
+                        lbh = data['loai_bao_hiem']
+                        if not lbh:
+                            noidungloi = 'Chưa nhập thông tin loại bảo hiểm'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Chưa nhập thông tin loại bảo hiểm')
+                        sql = ''' select id from loai_bao_hiem where name='%s' '''%(lbh)
+                        cr.execute(sql)
+                        loai_bao_hiem_ids = cr.fetchone()
+                        if lbh and not loai_bao_hiem_ids:
+                            noidungloi = 'Không tìm thấy loại bảo hiểm'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại bảo hiểm')
                         
                         vals.update({
                             'mlg_type': 'phai_thu_bao_hiem',
@@ -309,12 +354,14 @@ class import_congno_manually(osv.osv):
                             'account_id': account_id,
                             'loai_doituong': loai_doituong,
                             'partner_id': partner_id,
-                            'date_invoice': data['ngay_giao_dich'],
+                            'date_invoice': datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d'),
                             'so_hoa_don': data['so_hoa_don'],
                             'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
                             'so_tien': data['so_tien'],
                             'dien_giai': data['dien_giai'],
                             'journal_id': journal_ids and journal_ids[0] or False,
+                            'loai_giaodich': 'Giao dịch nhập từ file',
+                            'loai_baohiem_id': loai_bao_hiem_ids and loai_bao_hiem_ids[0] or False,
                         })
                         invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                         vals.update(invoice_vals)
@@ -333,7 +380,7 @@ class import_congno_manually(osv.osv):
                     })
                 except Exception, e:
                     cr.rollback()
-                    noidungloi = str(e).replace("'","''")
+#                     noidungloi = str(e).replace("'","''")
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''
@@ -357,11 +404,14 @@ class import_congno_manually(osv.osv):
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        noidungloi = ''
         wf_service = netsvc.LocalService("workflow")
         if context.get('import_loai_congno',False):
             try:
                 import_ids = import_obj.search(cr, uid, [('mlg_type','=',context['import_loai_congno'])])
                 if not import_ids:
+                    noidungloi = 'Chưa cấu hình thư mục để nhập vào'
                     raise osv.except_osv(_('Cảnh báo!'), 'Chưa cấu hình thư mục để nhập vào')
                 dir_path = import_obj.browse(cr, uid, import_ids[0]).name
                 path = dir_path+IMPORTING
@@ -380,10 +430,10 @@ class import_congno_manually(osv.osv):
                         try:
                             st = float(data['so_tien'])
                         except Exception, e:
-                            noidung_loi = 'Số tiền không đúng định dạng'
+                            noidungloi = 'Số tiền không đúng định dạng'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                         if float(data['so_tien']) <= 0:
-                            noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                            noidungloi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                             raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                         account_id = False
                         vals = {}
@@ -393,24 +443,36 @@ class import_congno_manually(osv.osv):
                         cr.execute(sql)
                         chinhanh_ids = cr.fetchone()
                         if not chinhanh_ids:
+                            noidungloi = 'Không tìm thấy chi nhánh'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                         
+                        if user.chinhanh_id.id != chinhanh_ids[0]:
+                            noidungloi = 'Chi nhánh không trùng với chi nhánh của user đang đăng nhập'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của user đang đăng nhập')
+                        
                         sql = '''
-                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                            select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong,chinhanh_id
                                 from res_partner where ma_doi_tuong='%s' limit 1
                         '''%(data['ma_doi_tuong'])
                         cr.execute(sql)
                         partner = cr.dictfetchone()
                         if not partner:
+                            noidungloi = 'Không tìm thấy đối tượng'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                         partner_id = partner and partner['id'] or False
                         bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
                         
                         loai_doituong=''
                         if partner['taixe']==True:
+                            if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                noidungloi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             loai_doituong='taixe'
                             account_id = partner and partner['account_ht_id'] or False
                         if partner['nhanvienvanphong']==True:
+                            if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                noidungloi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             loai_doituong='nhanvienvanphong'
                             account_id = partner and partner['account_ht_id'] or False
                         if partner['nhadautu']==True:
@@ -425,6 +487,7 @@ class import_congno_manually(osv.osv):
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
+                            noidungloi = 'Không tìm thấy journal trung gian'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy journal trung gian')
                          
                         bsx = data['bien_so_xe']
@@ -432,6 +495,7 @@ class import_congno_manually(osv.osv):
                         cr.execute(sql)
                         bien_so_xe_ids = cr.fetchone()
                         if bsx and not bien_so_xe_ids:
+                            noidungloi = 'Không tìm thấy biển số xe'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                         
                         mx = data['ma_xuong']
@@ -439,6 +503,7 @@ class import_congno_manually(osv.osv):
                         cr.execute(sql)
                         ma_xuong_ids = cr.fetchone()
                         if mx and not ma_xuong_ids:
+                            noidungloi = 'Không tìm thấy mã xưởng'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy mã xưởng')
                          
                         vals.update({
@@ -448,7 +513,7 @@ class import_congno_manually(osv.osv):
                             'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
                             'loai_doituong': loai_doituong,
                             'partner_id': partner_id,
-                            'date_invoice': data['ngay_giao_dich'],
+                            'date_invoice': datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d'),
                             'so_hop_dong': data['so_hop_dong'],
                             'ma_bang_chiettinh_chiphi_sua': data['ma_chiet_tinh'],
                             'so_tien': data['so_tien'],
@@ -457,6 +522,7 @@ class import_congno_manually(osv.osv):
                             'bai_giaoca_id': bai_giaoca_id,
                             'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
                             'ma_xuong_id': ma_xuong_ids and ma_xuong_ids[0] or False,
+                            'loai_giaodich': 'Giao dịch nhập từ file',
                         })
                         
                         invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
@@ -476,7 +542,7 @@ class import_congno_manually(osv.osv):
                     })
                 except Exception, e:
                     cr.rollback()
-                    noidungloi = str(e).replace("'","''")
+#                     noidungloi = str(e).replace("'","''")
                     error_path = dir_path+ERROR
                     csvUti._moveFiles([file_path],error_path)
                     sql = '''

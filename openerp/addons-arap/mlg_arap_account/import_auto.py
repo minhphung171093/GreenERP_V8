@@ -124,7 +124,7 @@ class import_congno_tudong(osv.osv):
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
-                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong,chinhanh_id
                                     from res_partner where ma_doi_tuong='%s' limit 1
                             '''%(data['ma_doi_tuong'])
                             cr.execute(sql)
@@ -137,9 +137,15 @@ class import_congno_tudong(osv.osv):
                             
                             loai_doituong=''
                             if partner['taixe']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhadautu']==True:
@@ -188,6 +194,7 @@ class import_congno_tudong(osv.osv):
                                 'bai_giaoca_id': bai_giaoca_id,
                                 'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
                                 'ma_xuong_id': ma_xuong_ids and ma_xuong_ids[0] or False,
+                                'loai_giaodich': 'Giao dịch nhập từ BDSC',
                             })
                             invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                             vals.update(invoice_vals)
@@ -285,7 +292,7 @@ class import_congno_tudong(osv.osv):
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
-                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong,chinhanh_id
                                     from res_partner where ma_doi_tuong='%s' limit 1
                             '''%(data['ma_doi_tuong'])
                             cr.execute(sql)
@@ -298,9 +305,15 @@ class import_congno_tudong(osv.osv):
                             
                             loai_doituong=''
                             if partner['taixe']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhadautu']==True:
@@ -339,6 +352,7 @@ class import_congno_tudong(osv.osv):
                                 'journal_id': journal_ids and journal_ids[0] or False,
                                 'bai_giaoca_id': bai_giaoca_id,
                                 'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                                'loai_giaodich': 'Giao dịch nhập từ HTKD',
                             })
                             invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                             vals.update(invoice_vals)
@@ -436,7 +450,7 @@ class import_congno_tudong(osv.osv):
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
-                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong,chinhanh_id
                                     from res_partner where ma_doi_tuong='%s' limit 1
                             '''%(data['ma_doi_tuong'])
                             cr.execute(sql)
@@ -449,9 +463,15 @@ class import_congno_tudong(osv.osv):
                             
                             loai_doituong=''
                             if partner['taixe']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhadautu']==True:
@@ -499,6 +519,7 @@ class import_congno_tudong(osv.osv):
                                 'bai_giaoca_id': bai_giaoca_id,
                                 'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
                                 'thu_cho_doituong_id': donvithuhuong and donvithuhuong[0] or False,
+                                'loai_giaodich': 'Giao dịch nhập từ HTKD',
                             })
                             invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                             vals.update(invoice_vals)
@@ -617,6 +638,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 
                                 context = {
@@ -772,6 +794,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 
                                 context = {
@@ -935,6 +958,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 
                                 context = {
@@ -1079,6 +1103,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 
                                 context = {
@@ -1258,6 +1283,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 
                                 context = {
@@ -1421,6 +1447,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 
                                 context = {
@@ -1584,6 +1611,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 
                                 context = {
@@ -1726,6 +1754,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 
                                 context = {
@@ -1966,6 +1995,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ HISTAFF',
                                 }
                                 
                                 context = {
@@ -2109,6 +2139,7 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ HISTAFF',
                                 }
                                 
                                 context = {
@@ -2316,7 +2347,7 @@ class import_congno_tudong(osv.osv):
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
-                                select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+                                select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
                                     from account_invoice where name='%s' and type='out_invoice'
                                     order by date_invoice
                             '''%(data['REQUEST_REF_NUMBER'])
@@ -2324,7 +2355,7 @@ class import_congno_tudong(osv.osv):
                             invoices = cr.dictfetchall()
                             if not invoices:
                                 sql = '''
-                                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+                                    select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
                                         from account_invoice where ref_number='%s' and type='out_invoice'
                                         order by date_invoice
                                 '''%(data['REQUEST_REF_NUMBER'])
@@ -2376,6 +2407,11 @@ class import_congno_tudong(osv.osv):
                                     noidung_loi='Phiếu đã chi rồi'
                                     raise osv.except_osv(_('Warning!'), 'Phiếu đã chi rồi')
                                 if loai in ['Chi','chi'] and invoice['state']=='draft':
+                                    if sotiendathu<invoice['so_tien']:
+                                        noidung_loi='Số tiền chi không được nhỏ hơn số tiền đề nghị chi'
+                                        raise osv.except_osv(_('Warning!'), 'Số tiền chi không được nhỏ hơn số tiền đề nghị chi')
+                                    else:
+                                        sotiendathu = sotiendathu-invoice['so_tien']
                                     wf_service.trg_validate(uid, 'account.invoice', invoice['id'], 'invoice_open', cr)
                                     sql = '''
                                         update account_invoice set fusion_id='%s' where id=%s
@@ -2410,6 +2446,7 @@ class import_congno_tudong(osv.osv):
                                         'journal_id': journal_ids[0],
                                         'date': ngay_thanh_toan,
                                         'fusion_id': data['TRANSACTION_NUMBER'],
+                                        'loai_giaodich': 'Giao dịch cấn trừ từ ORACLE',
                                     }
                                     
                                     context = {
@@ -2440,8 +2477,8 @@ class import_congno_tudong(osv.osv):
                                     
                                     sotiendathu = sotiendathu - amount
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
+                                noidung_loi='Số tiền đã thu/chi lớn hơn số tiền đề nghị phải thu/chi'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu/chi lớn hơn số tiền đề nghị phải thu/chi')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -2594,6 +2631,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'fusion_id': data['TRANSACTION_NUMBER'],
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ ORACLE',
                                 }
                                 
                                 context = {
@@ -2717,7 +2755,7 @@ class import_congno_tudong(osv.osv):
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
-                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong,chinhanh_id
                                     from res_partner where ma_doi_tuong='%s' limit 1
                             '''%(data['ma_doi_tuong'])
                             cr.execute(sql)
@@ -2730,9 +2768,15 @@ class import_congno_tudong(osv.osv):
                             
                             loai_doituong=''
                             if partner['taixe']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhadautu']==True:
@@ -2771,6 +2815,7 @@ class import_congno_tudong(osv.osv):
                                 'journal_id': journal_ids and journal_ids[0] or False,
                                 'bai_giaoca_id': bai_giaoca_id,
                                 'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
+                                'loai_giaodich': 'Giao dịch nhập từ HTKD',
                             })
                             invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
                             vals.update(invoice_vals)

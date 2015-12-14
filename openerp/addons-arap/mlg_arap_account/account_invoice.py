@@ -109,6 +109,24 @@ class account_invoice(osv.osv):
                 res[invoice.id] = True
         return res
     
+    def _get_sotien_lai_conlai(self, cr, uid, ids, field_name, arg, context=None):
+        cur_obj = self.pool.get('res.currency')
+        res = {}
+        for invoice in self.browse(cr, uid, ids, context=context):
+            sql = '''
+                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end tong from so_tien_lai where invoice_id=%s
+            '''%(invoice.id)
+            cr.execute(sql)
+            tong = cr.fetchone()[0]
+            res[invoice.id] = invoice.sotien_lai - tong
+        return res
+    
+    def _get_invoice(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool.get('so.tien.lai').browse(cr, uid, ids, context=context):
+            result[line.invoice_id.id] = True
+        return result.keys()
+    
     _columns = {
         'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
@@ -153,6 +171,7 @@ class account_invoice(osv.osv):
         'so_hoa_don':fields.char('Số hóa đơn',size = 64, readonly=True, states={'draft': [('readonly', False)]}),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng', readonly=True, states={'draft': [('readonly', False)]}),
+        'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ doanh thu', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_baohiem_id': fields.many2one('loai.bao.hiem', 'Loại bảo hiểm', readonly=True, states={'draft': [('readonly', False)]}),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
@@ -177,6 +196,14 @@ class account_invoice(osv.osv):
         'fusion_id': fields.char('Fusion Chi', size=1024),
         'invisible_button_cancel': fields.function(_get_invisible_button_cancel, type='boolean', string='Invisible Button Cancel'),
         'ref_number': fields.char('Ref NUMBER', size=1024),
+        'loai_giaodich': fields.char('Loại giao dịch', size=1024),
+        'lichsu_thutienlai_line': fields.one2many('so.tien.lai', 'invoice_id', 'Lịch sử thu tiền lãi'),
+        'sotien_lai': fields.float('Số tiền lãi',digits=(16,0)),
+        'sotien_lai_conlai': fields.function(_get_sotien_lai_conlai,string='Số tiền lãi còn lại',digits=(16,0),
+            store={
+                'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['sotien_lai','lichsu_thutienlai_line'], 10),
+                'so.tien.lai': (_get_invoice, ['invoice_id', 'so_tien', 'ngay','fusion_id'], 10),
+            },type='float'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):
@@ -240,8 +267,33 @@ class account_invoice(osv.osv):
             sotien_conno = cr.fetchone()[0]
             if sotien_hangmuc and (sotien_conno+vals['so_tien'])>sotien_hangmuc:
                 raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo khi đang nợ vượt hạng mức!'))
-        if not vals.get('so_tien',False):
-            raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo với số tiền bằng "0"!'))
+        if not vals.get('so_tien',False) or (vals.get('so_tien') and vals['so_tien']<=0):
+            raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo với số tiền nhỏ hơn hoặc bằng "0"!'))
+        
+        if vals.get('mlg_type', False) and vals['mlg_type'] =='tra_gop_xe' and vals.get('thu_cho_doituong_id'):
+            ptch_vals = {}
+            partner_obj = self.pool.get('res.partner')
+            partner = partner_obj.browse(cr, uid, vals['thu_cho_doituong_id'])
+            partner_tgx = partner_obj.browse(cr, uid, vals['partner_id'])
+            ptch_vals.update(self.onchange_nhadautugiantiep(cr, uid, [], partner.id, context)['value'])
+            ptch_vals.update({
+                'mlg_type': 'chi_ho',
+                'type': 'in_invoice',
+                'chinhanh_id': vals['chinhanh_id'],
+                'partner_id': partner.id,
+                'date_invoice': vals['date_invoice'],
+                'so_tien': vals.get('so_tien', 0),
+                'dien_giai': 'Tạo từ trả góp xe %s cho đối tượng [%s] %s'%(vals['name'],partner_tgx.ma_doi_tuong,partner_tgx.name),
+                'journal_id': vals['journal_id'],
+                'so_hop_dong': vals.get('so_hop_dong', False),
+                'bai_giaoca_id': vals.get('bai_giaoca_id', False),
+                'bien_so_xe_id': vals.get('bien_so_xe_id', False),
+                'loai_giaodich': 'Giao dịch tạo tự động từ trả góp xe',
+            })
+            invoice_vals = self.onchange_dien_giai_st(cr, uid, [], ptch_vals['dien_giai'], ptch_vals['so_tien'], ptch_vals['journal_id'], context)['value']
+            ptch_vals.update(invoice_vals)
+            invoice_id = self.create(cr, uid, ptch_vals)
+        
         return super(account_invoice, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
@@ -292,7 +344,12 @@ class account_invoice(osv.osv):
                 sotien_conno = cr.fetchone()[0]
                 if sotien_hangmuc and sotien_conno>sotien_hangmuc:
                     raise osv.except_osv(_('Cảnh báo!'), _('Không thể duyệt khi đang nợ vượt hạng mức!'))
-        return super(account_invoice, self).write(cr, uid, ids, vals, context)
+                
+        new_write = super(account_invoice, self).write(cr, uid, ids, vals, context)
+        for line in self.browse(cr, uid, ids):
+            if line.so_tien<=0:
+                raise osv.except_osv(_('Cảnh báo!'), _('Không thể sửa với số tiền nhỏ hơn hoặc bằng "0"!'))
+        return new_write
     
     def in_phieu(self, cr, uid, ids, context=None):
         if context is None:
@@ -394,7 +451,7 @@ class account_invoice(osv.osv):
     def onchange_dien_giai_st(self, cr, uid, ids, dien_giai='/',so_tien=False,journal_id=False, context=None):
         domain = {}
         vals = {}
-        if ids:
+        if ids and so_tien:
             cr.execute('delete from account_invoice_line where invoice_id in %s',(tuple(ids),))
         if not dien_giai:
             dien_giai = '/'
@@ -606,6 +663,7 @@ class account_invoice(osv.osv):
                 'invoice_type': inv.type,
                 'invoice_id': inv.id,
                 'default_type': inv.type in ('out_invoice','out_refund') and 'receipt' or 'payment',
+                'default_loai_giaodich': 'Giao dịch thu chi trực tiếp',
                 'default_chinhanh_id': inv.chinhanh_id.id,
                 'type': inv.type in ('out_invoice','out_refund') and 'receipt' or 'payment'
             }
@@ -632,4 +690,16 @@ class account_invoice_line(osv.osv):
         return res
     
 account_invoice_line()
+
+class so_tien_lai(osv.osv):
+    _name = "so.tien.lai"
+    
+    _columns = {
+        'invoice_id': fields.many2one('account.invoice', 'Invoice', ondelete='cascade'),
+        'ngay': fields.date('Ngày'),
+        'fusion_id': fields.char('Fusion Chi', size=1024),
+        'so_tien': fields.float('Số tiền',digits=(16,0)),
+    }
+    
+so_tien_lai()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

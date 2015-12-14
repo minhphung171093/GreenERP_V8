@@ -381,7 +381,35 @@
             <field name="view_id" ref="view_congno_theo_loaivipham_report"/>
             <field name="target">new</field>
         </record>
-		
+<!-- Báo cáo công nợ theo loại nợ doanh thu -->
+        <record id="view_congno_theo_loainodoanhthu_report" model="ir.ui.view">
+            <field name="name">congno.theo.loainodoanhthu.report</field>
+            <field name="model">danhsach.congno</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo công nợ theo loại nợ doanh thu" version="7.0">
+            		<group col='4' colspan='2'>
+                    	<field name='from_date'/>
+                    	<field name='to_date'/>
+                    	<field name='loai_nodoanhthu_id' required='1' options="{'no_create': True}"/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_theo_loainodoanhthu_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_congno_theo_loainodoanhthu" model="ir.actions.act_window">
+            <field name="name">Báo cáo công nợ theo loại nợ doanh thu</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">danhsach.congno</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_congno_theo_loainodoanhthu_report"/>
+            <field name="target">new</field>
+        </record>		
 <!-- Báo cáo công nợ theo loại tạm ứng -->
         <record id="view_congno_theo_loaitamung_report" model="ir.ui.view">
             <field name="name">congno.theo.loaitamung.report</field>

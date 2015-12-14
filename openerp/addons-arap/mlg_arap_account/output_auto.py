@@ -62,6 +62,11 @@ class output_congno_tudong(osv.osv):
         return True
     
     def fin_output_theodoanhsothu_oracle_data(self, cr):
+        sql = '''
+            DROP TYPE IF EXISTS fin_output_theodoanhsothu_oracle_data CASCADE;
+            commit;
+        '''
+        cr.execute(sql)
         cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsothu_oracle_data')")
         res = cr.fetchone()
         if res and res[0]:
@@ -402,6 +407,11 @@ class output_congno_tudong(osv.osv):
         return True
     
     def fin_output_theodoanhsophaithu_oracle_data(self, cr):
+        sql = '''
+            DROP TYPE IF EXISTS fin_output_theodoanhsophaithu_oracle_data CASCADE;
+            commit;
+        '''
+        cr.execute(sql)
         cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsophaithu_oracle_data')")
         res = cr.fetchone()
         if res and res[0]:
@@ -709,6 +719,11 @@ class output_congno_tudong(osv.osv):
         return True
     
     def fin_output_theodoanhsotra_oracle_data(self, cr):
+        sql = '''
+            DROP TYPE IF EXISTS fin_output_theodoanhsotra_oracle_data CASCADE;
+            commit;
+        '''
+        cr.execute(sql)
         cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsotra_oracle_data')")
         res = cr.fetchone()
         if res and res[0]:
@@ -816,6 +831,11 @@ class output_congno_tudong(osv.osv):
         return True
     
     def fin_output_theodoanhsophaitra_oracle_data(self, cr):
+        sql = '''
+            DROP TYPE IF EXISTS fin_output_theodoanhsophaitra_oracle_data CASCADE;
+            commit;
+        '''
+        cr.execute(sql)
         cr.execute("select exists (select 1 from pg_type where typname = 'fin_output_theodoanhsophaitra_oracle_data')")
         res = cr.fetchone()
         if res and res[0]:
