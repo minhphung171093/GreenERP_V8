@@ -84,7 +84,8 @@
             <field name="model">loai.ky.quy</field>
             <field name="arch" type="xml">
                 <tree string="Loại ký quỹ" editable='top'>
-                    <field name="name"/>
+                 	<field name="code"/>
+                    <field name="name"/>             
                     <field name="description"/>
                 </tree>
             </field>
@@ -122,6 +123,7 @@
             <field name="model">loai.no.doanh.thu</field>
             <field name="arch" type="xml">
                 <tree string="Loại nợ DT-BH-AL" editable='top'>
+                    <field name="code"/>
                     <field name="name"/>
                     <field name="so_taikhoan"/>
                 </tree>
@@ -140,6 +142,7 @@
             <field name="model">loai.tam.ung</field>
             <field name="arch" type="xml">
                 <tree string="Loại tạm ứng" editable='top'>
+                    <field name="code"/>
                     <field name="name"/>
                 </tree>
             </field>
@@ -157,6 +160,7 @@
             <field name="model">loai.vi.pham</field>
             <field name="arch" type="xml">
                 <tree string="Loại vi phạm" editable='top'>
+                    <field name="code"/>
                     <field name="name"/>
                     <field name="description"/>
                 </tree>
@@ -395,6 +399,7 @@
             <field name="model">loai.bao.hiem</field>
             <field name="arch" type="xml">
                 <tree string="Loại bảo hiểm" editable='top'>
+                    <field name="code"/>
                     <field name="name"/>
                     <field name="so_taikhoan"/>
                 </tree>

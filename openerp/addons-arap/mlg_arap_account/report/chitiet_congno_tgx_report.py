@@ -267,7 +267,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         mlg_type = wizard_data['mlg_type']
         sql = '''
-            select case when sum(so_tien-residual+sotien_lai-sotien_lai_conlai)!=0 then sum(so_tien-residual+sotien_lai-sotien_lai_conlai) else 0 end sdtlkdauky
+            select case when sum(so_tien-residual)!=0 then sum(so_tien-residual) else 0 end sdtlkdauky
                 from account_invoice where mlg_type='%s' and chinhanh_id=%s
                     and date_invoice < '%s' and state in ('open','paid') and bien_so_xe_id=%s
         '''%(mlg_type,chinhanh_id[0],period_from.date_start,bsx_id)
@@ -281,7 +281,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         mlg_type = wizard_data['mlg_type']
         sql = '''
-            select case when sum(so_tien-residual+sotien_lai-sotien_lai_conlai)!=0 then sum(so_tien-residual+sotien_lai-sotien_lai_conlai) else 0 end sdtlkdauky
+            select case when sum(so_tien-residual)!=0 then sum(so_tien-residual) else 0 end sdtlkdauky
                 from account_invoice where mlg_type='%s' and chinhanh_id=%s
                     and date_invoice <= '%s' and state in ('open','paid') and bien_so_xe_id=%s
         '''%(mlg_type,chinhanh_id[0],period_to.date_stop,bsx_id)

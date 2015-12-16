@@ -65,7 +65,7 @@
 		                    <group>
 			                    <field name="ngay_thu"/>
 			                    <field name="bien_so_xe_id"/>
-			                    <field name="loai_kyquy_id" options="{'no_create': True}"/>
+			                    <field name="loai_kyquy_id" required='1' options="{'no_create': True}"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">

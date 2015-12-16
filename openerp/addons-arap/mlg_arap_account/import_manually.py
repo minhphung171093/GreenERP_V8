@@ -340,7 +340,7 @@ class import_congno_manually(osv.osv):
                         if not lbh:
                             noidungloi = 'Chưa nhập thông tin loại bảo hiểm'
                             raise osv.except_osv(_('Cảnh báo!'), 'Chưa nhập thông tin loại bảo hiểm')
-                        sql = ''' select id from loai_bao_hiem where name='%s' '''%(lbh)
+                        sql = ''' select id from loai_bao_hiem where code='%s' '''%(lbh)
                         cr.execute(sql)
                         loai_bao_hiem_ids = cr.fetchone()
                         if lbh and not loai_bao_hiem_ids:

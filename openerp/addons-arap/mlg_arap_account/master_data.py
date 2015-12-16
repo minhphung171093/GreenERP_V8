@@ -89,6 +89,7 @@ class loai_ky_quy(osv.osv):
     _name = "loai.ky.quy"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'code': fields.char('Mã', size=1024, required=True),
         'description': fields.char('Mô tả', size=1024),
     }
     
@@ -98,9 +99,16 @@ class loai_ky_quy(osv.osv):
             if object_ids:
                 return False
         return True
-
+    def _check_code(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('code','!=', False),('code','=', line.code)])
+            if object_ids:
+                return False
+        return True
+    
     _constraints = [
         (_check_name, 'Không được trùng tên', ['name']),
+        (_check_code, 'Không được trùng mã', ['code']),
     ]
     
 loai_ky_quy()
@@ -109,6 +117,7 @@ class loai_vi_pham(osv.osv):
     _name = "loai.vi.pham"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'code': fields.char('Mã', size=1024, required=True),
         'description': fields.char('Mô tả', size=1024),
     }
     
@@ -118,9 +127,15 @@ class loai_vi_pham(osv.osv):
             if object_ids:
                 return False
         return True
-
+    def _check_code(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('code','!=', False),('code','=', line.code)])
+            if object_ids:
+                return False
+        return True
     _constraints = [
         (_check_name, 'Không được trùng tên', ['name']),
+        (_check_code, 'Không được trùng mã', ['code']),
     ]
     
 loai_vi_pham()
@@ -129,6 +144,7 @@ class loai_tam_ung(osv.osv):
     _name = "loai.tam.ung"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'code': fields.char('Mã', size=1024, required=True),
     }
     
     def _check_name(self, cr, uid, ids, context=None):
@@ -137,9 +153,15 @@ class loai_tam_ung(osv.osv):
             if object_ids:
                 return False
         return True
-
+    def _check_code(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('code','!=', False),('code','=', line.code)])
+            if object_ids:
+                return False
+        return True
     _constraints = [
         (_check_name, 'Không được trùng tên', ['name']),
+        (_check_code, 'Không được trùng mã', ['code']),
     ]
     
 loai_tam_ung()
@@ -407,6 +429,7 @@ class loai_bao_hiem(osv.osv):
     _name = "loai.bao.hiem"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'code': fields.char('Mã', size=1024, required=True),
         'so_taikhoan': fields.char('Số tài khoản', size=1024, required=True),
     }
     
@@ -416,9 +439,15 @@ class loai_bao_hiem(osv.osv):
             if object_ids:
                 return False
         return True
-
+    def _check_code(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('code','!=', False),('code','=', line.code)])
+            if object_ids:
+                return False
+        return True
     _constraints = [
         (_check_name, 'Không được trùng mã', ['name']),
+        (_check_code, 'Không được trùng mã', ['code']),
     ]
     
 loai_bao_hiem()
@@ -426,6 +455,7 @@ class loai_no_doanh_thu(osv.osv):
     _name = "loai.no.doanh.thu"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'code': fields.char('Mã', size=1024, required=True),
         'so_taikhoan': fields.char('Số tài khoản', size=1024, required=True),
     }
     
@@ -435,9 +465,15 @@ class loai_no_doanh_thu(osv.osv):
             if object_ids:
                 return False
         return True
-
+    def _check_code(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            object_ids = self.search(cr, uid, [('id','!=', line.id),('code','!=', False),('code','=', line.code)])
+            if object_ids:
+                return False
+        return True
     _constraints = [
         (_check_name, 'Không được trùng tên', ['name']),
+        (_check_code, 'Không được trùng mã', ['code']),
     ]
     
 loai_no_doanh_thu()

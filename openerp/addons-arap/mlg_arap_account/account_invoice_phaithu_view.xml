@@ -741,7 +741,7 @@
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
-			                    <field name="loai_vipham_id" options="{'no_create': True}"/>
+			                    <field name="loai_vipham_id" required='1' options="{'no_create': True}"/>
 	                    		<field name="ngay_vi_pham"/>
 	                    		<field name="so_bien_ban_vi_pham"/>
 		                    </group>
@@ -1414,7 +1414,7 @@
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hoa_don"/>
 			                    <field name="so_tien_tren_hd"/>
-			                    <field name="loai_tamung_id" options="{'no_create': True}"/>
+			                    <field name="loai_tamung_id" required='1' options="{'no_create': True}"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">
