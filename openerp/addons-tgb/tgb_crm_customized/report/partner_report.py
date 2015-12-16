@@ -35,6 +35,7 @@ class Parser(report_sxw.rml_parse):
             'get_partner_full_address': self.get_partner_full_address,
             'get_chairman_id': self.get_chairman_id,
             'get_list_director': self.get_list_director,
+            'get_next_number': self.get_next_number,
         })
         
     def get_datenow(self):
@@ -180,4 +181,8 @@ class Parser(report_sxw.rml_parse):
         if company_id and company_id.partner_id and company_id.partner_id.child_ids:
             attn = company_id.partner_id.child_ids[0].name
         return attn
+    
+    def get_next_number(self, line):
+        return len(line)+1
+    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
