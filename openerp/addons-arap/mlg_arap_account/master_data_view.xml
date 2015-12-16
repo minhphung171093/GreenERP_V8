@@ -121,13 +121,14 @@
             <field name="name">loai.no.doanh.thu.tree</field>
             <field name="model">loai.no.doanh.thu</field>
             <field name="arch" type="xml">
-                <tree string="Loại nợ doanh thu" editable='top'>
+                <tree string="Loại nợ DT-BH-AL" editable='top'>
                     <field name="name"/>
+                    <field name="so_taikhoan"/>
                 </tree>
             </field>
         </record>
         <record id="action_loai_no_doanh_thu" model="ir.actions.act_window">
-            <field name="name">Loại nợ doanh thu</field>
+            <field name="name">Loại nợ DT-BH-AL</field>
             <field name="res_model">loai.no.doanh.thu</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>

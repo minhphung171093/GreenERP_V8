@@ -256,7 +256,7 @@ class no_hang_muc(osv.osv):
         'name': fields.selection([('taixe','Lái xe'),
                                            ('nhadautu','Nhà đầu tư'),
                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng', required=True),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),
@@ -288,6 +288,7 @@ class cauhinh_thumuc_import_tudong(osv.osv):
         'name': fields.char('Đường dẫn', size=2048, required=True),
         'mlg_type': fields.selection([
                                       ('thu_no_xuong','Thu nợ xưởng (BDSC)'),
+                                      ('no_doanh_thu_histaff','Nợ DT-BH-AL (HISTAFF)'),
                                       ('phat_vi_pham','Phạt vi phạm (HISTAFF)'),
                                       ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ (HISTAFF)'),
@@ -296,7 +297,7 @@ class cauhinh_thumuc_import_tudong(osv.osv):
                                       ('chi_ho','Chi góp xe (HTKD)'),
                                       ('fustion_phaithu','Phải thu Fustion (ORACLE)'),
                                       ('fustion_phaitra','Phải trả Fustion (ORACLE)'),
-                                      ('no_doanh_thu_shift','Nợ doanh thu (SHIFT)'),
+                                      ('no_doanh_thu_shift','Nợ DT-BH-AL (SHIFT)'),
                                       ('chi_ho_dien_thoai_shift','Phải thu chi hộ điện thoại (SHIFT)'),
                                       ('phai_thu_bao_hiem_shift','Phải thu bảo hiểm (SHIFT)'),
                                       ('phat_vi_pham_shift','Phạt vi phạm (SHIFT)'),
@@ -315,6 +316,7 @@ class cauhinh_thumuc_output_tudong(osv.osv):
         'name': fields.char('Đường dẫn', size=2048, required=True),
         'mlg_type': fields.selection([
                                       ('thu_no_xuong','Thu nợ xưởng (BDSC)'),
+                                      ('no_doanh_thu_histaff','Nợ DT-BH-AL (HISTAFF)'),
                                       ('phat_vi_pham','Phạt vi phạm (HISTAFF)'),
                                       ('hoan_tam_ung','Phải thu tạm ứng (HISTAFF)'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ (HISTAFF)'),
@@ -323,7 +325,7 @@ class cauhinh_thumuc_output_tudong(osv.osv):
                                       ('chi_ho','Chi góp xe (HTKD)'),
                                       ('oracle_phaithu','Doanh số thu (ORACLE)'),
                                       ('oracle_phaitra','Doanh số trả (ORACLE)'),
-                                      ('no_doanh_thu_shift','Nợ doanh thu (SHIFT)'),
+                                      ('no_doanh_thu_shift','Nợ DT-BH-AL (SHIFT)'),
                                       ('chi_ho_dien_thoai_shift','Phải thu chi hộ điện thoại (SHIFT)'),
                                       ('phai_thu_bao_hiem_shift','Phải thu bảo hiểm (SHIFT)'),
                                       ('phat_vi_pham_shift','Phạt vi phạm (SHIFT)'),
@@ -424,6 +426,7 @@ class loai_no_doanh_thu(osv.osv):
     _name = "loai.no.doanh.thu"
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
+        'so_taikhoan': fields.char('Số tài khoản', size=1024, required=True),
     }
     
     def _check_name(self, cr, uid, ids, context=None):

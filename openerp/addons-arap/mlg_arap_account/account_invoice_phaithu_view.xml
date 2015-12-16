@@ -7,14 +7,14 @@
             <field name="name">no.doanh.thu.select</field>
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
-                <search string="Nợ doanh thu">
+                <search string="Nợ DT-BH-AL">
                 	<field name="name" string="Mã phiếu đề xuất"/>
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
-                    <field name="loai_nodoanhthu_id" string="Loại nợ doanh thu"/>
+                    <field name="loai_nodoanhthu_id" string="Loại nợ DT-BH-AL"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
@@ -31,14 +31,14 @@
             <field name="name">no.doanh.thu.tree</field>
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
-                <tree string="Nợ doanh thu">
+                <tree string="Nợ DT-BH-AL">
                 	<field name="name" string="Mã phiếu đề xuất"/>
                     <field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Đối tượng"/>
                     <field name="account_id" string="Đội xe"/>
                     <field name="bai_giaoca_id" string="Bãi giao ca"/>
-                    <field name="loai_nodoanhthu_id" string="Loại nợ doanh thu"/>
+                    <field name="loai_nodoanhthu_id" string="Loại nợ DT-BH-AL"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>
                     <field name="amount_total" string="Tổng tiền" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -53,7 +53,7 @@
             <field name="name">no.doanh.thu.form</field>
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
-                <form string="Nợ doanh thu" version='7.0'>
+                <form string="Nợ DT-BH-AL" version='7.0'>
 					<header>
 	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
 	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
@@ -89,7 +89,7 @@
 			                    <field name="bai_giaoca_id" string="Bãi giao ca" attrs="{'invisible':[('loai_doituong','!=','taixe')]}"/>
 			                    <field name="cmnd" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
-			                    <field name="loai_nodoanhthu_id" options="{'no_create': True}"/>
+			                    <field name="loai_nodoanhthu_id" options="{'no_create': True}" required='1'/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">
@@ -142,7 +142,7 @@
             </field>
         </record>
         <record id="action_no_doanh_thu" model="ir.actions.act_window">
-            <field name="name">Nợ doanh thu</field>
+            <field name="name">Nợ DT-BH-AL</field>
             <field name="res_model">account.invoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

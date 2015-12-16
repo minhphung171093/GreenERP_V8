@@ -66,7 +66,7 @@ class Parser(report_sxw.rml_parse):
     def get_loaicongno(self, mlg_type):
         tt = ''
         if mlg_type=='no_doanh_thu':
-            tt='Nợ doanh thu'
+            tt='Nợ DT-BH-AL'
         if mlg_type=='chi_ho_dien_thoai':
             tt='Phải thu chi hộ điện thoại'
         if mlg_type=='phai_thu_bao_hiem':

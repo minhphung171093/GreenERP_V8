@@ -386,7 +386,7 @@
             <field name="name">congno.theo.loainodoanhthu.report</field>
             <field name="model">danhsach.congno</field>
             <field name="arch" type="xml">
-                <form string="Báo cáo công nợ theo loại nợ doanh thu" version="7.0">
+                <form string="Báo cáo công nợ theo loại nợ DT-BH-AL" version="7.0">
             		<group col='4' colspan='2'>
                     	<field name='from_date'/>
                     	<field name='to_date'/>
@@ -402,7 +402,7 @@
             </field>
         </record>        
         <record id="action_congno_theo_loainodoanhthu" model="ir.actions.act_window">
-            <field name="name">Báo cáo công nợ theo loại nợ doanh thu</field>
+            <field name="name">Báo cáo công nợ theo loại nợ DT-BH-AL</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">danhsach.congno</field>
             <field name="view_type">form</field>

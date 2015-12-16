@@ -17,7 +17,7 @@ class congno_dangcho(osv.osv_memory):
         'from_date': fields.date('Ngày bắt đầu', required=True),
         'to_date': fields.date('Ngày kết thúc', required=True),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phat_vi_pham','Phạt vi phạm'),

@@ -49,7 +49,7 @@ class Parser(report_sxw.rml_parse):
     def get_loaicongno(self, loaicongno):
         lcn = ''
         if loaicongno=='no_doanh_thu':
-            lcn = u'Nợ doanh thu'
+            lcn = u'Nợ DT-BH-AL'
         if loaicongno=='chi_ho_dien_thoai':
             lcn = u'Phải thu chi hộ điện thoại'
         if loaicongno=='phai_thu_bao_hiem':

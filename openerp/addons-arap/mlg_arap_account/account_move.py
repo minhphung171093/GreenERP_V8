@@ -48,7 +48,7 @@ class account_move_line(osv.osv):
     
     _columns = {
         'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),
@@ -67,6 +67,7 @@ class account_move_line(osv.osv):
         'con_lai': fields.function(_get_con_lai,type='float', string='Còn lại', store=True),
         'fusion_id': fields.char('Fusion Thu', size=1024),
         'loai_giaodich': fields.char('Loại giao dịch', size=1024),
+        'sotienlai_line': fields.one2many('so.tien.lai', 'move_line_id', 'So tien lai line')
     }
     
 account_move_line()

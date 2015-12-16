@@ -3,12 +3,12 @@
 	<data noupdate="0">
 
         <record id="type_no_doanh_thu" model="ir.sequence.type">
-            <field name="name">Nợ doanh thu</field>
+            <field name="name">Nợ DT-BH-AL</field>
             <field name="code">no_doanh_thu</field>
         </record>
 
         <record id="no_doanh_thu" model="ir.sequence">
-            <field name="name">Nợ doanh thu</field>
+            <field name="name">Nợ DT-BH-AL</field>
             <field name="code">no_doanh_thu</field>
             <field name="prefix">NDT/%(month)s/%(year)s/</field>
             <field name="padding">3</field>

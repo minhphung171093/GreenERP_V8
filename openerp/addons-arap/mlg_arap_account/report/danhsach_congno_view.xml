@@ -298,7 +298,7 @@
 			id="congno_theo_loainodoanhthu_report" 
 			model="danhsach.congno" 
 			name="congno_theo_loainodoanhthu_report"
-	        string="Báo cáo công nợ theo loại nợ doanh thu"
+	        string="Báo cáo công nợ theo loại nợ DT-BH-AL"
 	        rml="mlg_arap_account/report/congno_theo_loainodoanhthu_report.ods"/>        
 <!-- Báo cáo công nợ theo loại tạm ứng -->
     	<record id="congno_theo_loaitamung_report" model="ir.actions.report.xml">

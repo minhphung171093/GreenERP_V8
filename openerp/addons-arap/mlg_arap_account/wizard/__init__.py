@@ -16,3 +16,4 @@ import alert_form
 import doanh_so_phaithu
 import doanh_so_phaitra
 import congno_dangchothu
+import chitiet_congno_tgx

@@ -74,7 +74,7 @@ class import_congno_manually(osv.osv):
         'db_datas': fields.binary('Database Data'),
         'file_size': fields.integer('File Size'),
         'state':fields.selection([('draft', 'Mới tạo'),('done', 'Đã xử lý')],'Trạng thái', readonly=True),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),

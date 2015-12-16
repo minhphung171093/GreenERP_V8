@@ -580,7 +580,7 @@ class tong_cong_no(osv.osv):
     _name = "tong.cong.no"
     _columns = {
         'partner_id': fields.many2one('res.partner','Partner', ondelete='cascade'),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),

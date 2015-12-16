@@ -75,7 +75,7 @@ class Parser(report_sxw.rml_parse):
         mlg_type = wizard_data['mlg_type']
         tt = ''
         if mlg_type=='no_doanh_thu':
-            tt='NỢ DOANH THU'
+            tt='NỢ DT-BH-AL'
         if mlg_type=='chi_ho_dien_thoai':
             tt='PHẢI THU CHI HỘ ĐIỆN THOẠI'
         if mlg_type=='phai_thu_bao_hiem':

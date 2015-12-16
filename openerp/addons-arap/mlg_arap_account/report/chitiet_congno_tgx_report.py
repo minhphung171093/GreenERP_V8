@@ -33,12 +33,12 @@ class Parser(report_sxw.rml_parse):
             'get_nodauky': self.get_nodauky,
             'convert_amount': self.convert_amount,
             'get_chitiet_congno': self.get_chitiet_congno,
+            'get_title': self.get_title,
             'get_nocuoiky': self.get_nocuoiky,
             'get_tongcongno': self.get_tongcongno,
-            'get_loaidoituong': self.get_loaidoituong,
             'get_thang': self.get_thang,
+            'get_payment': self.get_payment,
             'get_chinhanh': self.get_chinhanh,
-            'get_title': self.get_title,
         })
         
     def convert_date(self, date):
@@ -46,6 +46,15 @@ class Parser(report_sxw.rml_parse):
             date = datetime.strptime(date, DATE_FORMAT)
             return date.strftime('%d/%m/%Y')
         return ''
+    
+    def convert_amount(self, amount):
+        a = format(int(amount),',')
+        return a
+    
+    def get_thang(self):
+        wizard_data = self.localcontext['data']['form']
+        period_id = wizard_data['period_id']
+        return period_id and period_id[1] or ''
     
     def get_chinhanh(self):
         wizard_data = self.localcontext['data']['form']
@@ -55,81 +64,22 @@ class Parser(report_sxw.rml_parse):
         account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
         return {'name':account.name,'code':account.code}
     
-    def get_thang(self):
-        wizard_data = self.localcontext['data']['form']
-        period_id = wizard_data['period_id']
-        return period_id and period_id[1] or ''
-    
-    def convert_amount(self, amount):
-        a = format(int(amount),',')
-        return a
-    
-    def get_title(self):
-        wizard_data = self.localcontext['data']['form']
-        mlg_type = wizard_data['mlg_type']
-        tt = ''
-        if mlg_type=='no_doanh_thu':
-            tt='NỢ DOANH THU'
-        if mlg_type=='chi_ho_dien_thoai':
-            tt='CHI HỘ ĐIỆN THOẠI'
-        if mlg_type=='phai_thu_bao_hiem':
-            tt='BẢO HIỂM'
-        if mlg_type=='phat_vi_pham':
-            tt='PHẠT VI PHẠM'
-        if mlg_type=='thu_no_xuong':
-            tt='NỢ XƯỞNG'
-        if mlg_type=='thu_phi_thuong_hieu':
-            tt='PHÍ THƯƠNG HIỆU'
-        if mlg_type=='tra_gop_xe':
-            tt='TRẢ GÓP XE'
-        if mlg_type=='hoan_tam_ung':
-            tt='TẠM ỨNG'
-        if mlg_type=='phai_tra_ky_quy':
-            tt='TRẢ KÝ QUỸ'
-        if mlg_type=='chi_ho':
-            tt='CHI HỘ'
-        return tt
-    
-    def get_loaidoituong(self, mlg_type):
-        tt = ''
-        if mlg_type=='no_doanh_thu':
-            tt='Nợ DT-BH-AL'
-        if mlg_type=='chi_ho_dien_thoai':
-            tt='Phải thu chi hộ điện thoại'
-        if mlg_type=='phai_thu_bao_hiem':
-            tt='Phải thu bảo hiểm'
-        if mlg_type=='phai_thu_ky_quy':
-            tt='Phải thu ký quỹ'
-        if mlg_type=='phat_vi_pham':
-            tt='Phạt vi phạm'
-        if mlg_type=='thu_no_xuong':
-            tt='Thu nợ xưởng'
-        if mlg_type=='thu_phi_thuong_hieu':
-            tt='Thu phí thương hiệu'
-        if mlg_type=='tra_gop_xe':
-            tt='Trả góp xe'
-        if mlg_type=='hoan_tam_ung':
-            tt='Phải thu tạm ứng'
-        if mlg_type=='phai_tra_ky_quy':
-            tt='Phải trả ký quỹ'
-        if mlg_type=='chi_ho':
-            tt='Phải trả chi hộ'
-        return tt
-    
     def get_doituong(self):
         wizard_data = self.localcontext['data']['form']
         partner_ids = wizard_data['partner_ids']
         if partner_ids:
             return partner_ids
         else:
-            period_id = wizard_data['period_id']
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
             chinhanh_id = wizard_data['chinhanh_id']
+            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
             mlg_type = wizard_data['mlg_type']
-            period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
             sql = '''
                 select partner_id from account_invoice where date_invoice between '%s' and '%s' and chinhanh_id=%s
                     and state in ('open','paid') and mlg_type='%s' 
-            '''%(period.date_start,period.date_stop,chinhanh_id[0],mlg_type)
+            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
             doi_xe_ids = wizard_data['doi_xe_ids']
             if doi_xe_ids:
                 doi_xe_ids = str(doi_xe_ids).replace('[', '(')
@@ -157,6 +107,32 @@ class Parser(report_sxw.rml_parse):
                     partner_ids.append(partner_id[0])
             return partner_ids
     
+    def get_title(self):
+        wizard_data = self.localcontext['data']['form']
+        mlg_type = wizard_data['mlg_type']
+        tt = ''
+        if mlg_type=='no_doanh_thu':
+            tt='NỢ DT-BH-AL'
+        if mlg_type=='chi_ho_dien_thoai':
+            tt='CHI HỘ ĐIỆN THOẠI'
+        if mlg_type=='phai_thu_bao_hiem':
+            tt='BẢO HIỂM'
+        if mlg_type=='phat_vi_pham':
+            tt='PHẠT VI PHẠM'
+        if mlg_type=='thu_no_xuong':
+            tt='NỢ XƯỞNG'
+        if mlg_type=='thu_phi_thuong_hieu':
+            tt='PHÍ THƯƠNG HIỆU'
+        if mlg_type=='tra_gop_xe':
+            tt='TRẢ GÓP XE'
+        if mlg_type=='hoan_tam_ung':
+            tt='TẠM ỨNG'
+        if mlg_type=='phai_tra_ky_quy':
+            tt='TRẢ KÝ QUỸ'
+        if mlg_type=='chi_ho':
+            tt='CHI HỘ'
+        return tt
+    
     def get_title_doituong(self, partner_id):
         if partner_id:
             partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
@@ -166,7 +142,7 @@ class Parser(report_sxw.rml_parse):
     def get_nodauky(self, partner_id):
         wizard_data = self.localcontext['data']['form']
         if partner_id:
-            period_id = wizard_data['period_id']
+            period_id = wizard_data['period_from_id']
             period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
@@ -185,15 +161,17 @@ class Parser(report_sxw.rml_parse):
     def get_nocuoiky(self, partner_id):
         wizard_data = self.localcontext['data']['form']
         if partner_id:
-            period_id = wizard_data['period_id']
-            period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
             sql = '''
                 select case when sum(residual)!=0 then sum(residual) else 0 end notrongky
                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
                         and date_invoice between '%s' and '%s' and state in ('open','paid') 
-            '''%(mlg_type,chinhanh_id[0],partner_id,period.date_start,period.date_stop)
+            '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start,period_to.date_stop)
             self.cr.execute(sql)
             notrongky = self.cr.fetchone()[0]
             nodauky = self.get_nodauky(partner_id)
@@ -204,23 +182,30 @@ class Parser(report_sxw.rml_parse):
     
     def get_chitiet_congno(self, partner_id):
         wizard_data = self.localcontext['data']['form']
-        period_id = wizard_data['period_id']
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         mlg_type = wizard_data['mlg_type']
-        period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
         sql = '''
-            select rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
-                sum(ai.so_tien) as no, sum(ai.so_tien-ai.residual) as co
+            select ai.id as invoice_id,ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
+                ai.so_tien as no, (ai.so_tien-ai.residual) as co,ai.fusion_id as fusion_id
             
                 from account_invoice ai
                 left join res_partner rp on rp.id = ai.partner_id
                 
                 where ai.partner_id=%s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
                     and ai.mlg_type='%s'
-                group by rp.ma_doi_tuong,rp.name
-        '''%(partner_id,period.date_start,period.date_stop,chinhanh_id[0],mlg_type)
+        '''%(partner_id,period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
         self.cr.execute(sql)
         return self.cr.dictfetchall()
+    
+    def get_payment(self, invoice_id):
+        if not invoice_id:
+            return []
+        invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
+        return invoice.payment_ids
             
     
     

@@ -101,6 +101,7 @@ class output_congno_tudong(osv.osv):
             rec_cn        record;
             rec_aml       record;
             rec_lbh       record;
+            rec_lndt      record;
             bal_data      fin_output_theodoanhsothu_oracle_data%ROWTYPE;
             loaicongno    numeric;
             sotien        numeric;
@@ -115,27 +116,34 @@ class output_congno_tudong(osv.osv):
                 for loaicongno in 1..11
                 loop
                     if loaicongno=1 then
-                        sotien = 0;
-                        for rec_aml in execute '
-                            select sum(credit) as sotien
-                                from account_move_line
-                                where move_id in (select move_id from account_voucher
-                                    where reference in (select name from account_invoice
-                                        where mlg_type=''no_doanh_thu'' and chinhanh_id=$3 and state in (''open'',''paid'')))
-                                and date between $1 and $2
-                        ' using $1, $2,rec_cn.id
+                    
+                        for rec_lndt in execute '
+                            select id,name,so_taikhoan from loai_no_doanh_thu
+                        '
                         loop
-                            sotien = sotien + coalesce(rec_aml.sotien, 0);
+                            sotien = 0;
+                            tencongno = 'AR_'||rec_lndt.name;
+                            for rec_aml in execute '
+                                select sum(credit) as sotien
+                                    from account_move_line
+                                    where move_id in (select move_id from account_voucher
+                                        where reference in (select name from account_invoice
+                                            where mlg_type=''no_doanh_thu'' and chinhanh_id=$3 and state in (''open'',''paid'') and loai_nodoanhthu_id=$4))
+                                    and date between $1 and $2
+                            ' using $1, $2,rec_cn.id, rec_lndt.id
+                            loop
+                                sotien = sotien + coalesce(rec_aml.sotien, 0);
+                            end loop;
+                            if sotien <> 0 then
+                                bal_data.chinhanh=rec_cn.name;
+                                bal_data.machinhanh=rec_cn.code;
+                                bal_data.loaicongno=tencongno;
+                                bal_data.taikhoan=rec_lndt.so_taikhoan;
+                                bal_data.sotien=sotien;
+                                bal_data.ghichu='';
+                                return next bal_data;
+                            end if;
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Nợ doanh thu';
-                            bal_data.taikhoan='1411011';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
                     end if;
                     
                     if loaicongno=2 then
@@ -446,6 +454,7 @@ class output_congno_tudong(osv.osv):
             rec_cn        record;
             rec_aml       record;
             rec_lbh       record;
+            rec_lndt      record;
             bal_data      fin_output_theodoanhsophaithu_oracle_data%ROWTYPE;
             loaicongno    numeric;
             sotien        numeric;
@@ -460,24 +469,28 @@ class output_congno_tudong(osv.osv):
                 for loaicongno in 1..11
                 loop
                     if loaicongno=1 then
-                        sotien = 0;
-                        for rec_aml in execute '
-                            select sum(residual) as sotien from account_invoice
-                                where mlg_type=''no_doanh_thu'' and chinhanh_id=$3 and state in (''open'')
-                                and date_invoice between $1 and $2
-                        ' using $1, $2,rec_cn.id
+                        for rec_lndt in execute '
+                            select id,name,so_taikhoan from loai_no_doanh_thu
+                        '
                         loop
-                            sotien = sotien + coalesce(rec_aml.sotien, 0);
-                        end loop;
-                        if sotien <> 0 then
+                            sotien = 0;
+                            tencongno = 'AR_'||rec_lndt.name;
+                            for rec_aml in execute '
+                                select sum(residual) as sotien from account_invoice
+                                    where mlg_type=''no_doanh_thu'' and chinhanh_id=$3 and state in (''open'') and loai_nodoanhthu_id=$4
+                                    and date_invoice between $1 and $2
+                            ' using $1, $2,rec_cn.id, rec_lndt.id
+                            loop
+                                sotien = sotien + coalesce(rec_aml.sotien, 0);
+                            end loop;
                             bal_data.chinhanh=rec_cn.name;
                             bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Nợ doanh thu';
-                            bal_data.taikhoan='1411011';
+                            bal_data.loaicongno=tencongno;
+                            bal_data.taikhoan=rec_lndt.so_taikhoan;
                             bal_data.sotien=sotien;
                             bal_data.ghichu='';
                             return next bal_data;
-                        end if;
+                        end loop;
                     end if;
                     
                     if loaicongno=2 then
@@ -492,15 +505,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Tạm ứng_Công tác_Nhân viên';
-                            bal_data.taikhoan='1411012';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Tạm ứng_Công tác_Nhân viên';
+                        bal_data.taikhoan='1411012';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                     if loaicongno=3 then
@@ -515,15 +526,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Tạm ứng_Công tác_Lái xe';
-                            bal_data.taikhoan='1411011';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Tạm ứng_Công tác_Lái xe';
+                        bal_data.taikhoan='1411011';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                     if loaicongno=4 then
@@ -538,15 +547,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Tạm ứng_Hoàn cảnh_Nhân viên';
-                            bal_data.taikhoan='1411012';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Tạm ứng_Hoàn cảnh_Nhân viên';
+                        bal_data.taikhoan='1411012';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                     if loaicongno=5 then
@@ -561,15 +568,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Tạm ứng_Hoàn cảnh_Lái xe';
-                            bal_data.taikhoan='1411011';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Tạm ứng_Hoàn cảnh_Lái xe';
+                        bal_data.taikhoan='1411011';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                     if loaicongno=6 then
@@ -582,15 +587,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Phạt vi phạm';
-                            bal_data.taikhoan='7111018';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Phạt vi phạm';
+                        bal_data.taikhoan='7111018';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                     if loaicongno=7 then
@@ -603,15 +606,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Trả góp mua xe';
-                            bal_data.taikhoan='3387018';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Trả góp mua xe';
+                        bal_data.taikhoan='3387018';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                     if loaicongno=8 then
@@ -624,15 +625,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Phí thương hiệu';
-                            bal_data.taikhoan='3387012';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Phí thương hiệu';
+                        bal_data.taikhoan='3387012';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                     if loaicongno=9 then
@@ -645,15 +644,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Nợ xưởng sửa chữa';
-                            bal_data.taikhoan='5113021';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Nợ xưởng sửa chữa';
+                        bal_data.taikhoan='5113021';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                     if loaicongno=10 then
@@ -671,15 +668,13 @@ class output_congno_tudong(osv.osv):
                             loop
                                 sotien = sotien + coalesce(rec_aml.sotien, 0);
                             end loop;
-                            if sotien <> 0 then
-                                bal_data.chinhanh=rec_cn.name;
-                                bal_data.machinhanh=rec_cn.code;
-                                bal_data.loaicongno=tencongno;
-                                bal_data.taikhoan=rec_lbh.so_taikhoan;
-                                bal_data.sotien=sotien;
-                                bal_data.ghichu='';
-                                return next bal_data;
-                            end if;
+                            bal_data.chinhanh=rec_cn.name;
+                            bal_data.machinhanh=rec_cn.code;
+                            bal_data.loaicongno=tencongno;
+                            bal_data.taikhoan=rec_lbh.so_taikhoan;
+                            bal_data.sotien=sotien;
+                            bal_data.ghichu='';
+                            return next bal_data;
                         end loop;
                     end if;
                     
@@ -693,15 +688,13 @@ class output_congno_tudong(osv.osv):
                         loop
                             sotien = sotien + coalesce(rec_aml.sotien, 0);
                         end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Phải thu chi hộ điện thoại';
-                            bal_data.taikhoan='1388021';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
+                        bal_data.chinhanh=rec_cn.name;
+                        bal_data.machinhanh=rec_cn.code;
+                        bal_data.loaicongno='AR_Phải thu chi hộ điện thoại';
+                        bal_data.taikhoan='1388021';
+                        bal_data.sotien=sotien;
+                        bal_data.ghichu='';
+                        return next bal_data;
                     end if;
                     
                 end loop;
@@ -1124,7 +1117,7 @@ class output_congno_tudong(osv.osv):
                 date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
                 date_now = time.strftime('%Y-%m-%d')
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_phat_sinh','bien_so_xe','so_hop_dong','so_tien','don_vi_chi','dien_giai','ngay_thanh_toan','so_tien_da_thu']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_phat_sinh','bien_so_xe','so_hop_dong','so_tien','don_vi_chi','dien_giai','ngay_thanh_toan','so_tien_da_thu','so_tien_lai_da_thu']
                 contents = []
                 sql = '''
                     select ai.id as invoice_id,cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1154,9 +1147,28 @@ class output_congno_tudong(osv.osv):
                         
                     invoice = invoice_obj.browse(cr, uid, line['invoice_id'])
                     if invoice.payment_ids:
+                        for tralai in invoice.lichsu_thutienlai_line:
+                            if tralai.ngay==date_now:
+                                ngay_thanh_toan=datetime.strptime(tralai.ngay,'%Y-%m-%d').strftime('%d/%m/%Y')
+                                contents.append({
+                                    'chi_nhanh': line['chi_nhanh'],
+                                    'ma_chi_nhanh': line['ma_chi_nhanh'],
+                                    'loai_doi_tuong': loai_doituong,
+                                    'ma_doi_tuong': line['ma_doi_tuong'],
+                                    'ten_doi_tuong': line['ten_doi_tuong'],
+                                    'ngay_phat_sinh': ngay_giao_dich,
+                                    'bien_so_xe': line['bien_so_xe'],
+                                    'so_hop_dong': line['so_hop_dong'],
+                                    'so_tien': line['so_tien'],
+                                    'don_vi_chi': line['don_vi_chi'],
+                                    'dien_giai': line['dien_giai'],
+                                    'ngay_thanh_toan': ngay_thanh_toan,
+                                    'so_tien_da_thu': tralai.move_line_id and tralai.move_line_id.credit or 0,
+                                    'so_tien_lai_da_thu': tralai.so_tien,
+                                })
                         for payment in invoice.payment_ids:
 #                             if payment.date>=date_start and payment.date<=date_end:
-                            if payment.date==date_now:
+                            if payment.date==date_now and payment.sotienlai_line:
                                 ngay_thanh_toan=datetime.strptime(payment.date,'%Y-%m-%d').strftime('%d/%m/%Y')
                                 contents.append({
                                     'chi_nhanh': line['chi_nhanh'],
@@ -1172,6 +1184,7 @@ class output_congno_tudong(osv.osv):
                                     'dien_giai': line['dien_giai'],
                                     'ngay_thanh_toan': ngay_thanh_toan,
                                     'so_tien_da_thu': payment.credit,
+                                    'so_tien_lai_da_thu': 0,
                                 })
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
@@ -1249,7 +1262,7 @@ class output_congno_tudong(osv.osv):
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
                             'ten_file': path_file_name,
-                            'loai_giaodich': 'Nợ doanh thu (SHIFT)',
+                            'loai_giaodich': 'Nợ DT-BH-AL (SHIFT)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Xuất',
                             'tudong_bangtay': 'Tự động',
@@ -1265,7 +1278,7 @@ class output_congno_tudong(osv.osv):
                 commit;
             '''%(
                  1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
-                 '','Nợ doanh thu (SHIFT)','Thu','Xuất','Tự động','Lỗi',noidungloi
+                 '','Nợ DT-BH-AL (SHIFT)','Thu','Xuất','Tự động','Lỗi',noidungloi
             )
             cr.execute(sql)
             cr.commit()
@@ -1770,7 +1783,7 @@ class output_congno_tudong(osv.osv):
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
-                        bsx.name as bien_so_xe,sum(ai.residual) as so_tien, ai.so_hop_dong as so_hop_dong
+                        bsx.name as bien_so_xe,sum(ai.residual+ai.sotien_lai_conlai) as so_tien, ai.so_hop_dong as so_hop_dong
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
@@ -1826,6 +1839,75 @@ class output_congno_tudong(osv.osv):
             '''%(
                  1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
                  '','Trả góp xe (SHIFT)','Thu','Xuất','Tự động','Lỗi',noidungloi
+            )
+            cr.execute(sql)
+            cr.commit()
+        return True
+    
+    def output_phaithu_nodoanhthu_histaff(self, cr, uid, context=None):
+        output_obj = self.pool.get('cauhinh.thumuc.output.tudong')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        try:
+            output_ids = output_obj.search(cr, uid, [('mlg_type','=','no_doanh_thu_histaff')])
+            if output_ids:
+                csvUti = lib_csv.csv_ultilities()
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','dien_giai']
+                contents = []
+                sql = '''
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                        sum(ai.residual) as so_tien
+                        
+                        from account_invoice ai 
+                        left join account_account cn on cn.id=ai.chinhanh_id
+                        left join res_partner dt on dt.id=ai.partner_id
+                        
+                        where ai.mlg_type='no_doanh_thu' and state='open' and dt.nhanvienvanphong = True
+                        
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                '''
+                cr. execute(sql)
+                for line in cr.dictfetchall():
+                    loai_doituong=''
+                    if line['loai_doituong']=='taixe':
+                        loai_doituong = 'Lái xe'
+                    if line['loai_doituong']=='nhadautu':
+                        loai_doituong = 'Nhà đầu tư'
+                    if line['loai_doituong']=='nhanvienvanphong':
+                        loai_doituong = 'Nhân viên văn phòng'
+                    contents.append({
+                        'chi_nhanh': line['chi_nhanh'],
+                        'ma_chi_nhanh': line['ma_chi_nhanh'],
+                        'loai_doi_tuong': loai_doituong,
+                        'ma_doi_tuong': line['ma_doi_tuong'],
+                        'ten_doi_tuong': line['ten_doi_tuong'],
+                        'ngay_giao_dich': '',
+                        'so_tien': line['so_tien'],
+                        'dien_giai': '',
+                    })
+                if contents:
+                    for path in output_obj.browse(cr, uid, output_ids):
+                        path_file_name = path.name+'/'+'no_doanh_thu_histaff_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
+                        csvUti._write_file(contents,headers,path_file_name )
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': path_file_name,
+                            'loai_giaodich': 'Nợ DT-BH-AL (HISTAFF)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Xuất',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+        except Exception, e:
+            cr.rollback()
+            noidungloi = str(e).replace("'","''")
+            sql = '''
+                insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                commit;
+            '''%(
+                 1,time.strftime('%Y-%m-%d %H:%M:%S'),1,time.strftime('%Y-%m-%d %H:%M:%S'),time.strftime('%Y-%m-%d %H:%M:%S'),
+                 '','Nợ DT-BH-AL (HISTAFF)','Thu','Xuất','Tự động','Lỗi',noidungloi
             )
             cr.execute(sql)
             cr.commit()

@@ -41,6 +41,8 @@ class Parser(report_sxw.rml_parse):
             'get_datenow': self.get_datenow,
             'get_user': self.get_user,
             '_get_ipaddress': self._get_ipaddress,
+            'get_sotien_goc': self.get_sotien_goc,
+            'get_sotien_lai': self.get_sotien_lai,
         })
         
     def get_loai(self):
@@ -65,6 +67,22 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         so_tien = wizard_data['so_tien']
         return so_tien
+    
+    def get_sotien_goc(self,o):
+        wizard_data = self.localcontext['data']['form']
+        so_tien = wizard_data['so_tien']
+        if o.sotien_lai_conlai>so_tien:
+            return 0
+        else:
+            return so_tien-o.sotien_lai_conlai
+    
+    def get_sotien_lai(self,o):
+        wizard_data = self.localcontext['data']['form']
+        so_tien = wizard_data['so_tien']
+        if o.sotien_lai_conlai>so_tien:
+            return so_tien
+        else:
+            return o.sotien_lai_conlai
     
     def get_diengiai(self):
         wizard_data = self.localcontext['data']['form']
@@ -108,7 +126,7 @@ class Parser(report_sxw.rml_parse):
     def get_title(self, mlg_type):
         tt = ''
         if mlg_type=='no_doanh_thu':
-            tt='NỢ DOANH THU'
+            tt='NỢ DT-BH-AL'
         if mlg_type=='chi_ho_dien_thoai':
             tt='CHI HỘ ĐIỆN THOẠI'
         if mlg_type=='phai_thu_bao_hiem':

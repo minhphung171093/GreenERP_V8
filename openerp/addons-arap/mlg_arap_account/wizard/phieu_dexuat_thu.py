@@ -27,6 +27,8 @@ class phieu_de_xuat(osv.osv_memory):
                         })
             if context.get('default_loai', False) and context['default_loai']=='chi':
                 res.update({'so_tien': invoice.so_tien,'diengiai':invoice.dien_giai})
+            if invoice.mlg_type=='tra_gop_xe':
+                res.update({'so_tien': invoice.residual+invoice.sotien_lai_conlai})
         if context.get('active_id', False) and context.get('active_model')=='thu.ky.quy':
             kyquy_obj = self.pool.get('thu.ky.quy')
             kyquy = kyquy_obj.browse(cr, uid, context['active_id'])
@@ -43,7 +45,7 @@ class phieu_de_xuat(osv.osv_memory):
         'ngay': fields.date('Ngày'),
         'diengiai': fields.char('Diễn giải', size=1024),
         'loai_doituong': fields.selection([('taixe','Lái xe'),('nhadautu','Nhà đầu tư'),('nhanvienvanphong','Nhân viên văn phòng')],'Loại đối tượng'),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),

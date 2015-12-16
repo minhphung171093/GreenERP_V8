@@ -513,6 +513,7 @@ class import_congno_tudong(osv.osv):
                                 'partner_id': partner_id,
                                 'date_invoice': date_invoice,
                                 'so_hop_dong': data['so_hop_dong'],
+                                'sotien_lai': data['so_tien_lai'],
                                 'so_tien': data['so_tien'],
                                 'dien_giai': data['dien_giai'],
                                 'journal_id': journal_ids and journal_ids[0] or False,
@@ -675,7 +676,7 @@ class import_congno_tudong(osv.osv):
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
                             'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
-                            'loai_giaodich': 'Nợ doanh thu (SHIFT)',
+                            'loai_giaodich': 'Nợ DT-BH-AL (SHIFT)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
                             'tudong_bangtay': 'Tự động',
@@ -693,7 +694,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,ngay,1,ngay,ngay,
-                             error_path+date_now+'/'+f_path.split('/')[-1],'Nợ doanh thu (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Nợ DT-BH-AL (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         
@@ -702,12 +703,12 @@ class import_congno_tudong(osv.osv):
                             <p>Tên file: %s</p>
                             <p>Loại giao dịch: %s</p>
                             <p>Ghi chú: %s</p>
-                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Nợ doanh thu (SHIFT)',noidung_loi)
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Nợ DT-BH-AL (SHIFT)',noidung_loi)
                         user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
                         partner = user.partner_id
                         partner.signup_prepare()
                         post_values = {
-                            'subject': 'Lỗi nhập tự động "Nợ doanh thu (SHIFT)"',
+                            'subject': 'Lỗi nhập tự động "Nợ DT-BH-AL (SHIFT)"',
                             'body': body,
                             'partner_ids': [],
                             }
@@ -1571,7 +1572,7 @@ class import_congno_tudong(osv.osv):
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
 
                             sql = '''
-                                select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,sotien_lai_conlai
                                     from account_invoice where chinhanh_id in (select id from account_account where code='%s')
                                         and partner_id in (select id from res_partner where ma_doi_tuong='%s') and type='out_invoice'
                                         and mlg_type='tra_gop_xe' and state='open' 
@@ -1588,6 +1589,162 @@ class import_congno_tudong(osv.osv):
                                 order by date_invoice
                             '''
                             cr.execute(sql)
+                            for line in cr.dictfetchall():
+                                if (line['residual']+line['sotien_lai_conlai'])>sotiendathu:
+                                    amount = sotiendathu
+                                    sotien_tragopxe = sotiendathu
+                                    sotiendathu = 0
+                                else:
+                                    amount = line['residual']+line['sotien_lai_conlai']
+                                    sotien_tragopxe = line['residual']+line['sotien_lai_conlai']
+                                    sotiendathu = sotiendathu-(line['residual']+line['sotien_lai_conlai'])
+                                if not amount:
+                                    break
+                                journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
+                                
+                                ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
+                                
+                                sotientra = amount
+                                sotienlai = line['sotien_lai_conlai']
+                                if sotientra>=sotienlai:
+                                    sotientra = sotientra-sotienlai
+                                else:
+                                    sotientra = 0
+                                amount = sotientra
+                                
+                                vals = {
+                                    'amount': amount,
+                                    'sotien_tragopxe': sotien_tragopxe,
+                                    'sotien_lai_conlai': line['sotien_lai_conlai'],
+                                    'partner_id': line['partner_id'],
+                                    'reference': line['name'],
+                                    'bai_giaoca_id': line['bai_giaoca_id'],
+                                    'mlg_type': line['mlg_type'],
+                                    'type': 'receipt',
+                                    'chinhanh_id': line['chinhanh_id'],
+                                    'journal_id': journal_ids[0],
+                                    'date': ngay_thanh_toan,
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                }
+                                
+                                context = {
+                                    'payment_expected_currency': line['currency_id'],
+                                    'default_partner_id': line['partner_id'],
+                                    'default_amount': amount,
+                                    'default_reference': line['name'],
+                                    'default_bai_giaoca_id': line['bai_giaoca_id'],
+                                    'default_mlg_type': line['mlg_type'],
+                                    'close_after_process': True,
+                                    'invoice_type': line['type'],
+                                    'invoice_id': line['id'],
+                                    'default_type': 'receipt',
+                                    'default_chinhanh_id': line['chinhanh_id'],
+                                    'type': 'receipt',
+                                }
+                                vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],line['partner_id'],journal_ids[0],amount,line['currency_id'],'receipt',ngay_thanh_toan,context)['value']
+                                vals.update(vals_onchange_partner)
+                                vals.update(
+                                    voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,line['partner_id'],ngay_thanh_toan,amount,'receipt',line['company_id'],context)['value']
+                                )
+                                line_cr_ids = []
+                                for l in vals['line_cr_ids']:
+                                    line_cr_ids.append((0,0,l))
+                                vals.update({'line_cr_ids':line_cr_ids})
+                                voucher_id = voucher_obj.create(cr, uid, vals,context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
+                            if sotiendathu>0:
+                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
+                        csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
+                            'loai_giaodich': 'Trả góp xe (SHIFT)',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+                    except Exception, e:
+                        cr.rollback()
+                        error_path = dir_path.name+ERROR
+                        csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
+                        sql = '''
+                            insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                            values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                            commit;
+                        '''%(
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Trả góp xe (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                        )
+                        cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Trả góp xe (SHIFT)',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Trả góp xe (SHIFT)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        cr.commit()
+#                         raise osv.except_osv(_('Warning!'), str(e))
+        except Exception, e:
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
+    def import_phaithu_nodoanhthu_histaff(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        invoice_obj = self.pool.get('account.invoice')
+        voucher_obj = self.pool.get('account.voucher')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','no_doanh_thu_histaff')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                    
+                        for data in file_data:
+                            noidung_loi=''
+                            try:
+                                st = float(data['so_tien_da_thu'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            sotiendathu = float(data['so_tien_da_thu'])
+                            if sotiendathu <= 0:
+                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            sql = '''
+                                select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                                    from account_invoice where chinhanh_id in (select id from account_account where code='%s')
+                                        and partner_id in (select id from res_partner where ma_doi_tuong='%s') and type='out_invoice'
+                                        and mlg_type='no_doanh_thu' and state='open' 
+                            '''%(data['ma_chi_nhanh'],data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
                                     amount = sotiendathu
@@ -1639,14 +1796,16 @@ class import_congno_tudong(osv.osv):
                                 vals.update({'line_cr_ids':line_cr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
+                            
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
                             'name': time.strftime('%Y-%m-%d %H:%M:%S'),
                             'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
-                            'loai_giaodich': 'Trả góp xe (SHIFT)',
+                            'loai_giaodich': 'Nợ DT-BH-AL (HISTAFF)',
                             'thu_tra': 'Thu',
                             'nhap_xuat': 'Nhập',
                             'tudong_bangtay': 'Tự động',
@@ -1664,7 +1823,7 @@ class import_congno_tudong(osv.osv):
                             commit;
                         '''%(
                              1,ngay,1,ngay,ngay,
-                             error_path+date_now+'/'+f_path.split('/')[-1],'Trả góp xe (SHIFT)','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Nợ DT-BH-AL (HISTAFF)','Thu','Nhập','Tự động','Lỗi',noidung_loi
                         )
                         cr.execute(sql)
                         
@@ -1673,12 +1832,12 @@ class import_congno_tudong(osv.osv):
                             <p>Tên file: %s</p>
                             <p>Loại giao dịch: %s</p>
                             <p>Ghi chú: %s</p>
-                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Trả góp xe (SHIFT)',noidung_loi)
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Nợ DT-BH-AL (HISTAFF)',noidung_loi)
                         user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
                         partner = user.partner_id
                         partner.signup_prepare()
                         post_values = {
-                            'subject': 'Lỗi nhập tự động "Trả góp xe (SHIFT)"',
+                            'subject': 'Lỗi nhập tự động "Nợ DT-BH-AL (HISTAFF)"',
                             'body': body,
                             'partner_ids': [],
                             }
@@ -2347,7 +2506,7 @@ class import_congno_tudong(osv.osv):
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
-                                select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+                                select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state,sotien_lai_conlai
                                     from account_invoice where name='%s' and type='out_invoice'
                                     order by date_invoice
                             '''%(data['REQUEST_REF_NUMBER'])
@@ -2355,7 +2514,7 @@ class import_congno_tudong(osv.osv):
                             invoices = cr.dictfetchall()
                             if not invoices:
                                 sql = '''
-                                    select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
+                                    select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state,sotien_lai_conlai
                                         from account_invoice where ref_number='%s' and type='out_invoice'
                                         order by date_invoice
                                 '''%(data['REQUEST_REF_NUMBER'])
@@ -2407,11 +2566,11 @@ class import_congno_tudong(osv.osv):
                                     noidung_loi='Phiếu đã chi rồi'
                                     raise osv.except_osv(_('Warning!'), 'Phiếu đã chi rồi')
                                 if loai in ['Chi','chi'] and invoice['state']=='draft':
-                                    if sotiendathu<invoice['so_tien']:
+                                    if sotiendathu<(invoice['so_tien']+invoice['sotien_lai_conlai']):
                                         noidung_loi='Số tiền chi không được nhỏ hơn số tiền đề nghị chi'
                                         raise osv.except_osv(_('Warning!'), 'Số tiền chi không được nhỏ hơn số tiền đề nghị chi')
                                     else:
-                                        sotiendathu = sotiendathu-invoice['so_tien']
+                                        sotiendathu = sotiendathu-(invoice['so_tien']+invoice['sotien_lai_conlai'])
                                     wf_service.trg_validate(uid, 'account.invoice', invoice['id'], 'invoice_open', cr)
                                     sql = '''
                                         update account_invoice set fusion_id='%s' where id=%s
@@ -2422,11 +2581,12 @@ class import_congno_tudong(osv.osv):
                                     noidung_loi='Phiếu chưa được chi'
                                     raise osv.except_osv(_('Warning!'), 'Phiếu chưa được chi')
                                 if loai in ['Thu','thu'] and invoice['state']=='open':
-                                    if invoice['residual']>sotiendathu:
+                                    if (invoice['residual']+invoice['sotien_lai_conlai'])>sotiendathu:
                                         amount = sotiendathu
-                                        
+                                        sotien_tragopxe = sotiendathu
                                     else:
-                                        amount = invoice['residual']
+                                        amount = invoice['residual']+invoice['sotien_lai_conlai']
+                                        sotien_tragopxe = invoice['residual']+invoice['sotien_lai_conlai']
                                         
                                     if not amount or sotiendathu<=0:
                                         break
@@ -2435,8 +2595,18 @@ class import_congno_tudong(osv.osv):
                                     
                                     ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                     
+                                    sotientra = amount
+                                    sotienlai = invoice['sotien_lai_conlai']
+                                    if sotientra>=sotienlai:
+                                        sotientra = sotientra-sotienlai
+                                    else:
+                                        sotientra = 0
                                     vals = {
-                                        'amount': amount,
+                                        'amount': sotientra,
+                                        
+                                        'sotien_tragopxe': sotien_tragopxe,
+                                        'sotien_lai_conlai': invoice['sotien_lai_conlai'],
+                                        
                                         'partner_id': invoice['partner_id'],
                                         'reference': invoice['name'],
                                         'bai_giaoca_id': invoice['bai_giaoca_id'],
@@ -2452,7 +2622,7 @@ class import_congno_tudong(osv.osv):
                                     context = {
                                         'payment_expected_currency': invoice['currency_id'],
                                         'default_partner_id': invoice['partner_id'],
-                                        'default_amount': amount,
+                                        'default_amount': sotientra,
                                         'default_reference': invoice['name'],
                                         'default_bai_giaoca_id': invoice['bai_giaoca_id'],
                                         'default_mlg_type': invoice['mlg_type'],
@@ -2463,17 +2633,17 @@ class import_congno_tudong(osv.osv):
                                         'default_chinhanh_id': invoice['chinhanh_id'],
                                         'type': 'receipt',
                                     }
-                                    vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],amount,invoice['currency_id'],'receipt',ngay_thanh_toan,context)['value']
+                                    vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],sotientra,invoice['currency_id'],'receipt',ngay_thanh_toan,context)['value']
                                     vals.update(vals_onchange_partner)
                                     vals.update(
-                                        voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,invoice['partner_id'],ngay_thanh_toan,amount,'receipt',invoice['company_id'],context)['value']
+                                        voucher_obj.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,invoice['partner_id'],ngay_thanh_toan,sotientra,'receipt',invoice['company_id'],context)['value']
                                     )
                                     line_cr_ids = []
                                     for l in vals['line_cr_ids']:
                                         line_cr_ids.append((0,0,l))
                                     vals.update({'line_cr_ids':line_cr_ids})
-                                    voucher_id = voucher_obj.create(cr, uid, vals)
-                                    voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                    voucher_id = voucher_obj.create(cr, uid, vals,context)
+                                    voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
                                     
                                     sotiendathu = sotiendathu - amount
                             if sotiendathu>0:

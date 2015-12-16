@@ -32,7 +32,7 @@ class account_voucher(osv.osv):
     _inherit = "account.voucher"
     _columns = {
         'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),
@@ -50,6 +50,9 @@ class account_voucher(osv.osv):
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
         'fusion_id': fields.char('Fusion Thu', size=1024),
         'loai_giaodich': fields.char('Loại giao dịch', size=1024),
+        'sotien_tragopxe': fields.float('Số tiền đã trả', digits=(16,0)),
+        'sotien_lai_conlai': fields.float('Số tiền lãi còn lại',digits=(16,0)),
+        'sotienlai_id': fields.many2one('so.tien.lai', 'So tien lai'),
     }
     def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
         """
@@ -280,6 +283,11 @@ class account_voucher(osv.osv):
             if voucher.loai_giaodich:
                 cr.execute(''' update account_move_line set loai_giaodich=%s where move_id=%s ''',(voucher.loai_giaodich,move_id,))
             
+            if voucher.sotienlai_id:
+                cr.execute(''' select id from account_move_line where move_id=%s and credit!=0 limit 1 ''',(move_id,))
+                moveline = cr.fetchone()
+                if moveline:
+                    cr.execute(''' update so_tien_lai set move_line_id=%s where id=%s ''',(moveline[0],voucher.sotienlai_id.id,))
             if voucher.journal_id.entry_posted:
                 move_pool.post(cr, uid, [move_id], context={})
             # We automatically reconcile the account move lines.
@@ -289,13 +297,45 @@ class account_voucher(osv.osv):
                     reconcile = move_line_pool.reconcile_partial(cr, uid, rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id, writeoff_period_id=voucher.period_id.id, writeoff_journal_id=voucher.journal_id.id)
         return True
     
+    def button_proforma_voucher(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if context.get('invoice_id', False):
+            for voucher in self.browse(cr, uid, ids):
+                if voucher.sotien_tragopxe and voucher.sotien_lai_conlai:
+                    if voucher.sotien_tragopxe>=voucher.sotien_lai_conlai:
+                        sotien = voucher.sotien_lai_conlai
+                    else:
+                        sotien = voucher.sotien_tragopxe
+                    sotienlai_id = self.pool.get('so.tien.lai').create(cr, uid, {
+                        'invoice_id': context['invoice_id'],
+                        'ngay': voucher.date,
+                        'fusion_id': voucher.fusion_id,
+                        'so_tien': sotien,
+                    })
+                    self.write(cr, uid, [voucher.id], {'sotienlai_id':sotienlai_id})
+        self.signal_workflow(cr, uid, ids, 'proforma_voucher')
+        return {'type': 'ir.actions.act_window_close'}
+    
+    def onchange_sotien_tragopxe(self, cr, uid, ids, sotien_tragopxe, mlg_type, sotien_lai_conlai, context=None):
+        res = {'value':{}}
+        if mlg_type=='tra_gop_xe':
+            sotientra = sotien_tragopxe
+            sotienlai = sotien_lai_conlai
+            if sotientra>=sotienlai:
+                sotientra = sotientra-sotienlai
+            else:
+                sotientra = 0
+            res['value'].update({'amount': sotientra})
+        return res
+    
 account_voucher()
 
 class account_voucher_line(osv.osv):
     _inherit = "account.voucher.line"
     _columns = {
         'bai_giaoca_id': fields.many2one('bai.giaoca', 'Bãi giao ca'),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),

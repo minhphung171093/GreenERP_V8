@@ -38,7 +38,9 @@ class account_invoice(osv.osv):
         res = super(account_invoice, self).default_get(cr, uid, fields, context=context)
         if context.get('default_mlg_type', False) and context['default_mlg_type']=='no_doanh_thu':
             date = datetime.now() + timedelta(days=-1)
+            loai_ndt_ids = self.pool.get('loai.no.doanh.thu').search(cr, uid, [('name','=','Nợ doanh thu')])
             res.update({'date_invoice': date.strftime('%Y-%m-%d'),
+                        'loai_nodoanhthu_id': loai_ndt_ids and loai_ndt_ids[0] or False,
                         })
         return res
     
@@ -79,6 +81,7 @@ class account_invoice(osv.osv):
             
         if context.get('default_mlg_type', False) and context['default_mlg_type']=='no_doanh_thu':
             vals = [('taixe','Lái xe'),
+                    ('nhanvienvanphong','Nhân viên văn phòng')
                 ]
             
         if context.get('default_mlg_type', False) and context['default_mlg_type']=='chi_ho_dien_thoai':
@@ -128,7 +131,7 @@ class account_invoice(osv.osv):
         return result.keys()
     
     _columns = {
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),
@@ -171,7 +174,7 @@ class account_invoice(osv.osv):
         'so_hoa_don':fields.char('Số hóa đơn',size = 64, readonly=True, states={'draft': [('readonly', False)]}),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng', readonly=True, states={'draft': [('readonly', False)]}),
-        'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ doanh thu', readonly=True, states={'draft': [('readonly', False)]}),
+        'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ DT-BH-AL', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_baohiem_id': fields.many2one('loai.bao.hiem', 'Loại bảo hiểm', readonly=True, states={'draft': [('readonly', False)]}),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
@@ -655,6 +658,8 @@ class account_invoice(osv.osv):
                 'payment_expected_currency': inv.currency_id.id,
                 'default_partner_id': self.pool.get('res.partner')._find_accounting_partner(inv.partner_id).id,
                 'default_amount': inv.type in ('out_refund', 'in_refund') and -inv.residual or inv.residual,
+                'default_sotien_tragopxe': inv.residual+inv.sotien_lai_conlai,
+                'default_sotien_lai_conlai': inv.sotien_lai_conlai,
                 'default_reference': inv.name,
                 'default_journal_id': journal_ids and journal_ids[0] or False,
                 'default_bai_giaoca_id': inv.bai_giaoca_id and inv.bai_giaoca_id.id or False,
@@ -699,6 +704,7 @@ class so_tien_lai(osv.osv):
         'ngay': fields.date('Ngày'),
         'fusion_id': fields.char('Fusion Chi', size=1024),
         'so_tien': fields.float('Số tiền',digits=(16,0)),
+        'move_line_id': fields.many2one('account.move.line', 'Account move line'),
     }
     
 so_tien_lai()

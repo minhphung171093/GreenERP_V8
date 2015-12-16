@@ -116,7 +116,7 @@
 				
 				<menuitem id="menu_action_no_doanh_thu"
 					action="action_no_doanh_thu"
-					name="Nợ doanh thu"
+					name="Nợ DT-BH-AL"
 					parent="menu_cong_no" sequence="5"/>
 					
 				<menuitem id="menu_action_chi_ho_dien_thoai"
@@ -310,7 +310,7 @@
 				
 				<menuitem id="menu_action_loai_no_doanh_thu"
 					action="action_loai_no_doanh_thu"
-					name="Loại nợ doanh thu"
+					name="Loại nợ DT-BH-AL"
 					parent="menu_danhmuc_dungchung" sequence="10"/>
 						
 				<menuitem id="menu_action_bien_so_xe"
@@ -401,6 +401,11 @@
 					action="action_chitiet_congno_mot_doituong"
 					parent="menu_chitiet_congno" sequence="13"/>
 					
+				<menuitem id="menu_action_chitiet_congno_tgx"
+					name="Chi tiết trả góp xe"
+					action="action_chitiet_congno_tgx"
+					parent="menu_chitiet_congno" sequence="14"/>
+					
 				<menuitem id="menu_action_congno_vuotdinhmuc"
 					name="Công nợ vượt định mức"
 					action="action_congno_vuotdinhmuc"
@@ -456,7 +461,7 @@
 				
 				<menuitem id="menu_action_congno_theo_loainodoanhthu"
 					action="action_congno_theo_loainodoanhthu"
-					name="Theo loại nợ doanh thu"
+					name="Theo loại nợ DT-BH-AL"
 					parent="menu_baocao_theo_danhmuc" sequence="11"/>
 					
 				<menuitem id="menu_action_congno_theo_loaitamung"

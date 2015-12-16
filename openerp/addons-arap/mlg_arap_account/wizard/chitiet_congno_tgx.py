@@ -10,14 +10,15 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-class tonghop_congno(osv.osv_memory):
-    _name = "tonghop.congno"
+class chitiet_congno_tgx(osv.osv_memory):
+    _name = "chitiet.congno.tgx"
     
     _columns = {
-        'period_id': fields.many2one('account.period','Tháng'),
-        'partner_ids': fields.many2many('res.partner', 'thcn_doituong_ref', 'dscn_id', 'doituong_id', 'Đối tượng'),
-        'doi_xe_ids': fields.many2many('account.account', 'thcn_doixe_ref', 'dscn_id', 'doixe_id', 'Đội xe'),
-        'bai_giaoca_ids': fields.many2many('bai.giaoca', 'thcn_baigiaoca_ref', 'dscn_id', 'baigiaoca_id', 'Bãi giao ca'),
+        'period_from_id': fields.many2one('account.period','Từ tháng'),
+        'period_to_id': fields.many2one('account.period','Đến tháng'),
+        'partner_ids': fields.many2many('res.partner', 'ctcntgx_doituong_ref', 'dscn_id', 'doituong_id', 'Đối tượng'),
+        'doi_xe_ids': fields.many2many('account.account', 'ctcntgx_doixe_ref', 'dscn_id', 'doixe_id', 'Đội xe'),
+        'bai_giaoca_ids': fields.many2many('bai.giaoca', 'ctcntgx_baigiaoca_ref', 'dscn_id', 'baigiaoca_id', 'Bãi giao ca'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
         'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
@@ -47,7 +48,9 @@ class tonghop_congno(osv.osv_memory):
     
     _defaults = {
         'chinhanh_id': _get_chinhanh,
-        'period_id': _get_period,
+        'period_from_id': _get_period,
+        'period_to_id': _get_period,
+        'mlg_type': 'tra_gop_xe',
     }
     
     def onchange_doi_xe(self, cr, uid, ids, doi_xe_ids=[], context=None):
@@ -72,12 +75,16 @@ class tonghop_congno(osv.osv_memory):
     def print_report(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
+        this = self.browse(cr, uid, ids[0])
+        if this.period_from_id.date_stop > this.period_to_id.date_start:
+            raise
+        
         datas = {'ids': context.get('active_ids', [])}
-        datas['model'] = 'chitiet.congno'
+        datas['model'] = 'chitiet.congno.tgx'
         datas['form'] = self.read(cr, uid, ids)[0]
         datas['form'].update({'active_id':context.get('active_ids',False)})
         name_report = context['name_report']
         return {'type': 'ir.actions.report.xml', 'report_name': name_report, 'datas': datas}
         
-tonghop_congno()
+chitiet_congno_tgx()
 

@@ -18,7 +18,7 @@ class congno_vuotdinhmuc(osv.osv_memory):
         'to_date': fields.date('Ngày kết thúc', required=True),
         'sotien_dinhmuc': fields.float('Số tiền định mức', digits=(16,0), required=True),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
-        'mlg_type': fields.selection([('no_doanh_thu','Nợ doanh thu'),
+        'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phat_vi_pham','Phạt vi phạm'),

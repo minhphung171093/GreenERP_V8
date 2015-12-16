@@ -107,7 +107,7 @@ class congno_dauky_line(osv.osv):
 #         'ma_bang_chiettinh_chiphi_sua': fields.char('Mã chiết tính', size=1024),
 #         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
         'mlg_type': fields.selection([
-                                      ('no_doanh_thu','Nợ doanh thu'),
+                                      ('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),
                                       ('phai_thu_bao_hiem','Phải thu bảo hiểm'),
                                       ('phai_thu_ky_quy','Phải thu ký quỹ'),

@@ -12,6 +12,7 @@
             	<xpath expr="//field[@name='type']" position="after">
 	        		<field name="bai_giaoca_id" invisible="1"/>
 	        		<field name="mlg_type" invisible="1"/>
+	        		<field name="sotien_lai_conlai" invisible="1"/>
 	        	</xpath>
 	        	<xpath expr="//field[@name='line_cr_ids']/tree/field[@name='account_id']" position="after">
 	        		<field name="mlg_type"/>
@@ -21,7 +22,14 @@
 	        		<field name="mlg_type"/>
 	        		<field name="bai_giaoca_id" readonly="0"/>
 	        	</xpath>
-	        	<xpath expr="//field[@name='amount']" position="after">
+	        	<xpath expr="//field[@name='amount']" position="replace">
+	        		<field name="amount" class="oe_inline" string="Paid Amount" widget="monetary"
+	        			options="{&quot;currency_field&quot;: &quot;currency_id&quot;}"
+	        			attrs="{'invisible':[('mlg_type','=','tra_gop_xe')]}" on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
+        			<field name="sotien_tragopxe" required='1' class="oe_inline" string="Paid Amount" widget="monetary"
+	        			options="{&quot;currency_field&quot;: &quot;currency_id&quot;}"
+	        			on_change="onchange_sotien_tragopxe(sotien_tragopxe,mlg_type,sotien_lai_conlai)"
+	        			attrs="{'invisible':[('mlg_type','!=','tra_gop_xe')]}"/>
 	        		<field name="chinhanh_id" invisible='1' domain="[('parent_id.code','=','1')]"/>
 	        	</xpath>
 	        	<xpath expr="//field[@name='journal_id']" position="attributes">
