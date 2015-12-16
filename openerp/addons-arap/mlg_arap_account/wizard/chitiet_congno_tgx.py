@@ -76,8 +76,8 @@ class chitiet_congno_tgx(osv.osv_memory):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])
-        if this.period_from_id.date_stop > this.period_to_id.date_start:
-            raise
+        if this.period_from_id.id!=this.period_to_id.id and this.period_from_id.date_stop > this.period_to_id.date_start:
+            raise osv.except_osv(_('Cảnh báo!'), 'Tháng bắt đầu phải nhỏ hơn tháng kết thúc!')
         
         datas = {'ids': context.get('active_ids', [])}
         datas['model'] = 'chitiet.congno.tgx'
