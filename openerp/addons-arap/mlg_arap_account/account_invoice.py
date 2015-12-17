@@ -206,7 +206,7 @@ class account_invoice(osv.osv):
         'ref_number': fields.char('Ref NUMBER', size=1024),
         'loai_giaodich': fields.char('Loại giao dịch', size=1024),
         'lichsu_thutienlai_line': fields.one2many('so.tien.lai', 'invoice_id', 'Lịch sử thu tiền lãi'),
-        'sotien_lai': fields.float('Số tiền lãi',digits=(16,0)),
+        'sotien_lai': fields.float('Số tiền lãi',digits=(16,0), readonly=True, states={'draft': [('readonly', False)]}),
         'sotien_lai_conlai': fields.function(_get_sotien_lai_conlai,string='Số tiền lãi còn lại',digits=(16,0),
             store={
                 'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['sotien_lai','lichsu_thutienlai_line'], 10),

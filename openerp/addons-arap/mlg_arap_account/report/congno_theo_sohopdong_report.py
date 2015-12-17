@@ -93,9 +93,9 @@ class Parser(report_sxw.rml_parse):
             select ai.name as ma_giaodich, ai.date_invoice as ngay_giaodich, cn.code as ma_chinhanh, cn.name as ten_chinhanh,
                 rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, ldt.name as loai_doituong, dx.code as ma_doixe,
                 dx.name as ten_doixe, bgc.code as ma_baigiaoca, bgc.name as ten_baigiaoca, tnbgc.name as thungan_baigiaoca,
-                dhbgc.name as dieuhanh_baigiaoca, ail.price_unit as sotien, ail.name as diengiai,ai.mlg_type as loaicongno,
+                dhbgc.name as dieuhanh_baigiaoca, (ail.price_unit+ai.sotien_lai) as sotien, ail.name as diengiai,ai.mlg_type as loaicongno,
                 ai.so_hop_dong as so_hop_dong, bsx.name as bien_so_xe, ai.so_hoa_don as so_hoa_don,rp.id as partner_id,
-                ai.ma_bang_chiettinh_chiphi_sua as ma_bang_chiettinh_chiphi_sua,ai.residual as sotienconlai,(ai.so_tien-ai.residual) as sotiendathu
+                ai.ma_bang_chiettinh_chiphi_sua as ma_bang_chiettinh_chiphi_sua,(ai.residual+ai.sotien_lai_conlai) as sotienconlai,(ai.so_tien+ai.sotien_lai-ai.residual-ai.sotien_lai_conlai) as sotiendathu
                 
                 from account_invoice_line ail
                 left join account_invoice ai on ail.invoice_id = ai.id

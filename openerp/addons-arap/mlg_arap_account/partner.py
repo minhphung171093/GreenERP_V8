@@ -107,8 +107,8 @@ class res_partner(osv.osv):
             cr.execute('delete from tong_cong_no where partner_id=%s',(partner.id,))
             
             sql = '''
-                select mlg_type,case when sum(amount_total)!=0 then sum(amount_total) else 0 end sotien_congno,
-                        case when sum(residual)!=0 then sum(residual) else 0 end sotien_conlai
+                select mlg_type,case when sum(so_tien+sotien_lai)!=0 then sum(so_tien+sotien_lai) else 0 end sotien_congno,
+                        case when sum(residual+sotien_lai_conlai)!=0 then sum(residual+sotien_lai_conlai) else 0 end sotien_conlai
                     from account_invoice
                     where partner_id=%s and state in ('open','paid') and type='out_invoice'
                     group by mlg_type
@@ -343,7 +343,7 @@ class res_partner(osv.osv):
                 sotien_conlai = partner.sotien_dathu
                 sotien_cantru = 0
                 sql = '''
-                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,sotien_lai_conlai
                     
                         from account_invoice
                     
@@ -353,20 +353,32 @@ class res_partner(osv.osv):
                 '''%(partner.chinhanh_id.id,partner.id)
                 cr.execute(sql)
                 for line in cr.dictfetchall():
-                    if sotien_conlai>line['residual']:
-                        amount = line['residual']
-                        sotien_conlai = sotien_conlai-line['residual']
+                    if sotien_conlai>(line['residual']+line['sotien_lai_conlai']):
+                        amount = line['residual']+line['sotien_lai_conlai']
+                        sotien_tragopxe = line['residual']+line['sotien_lai_conlai']
+                        sotien_conlai = sotien_conlai-(line['residual']+line['sotien_lai_conlai'])
                     else:
                         amount = sotien_conlai
+                        sotien_tragopxe = sotien_conlai
                         sotien_conlai = 0
-                    sotien_cantru+=amount
+                    sotien_cantru+=sotien_tragopxe
                     if not amount:
                         break
                     
                     journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                         
+                    sotientra = amount
+                    sotienlai = line['sotien_lai_conlai']
+                    if sotientra>=sotienlai:
+                        sotientra = sotientra-sotienlai
+                    else:
+                        sotientra = 0
+                    amount = sotientra
+                        
                     vals = {
                         'amount': amount,
+                        'sotien_tragopxe': sotien_tragopxe,
+                        'sotien_lai_conlai': line['sotien_lai_conlai'],
                         'partner_id': line['partner_id'],
                         'reference': line['name'],
                         'bai_giaoca_id': line['bai_giaoca_id'],
@@ -401,8 +413,8 @@ class res_partner(osv.osv):
                     for l in vals['line_cr_ids']:
                         line_cr_ids.append((0,0,l))
                     vals.update({'line_cr_ids':line_cr_ids})
-                    voucher_id = voucher_obj.create(cr, uid, vals)
-                    voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                    voucher_id = voucher_obj.create(cr, uid, vals,context)
+                    voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
                     
                 sql = '''
                     select id, sotien_conlai
@@ -429,7 +441,7 @@ class res_partner(osv.osv):
                     sotien_conlai = chinhanh.sotien_dathu
                     sotien_cantru = 0
                     sql = '''
-                        select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
+                        select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,sotien_lai_conlai
                         
                             from account_invoice
                         
@@ -439,20 +451,32 @@ class res_partner(osv.osv):
                     '''%(chinhanh.chinhanh_id.id,partner.id)
                     cr.execute(sql)
                     for line in cr.dictfetchall():
-                        if sotien_conlai>line['residual']:
-                            amount = line['residual']
-                            sotien_conlai = sotien_conlai-line['residual']
+                        if sotien_conlai>(line['residual']+line['sotien_lai_conlai']):
+                            amount = line['residual']+line['sotien_lai_conlai']
+                            sotien_tragopxe = line['residual']+line['sotien_lai_conlai']
+                            sotien_conlai = sotien_conlai-(line['residual']+line['sotien_lai_conlai'])
                         else:
                             amount = sotien_conlai
+                            sotien_tragopxe = sotien_conlai
                             sotien_conlai = 0
-                        sotien_cantru+=amount
+                        sotien_cantru+=sotien_tragopxe
                         if not amount:
                             break
                         
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
-                            
+                        
+                        sotientra = amount
+                        sotienlai = line['sotien_lai_conlai']
+                        if sotientra>=sotienlai:
+                            sotientra = sotientra-sotienlai
+                        else:
+                            sotientra = 0
+                        amount = sotientra
+                        
                         vals = {
                             'amount': amount,
+                            'sotien_tragopxe': sotien_tragopxe,
+                            'sotien_lai_conlai': line['sotien_lai_conlai'],
                             'partner_id': line['partner_id'],
                             'reference': line['name'],
                             'bai_giaoca_id': line['bai_giaoca_id'],
@@ -486,8 +510,8 @@ class res_partner(osv.osv):
                         for l in vals['line_cr_ids']:
                             line_cr_ids.append((0,0,l))
                         vals.update({'line_cr_ids':line_cr_ids})
-                        voucher_id = voucher_obj.create(cr, uid, vals)
-                        voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                        voucher_id = voucher_obj.create(cr, uid, vals,context)
+                        voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
                     
                     sql = '''
                         select id, sotien_conlai
