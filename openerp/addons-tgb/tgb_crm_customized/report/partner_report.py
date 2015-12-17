@@ -36,6 +36,8 @@ class Parser(report_sxw.rml_parse):
             'get_chairman_id': self.get_chairman_id,
             'get_list_director': self.get_list_director,
             'get_next_number': self.get_next_number,
+            'get_director1': self.get_director1,
+            'get_director2': self.get_director2,
         })
         
     def get_datenow(self):
@@ -116,6 +118,28 @@ class Parser(report_sxw.rml_parse):
             d = d[:-2] 
         return d
     
+    def get_director1(self, partner_id):
+        sql = '''
+            select id,name,nric from res_partner where upper(function)='DIRECTOR' and parent_id=%s order by id limit 1
+        '''%(partner_id)
+        self.cr.execute(sql)
+        return self.cr.dictfetchone()
+    
+    def get_director2(self, partner_id):
+        res = {
+            'name': '',
+            'nric': '',
+            'id': False,
+        }
+        sql = '''
+            select id,name,nric from res_partner where upper(function)='DIRECTOR' and parent_id=%s order by id limit 2
+        '''%(partner_id)
+        self.cr.execute(sql)
+        partner = self.cr.dictfetchall()
+        if len(partner)>=2:
+            res.update({'name': partner[1]['name'],'nric': partner[1]['nric'],'id': partner[1]['id']})
+        return res
+    
     def get_1directorin1line(self, partner_id):
         res = []
         sql = '''
@@ -186,3 +210,4 @@ class Parser(report_sxw.rml_parse):
         return len(line)+1
     
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
