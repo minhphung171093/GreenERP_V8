@@ -87,6 +87,7 @@ class Parser(report_sxw.rml_parse):
             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
             mlg_type = wizard_data['mlg_type']
+            bien_so_xe_ids = wizard_data['bien_so_xe_ids']
             sql = '''
                 select partner_id from account_invoice where date_invoice between '%s' and '%s' and chinhanh_id=%s
                     and state in ('open','paid') and mlg_type='%s' 
@@ -105,6 +106,13 @@ class Parser(report_sxw.rml_parse):
                 sql+='''
                     and bai_giaoca_id in %s 
                 '''%(bai_giaoca_ids)
+            if bien_so_xe_ids:
+                bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                sql+='''
+                    and bien_so_xe_id in %s 
+                '''%(bien_so_xe_ids)
+                
             sql += ''' group by partner_id '''
             self.cr.execute(sql)
             partner_ids = [r[0] for r in self.cr.fetchall()]
@@ -160,12 +168,21 @@ class Parser(report_sxw.rml_parse):
             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
+            bien_so_xe_ids = wizard_data['bien_so_xe_ids']
             sql = '''
                 select id, name from bien_so_xe where id in (
                         select bien_so_xe_id from account_invoice where mlg_type='%s' and partner_id=%s and state in ('open','paid')
                             and chinhanh_id=%s and date_invoice between '%s' and '%s'
-                    )
+                    ) 
             '''%(mlg_type,partner_id,chinhanh_id[0],period_from.date_start,period_to.date_stop)
+            
+            if bien_so_xe_ids:
+                bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                sql+='''
+                    and id in %s 
+                '''%(bien_so_xe_ids)
+            
             self.cr.execute(sql)
             return self.cr.dictfetchall()
         return res
@@ -177,11 +194,18 @@ class Parser(report_sxw.rml_parse):
             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
+            bien_so_xe_ids = wizard_data['bien_so_xe_ids']
             sql = '''
                 select case when sum(residual+sotien_lai_conlai)!=0 then sum(residual+sotien_lai_conlai) else 0 end nodauky
                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
                         and date_invoice <'%s' and state in ('open','paid') 
             '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
+            if bien_so_xe_ids:
+                bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                sql+='''
+                    and bien_so_xe_id in %s 
+                '''%(bien_so_xe_ids)
             self.cr.execute(sql)
             return self.cr.fetchone()[0]
         return 0
@@ -198,11 +222,18 @@ class Parser(report_sxw.rml_parse):
             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
+            bien_so_xe_ids = wizard_data['bien_so_xe_ids']
             sql = '''
                 select case when sum(residual+sotien_lai_conlai)!=0 then sum(residual+sotien_lai_conlai) else 0 end notrongky
                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
                         and date_invoice between '%s' and '%s' and state in ('open','paid') 
             '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start,period_to.date_stop)
+            if bien_so_xe_ids:
+                bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                sql+='''
+                    and bien_so_xe_id in %s 
+                '''%(bien_so_xe_ids)
             self.cr.execute(sql)
             notrongky = self.cr.fetchone()[0]
             nodauky = self.get_nodauky(partner_id)

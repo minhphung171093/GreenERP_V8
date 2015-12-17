@@ -25,7 +25,7 @@ class chitiet_congno(osv.osv_memory):
                                       ('phat_vi_pham','Phạt vi phạm'),
                                       ('thu_no_xuong','Thu nợ xưởng'),
                                       ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
-                                     # ('tra_gop_xe','Trả góp xe'),
+                                      ('tra_gop_xe','Trả góp xe'),
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('chi_ho','Phải trả chi hộ'),],'Loại công nợ'),

@@ -19,6 +19,7 @@ class chitiet_congno_tgx(osv.osv_memory):
         'partner_ids': fields.many2many('res.partner', 'ctcntgx_doituong_ref', 'dscn_id', 'doituong_id', 'Đối tượng'),
         'doi_xe_ids': fields.many2many('account.account', 'ctcntgx_doixe_ref', 'dscn_id', 'doixe_id', 'Đội xe'),
         'bai_giaoca_ids': fields.many2many('bai.giaoca', 'ctcntgx_baigiaoca_ref', 'dscn_id', 'baigiaoca_id', 'Bãi giao ca'),
+        'bien_so_xe_ids': fields.many2many('bien.so.xe','ctcntgx_biensoxe_ref', 'dscn_id', 'biensoxe_id','Biển số xe'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
         'mlg_type': fields.selection([('no_doanh_thu','Nợ DT-BH-AL'),
                                       ('chi_ho_dien_thoai','Phải thu chi hộ điện thoại'),

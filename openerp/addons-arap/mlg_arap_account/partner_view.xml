@@ -142,7 +142,7 @@
 	                    	<page string="Accounting">
 								<group>
 									<group>
-										<field name="chinhanh_id" readonly='1' options="{'no_create': True}"/>
+										<field name="chinhanh_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_id)" readonly='1' options="{'no_create': True}"/>
 			                        	<field name="property_account_receivable" domain="['&amp;',('parent_id','=',chinhanh_id),'|',('loai_doituong','=',False),('loai_doituong','=','taixe')]" options="{'no_create': True}" on_change="onchange_property_account_receivable(property_account_receivable)" string="Đội xe" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" options="{'no_create': True}" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':['|',('taixe','=',False),('property_account_receivable','=',False)]}"/>
 			                        	<field name="property_account_payable" options="{'no_create': True}" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
@@ -434,7 +434,7 @@
 	                    	<page string="Accounting">
 								<group>
 									<group>
-			                        	<field name="chinhanh_id" readonly='1' options="{'no_create': True}"/>
+			                        	<field name="chinhanh_id" domain="[('parent_id.code','=','1')]" on_change="onchange_chinhanh(chinhanh_id)" readonly='1' options="{'no_create': True}"/>
 			                        	<field name="property_account_receivable" domain="['&amp;',('parent_id','=',chinhanh_id),'|',('loai_doituong','=',False),('loai_doituong','=','nhanvienvanphong')]" options="{'no_create': True}" on_change="onchange_property_account_receivable(property_account_receivable)" string="Văn phòng" attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
 			                        	<field name="bai_giaoca_id" options="{'no_create': True}" domain="[('account_id','=',property_account_receivable)]" attrs="{'invisible':['|',('taixe','=',False),('property_account_receivable','=',False)]}"/>
 			                        	<field name="property_account_payable" options="{'no_create': True}" invisible='1' attrs="{'invisible':[('taixe','=',False),('nhanvienvanphong','=',False)],'required':['|',('taixe','=',True),('nhanvienvanphong','=',True)]}"/>
@@ -639,6 +639,32 @@
            <field name="name">Print Partner Ledger</field>
            <field name="value" eval="'ir.actions.act_window,'"/>
        </record>
-        
+       
+       <!--<record id="view_tai_xe_form_noreadonly" model="ir.ui.view">
+		   <field name="name">tai.xe.form.no.readonly</field>
+		   <field name="model">res.partner</field>
+		   <field name="inherit_id" ref="mlg_arap_account.view_tai_xe_form"/>
+		   <field name="groups_id" eval="[(6, 0, [ref('mlg_arap_account.group_mlg_arap_director') ])]"/>
+		   <field name="arch" type="xml">
+		       <field name='chinhanh_id' position="attributes">
+		           <attribute name="readonly">0</attribute>
+		           <attribute name="required">1</attribute>
+		       </field>
+		   </field>
+		</record>
+       
+       <record id="view_nhanvienvanphong_form_noreadonly" model="ir.ui.view">
+		   <field name="name">nhanvienvanphong.form.no.readonly</field>
+		   <field name="model">res.partner</field>
+		   <field name="inherit_id" ref="mlg_arap_account.view_nhanvienvanphong_form"/>
+		   <field name="groups_id" eval="[(6, 0, [ref('mlg_arap_account.group_mlg_arap_director') ])]"/>
+		   <field name="arch" type="xml">
+		       <field name='chinhanh_id' position="attributes">
+		           <attribute name="readonly">0</attribute>
+		           <attribute name="required">1</attribute>
+		       </field>
+		   </field>
+		</record>-->
+       
     </data>
 </openerp>

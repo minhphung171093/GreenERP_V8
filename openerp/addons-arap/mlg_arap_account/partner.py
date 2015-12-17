@@ -85,18 +85,7 @@ class res_partner(osv.osv):
             '''%(partner.id)
             cr.execute(sql)
             kyquy_ids = [r[0] for r in cr.fetchall()]
-            res[partner.id] = kyquy_ids
-        return res
-    
-    def _get_kyquy(self, cr, uid, ids, field_name, arg, context=None):
-        cur_obj = self.pool.get('res.currency')
-        res = {}
-        for partner in self.browse(cr, uid, ids, context=context):
-            sql = '''
-                select id from thu_ky_quy where partner_id=%s and state='paid'
-            '''%(partner.id)
-            cr.execute(sql)
-            kyquy_ids = [r[0] for r in cr.fetchall()]
+#             kyquy_ids = self.pool.get('thu.ky.quy').search(cr, uid, [('partner_id','=',partner.id),('state','=','paid')])
             res[partner.id] = kyquy_ids
         return res
     
@@ -309,6 +298,9 @@ class res_partner(osv.osv):
     
     def onchange_property_account_receivable(self, cr, uid, ids, property_account_receivable=False, context=None):
         return {'value': {'property_account_payable':property_account_receivable,'account_ht_id':property_account_receivable}}
+    
+    def onchange_chinhanh(self, cr, uid, ids, chinhanh_id=False, context=None):
+        return {'value': {'bai_giaoca_id': False,'property_account_receivable':False,'property_account_payable':False,'account_ht_id':False}}
     
     def name_get(self, cr, uid, ids, context=None):
         if context is None:
