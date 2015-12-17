@@ -38,7 +38,7 @@ class account_invoice(osv.osv):
         res = super(account_invoice, self).default_get(cr, uid, fields, context=context)
         if context.get('default_mlg_type', False) and context['default_mlg_type']=='no_doanh_thu':
             date = datetime.now() + timedelta(days=-1)
-            loai_ndt_ids = self.pool.get('loai.no.doanh.thu').search(cr, uid, [('name','=','NO_DOANH_THU')])
+            loai_ndt_ids = self.pool.get('loai.no.doanh.thu').search(cr, uid, [('code','=','NO_DOANH_THU')])
             res.update({'date_invoice': date.strftime('%Y-%m-%d'),
                         'loai_nodoanhthu_id': loai_ndt_ids and loai_ndt_ids[0] or False,
                         })

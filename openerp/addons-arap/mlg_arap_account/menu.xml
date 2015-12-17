@@ -187,6 +187,11 @@
 				name="Import"
 				parent="menu_root_congno" sequence="20"/>
 				
+				<menuitem id="menu_action_import_phaithu_nodoanhthu"
+					action="action_import_phaithu_nodoanhthu"
+					name="Nhập nợ DT-BH-AL"
+					parent="menu_import_cong_no_thu" sequence="2"/>
+				
 				<menuitem id="menu_action_import_phaithu_chiho_dienthoai"
 					action="action_import_phaithu_chiho_dienthoai"
 					name="Nhập phải thu chi hộ điện thoại"

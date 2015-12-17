@@ -188,7 +188,7 @@ class import_congno_tudong(osv.osv):
                                 'date_invoice': date_invoice,
                                 'so_hop_dong': data['so_hop_dong'],
                                 'ma_bang_chiettinh_chiphi_sua': data['ma_chiet_tinh'],
-                                'so_tien': data['so_tien'],
+                                'so_tien': float(data['so_tien']),
                                 'dien_giai': data['dien_giai'],
                                 'journal_id': journal_ids and journal_ids[0] or False,
                                 'bai_giaoca_id': bai_giaoca_id,
@@ -347,7 +347,7 @@ class import_congno_tudong(osv.osv):
                                 'partner_id': partner_id,
                                 'date_invoice': date_invoice,
                                 'so_hop_dong': data['so_hop_dong'],
-                                'so_tien': data['so_tien'],
+                                'so_tien': float(data['so_tien']),
                                 'dien_giai': data['dien_giai'],
                                 'journal_id': journal_ids and journal_ids[0] or False,
                                 'bai_giaoca_id': bai_giaoca_id,
@@ -514,7 +514,7 @@ class import_congno_tudong(osv.osv):
                                 'date_invoice': date_invoice,
                                 'so_hop_dong': data['so_hop_dong'],
                                 'sotien_lai': data['so_tien_lai'],
-                                'so_tien': data['so_tien'],
+                                'so_tien': float(data['so_tien']),
                                 'dien_giai': data['dien_giai'],
                                 'journal_id': journal_ids and journal_ids[0] or False,
                                 'bai_giaoca_id': bai_giaoca_id,
@@ -563,6 +563,163 @@ class import_congno_tudong(osv.osv):
                         partner.signup_prepare()
                         post_values = {
                             'subject': 'Lỗi nhập tự động "Trả góp xe (HTKD)"',
+                            'body': body,
+                            'partner_ids': [],
+                            }
+                        lead_email = partner.email
+                        msg_id = self.pool.get('res.partner').message_post(cr, uid, [partner.id], type='comment', subtype=False, context=context, **post_values)
+                        self.send_mail(cr, uid, lead_email, msg_id, context)
+                        cr.commit()
+#                         raise osv.except_osv(_('Warning!'), str(e))
+        except Exception, e:
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
+    def import_phaithu_nodoanhthu_shift_in(self, cr, uid, context=None):
+        import_obj = self.pool.get('cauhinh.thumuc.import.tudong')
+        invoice_obj = self.pool.get('account.invoice')
+        account_obj = self.pool.get('account.account')
+        partner_obj = self.pool.get('res.partner')
+        lichsu_obj = self.pool.get('lichsu.giaodich')
+        wf_service = netsvc.LocalService("workflow")
+        date_now = time.strftime('%Y-%m-%d')
+        try:
+            import_ids = import_obj.search(cr, uid, [('mlg_type','=','no_doanh_thu_shift_in')])
+
+            for dir_path in import_obj.browse(cr, uid, import_ids):
+                path = dir_path.name+IMPORTING
+                done_path = dir_path.name+DONE
+    
+                csvUti = lib_csv.csv_ultilities()
+                for file_name in csvUti._read_files_folder(path):
+                    f_path = file_name
+                    try:
+                        file_data = csvUti._read_file(f_path)
+                        
+                        for data in file_data:
+                            noidung_loi = ''
+                            try:
+                                st = float(data['so_tien'])
+                            except Exception, e:
+                                noidung_loi = 'Số tiền không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            if float(data['so_tien']) <= 0:
+                                noidung_loi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            vals={}
+                            account_id = False
+                            sql = '''
+                                select id from account_account where code='%s' limit 1
+                            '''%(data['ma_chi_nhanh'])
+                            cr.execute(sql)
+                            chinhanh_ids = cr.fetchone()
+                            if not chinhanh_ids:
+                                noidung_loi = 'Không tìm thấy chi nhánh'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
+                            
+                            sql = '''
+                                select id,bai_giaoca_id,account_ht_id,cmnd,giayphep_kinhdoanh,taixe,nhadautu,nhanvienvanphong,chinhanh_id
+                                    from res_partner where ma_doi_tuong='%s' limit 1
+                            '''%(data['ma_doi_tuong'])
+                            cr.execute(sql)
+                            partner = cr.dictfetchone()
+                            if not partner:
+                                noidung_loi = 'Không tìm thấy đối tượng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
+                            partner_id = partner and partner['id'] or False
+                            bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
+                            
+                            loai_doituong=''
+                            if partner['taixe']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
+                                loai_doituong='taixe'
+                                account_id = partner and partner['account_ht_id'] or False
+                            if partner['nhanvienvanphong']==True:
+                                if chinhanh_ids[0]!=partner['chinhanh_id']:
+                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
+                                loai_doituong='nhanvienvanphong'
+                                account_id = partner and partner['account_ht_id'] or False
+                            if partner['nhadautu']==True:
+                                loai_doituong='nhadautu'
+                                sql = '''
+                                    select nhom_chinhanh_id from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                                '''%(chinhanh_ids[0],partner_id)
+                                cr.execute(sql)
+                                account_ids = [r[0] for r in cr.fetchall()]
+                                account_id = account_ids and account_ids[0] or False
+                                vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
+                                
+                            journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
+                            
+                            loai_dt_bh_al = data['loai_dt_bh_al']
+                            sql = ''' select id from loai_no_doanh_thu where code='%s' '''%(loai_dt_bh_al)
+                            cr.execute(sql)
+                            loai_dt_bh_al_ids = cr.fetchone()
+                            if loai_dt_bh_al and not loai_dt_bh_al_ids:
+                                noidung_loi = 'Không tìm thấy loại DT-BH-AL'
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL')
+                            
+                            date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
+                            
+                            vals.update({
+                                'mlg_type': 'no_doanh_thu',
+                                'type': 'out_invoice',
+                                'account_id': account_id,
+                                'chinhanh_id': chinhanh_ids and chinhanh_ids[0] or False,
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner_id,
+                                'date_invoice': date_invoice,
+                                'so_tien': float(data['so_tien']),
+                                'dien_giai': data['dien_giai'],
+                                'journal_id': journal_ids and journal_ids[0] or False,
+                                'bai_giaoca_id': bai_giaoca_id,
+                                'loai_nodoanhthu_id': loai_dt_bh_al_ids and loai_dt_bh_al_ids[0] or False,
+                                'loai_giaodich': 'Giao dịch nhập từ SHIFT',
+                            })
+                            invoice_vals = invoice_obj.onchange_dien_giai_st(cr, uid, [], data['dien_giai'], data['so_tien'], journal_ids and journal_ids[0] or False, context)['value']
+                            vals.update(invoice_vals)
+                            invoice_id = invoice_obj.create(cr, uid, vals)
+                            wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+                        csvUti._moveFiles([f_path],done_path)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'ten_file': done_path+date_now+'/'+f_path.split('/')[-1],
+                            'loai_giaodich': 'Nợ DT-BH-AL (SHIFT) IN',
+                            'thu_tra': 'Thu',
+                            'nhap_xuat': 'Nhập',
+                            'tudong_bangtay': 'Tự động',
+                            'trang_thai': 'Thành công',
+                            'noidung_loi': '',
+                        })
+                    except Exception, e:
+                        cr.rollback()
+                        error_path = dir_path.name+ERROR
+                        csvUti._moveFiles([f_path],error_path)
+                        ngay = time.strftime('%Y-%m-%d %H:%M:%S')
+                        sql = '''
+                            insert into lichsu_giaodich(id,create_uid,create_date,write_uid,write_date,name,ten_file,loai_giaodich,thu_tra,nhap_xuat,tudong_bangtay,trang_thai,noidung_loi)
+                            values (nextval('lichsu_giaodich_id_seq'),%s,'%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s');
+                            commit;
+                        '''%(
+                             1,ngay,1,ngay,ngay,
+                             error_path+date_now+'/'+f_path.split('/')[-1],'Nợ DT-BH-AL (SHIFT) IN','Thu','Nhập','Tự động','Lỗi',noidung_loi
+                        )
+                        cr.execute(sql)
+                        
+                        body='''
+                            <p>Ngày: %s</p>
+                            <p>Tên file: %s</p>
+                            <p>Loại giao dịch: %s</p>
+                            <p>Ghi chú: %s</p>
+                        '''%(ngay,error_path+date_now+'/'+f_path.split('/')[-1],'Nợ DT-BH-AL (SHIFT) IN',noidung_loi)
+                        user = self.pool.get('res.users').browse(cr, SUPERUSER_ID, SUPERUSER_ID)
+                        partner = user.partner_id
+                        partner.signup_prepare()
+                        post_values = {
+                            'subject': 'Lỗi nhập tự động "Nợ DT-BH-AL (SHIFT) IN"',
                             'body': body,
                             'partner_ids': [],
                             }
@@ -2980,7 +3137,7 @@ class import_congno_tudong(osv.osv):
                                 'partner_id': partner_id,
                                 'date_invoice': date_invoice,
                                 'so_hop_dong': data['so_hop_dong'],
-                                'so_tien': data['so_tien'],
+                                'so_tien': float(data['so_tien']),
                                 'dien_giai': data['dien_giai'],
                                 'journal_id': journal_ids and journal_ids[0] or False,
                                 'bai_giaoca_id': bai_giaoca_id,

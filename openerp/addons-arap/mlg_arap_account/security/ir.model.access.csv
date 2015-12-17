@@ -25,6 +25,7 @@ access_mlg_arap_account_23,cauhinh.thumuc.output.tudong,mlg_arap_account.model_c
 access_mlg_arap_account_24,lichsu.giaodich,mlg_arap_account.model_lichsu_giaodich,base.group_user,1,0,0,0
 access_mlg_arap_account_25,output.congno.tudong,mlg_arap_account.model_output_congno_tudong,base.group_user,1,0,0,0
 access_mlg_arap_account_26,loai.cong.no,mlg_arap_account.model_loai_cong_no,base.group_user,1,0,0,0
+access_mlg_arap_account_53,loai.no.doanh.thu,mlg_arap_account.model_loai_no_doanh_thu,base.group_user,1,0,0,0
 
 access_mlg_arap_account_27,thungan.bai.giaoca,mlg_arap_account.model_thungan_bai_giaoca,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_28,dieuhanh.bai.giaoca,mlg_arap_account.model_dieuhanh_bai_giaoca,account.group_account_manager,1,1,1,1
@@ -52,3 +53,4 @@ access_mlg_arap_account_49,cauhinh.thumuc.output.tudong,mlg_arap_account.model_c
 access_mlg_arap_account_50,lichsu.giaodich,mlg_arap_account.model_lichsu_giaodich,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_51,output.congno.tudong,mlg_arap_account.model_output_congno_tudong,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_52,loai.cong.no,mlg_arap_account.model_loai_cong_no,account.group_account_manager,1,1,1,1
+access_mlg_arap_account_54,loai.no.doanh.thu,mlg_arap_account.model_loai_no_doanh_thu,base.group_user,1,0,0,0

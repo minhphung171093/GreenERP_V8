@@ -93,6 +93,19 @@
             <field name="mlg" eval="True"/>
         </record>
             
+<!-- Import phải thu - nợ DT-BH-AL SHIFT IN-->        
+        <record model="ir.cron" id="import_phaithu_nodoanhthu_shift_in_cron">
+            <field name="name">Import phải thu - nợ DT-BH-AL (SHIFT) IN</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'import.congno.tudong'"/>
+            <field name="function" eval="'import_phaithu_nodoanhthu_shift_in'"/>
+            <field name="args" eval="'()'" />
+            <field name="mlg" eval="True"/>
+        </record>
+        
 <!-- Import phải thu - nợ DT-BH-AL SHIFT-->        
         <record model="ir.cron" id="import_phaithu_nodoanhthu_shift_cron">
             <field name="name">Import phải thu - nợ DT-BH-AL (SHIFT)</field>
