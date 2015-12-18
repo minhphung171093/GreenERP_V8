@@ -1783,7 +1783,7 @@ class output_congno_tudong(osv.osv):
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
-                        bsx.name as bien_so_xe,sum(ai.residual+ai.sotien_lai_conlai) as so_tien, ai.so_hop_dong as so_hop_dong
+                        bsx.name as bien_so_xe,sum(COALESCE(ai.residual,0)+COALESCE(ai.sotien_lai_conlai,0)) as so_tien, ai.so_hop_dong as so_hop_dong
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
