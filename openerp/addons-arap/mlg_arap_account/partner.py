@@ -80,12 +80,12 @@ class res_partner(osv.osv):
         cur_obj = self.pool.get('res.currency')
         res = {}
         for partner in self.browse(cr, uid, ids, context=context):
-            sql = '''
-                select id from thu_ky_quy where partner_id=%s and state='paid'
-            '''%(partner.id)
-            cr.execute(sql)
-            kyquy_ids = [r[0] for r in cr.fetchall()]
-#             kyquy_ids = self.pool.get('thu.ky.quy').search(cr, uid, [('partner_id','=',partner.id),('state','=','paid')])
+#             sql = '''
+#                 select id from thu_ky_quy where partner_id=%s and state='paid'
+#             '''%(partner.id)
+#             cr.execute(sql)
+#             kyquy_ids = [r[0] for r in cr.fetchall()]
+            kyquy_ids = self.pool.get('thu.ky.quy').search(cr, uid, [('partner_id','=',partner.id),('state','=','paid')])
             res[partner.id] = kyquy_ids
         return res
     

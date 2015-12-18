@@ -640,7 +640,7 @@
            <field name="value" eval="'ir.actions.act_window,'"/>
        </record>
        
-       <!--<record id="view_tai_xe_form_noreadonly" model="ir.ui.view">
+       <record id="view_tai_xe_form_noreadonly" model="ir.ui.view">
 		   <field name="name">tai.xe.form.no.readonly</field>
 		   <field name="model">res.partner</field>
 		   <field name="inherit_id" ref="mlg_arap_account.view_tai_xe_form"/>
@@ -664,7 +664,7 @@
 		           <attribute name="required">1</attribute>
 		       </field>
 		   </field>
-		</record>-->
+		</record>
        
     </data>
 </openerp>
