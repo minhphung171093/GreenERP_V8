@@ -96,8 +96,8 @@ class res_partner(osv.osv):
             cr.execute('delete from tong_cong_no where partner_id=%s',(partner.id,))
             
             sql = '''
-                select mlg_type,case when sum(so_tien+sotien_lai)!=0 then sum(so_tien+sotien_lai) else 0 end sotien_congno,
-                        case when sum(residual+sotien_lai_conlai)!=0 then sum(residual+sotien_lai_conlai) else 0 end sotien_conlai
+                select mlg_type,case when sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0))!=0 then sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0)) else 0 end sotien_congno,
+                        case when sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0)) else 0 end sotien_conlai
                     from account_invoice
                     where partner_id=%s and state in ('open','paid') and type='out_invoice'
                     group by mlg_type
@@ -281,6 +281,29 @@ class res_partner(osv.osv):
             args += [('nhadautugiantiep','=',True),('id','in',partner_ids)]
             
         return super(res_partner, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        if vals.get('chinhanh_id'):
+            for partner in self.browse(cr, uid, ids):
+               if (partner.taixe or partner.nhanvienvanphong) and partner.chinhanh_id.id!=vals['chinhanh_id']:
+                   sql = '''
+                       select case when sum(sotien_conlai)!=0 then sum(sotien_conlai) else 0 end sotienconlai
+                           from thu_ky_quy where chinhanh_id=%s and partner_id=%s
+                   '''%(partner.chinhanh_id.id,partner.id)
+                   cr.execute(sql)
+                   sotien_kyquy_conlai = cr.fetchone()[0]
+                   if sotien_kyquy_conlai:
+                       raise osv.except_osv(_('Cảnh báo!'),_('Không được phép đổi chi nhánh khi số tiền đã thu ký quỹ của chi nhánh củ chưa cấn trừ hết!'))
+                   
+                   sql = '''
+                       select case when sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) else 0 end sotienconlai
+                           from account_invoice where chinhanh_id=%s and partner_id=%s
+                   '''%(partner.chinhanh_id.id,partner.id)
+                   cr.execute(sql)
+                   sotien_congno_conlai = cr.fetchone()[0]
+                   if sotien_congno_conlai:
+                       raise osv.except_osv(_('Cảnh báo!'),_('Không được phép đổi chi nhánh khi công nợ phải thu của chi nhánh củ chưa cấn trừ hết!'))
+        return super(res_partner, self).write(cr, uid, ids, vals, context)
     
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
         if not args:

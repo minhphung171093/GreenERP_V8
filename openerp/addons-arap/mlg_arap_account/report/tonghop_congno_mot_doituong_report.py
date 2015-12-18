@@ -133,7 +133,7 @@ class Parser(report_sxw.rml_parse):
             partner_id = wizard_data['partner_id']
 #             mlg_type = self.get_title_congno(congno)
             sql = '''
-                select case when sum(residual+sotien_lai_conlai)!=0 then sum(residual+sotien_lai_conlai) else 0 end notrongky
+                select case when sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0)) else 0 end notrongky
                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
                         and date_invoice between '%s' and '%s' and state in ('open','paid') 
             '''%(mlg_type,chinhanh_id[0],partner_id[0],period.date_start,period.date_stop)
@@ -154,7 +154,8 @@ class Parser(report_sxw.rml_parse):
         period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
         sql = '''
             select rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
-                sum(ai.so_tien+ai.sotien_lai) as no, sum(ai.so_tien+ai.sotien_lai-ai.residual-ai.sotien_lai_conlai) as co
+                sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)) as no,
+                sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)-COALESCE(ai.residual,0)-COALESCE(ai.sotien_lai_conlai,0)) as co
             
                 from account_invoice ai
                 left join res_partner rp on rp.id = ai.partner_id

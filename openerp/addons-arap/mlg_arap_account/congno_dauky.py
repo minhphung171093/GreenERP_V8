@@ -65,7 +65,7 @@ class congno_dauky(osv.osv):
             cr.execute(sql)
             for partner in cr.dictfetchall():
                 sql = '''
-                    select sum(residual+sotien_lai_conlai) as so_tien_no,mlg_type,chinhanh_id
+                    select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,mlg_type,chinhanh_id
                         
                         from account_invoice
                         

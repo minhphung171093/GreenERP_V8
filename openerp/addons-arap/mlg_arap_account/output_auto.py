@@ -599,7 +599,7 @@ class output_congno_tudong(osv.osv):
                     if loaicongno=7 then
                         sotien = 0;
                         for rec_aml in execute '
-                            select sum(residual) as sotien from account_invoice
+                            select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as sotien from account_invoice
                                 where mlg_type=''tra_gop_xe'' and chinhanh_id=$3 and state in (''open'')
                                 and date_invoice between $1 and $2
                         ' using $1, $2,rec_cn.id

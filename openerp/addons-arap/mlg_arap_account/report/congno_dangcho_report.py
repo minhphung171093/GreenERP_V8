@@ -123,7 +123,8 @@ class Parser(report_sxw.rml_parse):
         mlg_type = wizard_data['mlg_type']
         sql = '''
             select ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
-                (ai.so_tien+ai.sotien_lai) as no, (ai.so_tien+ai.sotien_lai-ai.residual-ai.sotien_lai_conlai) as co
+                (COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)) as no,
+                (COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)-COALESCE(ai.residual,0)-COALESCE(ai.sotien_lai_conlai,0)) as co
             
                 from account_invoice ai
                 left join res_partner rp on rp.id = ai.partner_id
@@ -141,7 +142,8 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         mlg_type = wizard_data['mlg_type']
         sql = '''
-            select case when sum(so_tien+sotien_lai)!=0 then sum(so_tien+sotien_lai) else 0 end tongtien from account_invoice
+            select case when sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0))!=0 then sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0)) else 0 end tongtien
+                from account_invoice
                 where date_invoice between '%s' and '%s' and chinhanh_id=%s and mlg_type='%s' and partner_id=%s
                     and state in ('draft') 
         '''%(from_date,to_date,chinhanh_id[0],mlg_type,partner_id)
