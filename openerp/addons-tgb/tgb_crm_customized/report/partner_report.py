@@ -38,6 +38,10 @@ class Parser(report_sxw.rml_parse):
             'get_next_number': self.get_next_number,
             'get_director1': self.get_director1,
             'get_director2': self.get_director2,
+            'get_partner_street': self.get_partner_street,
+            'get_partner_street2': self.get_partner_street2,
+            'get_partner_country': self.get_partner_country,
+            'get_partner_zip': self.get_partner_zip,
         })
         
     def get_datenow(self):
@@ -181,7 +185,7 @@ class Parser(report_sxw.rml_parse):
             if partner.street2:
                 address += partner.street2+' '
             if partner.country_id:
-                address += partner.country_id.name+' '
+                address += partner.country_id and partner.country_id.name or ''+' '
             if partner.zip:
                 address += partner.zip+' '
         return address
@@ -195,9 +199,37 @@ class Parser(report_sxw.rml_parse):
             if partner.street2:
                 address += partner.street2+' '
             if partner.country_id:
-                address += partner.country_id.name+' '
+                address += partner.country_id and partner.country_id.name or ''+' '
             if partner.zip:
                 address += partner.zip+' '
+        return address
+    
+    def get_partner_street(self, partner_id):
+        address = ''
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+            address = partner.street
+        return address
+    
+    def get_partner_street2(self, partner_id):
+        address = ''
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+            address = partner.street2
+        return address
+    
+    def get_partner_country(self, partner_id):
+        address = ''
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+            address = partner.country_id and partner.country_id.name or ''
+        return address
+    
+    def get_partner_zip(self, partner_id):
+        address = ''
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+            address = partner.zip
         return address
     
     def get_contact_attn(self, company_id):
