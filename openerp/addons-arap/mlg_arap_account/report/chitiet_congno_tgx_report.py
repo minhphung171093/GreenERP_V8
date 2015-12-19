@@ -301,8 +301,8 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select case when sum(COALESCE(so_tien,0)-COALESCE(residual,0))!=0 then sum(COALESCE(so_tien,0)-COALESCE(residual,0)) else 0 end sdtlkdauky
                 from account_invoice where mlg_type='%s' and chinhanh_id=%s
-                    and date_invoice < '%s' and state in ('open','paid') and bien_so_xe_id=%s
-        '''%(mlg_type,chinhanh_id[0],period_from.date_start,bsx_id)
+                    and date_invoice < '%s' and state in ('open','paid') and bien_so_xe_id=%s and partner_id=%s
+        '''%(mlg_type,chinhanh_id[0],period_from.date_start,bsx_id,partner_id)
         self.cr.execute(sql)
         return self.cr.fetchone()[0]
     
@@ -315,8 +315,8 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select case when sum(COALESCE(so_tien,0)-COALESCE(residual,0))!=0 then sum(COALESCE(so_tien,0)-COALESCE(residual,0)) else 0 end sdtlkdauky
                 from account_invoice where mlg_type='%s' and chinhanh_id=%s
-                    and date_invoice <= '%s' and state in ('open','paid') and bien_so_xe_id=%s
-        '''%(mlg_type,chinhanh_id[0],period_to.date_stop,bsx_id)
+                    and date_invoice <= '%s' and state in ('open','paid') and bien_so_xe_id=%s and partner_id=%s
+        '''%(mlg_type,chinhanh_id[0],period_to.date_stop,bsx_id,partner_id)
         self.cr.execute(sql)
         return self.cr.fetchone()[0]
             
