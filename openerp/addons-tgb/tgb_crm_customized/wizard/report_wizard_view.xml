@@ -959,17 +959,415 @@
             <field name="target">new</field>
             <field name="view_id" ref="wizard_report_form_resolution_form_page02"/>
         </record>
+
+<!-- resolution form page 03-->
+        <record id="wizard_report_form_resolution_form_page03" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page03</field>
+            <field name="model">report.wizard.resolution.form.page03</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 03" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page03" model="ir.actions.act_window">
+            <field name="name">resolution form page 03</field>
+            <field name="res_model">report.wizard.resolution.form.page03</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page03"/>
+        </record>
         
+<!-- resolution form page 04-->
+        <record id="wizard_report_form_resolution_form_page04" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page04</field>
+            <field name="model">report.wizard.resolution.form.page04</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 04" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page04" model="ir.actions.act_window">
+            <field name="name">resolution form page 04</field>
+            <field name="res_model">report.wizard.resolution.form.page04</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page04"/>
+        </record>
+        
+<!-- resolution form page 05-->
+        <record id="wizard_report_form_resolution_form_page05" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page05</field>
+            <field name="model">report.wizard.resolution.form.page05</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 05" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page05" model="ir.actions.act_window">
+            <field name="name">resolution form page 05</field>
+            <field name="res_model">report.wizard.resolution.form.page05</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page05"/>
+        </record>
+        
+<!-- resolution form page 06-->
+        <record id="wizard_report_form_resolution_form_page06" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page06</field>
+            <field name="model">report.wizard.resolution.form.page06</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 06" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page06" model="ir.actions.act_window">
+            <field name="name">resolution form page 06</field>
+            <field name="res_model">report.wizard.resolution.form.page06</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page06"/>
+        </record>
+        
+<!-- resolution form page 07-->
+        <record id="wizard_report_form_resolution_form_page07" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page07</field>
+            <field name="model">report.wizard.resolution.form.page07</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 07" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page07" model="ir.actions.act_window">
+            <field name="name">resolution form page 07</field>
+            <field name="res_model">report.wizard.resolution.form.page07</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page07"/>
+        </record>
+        
+<!-- resolution form page 08-->
+        <record id="wizard_report_form_resolution_form_page08" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page08</field>
+            <field name="model">report.wizard.resolution.form.page08</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 08" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page08" model="ir.actions.act_window">
+            <field name="name">resolution form page 08</field>
+            <field name="res_model">report.wizard.resolution.form.page08</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page08"/>
+        </record>
+        
+<!-- resolution form page 09-->
+        <record id="wizard_report_form_resolution_form_page09" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page09</field>
+            <field name="model">report.wizard.resolution.form.page09</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 09" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page09" model="ir.actions.act_window">
+            <field name="name">resolution form page 09</field>
+            <field name="res_model">report.wizard.resolution.form.page09</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page09"/>
+        </record>
+        
+<!-- resolution form page 10-->
+        <record id="wizard_report_form_resolution_form_page10" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page10</field>
+            <field name="model">report.wizard.resolution.form.page10</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 10" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page10" model="ir.actions.act_window">
+            <field name="name">resolution form page 10</field>
+            <field name="res_model">report.wizard.resolution.form.page10</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page10"/>
+        </record>
+        
+<!-- resolution form page 11-->
+        <record id="wizard_report_form_resolution_form_page11" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page11</field>
+            <field name="model">report.wizard.resolution.form.page11</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 11" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page11" model="ir.actions.act_window">
+            <field name="name">resolution form page 11</field>
+            <field name="res_model">report.wizard.resolution.form.page11</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page11"/>
+        </record>
+        
+<!-- resolution form page 12-->
+        <record id="wizard_report_form_resolution_form_page12" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page12</field>
+            <field name="model">report.wizard.resolution.form.page12</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 12" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page12" model="ir.actions.act_window">
+            <field name="name">resolution form page 12</field>
+            <field name="res_model">report.wizard.resolution.form.page12</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page12"/>
+        </record>
+        
+<!-- resolution form page 13-->
+        <record id="wizard_report_form_resolution_form_page13" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page13</field>
+            <field name="model">report.wizard.resolution.form.page13</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 13" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page13" model="ir.actions.act_window">
+            <field name="name">resolution form page 13</field>
+            <field name="res_model">report.wizard.resolution.form.page13</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page13"/>
+        </record>
+        
+<!-- resolution form page 14-->
+        <record id="wizard_report_form_resolution_form_page14" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page14</field>
+            <field name="model">report.wizard.resolution.form.page14</field>
+            <field name="arch" type="xml">
+                <form string="resolution form page 14" version="7.0">
+                	<field name="partner_id" invisible='1'/>
+                	<field name="resolution_form1_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="resolution_form2_fname" invisible="1" class="oe_inline oe_right"/>
+	                <group col='4' colspan='2'>
+	                	<group>
+	                		<field name="resolution_form1_datas" filename="resolution_form1_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                	<group>
+	                		<field name="resolution_form2_datas" filename="resolution_form2_fname" nolabel='1' readonly='1' colspan='2'/>
+	                	</group>
+	                </group>
+	                <footer>
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_wizard_report_resolution_form_page14" model="ir.actions.act_window">
+            <field name="name">resolution form page 14</field>
+            <field name="res_model">report.wizard.resolution.form.page14</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_report_form_resolution_form_page14"/>
+        </record>
+
 <!-- resolution form -->
         <record id="wizard_report_form_resolution_form" model="ir.ui.view">
             <field name="name">report.wizard.resolution.form</field>
             <field name="model">report.wizard.resolution.form</field>
             <field name="arch" type="xml">
-                <form string="resolution form page 01" version="7.0">
+                <form string="resolution form" version="7.0">
                 	<field name="partner_id" invisible='1'/>
-	                <group>
+	                <group col='7' colspan='1'>
 	                	<button string="Page-01" type="action" name="%(action_wizard_report_resolution_form_page01)d" context="{'default_partner_id':partner_id,'resolution_form_page01':1}"/>
 	                	<button string="Page-02" type="action" name="%(action_wizard_report_resolution_form_page02)d" context="{'default_partner_id':partner_id,'resolution_form_page02':1}"/>
+	                	<button string="Page-03" type="action" name="%(action_wizard_report_resolution_form_page03)d" context="{'default_partner_id':partner_id,'resolution_form_page03':1}"/>
+	                	<button string="Page-04" type="action" name="%(action_wizard_report_resolution_form_page04)d" context="{'default_partner_id':partner_id,'resolution_form_page04':1}"/>
+	                	<button string="Page-05" type="action" name="%(action_wizard_report_resolution_form_page05)d" context="{'default_partner_id':partner_id,'resolution_form_page05':1}"/>
+	                	<button string="Page-06" type="action" name="%(action_wizard_report_resolution_form_page06)d" context="{'default_partner_id':partner_id,'resolution_form_page06':1}"/>
+	                	<button string="Page-07" type="action" name="%(action_wizard_report_resolution_form_page07)d" context="{'default_partner_id':partner_id,'resolution_form_page07':1}"/>
+	                </group>
+	                <group col='7' colspan='1'>
+	                	<button string="Page-08" type="action" name="%(action_wizard_report_resolution_form_page08)d" context="{'default_partner_id':partner_id,'resolution_form_page08':1}"/>
+	                	<button string="Page-09" type="action" name="%(action_wizard_report_resolution_form_page09)d" context="{'default_partner_id':partner_id,'resolution_form_page09':1}"/>
+	                	<button string="Page-10" type="action" name="%(action_wizard_report_resolution_form_page10)d" context="{'default_partner_id':partner_id,'resolution_form_page10':1}"/>
+	                	<button string="Page-11" type="action" name="%(action_wizard_report_resolution_form_page11)d" context="{'default_partner_id':partner_id,'resolution_form_page11':1}"/>
+	                	<button string="Page-12" type="action" name="%(action_wizard_report_resolution_form_page12)d" context="{'default_partner_id':partner_id,'resolution_form_page12':1}"/>
+	                	<button string="Page-13" type="action" name="%(action_wizard_report_resolution_form_page13)d" context="{'default_partner_id':partner_id,'resolution_form_page13':1}"/>
+	                	<button string="Page-14" type="action" name="%(action_wizard_report_resolution_form_page14)d" context="{'default_partner_id':partner_id,'resolution_form_page14':1}"/>
 	                </group>
 	                <footer>
                         <button string="Close" class="oe_link" special="cancel"/>
@@ -1004,6 +1402,126 @@
             <field name="arch" type="xml">
             	<xpath expr="//button[@string='Close']" position="before">
         			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page02':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page03_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page03.inherit</field>
+            <field name="model">report.wizard.resolution.form.page03</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page03"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page03':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page04_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page04.inherit</field>
+            <field name="model">report.wizard.resolution.form.page04</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page04"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page04':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page05_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page05.inherit</field>
+            <field name="model">report.wizard.resolution.form.page05</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page05"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page05':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page06_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page06.inherit</field>
+            <field name="model">report.wizard.resolution.form.page06</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page06"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page06':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page07_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page07.inherit</field>
+            <field name="model">report.wizard.resolution.form.page07</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page07"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page07':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page08_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page08.inherit</field>
+            <field name="model">report.wizard.resolution.form.page08</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page08"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page08':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page09_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page09.inherit</field>
+            <field name="model">report.wizard.resolution.form.page09</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page09"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page09':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page10_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page10.inherit</field>
+            <field name="model">report.wizard.resolution.form.page10</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page10"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page10':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page11_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page11.inherit</field>
+            <field name="model">report.wizard.resolution.form.page11</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page11"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page11':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page12_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page12.inherit</field>
+            <field name="model">report.wizard.resolution.form.page12</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page12"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page12':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page13_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page13.inherit</field>
+            <field name="model">report.wizard.resolution.form.page13</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page13"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page13':0}"/>
+            	</xpath>
+        	</field>
+        </record>
+        <record id="wizard_report_form_resolution_form_page14_inherit" model="ir.ui.view">
+            <field name="name">report.wizard.resolution.form.page14.inherit</field>
+            <field name="model">report.wizard.resolution.form.page14</field>
+            <field name="inherit_id" ref="tgb_crm_customized.wizard_report_form_resolution_form_page14"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//button[@string='Close']" position="before">
+        			<button string="Back to resolution form" type="action" name="%(action_wizard_report_resolution_form)d" context="{'default_partner_id':partner_id,'resolution_form_page14':0}"/>
             	</xpath>
         	</field>
         </record>
