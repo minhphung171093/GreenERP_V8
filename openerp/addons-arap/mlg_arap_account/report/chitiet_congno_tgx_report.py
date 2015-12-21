@@ -45,6 +45,7 @@ class Parser(report_sxw.rml_parse):
             'get_tonglaithu': self.get_tonglaithu,
             'get_sdtlkdauky': self.get_sdtlkdauky,
             'get_sdtlkcuoiky': self.get_sdtlkcuoiky,
+            'get_tongcongno_dathu': self.get_tongcongno_dathu,
         })
         
     def convert_date(self, date):
@@ -212,6 +213,39 @@ class Parser(report_sxw.rml_parse):
     
     def get_tongcongno(self):
         return self.tongcongno
+    
+    def get_tongcongno_dathu(self):
+        wizard_data = self.localcontext['data']['form']
+        partner_ids = self.get_doituong()
+        if partner_ids:
+            partner_ids = str(partner_ids).replace('[', '(')
+            partner_ids = str(partner_ids).replace(']', ')')
+            
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+            chinhanh_id = wizard_data['chinhanh_id']
+            mlg_type = wizard_data['mlg_type']
+            bien_so_xe_ids = wizard_data['bien_so_xe_ids']
+            sql = '''
+                select case when sum(COALESCE(so_tien,0)-COALESCE(residual,0))!=0
+                            then sum(COALESCE(so_tien,0)-COALESCE(residual,0))
+                            else 0 end thutrongky
+                            
+                    from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id in %s
+                        and date_invoice between '%s' and '%s' and state in ('open','paid') 
+            '''%(mlg_type,chinhanh_id[0],partner_ids,period_from.date_start,period_to.date_stop)
+            if bien_so_xe_ids:
+                bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                sql+='''
+                    and bien_so_xe_id in %s 
+                '''%(bien_so_xe_ids)
+            self.cr.execute(sql)
+            thutrongky = self.cr.fetchone()[0]
+            return thutrongky
+        return 0
     
     def get_nocuoiky(self, partner_id):
         wizard_data = self.localcontext['data']['form']

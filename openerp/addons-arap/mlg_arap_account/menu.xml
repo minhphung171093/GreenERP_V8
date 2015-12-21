@@ -404,11 +404,16 @@
 				<menuitem id="menu_action_chitiet_congno_mot_doituong"
 					name="Chi tiết công nợ một đối tượng"
 					action="action_chitiet_congno_mot_doituong"
-					parent="menu_chitiet_congno" sequence="13"/>
+					parent="menu_chitiet_congno" sequence="12"/>
 					
 				<menuitem id="menu_action_chitiet_congno_tgx"
 					name="Chi tiết trả góp xe"
 					action="action_chitiet_congno_tgx"
+					parent="menu_chitiet_congno" sequence="13"/>
+					
+				<menuitem id="menu_action_chitiet_congno_thuho"
+					name="Chi tiết công nợ thu hộ"
+					action="action_chitiet_congno_thuho"
 					parent="menu_chitiet_congno" sequence="14"/>
 					
 				<menuitem id="menu_action_congno_vuotdinhmuc"

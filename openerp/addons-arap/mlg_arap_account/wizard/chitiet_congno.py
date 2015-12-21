@@ -29,6 +29,12 @@ class chitiet_congno(osv.osv_memory):
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('chi_ho','Phải trả chi hộ'),],'Loại công nợ'),
+                
+#         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
+#         'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng'),
+#         'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ DT-BH-AL'),
+#         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
+#         'loai_baohiem_id': fields.many2one('loai.bao.hiem', 'Loại bảo hiểm'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

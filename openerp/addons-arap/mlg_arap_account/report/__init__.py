@@ -17,3 +17,4 @@ import doanh_so_phaitra
 import congno_dangchothu_report
 import congno_theo_loainodoanhthu_report
 import chitiet_congno_tgx_report
+import chitiet_congno_thuho_report
