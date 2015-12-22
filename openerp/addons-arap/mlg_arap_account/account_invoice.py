@@ -311,7 +311,7 @@ class account_invoice(osv.osv):
                 cr.execute(sql)
                 sotien_dathu = cr.fetchone()[0]
                 if sotien_dathu<vals['so_tien']:
-                    raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào nhỏ hơn số tiền ký quỹ còn lại!'))
+                    raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
             if vals['loai_doituong'] == 'nhadautu':
                 sql = '''
                 
@@ -321,7 +321,7 @@ class account_invoice(osv.osv):
                 cr.execute(sql)
                 sotien_dathu = cr.fetchone()[0]
                 if sotien_dathu<vals['so_tien']:
-                    raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào nhỏ hơn số tiền ký quỹ còn lại!'))
+                    raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
         return super(account_invoice, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
@@ -378,7 +378,7 @@ class account_invoice(osv.osv):
             if line.so_tien<=0:
                 raise osv.except_osv(_('Cảnh báo!'), _('Không thể sửa với số tiền nhỏ hơn hoặc bằng "0"!'))
             
-            if line.mlg_type =='phai_tra_ky_quy':
+            if line.mlg_type =='phai_tra_ky_quy' and line.state=='draft':
                 if line.loai_doituong in ['taixe','nhanvienvanphong']:
                     sql = '''
                         select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu from res_partner where id=%s
@@ -386,7 +386,7 @@ class account_invoice(osv.osv):
                     cr.execute(sql)
                     sotien_dathu = cr.fetchone()[0]
                     if sotien_dathu<line.so_tien:
-                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào nhỏ hơn số tiền ký quỹ còn lại!'))
+                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
                 
                 if line.loai_doituong == 'nhadautu':
                     sql = '''
@@ -397,7 +397,7 @@ class account_invoice(osv.osv):
                     cr.execute(sql)
                     sotien_dathu = cr.fetchone()[0]
                     if sotien_dathu<line.so_tien:
-                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào nhỏ hơn số tiền ký quỹ còn lại!'))
+                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
                     
             if vals.get('state',False)=='open':
                 date_now = time.strftime('%Y-%m-%d')
