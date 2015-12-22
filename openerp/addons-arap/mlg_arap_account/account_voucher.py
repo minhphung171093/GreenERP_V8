@@ -24,6 +24,8 @@ from openerp.osv import fields, osv, expression
 from openerp.tools.translate import _
 import time
 from openerp.exceptions import except_orm, Warning, RedirectWarning
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -300,8 +302,101 @@ class account_voucher(osv.osv):
     def button_proforma_voucher(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
+            
+        for line in self.browse(cr, uid, ids):
+            if line.mlg_type=='phai_tra_ky_quy' and line.partner_id:
+                kyquy_obj = self.pool.get('thu.ky.quy')
+                sotien_cantru = line.amount
+                sql = '''
+                    select id, sotien_conlai
+                        from thu_ky_quy
+                        
+                        where sotien_conlai>0 and chinhanh_id=%s and partner_id=%s and state='paid'
+                        
+                        order by ngay_thu,id
+                '''%(line.chinhanh_id.id,line.partner_id.id)
+                cr.execute(sql)
+                for kyquy in cr.dictfetchall():
+                    if not sotien_cantru:
+                        break
+                    if sotien_cantru<kyquy['sotien_conlai']:
+                        kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':kyquy['sotien_conlai']-sotien_cantru})
+                        sotien_cantru = 0
+                    else:
+                        kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':0})
+                        sotien_cantru = sotien_cantru-kyquy['sotien_conlai']
+                if sotien_cantru>0:
+                    raise osv.except_osv(_('Cảnh báo!'), 'Số tiền thanh toán lớn hơn số tiền đã thu còn lại!')
+            
         if context.get('invoice_id', False):
             for voucher in self.browse(cr, uid, ids):
+                
+                invoice = self.pool.get('account.invoice').browse(cr, uid, context['invoice_id'])
+                if invoice.date_invoice>voucher.date:
+                    raise osv.except_osv(_('Cảnh báo!'), 'Ngày thanh toán phải lớn hơn ngày công nợ!')
+                
+                date_now = time.strftime('%Y-%m-%d')
+                if date_now[:4]!=voucher.date[:4] or date_now[5:7]!=voucher.date[5:7]:
+                    nodauky_obj = self.pool.get('congno.dauky')
+                    nodauky_line_obj = self.pool.get('congno.dauky.line')
+                    date_voucher = datetime.strptime(voucher.date,'%Y-%m-%d')
+                    end_of_month = str(date_voucher + relativedelta(months=+1, day=1, days=-1))[:10]
+                    date_voucher_str = date_voucher.strftime('%Y-%m-%d')
+                    day = int(end_of_month[8:10])-int(date_voucher_str[8:10])+3
+                    next_month = date_voucher + timedelta(days=day)
+                    next_month_str = next_month.strftime('%Y-%m-%d')
+                    sql = '''
+                        select id,date_start,date_stop from account_period
+                            where '%s' between date_start and date_stop and special != 't' limit 1 
+                    '''%(next_month_str)
+                    cr.execute(sql)
+                    period = cr.dictfetchone()
+                    if period:
+                        sql = '''
+                            select id from congno_dauky where period_id=%s and partner_id=%s
+                        '''%(period['id'],voucher.partner_id.id)
+                        cr.execute(sql)
+                        nodauky = cr.fetchone()
+                        if nodauky:
+                            sql = '''
+                                select id from congno_dauky_line
+                                    where congno_dauky_id=%s and chinhanh_id=%s and mlg_type='%s'
+                            '''%(nodauky[0], voucher.chinhanh_id.id, voucher.mlg_type)
+                            cr.execute(sql)
+                            nodauky_line = cr.fetchone()
+                            if nodauky_line:
+                                sql = '''
+                                    update congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s                            
+                                '''%(voucher.amount,nodauky_line[0])
+                                cr.execute(sql)
+                            else:
+                                nodauky_line_obj.create(cr, uid, {
+                                    'congno_dauky_id': nodauky[0],
+                                    'chinhanh_id': voucher.chinhanh_id.id,
+                                    'mlg_type': voucher.mlg_type,
+                                    'so_tien_no': invoice.so_tien-voucher.amount,
+                                })
+                        else:
+                            sql = '''
+                                select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,mlg_type,chinhanh_id
+                                    from account_invoice
+                                    where state='open' and partner_id=%s and date_invoice<'%s'
+                                    group by chinhanh_id,mlg_type
+                            '''%(voucher.partner_id.id,period['date_start'])
+                            cr.execute(sql)
+                            congno_dauky_line = []
+                            for inv in cr.dictfetchall():
+                                congno_dauky_line.append((0,0,{
+                                    'chinhanh_id': inv['chinhanh_id'],
+                                    'mlg_type': inv['mlg_type'],
+                                    'so_tien_no': inv['so_tien_no']-voucher.amount,
+                                }))
+                            nodauky_obj.create(cr, uid, {
+                                'period_id': period['id'],
+                                'partner_id': voucher.partner_id.id,
+                                'congno_dauky_line': congno_dauky_line,               
+                            })
+                
                 if voucher.sotien_tragopxe and voucher.sotien_lai_conlai:
                     if voucher.sotien_tragopxe>=voucher.sotien_lai_conlai:
                         sotien = voucher.sotien_lai_conlai

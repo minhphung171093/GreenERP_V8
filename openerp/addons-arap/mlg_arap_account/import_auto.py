@@ -822,8 +822,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
@@ -978,8 +978,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
@@ -1142,8 +1142,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
@@ -1287,8 +1287,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
@@ -1467,8 +1467,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
@@ -1631,8 +1631,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
@@ -1951,8 +1951,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
@@ -2096,8 +2096,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
@@ -2337,8 +2337,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
@@ -2481,8 +2481,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
@@ -2984,8 +2984,8 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
-                                voucher_id = voucher_obj.create(cr, uid, vals)
-                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id])
+                                voucher_id = voucher_obj.create(cr, uid, vals, context)
+                                voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 sotiendathu = sotiendathu - amount
                             if sotiendathu>0:
                                 noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'

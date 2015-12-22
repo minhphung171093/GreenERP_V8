@@ -25,6 +25,7 @@ from openerp.tools.translate import _
 import time
 from openerp.exceptions import except_orm, Warning, RedirectWarning
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -302,6 +303,25 @@ class account_invoice(osv.osv):
             ptch_vals.update(invoice_vals)
             invoice_id = self.create(cr, uid, ptch_vals)
         
+        if vals.get('mlg_type', False) and vals['mlg_type'] =='phai_tra_ky_quy':
+            if vals['loai_doituong'] in ['taixe','nhanvienvanphong']:
+                sql = '''
+                    select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu from res_partner where id=%s
+                '''%(vals['partner_id'])
+                cr.execute(sql)
+                sotien_dathu = cr.fetchone()[0]
+                if sotien_dathu<vals['so_tien']:
+                    raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào nhỏ hơn số tiền ký quỹ còn lại!'))
+            if vals['loai_doituong'] == 'nhadautu':
+                sql = '''
+                
+                    select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu
+                        from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                '''%(vals['chinhanh_id'],vals['partner_id'])
+                cr.execute(sql)
+                sotien_dathu = cr.fetchone()[0]
+                if sotien_dathu<vals['so_tien']:
+                    raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào nhỏ hơn số tiền ký quỹ còn lại!'))
         return super(account_invoice, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
@@ -357,6 +377,90 @@ class account_invoice(osv.osv):
         for line in self.browse(cr, uid, ids):
             if line.so_tien<=0:
                 raise osv.except_osv(_('Cảnh báo!'), _('Không thể sửa với số tiền nhỏ hơn hoặc bằng "0"!'))
+            
+            if line.mlg_type =='phai_tra_ky_quy':
+                if line.loai_doituong in ['taixe','nhanvienvanphong']:
+                    sql = '''
+                        select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu from res_partner where id=%s
+                    '''%(line.partner_id.id)
+                    cr.execute(sql)
+                    sotien_dathu = cr.fetchone()[0]
+                    if sotien_dathu<line.so_tien:
+                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào nhỏ hơn số tiền ký quỹ còn lại!'))
+                
+                if line.loai_doituong == 'nhadautu':
+                    sql = '''
+                    
+                        select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu
+                            from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
+                    '''%(line.chinhanh_id.id,line.partner_id.id)
+                    cr.execute(sql)
+                    sotien_dathu = cr.fetchone()[0]
+                    if sotien_dathu<line.so_tien:
+                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào nhỏ hơn số tiền ký quỹ còn lại!'))
+                    
+            if vals.get('state',False)=='open':
+                date_now = time.strftime('%Y-%m-%d')
+                if date_now[:4]!=line.date_invoice[:4] or date_now[5:7]!=line.date_invoice[5:7]:
+                    nodauky_obj = self.pool.get('congno.dauky')
+                    nodauky_line_obj = self.pool.get('congno.dauky.line')
+                    date_invoice = datetime.strptime(line.date_invoice,'%Y-%m-%d')
+                    end_of_month = str(date_invoice + relativedelta(months=+1, day=1, days=-1))[:10]
+                    date_invoice_str = date_invoice.strftime('%Y-%m-%d')
+                    day = int(end_of_month[8:10])-int(date_invoice_str[8:10])+3
+                    next_month = date_invoice + timedelta(days=day)
+                    next_month_str = next_month.strftime('%Y-%m-%d')
+                    sql = '''
+                        select id,date_start,date_stop from account_period
+                            where '%s' between date_start and date_stop and special != 't' limit 1 
+                    '''%(next_month_str)
+                    cr.execute(sql)
+                    period = cr.dictfetchone()
+                    if period:
+                        sql = '''
+                            select id from congno_dauky where period_id=%s and partner_id=%s
+                        '''%(period['id'],line.partner_id.id)
+                        cr.execute(sql)
+                        nodauky = cr.fetchone()
+                        if nodauky:
+                            sql = '''
+                                select id from congno_dauky_line
+                                    where congno_dauky_id=%s and chinhanh_id=%s and mlg_type='%s'
+                            '''%(nodauky[0], line.chinhanh_id.id, line.mlg_type)
+                            cr.execute(sql)
+                            nodauky_line = cr.fetchone()
+                            if nodauky_line:
+                                sql = '''
+                                    update congno_dauky_line set so_tien_no=so_tien_no+%s where id=%s                            
+                                '''%(line.so_tien,nodauky_line[0])
+                                cr.execute(sql)
+                            else:
+                                nodauky_line_obj.create(cr, uid, {
+                                    'congno_dauky_id': nodauky[0],
+                                    'chinhanh_id': line.chinhanh_id.id,
+                                    'mlg_type': line.mlg_type,
+                                    'so_tien_no': line.so_tien,
+                                })
+                        else:
+                            sql = '''
+                                select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,mlg_type,chinhanh_id
+                                    from account_invoice
+                                    where state='open' and partner_id=%s and date_invoice<'%s'
+                                    group by chinhanh_id,mlg_type
+                            '''%(line.partner_id.id,period['date_start'])
+                            cr.execute(sql)
+                            congno_dauky_line = []
+                            for invoice in cr.dictfetchall():
+                                congno_dauky_line.append((0,0,{
+                                    'chinhanh_id': invoice['chinhanh_id'],
+                                    'mlg_type': invoice['mlg_type'],
+                                    'so_tien_no': invoice['so_tien_no'],
+                                }))
+                            nodauky_obj.create(cr, uid, {
+                                'period_id': period['id'],
+                                'partner_id': line.partner_id.id,
+                                'congno_dauky_line': congno_dauky_line,               
+                            })
         return new_write
     
     def in_phieu(self, cr, uid, ids, context=None):

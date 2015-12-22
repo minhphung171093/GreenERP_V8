@@ -249,6 +249,33 @@ class res_partner(osv.osv):
                 cr.execute(sql)
                 partner_ids = [r[0] for r in cr.fetchall()]
                 args += [('id','in',partner_ids)]
+                
+        if context.get('partner_for_phaitrakyquy', False) and context.get('loai_doituong', False):
+            if context['loai_doituong']=='taixe':
+#                 partner_ids = self.search(cr, uid, [('taixe','=',True),('account_ht_id.parent_id','=',chinhanh_id)])
+                sql = '''
+                    select id from res_partner where taixe='t' and account_ht_id in (select id from account_account where parent_id=%s) and sotien_dathu>0
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
+                args += [('id','in',partner_ids)]
+            if context['loai_doituong']=='nhadautu':
+                sql = '''
+                    select partner_id from chi_nhanh_line where chinhanh_id=%s and sotien_dathu>0
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
+                args += [('nhadautu','=',True),('id','in',partner_ids)]
+            if context['loai_doituong']=='nhanvienvanphong':
+#                 partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('account_ht_id.parent_id','=',chinhanh_id)])
+                sql = '''
+                    select id from res_partner where nhanvienvanphong='t'
+                        and account_ht_id in (select id from account_account where parent_id=%s) and sotien_dathu>0
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
+                args += [('id','in',partner_ids)]
+        
         if context.get('doituong_thukyquy', False) and context.get('chinhanh_id', False) and context.get('loai_doituong',False):
             if context['loai_doituong']=='nhadautu':
                 sql = '''
@@ -358,7 +385,9 @@ class res_partner(osv.osv):
                 sotien_conlai = partner.sotien_dathu
                 sotien_cantru = 0
                 sql = '''
-                    select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,sotien_lai_conlai
+                    select id,partner_id,case when residual!=0 then residual else 0 end residual,name,bai_giaoca_id,
+                        mlg_type,type,chinhanh_id,currency_id,company_id,
+                        case when sotien_lai_conlai!=0 then sotien_lai_conlai else 0 end sotien_lai_conlai
                     
                         from account_invoice
                     
@@ -456,7 +485,8 @@ class res_partner(osv.osv):
                     sotien_conlai = chinhanh.sotien_dathu
                     sotien_cantru = 0
                     sql = '''
-                        select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,sotien_lai_conlai
+                        select id,partner_id,case when residual!=0 then residual else 0 end residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,
+                            case when sotien_lai_conlai!=0 then sotien_lai_conlai else 0 end sotien_lai_conlai
                         
                             from account_invoice
                         
