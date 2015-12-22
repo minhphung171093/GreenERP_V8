@@ -401,6 +401,14 @@ class account_invoice(osv.osv):
                     
             if vals.get('state',False)=='open':
                 date_now = time.strftime('%Y-%m-%d')
+                startdate_now = time.strftime('%Y-%m-01')
+                enddate_pre = datetime.strptime(startdate_now,'%Y-%m-%d')+timedelta(days=-1)
+                enddate_pre_str = enddate_pre.strftime('%Y-%m-%d')
+                startdate_pre_f = '%Y-'+enddate_pre_str[5:7]+'-01'
+                startdate_pre_str = time.strftime(startdate_pre_f)
+                if line.date_invoice<startdate_pre_str:
+                    raise osv.except_osv(_('Cảnh báo!'),_('Không được treo công nợ cho tháng cách tháng hiện tại hơn hai tháng!'))
+                
                 if date_now[:4]!=line.date_invoice[:4] or date_now[5:7]!=line.date_invoice[5:7]:
                     nodauky_obj = self.pool.get('congno.dauky')
                     nodauky_line_obj = self.pool.get('congno.dauky.line')
