@@ -30,6 +30,8 @@ class Parser(report_sxw.rml_parse):
             'get_timenow_12h': self.get_timenow_12h,
             'get_chairman': self.get_chairman,
             'get_secretary': self.get_secretary,
+            'get_secretary_id': self.get_secretary_id,
+            'get_secretary_nric': self.get_secretary_nric,
             'convert_date_d_m_Y': self.convert_date_d_m_Y,
             'get_chairman_nric': self.get_chairman_nric,
             'get_partner_full_address': self.get_partner_full_address,
@@ -60,6 +62,22 @@ class Parser(report_sxw.rml_parse):
     def get_secretary(self, partner_id):
         sql = '''
             select name from res_partner where upper(function)='SECRETARY' and parent_id=%s
+        '''%(partner_id)
+        self.cr.execute(sql)
+        partner = self.cr.fetchall()
+        return partner and partner[0] or ''
+    
+    def get_secretary_id(self, partner_id):
+        sql = '''
+            select id from res_partner where upper(function)='SECRETARY' and parent_id=%s
+        '''%(partner_id)
+        self.cr.execute(sql)
+        partner = self.cr.fetchall()
+        return partner and partner[0] or ''
+    
+    def get_secretary_nric(self, partner_id):
+        sql = '''
+            select nric from res_partner where upper(function)='SECRETARY' and parent_id=%s
         '''%(partner_id)
         self.cr.execute(sql)
         partner = self.cr.fetchall()

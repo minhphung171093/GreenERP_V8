@@ -1403,12 +1403,12 @@ class report_wizard_forms_45_49(osv.osv_memory):
             res.update({'form49_format_one_director_fname': report_val['datas_fname'],
                         'form49_format_one_director_datas': report_val['db_datas']})
             
-            report_filename='forms_45_492'
+            report_filename='Format_Two Directors'
             report_extention='.doc'
-            report_name='forms_45_492'
+            report_name='format_two_directors'
             report_val = self.cover_print(cr, uid, 'res.partner', partner, report_name, report_filename, report_extention,context)
-            res.update({'forms_45_492_fname': report_val['datas_fname'],
-                        'forms_45_492_datas': report_val['db_datas']})
+            res.update({'format_two_directors_fname': report_val['datas_fname'],
+                        'format_two_directors_datas': report_val['db_datas']})
             
         return res
     
@@ -1419,8 +1419,8 @@ class report_wizard_forms_45_49(osv.osv_memory):
         'form49_format_one_director_fname': fields.char('File Name',size=256),
         'form49_format_one_director_datas': fields.binary('Database Data'),
         
-        'forms_45_492_fname': fields.char('File Name',size=256),
-        'forms_45_492_datas': fields.binary('Database Data'),
+        'format_two_directors_fname': fields.char('File Name',size=256),
+        'format_two_directors_datas': fields.binary('Database Data'),
     }
     
     def cover_print(self, cr, uid, model, record, report_name, report_filename, report_extention, context=None):
