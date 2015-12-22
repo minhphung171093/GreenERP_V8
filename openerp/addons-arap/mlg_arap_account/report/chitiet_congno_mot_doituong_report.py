@@ -153,7 +153,7 @@ class Parser(report_sxw.rml_parse):
 #         mlg_type = self.get_title_congno(congno)
         sql = '''
             select ai.id as invoice_id,ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
-                (COALESCE(ai.so_tien,0)+COALESCE(sotien_lai,0)) as no,
+                (COALESCE(ai.so_tien,0)+COALESCE(sotien_lai,0)) as no,ai.loai_giaodich,
                 (COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)-COALESCE(ai.residual,0)-COALESCE(ai.sotien_lai_conlai,0)) as co,ai.fusion_id as fusion_id
             
                 from account_invoice ai

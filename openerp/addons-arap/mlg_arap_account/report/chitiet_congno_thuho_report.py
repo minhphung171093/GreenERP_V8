@@ -191,7 +191,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select ai.id as invoice_id,ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
-                (COALESCE(ai.so_tien,0)) as no,ai.fusion_id as fusion_id
+                (COALESCE(ai.so_tien,0)) as no, ai.fusion_id as fusion_id,ai.loai_giaodich
             
                 from account_invoice ai
                 left join res_partner rp on rp.id = ai.thu_cho_doituong_id

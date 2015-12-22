@@ -411,11 +411,16 @@ class account_voucher(osv.osv):
                         sotien = voucher.sotien_lai_conlai
                     else:
                         sotien = voucher.sotien_tragopxe
+                    if context.get('loai_giaodich', False):
+                        loai_giaodich = context['loai_giaodich']
+                    else:
+                        loai_giaodich = 'Giao dịch thu trực tiếp'
                     sotienlai_id = self.pool.get('so.tien.lai').create(cr, uid, {
                         'invoice_id': context['invoice_id'],
                         'ngay': voucher.date,
                         'fusion_id': voucher.fusion_id,
                         'so_tien': sotien,
+                        'loai_giaodich': loai_giaodich,
                     })
                     self.write(cr, uid, [voucher.id], {'sotienlai_id':sotienlai_id})
         self.signal_workflow(cr, uid, ids, 'proforma_voucher')

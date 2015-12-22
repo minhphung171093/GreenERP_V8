@@ -447,6 +447,7 @@ class res_partner(osv.osv):
                         'default_type': 'receipt',
                         'default_chinhanh_id': line['chinhanh_id'],
                         'type': 'receipt',
+                        'loai_giaodich': 'Giao dịch cấn trừ ký quỹ',
                     }
                     vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],line['partner_id'],journal_ids[0],amount,line['currency_id'],'receipt',ngay_thanh_toan,context)['value']
                     vals.update(vals_onchange_partner)
@@ -530,6 +531,7 @@ class res_partner(osv.osv):
                             'chinhanh_id': line['chinhanh_id'],
                             'journal_id': journal_ids[0],
                             'date': ngay_thanh_toan,
+                            'loai_giaodich': 'Giao dịch cấn trừ ký quỹ',
                         }
                         
                         context = {
@@ -545,6 +547,7 @@ class res_partner(osv.osv):
                             'default_type': 'receipt',
                             'default_chinhanh_id': line['chinhanh_id'],
                             'type': 'receipt',
+                            'loai_giaodich': 'Giao dịch cấn trừ ký quỹ',
                         }
                         vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],line['partner_id'],journal_ids[0],amount,line['currency_id'],'receipt',ngay_thanh_toan,context)['value']
                         vals.update(vals_onchange_partner)

@@ -188,9 +188,9 @@
 	                        	<field name="congno_line" nolabel='1'>
 	                        		<tree>
 	                        			<field name="mlg_type"/>
-			                        	<field name="sotien_congno"/>
-			                        	<field name="sotien_dathu"/>
-			                        	<field name="sotien_conlai"/>
+			                        	<field name="sotien_congno" sum="Tổng"/>
+			                        	<field name="sotien_dathu" sum="Tổng"/>
+			                        	<field name="sotien_conlai" sum="Tổng"/>
 	                        		</tree>
 	                        	</field>
 	                        </page>

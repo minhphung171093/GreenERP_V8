@@ -1269,6 +1269,7 @@
 	                            <field name="lichsu_thutienlai_line" readonly='1'>
 	                                <tree string="Lịch sử thu tiền lãi">
 	                                    <field name="ngay"/>
+	                                    <field name="loai_giaodich" readonly='1'/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="so_tien"/>
 	                                </tree>

@@ -287,7 +287,7 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select ai.id as invoice_id,ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
                 (COALESCE(ai.so_tien,0)+COALESCE(sotien_lai,0)) as no, (COALESCE(ai.so_tien,0)-COALESCE(ai.residual,0)) as co,
-                ai.fusion_id as fusion_id
+                ai.fusion_id as fusion_id,ai.loai_giaodich
             
                 from account_invoice ai
                 left join res_partner rp on rp.id = ai.partner_id

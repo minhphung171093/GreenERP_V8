@@ -822,6 +822,7 @@ class so_tien_lai(osv.osv):
         'fusion_id': fields.char('Fusion Chi', size=1024),
         'so_tien': fields.float('Số tiền',digits=(16,0)),
         'move_line_id': fields.many2one('account.move.line', 'Account move line'),
+        'loai_giaodich': fields.char('Loại giao dịch', size=1024),
     }
     
 so_tien_lai()

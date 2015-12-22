@@ -1797,6 +1797,7 @@ class import_congno_tudong(osv.osv):
                                     'default_type': 'receipt',
                                     'default_chinhanh_id': line['chinhanh_id'],
                                     'type': 'receipt',
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
                                 }
                                 vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],line['partner_id'],journal_ids[0],amount,line['currency_id'],'receipt',ngay_thanh_toan,context)['value']
                                 vals.update(vals_onchange_partner)
@@ -2789,6 +2790,7 @@ class import_congno_tudong(osv.osv):
                                         'default_type': 'receipt',
                                         'default_chinhanh_id': invoice['chinhanh_id'],
                                         'type': 'receipt',
+                                        'loai_giaodich': 'Giao dịch cấn trừ từ ORACLE',
                                     }
                                     vals_onchange_partner = voucher_obj.onchange_partner_id(cr, uid, [],invoice['partner_id'],journal_ids[0],sotientra,invoice['currency_id'],'receipt',ngay_thanh_toan,context)['value']
                                     vals.update(vals_onchange_partner)
