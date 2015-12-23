@@ -27,6 +27,9 @@ class congno_dangcho(osv.osv_memory):
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('chi_ho','Phải trả chi hộ'),],'Loại công nợ'),
+        'loai_doituong': fields.selection([('taixe','Lái xe'),
+                                           ('nhadautu','Nhà đầu tư'),
+                                           ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

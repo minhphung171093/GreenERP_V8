@@ -35,7 +35,8 @@ class Parser(report_sxw.rml_parse):
             'get_chitiet_congno': self.get_chitiet_congno,
             'get_nocuoiky': self.get_nocuoiky,
             'get_tongcongno': self.get_tongcongno,
-            'get_thang': self.get_thang,
+            'get_from_thang': self.get_from_thang,
+            'get_to_thang': self.get_to_thang,
             'get_payment': self.get_payment,
             'get_chinhanh': self.get_chinhanh,
             'get_congno': self.get_congno,
@@ -52,9 +53,14 @@ class Parser(report_sxw.rml_parse):
         a = format(int(amount),',')
         return a
     
-    def get_thang(self):
+    def get_from_thang(self):
         wizard_data = self.localcontext['data']['form']
-        period_id = wizard_data['period_id']
+        period_id = wizard_data['period_from_id']
+        return period_id and period_id[1] or ''
+    
+    def get_to_thang(self):
+        wizard_data = self.localcontext['data']['form']
+        period_id = wizard_data['period_to_id']
         return period_id and period_id[1] or ''
     
     def get_chinhanh(self):
@@ -106,8 +112,7 @@ class Parser(report_sxw.rml_parse):
     def get_nodauky(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
         if mlg_type:
-            period_id = wizard_data['period_id']
-            period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
+            period_id = wizard_data['period_from_id']
             chinhanh_id = wizard_data['chinhanh_id']
             partner_id = wizard_data['partner_id']
 #             mlg_type = self.get_title_congno(congno)
@@ -126,8 +131,10 @@ class Parser(report_sxw.rml_parse):
     def get_nocuoiky(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
         if mlg_type:
-            period_id = wizard_data['period_id']
-            period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             partner_id = wizard_data['partner_id']
 #             mlg_type = self.get_title_congno(congno)
@@ -135,7 +142,7 @@ class Parser(report_sxw.rml_parse):
                 select case when sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0)) else 0 end notrongky
                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
                         and date_invoice between '%s' and '%s' and state in ('open','paid') 
-            '''%(mlg_type,chinhanh_id[0],partner_id[0],period.date_start,period.date_stop)
+            '''%(mlg_type,chinhanh_id[0],partner_id[0],period_from.date_start,period_to.date_stop)
             self.cr.execute(sql)
             notrongky = self.cr.fetchone()[0]
             nodauky = self.get_nodauky(mlg_type)
@@ -146,9 +153,11 @@ class Parser(report_sxw.rml_parse):
     
     def get_chitiet_congno(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
-        period_id = wizard_data['period_id']
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
-        period = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
         partner_id = wizard_data['partner_id']
 #         mlg_type = self.get_title_congno(congno)
         sql = '''
@@ -161,7 +170,7 @@ class Parser(report_sxw.rml_parse):
                 
                 where ai.partner_id=%s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
                     and ai.mlg_type='%s'
-        '''%(partner_id[0],period.date_start,period.date_stop,chinhanh_id[0],mlg_type)
+        '''%(partner_id[0],period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
         self.cr.execute(sql)
         return self.cr.dictfetchall()
     

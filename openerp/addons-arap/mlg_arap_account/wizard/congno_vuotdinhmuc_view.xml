@@ -14,6 +14,7 @@
                     	<field name='mlg_type' required='1'/>
                     	<field name='chinhanh_id' readonly='1'/>
                     	<field name='sotien_dinhmuc'/>
+                    	<field name='loai_doituong'/>
                     </group>
                     <footer>
                         <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'congno_vuotdinhmuc_report'}"/>

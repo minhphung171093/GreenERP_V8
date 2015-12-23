@@ -14,7 +14,8 @@ class chitiet_congno_mot_doituong(osv.osv_memory):
     _name = "chitiet.congno.mot.doituong"
     
     _columns = {
-        'period_id': fields.many2one('account.period','Tháng'),
+        'period_from_id': fields.many2one('account.period','Từ tháng'),
+        'period_to_id': fields.many2one('account.period','Đến tháng'),
         'loai_doituong': fields.selection([('taixe','Lái xe'),
                                            ('nhadautu','Nhà đầu tư'),
                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng', required=True),
@@ -39,12 +40,18 @@ class chitiet_congno_mot_doituong(osv.osv_memory):
     
     _defaults = {
         'chinhanh_id': _get_chinhanh,
-        'period_id': _get_period,
+        'period_from_id': _get_period,
+        'period_to_id': _get_period,
     }
 
     def print_report(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
+            
+        this = self.browse(cr, uid, ids[0])
+        if this.period_from_id.id!=this.period_to_id.id and this.period_from_id.date_stop > this.period_to_id.date_start:
+            raise osv.except_osv(_('Cảnh báo!'), 'Tháng bắt đầu phải nhỏ hơn tháng kết thúc!')
+            
         datas = {'ids': context.get('active_ids', [])}
         datas['model'] = 'chitiet.congno.mot.doituong'
         datas['form'] = self.read(cr, uid, ids)[0]

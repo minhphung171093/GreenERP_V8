@@ -35,6 +35,8 @@ class Parser(report_sxw.rml_parse):
             'get_tongcong': self.get_tongcong,
             'get_sotien_dinhmuc': self.get_sotien_dinhmuc,
             'get_chinhanh': self.get_chinhanh,
+            'get_loaidoituong': self.get_loaidoituong,
+            'get_name_loaidoituong': self.get_name_loaidoituong,
         })
         
     def convert_date(self, date):
@@ -60,7 +62,23 @@ class Parser(report_sxw.rml_parse):
         sotien_dinhmuc = wizard_data['sotien_dinhmuc']
         return self.convert_amount(sotien_dinhmuc)
     
-    def get_doituong(self):
+    def get_loaidoituong(self):
+        wizard_data = self.localcontext['data']['form']
+        loai_doituong = wizard_data['loai_doituong']
+        if loai_doituong:
+            return [loai_doituong]
+        else:
+            return ['taixe','nhadautu','nhanvienvanphong']
+        
+    def get_name_loaidoituong(self, ldt):
+        if ldt=='taixe':
+            return 'Lái xe'
+        if ldt=='nhadautu':
+            return 'Nhà đầu tư'
+        if ldt=='nhanvienvanphong':
+            return 'Nhân viên văn phòng'
+    
+    def get_doituong(self, ldt):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         to_date = wizard_data['to_date']
@@ -70,10 +88,10 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select partner_id,case when sum(so_tien)!=0 then sum(so_tien) else 0 end tongtien from account_invoice
                 where date_invoice between '%s' and '%s' and chinhanh_id=%s and mlg_type='%s'
-                    and state in ('open','paid') 
+                    and state in ('open','paid') and loai_doituong='%s' 
                 
                 group by partner_id
-        '''%(from_date,to_date,chinhanh_id[0],mlg_type)
+        '''%(from_date,to_date,chinhanh_id[0],mlg_type,ldt)
         self.cr.execute(sql)
         sotien_dinhmuc = wizard_data['sotien_dinhmuc']
         for invoice in self.cr.dictfetchall():

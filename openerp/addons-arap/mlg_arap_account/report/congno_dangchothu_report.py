@@ -36,6 +36,8 @@ class Parser(report_sxw.rml_parse):
             'get_chinhanh': self.get_chinhanh,
             'get_from_date': self.get_from_date,
             'get_to_date': self.get_to_date,
+            'get_loaidoituong': self.get_loaidoituong,
+            'get_name_loaidoituong': self.get_name_loaidoituong,
         })
         
     def convert_date(self, date):
@@ -66,7 +68,23 @@ class Parser(report_sxw.rml_parse):
         account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
         return {'name':account.name,'code':account.code}
     
-    def get_doituong(self):
+    def get_loaidoituong(self):
+        wizard_data = self.localcontext['data']['form']
+        loai_doituong = wizard_data['loai_doituong']
+        if loai_doituong:
+            return [loai_doituong]
+        else:
+            return ['taixe','nhadautu','nhanvienvanphong']
+        
+    def get_name_loaidoituong(self, ldt):
+        if ldt=='taixe':
+            return 'Lái xe'
+        if ldt=='nhadautu':
+            return 'Nhà đầu tư'
+        if ldt=='nhanvienvanphong':
+            return 'Nhân viên văn phòng'
+    
+    def get_doituong(self, ldt):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         to_date = wizard_data['to_date']
@@ -75,10 +93,10 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select partner_id from account_invoice
                 where date_invoice between '%s' and '%s' and chinhanh_id=%s and mlg_type='%s'
-                    and state in ('open') 
+                    and state in ('open') and loai_doituong='%s' 
                 
                 group by partner_id
-        '''%(from_date,to_date,chinhanh_id[0],mlg_type)
+        '''%(from_date,to_date,chinhanh_id[0],mlg_type,ldt)
         self.cr.execute(sql)
         partner_ids = [r[0] for r in self.cr.fetchall()]
         return partner_ids

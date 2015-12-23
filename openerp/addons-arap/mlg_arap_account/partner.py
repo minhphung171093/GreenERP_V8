@@ -306,7 +306,32 @@ class res_partner(osv.osv):
             cr.execute(sql)
             partner_ids = [r[0] for r in cr.fetchall()]
             args += [('nhadautugiantiep','=',True),('id','in',partner_ids)]
-            
+        
+        if context.get('baocao_partner_with_loaidoituong', False) and context.get('loai_doituong', False) and context['loai_doituong']:
+            if context['loai_doituong']=='taixe':
+#                 partner_ids = self.search(cr, uid, [('taixe','=',True),('account_ht_id.parent_id','=',chinhanh_id)])
+                sql = '''
+                    select id from res_partner where taixe='t' and account_ht_id in (select id from account_account where parent_id=%s)
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
+                args += [('id','in',partner_ids)]
+            if context['loai_doituong']=='nhadautu':
+                sql = '''
+                    select partner_id from chi_nhanh_line where chinhanh_id=%s
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
+                args += [('nhadautu','=',True),('id','in',partner_ids)]
+            if context['loai_doituong']=='nhanvienvanphong':
+#                 partner_ids = self.search(cr, uid, [('nhanvienvanphong','=',True),('account_ht_id.parent_id','=',chinhanh_id)])
+                sql = '''
+                    select id from res_partner where nhanvienvanphong='t' and account_ht_id in (select id from account_account where parent_id=%s)
+                '''%(chinhanh_id)
+                cr.execute(sql)
+                partner_ids = [r[0] for r in cr.fetchall()]
+                args += [('id','in',partner_ids)]
+        
         return super(res_partner, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
     
     def write(self, cr, uid, ids, vals, context=None):

@@ -14,7 +14,8 @@ class chitiet_congno(osv.osv_memory):
     _name = "chitiet.congno"
     
     _columns = {
-        'period_id': fields.many2one('account.period','Tháng'),
+        'period_from_id': fields.many2one('account.period','Từ tháng'),
+        'period_to_id': fields.many2one('account.period','Đến tháng'),
         'partner_ids': fields.many2many('res.partner', 'ctcn_doituong_ref', 'dscn_id', 'doituong_id', 'Đối tượng'),
         'doi_xe_ids': fields.many2many('account.account', 'ctcn_doixe_ref', 'dscn_id', 'doixe_id', 'Đội xe'),
         'bai_giaoca_ids': fields.many2many('bai.giaoca', 'ctcn_baigiaoca_ref', 'dscn_id', 'baigiaoca_id', 'Bãi giao ca'),
@@ -29,6 +30,9 @@ class chitiet_congno(osv.osv_memory):
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('chi_ho','Phải trả chi hộ'),],'Loại công nợ'),
+        'loai_doituong': fields.selection([('taixe','Lái xe'),
+                                           ('nhadautu','Nhà đầu tư'),
+                                           ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),
                 
 #         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
 #         'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng'),
@@ -53,7 +57,8 @@ class chitiet_congno(osv.osv_memory):
     
     _defaults = {
         'chinhanh_id': _get_chinhanh,
-        'period_id': _get_period,
+        'period_from_id': _get_period,
+        'period_to_id': _get_period,
     }
     
     def onchange_doi_xe(self, cr, uid, ids, doi_xe_ids=[], context=None):
@@ -78,6 +83,11 @@ class chitiet_congno(osv.osv_memory):
     def print_report(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
+            
+        this = self.browse(cr, uid, ids[0])
+        if this.period_from_id.id!=this.period_to_id.id and this.period_from_id.date_stop > this.period_to_id.date_start:
+            raise osv.except_osv(_('Cảnh báo!'), 'Tháng bắt đầu phải nhỏ hơn tháng kết thúc!')
+            
         datas = {'ids': context.get('active_ids', [])}
         datas['model'] = 'chitiet.congno'
         datas['form'] = self.read(cr, uid, ids)[0]

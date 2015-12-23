@@ -10,12 +10,14 @@
                 <form string="Báo cáo tổng hợp công nợ" version="7.0">
                 	<sheet version="7.0">
 	                	<group col='4' colspan='2'>
-	                    	<field name='period_id' required='1' domain="[('special','!=',True)]"/>
-	                    	<field name='chinhanh_id' readonly='1'/>
+	                    	<field name='period_from_id' required='1' domain="[('special','!=',True)]"/>
+	                    	<field name='period_to_id' required='1' domain="[('special','!=',True)]"/>
 	                    	<field name='mlg_type' required='1'/>
-	                    	<field name='doi_xe_ids' widget="many2many_tags" domain="[('type','=','other'),('parent_id','=',chinhanh_id)]" on_change="onchange_doi_xe(doi_xe_ids)"/>
-	                    	<field name='bai_giaoca_ids' widget="many2many_tags" on_change="onchange_bai_giaoca(bai_giaoca_ids)"/>
-	                    	<field name='partner_ids' widget="many2many_tags" domain="[('customer','=',True)]"/>
+	                    	<field name='chinhanh_id' readonly='1'/>
+	                    	<field name='loai_doituong'/>
+	                    	<field name='doi_xe_ids' attrs="{'invisible':[('loai_doituong','=','nhadautu')]}" widget="many2many_tags" domain="[('type','=','other'),('parent_id','=',chinhanh_id)]" on_change="onchange_doi_xe(doi_xe_ids)"/>
+	                    	<field name='bai_giaoca_ids' attrs="{'invisible':[('loai_doituong','!=','taixe')]}" widget="many2many_tags" on_change="onchange_bai_giaoca(bai_giaoca_ids)"/>
+	                    	<field name='partner_ids' context="{'baocao_partner_with_loaidoituong':1,'loai_doituong': loai_doituong}" widget="many2many_tags" domain="[('customer','=',True)]"/>
 	                    	<!--<field name='loai_kyquy_id' options="{'no_create': True}" attrs="{'invisible':[('mlg_type','!=','phai_tra_ky_quy')]}"/>
 	                    	<field name='loai_tamung_id' options="{'no_create': True}" attrs="{'invisible':[('mlg_type','!=','hoan_tam_ung')]}"/>
 	                    	<field name='loai_nodoanhthu_id' options="{'no_create': True}" attrs="{'invisible':[('mlg_type','!=','no_doanh_thu')]}"/>
