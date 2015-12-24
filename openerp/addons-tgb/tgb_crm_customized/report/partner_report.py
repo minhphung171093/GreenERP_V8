@@ -165,7 +165,7 @@ class Parser(report_sxw.rml_parse):
     def get_1directorin1line(self, partner_id):
         res = []
         sql = '''
-            select name,nric from res_partner where upper(function)='DIRECTOR' and parent_id=%s
+            select id,name,nric from res_partner where upper(function)='DIRECTOR' and parent_id=%s
         '''%(partner_id)
         self.cr.execute(sql)
         return self.cr.dictfetchall()

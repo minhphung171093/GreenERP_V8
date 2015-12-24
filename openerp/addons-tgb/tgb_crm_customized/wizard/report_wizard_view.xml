@@ -654,9 +654,11 @@
                 	<field name="partner_id" invisible='1'/>
                 	<field name="form49_format_one_director_fname" invisible="1" class="oe_inline oe_right"/>
                 	<field name="format_two_directors_fname" invisible="1" class="oe_inline oe_right"/>
+                	<field name="form45_format_fname" invisible="1" class="oe_inline oe_right"/>
 	                <group col='4' colspan='2'>
 	                	<group>
 	                		<field name="form49_format_one_director_datas" filename="form49_format_one_director_fname" nolabel='1' readonly='1' colspan='2'/>
+	                		<field name="form45_format_datas" filename="form45_format_fname" nolabel='1' readonly='1' colspan='2'/>
 	                	</group>
 	                	<group>
 	                		<field name="format_two_directors_datas" filename="format_two_directors_fname" nolabel='1' readonly='1' colspan='2'/>
