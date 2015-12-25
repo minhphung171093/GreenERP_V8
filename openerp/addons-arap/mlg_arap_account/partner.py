@@ -194,8 +194,14 @@ class res_partner(osv.osv):
     
     def _check_cmnd(self, cr, uid, ids, context=None):
         for line in self.browse(cr, uid, ids):
-            object_ids = self.search(cr, uid, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd)])
-            if object_ids:
+            taixe_ids = self.search(cr, uid, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('taixe','=',True)])
+            if line.taixe and taixe_ids:
+                return False
+            nhadautu_ids = self.search(cr, uid, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('nhadautu','=',True)])
+            if line.nhadautu and nhadautu_ids:
+                return False
+            nhanvienvanphong_ids = self.search(cr, uid, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('nhanvienvanphong','=',True)])
+            if line.nhanvienvanphong and nhanvienvanphong_ids:
                 return False
         return True
 

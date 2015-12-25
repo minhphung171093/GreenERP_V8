@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Chi tiết công nợ ký quỹ -->
+        <record id="view_chitiet_congno_kyquy_report" model="ir.ui.view">
+            <field name="name">chitiet.congno.kyquy.form</field>
+            <field name="model">chitiet.congno.kyquy</field>
+            <field name="arch" type="xml">
+                <form string="Chi tiết công nợ ký quỹ" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='period_from_id' required='1' domain="[('special','!=',True)]"/>
+                    	<field name='period_to_id' required='1' domain="[('special','!=',True)]"/>
+                    	<field name='loai_doituong'/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    	<field name='partner_ids' context="{'baocao_partner_with_loaidoituong':1,'loai_doituong': loai_doituong}" widget="many2many_tags" domain="[('customer','=',True)]"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'chitiet_congno_kyquy_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_chitiet_congno_kyquy" model="ir.actions.act_window">
+            <field name="name">Chi tiết công nợ ký quỹ</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">chitiet.congno.kyquy</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_chitiet_congno_kyquy_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+    </data>
+</openerp>
+

@@ -30,6 +30,9 @@ class danhsach_congno(osv.osv_memory):
         'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng'),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ'),
         'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ DT-BH-AL'),
+        'loai_doituong': fields.selection([('taixe','Lái xe'),
+                                           ('nhadautu','Nhà đầu tư'),
+                                           ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

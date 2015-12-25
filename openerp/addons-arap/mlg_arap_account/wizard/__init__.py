@@ -18,3 +18,4 @@ import doanh_so_phaitra
 import congno_dangchothu
 import chitiet_congno_tgx
 import chitiet_congno_thuho
+import chitiet_congno_kyquy

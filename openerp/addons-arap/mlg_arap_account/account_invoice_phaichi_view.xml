@@ -612,7 +612,7 @@
             <field name="view_id" ref="view_phai_tra_ky_quy_tree"/>
             <field name="search_view_id" ref="view_phai_tra_ky_quy_filter"/>
             <field name="domain">[('mlg_type','=','phai_tra_ky_quy')]</field>
-            <field name="context">{'default_loai_doituong': 'taixe','default_loai_giaodich': 'Giao dịch tạo trực tiếp','readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_mlg_type': 'phai_tra_ky_quy', 'default_type': 'out_invoice'}</field>
+            <field name="context">{'default_loai_doituong': 'taixe','default_loai_giaodich': 'Giao dịch tạo trực tiếp','readonly_by_pass':['chinhanh_id','account_id','loai_giaodich'],'default_mlg_type': 'phai_tra_ky_quy', 'default_type': 'in_invoice'}</field>
         </record>
 		<record id="action_phai_tra_ky_quy1" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>

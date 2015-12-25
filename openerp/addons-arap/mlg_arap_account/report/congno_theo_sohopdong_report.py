@@ -31,6 +31,7 @@ class Parser(report_sxw.rml_parse):
             'get_loaicongno': self.get_loaicongno,
             'get_chinhanh': self.get_chinhanh,
             'get_loaidoituong': self.get_loaidoituong,
+            'get_name_loaidoituong': self.get_name_loaidoituong,
         })
         
     def convert_date(self, date):
@@ -68,23 +69,39 @@ class Parser(report_sxw.rml_parse):
             lcn = u'Phải thu tạm ứng'
         return lcn
     
-    def get_loaidoituong(self, partner_id):
-        ldt = ''
-        if partner_id:
-            sql = '''
-                select taixe,nhadautu,nhanvienvanphong from res_partner where id=%s
-            '''%(partner_id)
-            self.cr.execute(sql)
-            partner = self.cr.fetchone()
-            if partner and partner[0]:
-                ldt = u'Lái xe'
-            if partner and partner[1]:
-                ldt = u'Nhà đầu tư'
-            if partner and partner[2]:
-                ldt = u'Nhân viên văn phòng'
-        return ldt
+#     def get_loaidoituong(self, partner_id):
+#         ldt = ''
+#         if partner_id:
+#             sql = '''
+#                 select taixe,nhadautu,nhanvienvanphong from res_partner where id=%s
+#             '''%(partner_id)
+#             self.cr.execute(sql)
+#             partner = self.cr.fetchone()
+#             if partner and partner[0]:
+#                 ldt = u'Lái xe'
+#             if partner and partner[1]:
+#                 ldt = u'Nhà đầu tư'
+#             if partner and partner[2]:
+#                 ldt = u'Nhân viên văn phòng'
+#         return ldt
     
-    def get_line(self):
+    def get_loaidoituong(self):
+        wizard_data = self.localcontext['data']['form']
+        loai_doituong = wizard_data['loai_doituong']
+        if loai_doituong:
+            return [loai_doituong]
+        else:
+            return ['taixe','nhadautu','nhanvienvanphong']
+        
+    def get_name_loaidoituong(self, ldt):
+        if ldt=='taixe':
+            return 'Lái xe'
+        if ldt=='nhadautu':
+            return 'Nhà đầu tư'
+        if ldt=='nhanvienvanphong':
+            return 'Nhân viên văn phòng'
+    
+    def get_line(self, ldt):
         wizard_data = self.localcontext['data']['form']
         from_date = wizard_data['from_date']
         to_date = wizard_data['to_date']
@@ -110,6 +127,19 @@ class Parser(report_sxw.rml_parse):
                 left join bien_so_xe bsx on ai.bien_so_xe_id = bsx.id
                 where ai.state='open' and ai.chinhanh_id=%s and ai.date_invoice between '%s' and '%s' and ai.mlg_type not in ('chi_no_doanh_thu','chi_dien_thoai','chi_bao_hiem','phai_tra_ky_quy','tam_ung','chi_ho') 
         '''%(chinhanh_id[0],from_date,to_date)
+        
+        if ldt=='taixe':
+            sql+='''
+                and rp.taixe=True 
+            '''
+        elif ldt=='nhadautu':
+            sql+='''
+                and rp.nhadautu=True 
+            '''
+        else:
+            sql+='''
+                and rp.nhanvienvanphong=True 
+            '''
         
         partner_ids = wizard_data['partner_ids']
         if partner_ids:

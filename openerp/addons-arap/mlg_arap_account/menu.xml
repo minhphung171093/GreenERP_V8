@@ -416,10 +416,15 @@
 					action="action_chitiet_congno_thuho"
 					parent="menu_chitiet_congno" sequence="14"/>
 					
+				<menuitem id="menu_action_chitiet_congno_kyquy"
+					name="Chi tiết công nợ ký quỹ"
+					action="action_chitiet_congno_kyquy"
+					parent="menu_chitiet_congno" sequence="15"/>
+					
 				<menuitem id="menu_action_congno_vuotdinhmuc"
 					name="Công nợ vượt định mức"
 					action="action_congno_vuotdinhmuc"
-					parent="menu_chitiet_congno" sequence="15"/>
+					parent="menu_chitiet_congno" sequence="17"/>
 					
 				<menuitem id="menu_action_congno_dangcho"
 					name="Công nợ đang chờ"
