@@ -605,7 +605,7 @@
             </field>
         </record>
         <record id="action_phai_tra_ky_quy" model="ir.actions.act_window">
-            <field name="name">Phải trả ký quỹ</field>
+            <field name="name">Ký quỹ</field>
             <field name="res_model">account.invoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

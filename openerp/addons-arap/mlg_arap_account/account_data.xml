@@ -73,7 +73,7 @@
             <field name="code">hoan_tam_ung</field>
         </record>
         
-        <record id="loai_cong_no_phai_tra_ky_quy" model="loai.cong.no">
+        <!--<record id="loai_cong_no_phai_tra_ky_quy" model="loai.cong.no">
             <field name="name">Phải trả ký quỹ</field>
             <field name="code">phai_tra_ky_quy</field>
         </record>
@@ -81,7 +81,7 @@
         <record id="loai_cong_no_chi_ho" model="loai.cong.no">
             <field name="name">Phải trả chi hộ</field>
             <field name="code">chi_ho</field>
-        </record>
+        </record>-->
         
     </data>
 </openerp>

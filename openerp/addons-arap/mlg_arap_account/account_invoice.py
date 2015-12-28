@@ -213,6 +213,7 @@ class account_invoice(osv.osv):
                 'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['sotien_lai','lichsu_thutienlai_line'], 10),
                 'so.tien.lai': (_get_invoice, ['invoice_id', 'so_tien', 'ngay','fusion_id'], 10),
             },type='float'),
+        'cantru_kyquy_chocongno_ids': fields.many2many('thu.ky.quy', 'cantru_kyquy_chocongno_ref', 'congno_id', 'thukyquy_id', 'Cấn trừ ký quỹ cho công nợ'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

@@ -205,25 +205,25 @@ class res_partner(osv.osv):
                 return False
         return True
 
-    def _check_mst(self, cr, uid, ids, context=None):
-        for line in self.browse(cr, uid, ids):
-            object_ids = self.search(cr, uid, [('id','!=', line.id),('mst','!=', False),('mst','=', line.mst)])
-            if object_ids:
-                return False
-        return True
-    
-    def _check_gpkd(self, cr, uid, ids, context=None):
-        for line in self.browse(cr, uid, ids):
-            object_ids = self.search(cr, uid, [('id','!=', line.id),('giayphep_kinhdoanh','!=', False),('giayphep_kinhdoanh','=', line.giayphep_kinhdoanh)])
-            if object_ids:
-                return False
-        return True
+#     def _check_mst(self, cr, uid, ids, context=None):
+#         for line in self.browse(cr, uid, ids):
+#             object_ids = self.search(cr, uid, [('id','!=', line.id),('mst','!=', False),('mst','=', line.mst)])
+#             if object_ids:
+#                 return False
+#         return True
+#     
+#     def _check_gpkd(self, cr, uid, ids, context=None):
+#         for line in self.browse(cr, uid, ids):
+#             object_ids = self.search(cr, uid, [('id','!=', line.id),('giayphep_kinhdoanh','!=', False),('giayphep_kinhdoanh','=', line.giayphep_kinhdoanh)])
+#             if object_ids:
+#                 return False
+#         return True
     
     _constraints = [
         (_check_ma_doi_tuong, 'Không được trùng mã đối tượng', ['ma_doi_tuong']),
         (_check_cmnd, 'Không được trùng CMND', ['cmnd']),
-        (_check_mst, 'Không được trùng MST', ['mst']),
-        (_check_gpkd, 'Không được trùng giấy phép kinh doanh', ['giayphep_kinhdoanh']),
+#         (_check_mst, 'Không được trùng MST', ['mst']),
+#         (_check_gpkd, 'Không được trùng giấy phép kinh doanh', ['giayphep_kinhdoanh']),
     ]
     
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
@@ -436,7 +436,7 @@ class res_partner(osv.osv):
                         amount = sotien_conlai
                         sotien_tragopxe = sotien_conlai
                         sotien_conlai = 0
-                    sotien_cantru+=sotien_tragopxe
+                    sotien_cantru=sotien_tragopxe
                     if not amount:
                         break
                     
@@ -492,24 +492,26 @@ class res_partner(osv.osv):
                     voucher_id = voucher_obj.create(cr, uid, vals,context)
                     voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
                     
-                sql = '''
-                    select id, sotien_conlai
-                        from thu_ky_quy
-                        
-                        where sotien_conlai>0 and chinhanh_id=%s and partner_id=%s and state='paid'
-                        
-                        order by ngay_thu,id
-                '''%(partner.chinhanh_id.id,partner.id)
-                cr.execute(sql)
-                for kyquy in cr.dictfetchall():
-                    if not sotien_cantru:
-                        break
-                    if sotien_cantru<kyquy['sotien_conlai']:
-                        kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':kyquy['sotien_conlai']-sotien_cantru})
-                        sotien_cantru = 0
-                    else:
-                        kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':0})
-                        sotien_cantru = sotien_cantru-kyquy['sotien_conlai']
+                    sql = '''
+                        select id, sotien_conlai
+                            from thu_ky_quy
+                            
+                            where sotien_conlai>0 and chinhanh_id=%s and partner_id=%s and state='paid'
+                            
+                            order by ngay_thu,id
+                    '''%(partner.chinhanh_id.id,partner.id)
+                    cr.execute(sql)
+                    for kyquy in cr.dictfetchall():
+                        if not sotien_cantru:
+                            break
+                        if sotien_cantru<kyquy['sotien_conlai']:
+                            kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':kyquy['sotien_conlai']-sotien_cantru,
+                                                                    'cantru_kyquy_chocongno_ids': [(4,line['id'])]})
+                            sotien_cantru = 0
+                        else:
+                            kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':0,
+                                                                    'cantru_kyquy_chocongno_ids': [(4,line['id'])]})
+                            sotien_cantru = sotien_cantru-kyquy['sotien_conlai']
                     
             if partner.nhadautu:
                 for chinhanh in partner.chinhanh_line:
@@ -536,7 +538,7 @@ class res_partner(osv.osv):
                             amount = sotien_conlai
                             sotien_tragopxe = sotien_conlai
                             sotien_conlai = 0
-                        sotien_cantru+=sotien_tragopxe
+                        sotien_cantru=sotien_tragopxe
                         if not amount:
                             break
                         
@@ -592,24 +594,26 @@ class res_partner(osv.osv):
                         voucher_id = voucher_obj.create(cr, uid, vals,context)
                         voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
                     
-                    sql = '''
-                        select id, sotien_conlai
-                            from thu_ky_quy
-                            
-                            where sotien_conlai>0 and chinhanh_id=%s and partner_id=%s and state='paid'
-                            
-                            order by ngay_thu,id
-                    '''%(chinhanh.chinhanh_id.id,partner.id)
-                    cr.execute(sql)
-                    for kyquy in cr.dictfetchall():
-                        if not sotien_cantru:
-                            break
-                        if sotien_cantru<kyquy['sotien_conlai']:
-                            kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':kyquy['sotien_conlai']-sotien_cantru})
-                            sotien_cantru = 0
-                        else:
-                            kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':0})
-                            sotien_cantru = sotien_cantru-kyquy['sotien_conlai']
+                        sql = '''
+                            select id, sotien_conlai
+                                from thu_ky_quy
+                                
+                                where sotien_conlai>0 and chinhanh_id=%s and partner_id=%s and state='paid'
+                                
+                                order by ngay_thu,id
+                        '''%(chinhanh.chinhanh_id.id,partner.id)
+                        cr.execute(sql)
+                        for kyquy in cr.dictfetchall():
+                            if not sotien_cantru:
+                                break
+                            if sotien_cantru<kyquy['sotien_conlai']:
+                                kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':kyquy['sotien_conlai']-sotien_cantru,
+                                                                        'cantru_kyquy_chocongno_ids': [(4,line['id'])]})
+                                sotien_cantru = 0
+                            else:
+                                kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':0,
+                                                                        'cantru_kyquy_chocongno_ids': [(4,line['id'])]})
+                                sotien_cantru = sotien_cantru-kyquy['sotien_conlai']
         return True
     
 res_partner()

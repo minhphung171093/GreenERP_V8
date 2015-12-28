@@ -87,6 +87,7 @@
                  	<field name="code"/>
                     <field name="name"/>             
                     <field name="description"/>
+                     <field name="so_taikhoan"/>
                 </tree>
             </field>
         </record>

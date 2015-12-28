@@ -29,8 +29,7 @@ class chitiet_congno_tgx(osv.osv_memory):
                                       ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
                                       ('tra_gop_xe','Trả góp xe'),
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
-                                      ('phai_tra_ky_quy','Phải trả ký quỹ'),
-                                      ('chi_ho','Phải trả chi hộ'),],'Loại công nợ'),
+                                      ],'Loại công nợ'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

@@ -2,51 +2,51 @@
 <openerp>
     <data>
         
-<!-- Thu ký quỹ -->
-		<record id="view_thu_ky_quy_filter" model="ir.ui.view">
-            <field name="name">thu.ky.quy.select</field>
-            <field name="model">thu.ky.quy</field>
+<!-- Trả ký quỹ -->
+		<record id="view_tra_ky_quy_filter" model="ir.ui.view">
+            <field name="name">tra.ky.quy.select</field>
+            <field name="model">tra.ky.quy</field>
             <field name="arch" type="xml">
-                <search string="Thu ký quỹ">
+                <search string="Trả ký quỹ">
                 	<field name="name"/>
                     <field name="chinhanh_id"/>
                     <field name="partner_id"/>
                     <field name="so_tien"/>
-                    <field name="ngay_thu"/>
+                    <field name="ngay_tra"/>
                     <field name="dien_giai"/>
                     <field name="state"/>
                     <group expand="0" string="Group By">
                     	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
-                    	<filter name="group_by_ngay_thu" string="Ngày thu" context="{'group_by':'ngay_thu'}"/>
+                    	<filter name="group_by_ngay_tra" string="Ngày trả" context="{'group_by':'ngay_tra'}"/>
                     	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
                     	<filter name="group_by_state" string="Trạng thái" context="{'group_by':'state'}"/>
                     </group>
                </search>
             </field>
         </record>
-    	<record id="view_thu_ky_quy_tree" model="ir.ui.view">
-            <field name="name">thu.ky.quy.tree</field>
-            <field name="model">thu.ky.quy</field>
+    	<record id="view_tra_ky_quy_tree" model="ir.ui.view">
+            <field name="name">tra.ky.quy.tree</field>
+            <field name="model">tra.ky.quy</field>
             <field name="arch" type="xml">
-                <tree string="Thu ký quỹ">
+                <tree string="Trả ký quỹ">
                 	<field name="name"/>
                     <field name="chinhanh_id"/>
                     <field name="partner_id"/>
-                    <field name="ngay_thu"/>
+                    <field name="ngay_tra"/>
                     <field name="so_tien"/>
                     <field name="bien_so_xe_id"/>
                     <field name="state"/>
                 </tree>
             </field>
         </record>
-        <record id="view_thu_ky_quy_form" model="ir.ui.view">
-            <field name="name">thu.ky.quy.form</field>
-            <field name="model">thu.ky.quy</field>
+        <record id="view_tra_ky_quy_form" model="ir.ui.view">
+            <field name="name">tra.ky.quy.form</field>
+            <field name="model">tra.ky.quy</field>
             <field name="arch" type="xml">
-                <form string="Thu ký quỹ" version='7.0'>
+                <form string="Trả ký quỹ" version='7.0'>
 					<header>
-	                    <button name="bt_thu" states="draft" type='object' string="Thu" class="oe_highlight"/>
-	                    <button name="%(action_phieu_de_xuat_thukyquy)d" states="draft" string="In phiếu đề xuất" type="action"/>
+	                    <button name="bt_tra" states="draft" type='object' string="Trả" class="oe_highlight"/>
+	                    <button name="%(action_phieu_de_xuat_trakyquy)d" states="draft" string="In phiếu đề xuất" type="action"/>
 	                    <button name="bt_huybo" states="draft,paid" type='object' string="Hủy bỏ" class="oe_highlight"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="currency_id" invisible='1'/>
@@ -60,10 +60,10 @@
 	                    	<group>
 		                    	<field name="chinhanh_id"/>
 		                    	<field name="loai_doituong" required='1'/>
-			                    <field name="partner_id" options="{'no_create': True}" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]" string="Đối tượng" context="{'doituong_thukyquy':1,'chinhanh_id':chinhanh_id,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}"/>
+			                    <field name="partner_id" options="{'no_create': True}" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]" string="Đối tượng" context="{'partner_for_phaitrakyquy':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}"/>
 		                    </group>
 		                    <group>
-			                    <field name="ngay_thu"/>
+			                    <field name="ngay_tra"/>
 			                    <field name="bien_so_xe_id" attrs="{'required':[('loai_doituong','=','nhadautu')]}" options="{'no_create': True}"/>
 			                    <field name="loai_kyquy_id" required='1' options="{'no_create': True}"/>
 		                    </group>
@@ -82,13 +82,13 @@
                 </form>
             </field>
         </record>
-        <record id="action_thu_ky_quy" model="ir.actions.act_window">
-            <field name="name">Thu ký quỹ</field>
-            <field name="res_model">thu.ky.quy</field>
+        <record id="action_tra_ky_quy" model="ir.actions.act_window">
+            <field name="name">Ký quỹ</field>
+            <field name="res_model">tra.ky.quy</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_thu_ky_quy_tree"/>
-            <field name="search_view_id" ref="view_thu_ky_quy_filter"/>
+            <field name="view_id" ref="view_tra_ky_quy_tree"/>
+            <field name="search_view_id" ref="view_tra_ky_quy_filter"/>
             <field name="context">{'default_loai_doituong': 'taixe','readonly_by_pass':['chinhanh_id']}</field>
         </record>
         

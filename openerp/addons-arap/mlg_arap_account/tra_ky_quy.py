@@ -28,23 +28,22 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-class thu_ky_quy(osv.osv):
-    _name = "thu.ky.quy"
+class tra_ky_quy(osv.osv):
+    _name = "tra.ky.quy"
     _inherit = ['mail.thread']
     
     _columns = {
         'state': fields.selection([
             ('draft','Đang chờ'),
-            ('paid','Đã thu'),
+            ('paid','Đã trả'),
             ('cancel','Hủy bỏ'),
         ], string='Trạng thái', readonly=True),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
         'partner_id': fields.many2one('res.partner','Đối tượng', required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'ngay_thu': fields.date('Ngày thu', readonly=True, states={'draft': [('readonly', False)]}),
-        'user_id': fields.many2one('res.users', 'Nhân viên thu', readonly=True, states={'draft': [('readonly', False)]}),
+        'ngay_tra': fields.date('Ngày trả', readonly=True, states={'draft': [('readonly', False)]}),
+        'user_id': fields.many2one('res.users', 'Nhân viên chi', readonly=True, states={'draft': [('readonly', False)]}),
         'dien_giai': fields.text('Diễn giải', readonly=True, states={'draft': [('readonly', False)]}),
         'so_tien': fields.float('Số tiền',digits=(16,0), required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'sotien_conlai': fields.float('Số tiền còn lại',digits=(16,0)),
         'name': fields.char('Số'),
         'currency_id': fields.many2one('res.currency','Đơn vị tiền tệ'),
         'loai_doituong': fields.selection([('taixe','Lái xe'),
@@ -53,69 +52,63 @@ class thu_ky_quy(osv.osv):
 #         'bien_so_xe': fields.char('Biển số xe', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ', readonly=True, states={'draft': [('readonly', False)]}),
-        'thu_chi_kyquy_ids': fields.many2many('tra.ky.quy', 'thu_chi_kyquy_ref', 'thu_id', 'chi_id', 'Thu chi ký quỹ'),
-        'cantru_kyquy_chocongno_ids': fields.many2many('account.invoice', 'cantru_kyquy_chocongno_ref', 'thukyquy_id', 'congno_id', 'Cấn trừ ký quỹ cho công nợ'),
+        'thu_chi_kyquy_ids': fields.many2many('thu.ky.quy', 'thu_chi_kyquy_ref', 'chi_id', 'thu_id', 'Thu chi ký quỹ'),
     }
     
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = {}
         if vals.get('name', '/') == '/' or 'name' not in vals:
-            vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'thu_ky_quy', context=context) or '/'
-#         user = self.pool.get('res.users').browse(cr, uid, uid)
-#         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
-        if vals.get('so_tien',False):
-            vals.update({'sotien_conlai': vals['so_tien']})
+            vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'phai_tra_ky_quy', context=context) or '/'
             
         if vals['loai_doituong'] in ['taixe','nhanvienvanphong']:
             sql = '''
-                select case when sotien_conlai!=0 then sotien_conlai else 0 end sotien_conlai from res_partner where id=%s
+                select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu from res_partner where id=%s
             '''%(vals['partner_id'])
             cr.execute(sql)
-            sotien_conlai = cr.fetchone()[0]
-            if sotien_conlai<vals['so_tien']:
-                raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào lớn hơn số tiền ký quỹ phải thu còn lại!'))
+            sotien_dathu = cr.fetchone()[0]
+            if sotien_dathu<vals['so_tien']:
+                raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
         if vals['loai_doituong'] == 'nhadautu':
             sql = '''
             
-                select case when sotien_conlai!=0 then sotien_conlai else 0 end sotien_conlai
+                select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu
                     from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
             '''%(vals['chinhanh_id'],vals['partner_id'])
             cr.execute(sql)
-            sotien_conlai = cr.fetchone()[0]
-            if sotien_conlai<vals['so_tien']:
-                raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào lớn hơn số tiền ký quỹ phải thu còn lại!'))
+            sotien_dathu = cr.fetchone()[0]
+            if sotien_dathu<vals['so_tien']:
+                raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
             
-        return super(thu_ky_quy, self).create(cr, uid, vals, context)
+        return super(tra_ky_quy, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
-        if vals.get('so_tien',False):
-            vals.update({'sotien_conlai': vals['so_tien']})
+        if vals.get('so_tien', False):
             for line in self.browse(cr, uid, ids):
                 if line.so_tien<=0:
                     raise osv.except_osv(_('Cảnh báo!'), _('Không thể sửa với số tiền nhỏ hơn hoặc bằng "0"!'))
                 
                 if line.loai_doituong in ['taixe','nhanvienvanphong']:
                     sql = '''
-                        select case when sotien_conlai!=0 then sotien_conlai else 0 end sotien_conlai from res_partner where id=%s
+                        select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu from res_partner where id=%s
                     '''%(line.partner_id.id)
                     cr.execute(sql)
-                    sotien_conlai = cr.fetchone()[0]
-                    if sotien_conlai<vals['so_tien']:
-                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ phải thu còn lại!'))
+                    sotien_dathu = cr.fetchone()[0]
+                    if sotien_dathu<vals['so_tien']:
+                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
                 
                 if line.loai_doituong == 'nhadautu':
                     sql = '''
                     
-                        select case when sotien_conlai!=0 then sotien_conlai else 0 end sotien_conlai
+                        select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu
                             from chi_nhanh_line where chinhanh_id=%s and partner_id=%s
                     '''%(line.chinhanh_id.id,line.partner_id.id)
                     cr.execute(sql)
-                    sotien_conlai = cr.fetchone()[0]
-                    if sotien_conlai<vals['so_tien']:
-                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ phải thu còn lại!'))
+                    sotien_dathu = cr.fetchone()[0]
+                    if sotien_dathu<vals['so_tien']:
+                        raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
                     
-        return super(thu_ky_quy, self).write(cr, uid, ids, vals, context)
+        return super(tra_ky_quy, self).write(cr, uid, ids, vals, context)
     
     def _get_chinhanh(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid)
@@ -127,14 +120,39 @@ class thu_ky_quy(osv.osv):
     
     _defaults = {
         'state': 'draft',
-        'ngay_thu': time.strftime('%Y-%m-%d'),
+        'ngay_tra': time.strftime('%Y-%m-%d'),
         'chinhanh_id': _get_chinhanh,
         'user_id': lambda self, cr, uid, context: uid,
         'currency_id': _get_currency,
     }
     
-    def bt_thu(self, cr, uid, ids, context=None):
-        return self.write(cr, uid, ids, {'state': 'paid'})
+    def bt_tra(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            kyquy_obj = self.pool.get('thu.ky.quy')
+            sotien_cantru = line.so_tien
+            sql = '''
+                select id, sotien_conlai
+                    from thu_ky_quy
+                    
+                    where sotien_conlai>0 and chinhanh_id=%s and partner_id=%s and state='paid'
+                    
+                    order by ngay_thu,id
+            '''%(line.chinhanh_id.id,line.partner_id.id)
+            cr.execute(sql)
+            thu_chi_kyquy_ids = []
+            for kyquy in cr.dictfetchall():
+                if not sotien_cantru:
+                    break
+                if sotien_cantru<kyquy['sotien_conlai']:
+                    kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':kyquy['sotien_conlai']-sotien_cantru})
+                    sotien_cantru = 0
+                else:
+                    kyquy_obj.write(cr, uid, [kyquy['id']],{'sotien_conlai':0})
+                    sotien_cantru = sotien_cantru-kyquy['sotien_conlai']
+                thu_chi_kyquy_ids.append((4,kyquy['id']))
+            if sotien_cantru>0:
+                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền trả lớn hơn số tiền đã thu còn lại!')
+        return self.write(cr, uid, ids, {'state': 'paid','thu_chi_kyquy_ids': thu_chi_kyquy_ids})
     
     def bt_huybo(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'cancel'})
@@ -152,7 +170,7 @@ class thu_ky_quy(osv.osv):
                 vals={'loai_doituong': 'nhanvienvanphong'}
         return {'value': vals}
     
-thu_ky_quy()
+tra_ky_quy()
     
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

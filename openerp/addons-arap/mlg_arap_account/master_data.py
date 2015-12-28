@@ -91,6 +91,7 @@ class loai_ky_quy(osv.osv):
         'name': fields.char('Tên', size=1024, required=True),
         'code': fields.char('Mã', size=1024, required=True),
         'description': fields.char('Mô tả', size=1024),
+        'so_taikhoan': fields.char('Số tài khoản', size=1024, required=True),
     }
     
     def _check_name(self, cr, uid, ids, context=None):

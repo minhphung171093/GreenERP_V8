@@ -68,6 +68,39 @@
             <field name="view_id" ref="view_phieu_de_xuat_thukyquy_form"/>
             <field name="target">new</field>
         </record>
+        
+<!-- Phiếu đề xuất trả ký quỹ-->
+        <record id="view_phieu_de_xuat_trakyquy_form" model="ir.ui.view">
+            <field name="name">phieu.de.xuat.form</field>
+            <field name="model">phieu.de.xuat</field>
+            <field name="arch" type="xml">
+                <form string="Phiếu đề xuất" version="7.0">
+                	<group col='4' colspan='2'>
+                    	<field name='partner_id' readonly='1'/>
+                    	<field name='ngay'/>
+                    	<field name='phuongthuc_thanhtoan'/>
+                    	<field name='diengiai'/>
+                    	<field name='so_tien'/>
+                    	<field name='loai_doituong' invisible='1'/>
+                    	<field name='loai' invisible='1'/>
+                    </group>
+                    <footer>
+                        <button name="print_trakyquy_report" string="In phiếu đề xuất" context="{'loai_doituong':loai_doituong}" type="object" class="oe_highlight"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_phieu_de_xuat_trakyquy" model="ir.actions.act_window">
+            <field name="name">Phiếu đề xuất</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">phieu.de.xuat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_phieu_de_xuat_trakyquy_form"/>
+            <field name="target">new</field>
+        </record>
 		
     </data>
 </openerp>

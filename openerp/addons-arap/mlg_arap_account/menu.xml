@@ -161,7 +161,7 @@
 					
 				<menuitem id="menu_action_thu_ky_quy"
 					action="action_thu_ky_quy"
-					name="Phải thu ký quỹ"
+					name="Ký quỹ"
 					parent="menu_cong_no" sequence="30"/>
 			
 			<menuitem id="menu_in_dexuat"
@@ -229,9 +229,9 @@
 					name="Chi bảo hiểm"
 					parent="menu_congno_chi" sequence="15"/> -->
 					
-				<menuitem id="menu_action_phai_tra_ky_quy"
-					action="action_phai_tra_ky_quy"
-					name="Phải trả ký quỹ"
+				<menuitem id="menu_action_tra_ky_quy"
+					action="action_tra_ky_quy"
+					name="Ký quỹ"
 					parent="menu_congno_chi" sequence="20"/>
 					
 				<!-- <menuitem id="menu_action_tam_ung"

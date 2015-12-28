@@ -6,6 +6,7 @@ import account_voucher
 import account_journal
 import master_data
 import thu_ky_quy
+import tra_ky_quy
 import ql_baohiem
 import user
 import partner

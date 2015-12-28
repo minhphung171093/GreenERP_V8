@@ -35,7 +35,14 @@ class phieu_de_xuat(osv.osv_memory):
             res.update({'so_tien': kyquy.so_tien,
                         'partner_id': kyquy.partner_id.id,
                         'loai_doituong': kyquy.loai_doituong,
-                        })    
+                        })
+        if context.get('active_id', False) and context.get('active_model')=='tra.ky.quy':
+            kyquy_obj = self.pool.get('tra.ky.quy')
+            kyquy = kyquy_obj.browse(cr, uid, context['active_id'])
+            res.update({'so_tien': kyquy.so_tien,
+                        'partner_id': kyquy.partner_id.id,
+                        'loai_doituong': kyquy.loai_doituong,
+                        })
         return res
     
     _columns = {
@@ -90,6 +97,17 @@ class phieu_de_xuat(osv.osv_memory):
         datas['form'].update({'active_id':context.get('active_ids',False)})
         if context.get('loai_doituong', False):
             report_name = 'pdxt_kyquy_'+context['loai_doituong']
+        return {'type': 'ir.actions.report.xml', 'report_name': report_name, 'datas': datas}
+    
+    def print_trakyquy_report(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        datas = {'ids': context.get('active_ids', [])}
+        datas['model'] = 'thu.ky.quy'
+        datas['form'] = self.read(cr, uid, ids)[0]
+        datas['form'].update({'active_id':context.get('active_ids',False)})
+        if context.get('loai_doituong', False):
+            report_name = 'pdxtra_kyquy_'+context['loai_doituong']
         return {'type': 'ir.actions.report.xml', 'report_name': report_name, 'datas': datas}
         
 phieu_de_xuat()

@@ -75,6 +75,7 @@
         'account_voucher_view.xml',
         'account_journal_view.xml',
         'thu_ky_quy_view.xml',
+        'tra_ky_quy_view.xml',
         'account_sequence.xml',
         'user_view.xml',
         'import_manually_view.xml',
