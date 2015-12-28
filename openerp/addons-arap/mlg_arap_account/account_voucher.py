@@ -52,6 +52,7 @@ class account_voucher(osv.osv):
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
         'fusion_id': fields.char('Fusion Thu', size=1024),
         'loai_giaodich': fields.char('Loại giao dịch', size=1024),
+        'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
         'sotien_tragopxe': fields.float('Số tiền đã trả', digits=(16,0)),
         'sotien_lai_conlai': fields.float('Số tiền lãi còn lại',digits=(16,0)),
         'sotienlai_id': fields.many2one('so.tien.lai', 'So tien lai'),
@@ -195,6 +196,7 @@ class account_voucher(osv.osv):
                 'mlg_type': line.mlg_type,
                 'fusion_id': line.fusion_id,
                 'loai_giaodich': line.loai_giaodich,
+                'bien_so_xe_id': line.bien_so_xe_id and line.bien_so_xe_id.id or False,
             }
             remaining_amount -= rs['amount']
             #in case a corresponding move_line hasn't been found, we now try to assign the voucher amount
@@ -284,6 +286,9 @@ class account_voucher(osv.osv):
             
             if voucher.loai_giaodich:
                 cr.execute(''' update account_move_line set loai_giaodich=%s where move_id=%s ''',(voucher.loai_giaodich,move_id,))
+                
+            if voucher.bien_so_xe_id:
+                cr.execute(''' update account_move_line set bien_so_xe_id=%s where move_id=%s ''',(voucher.bien_so_xe_id.id,move_id,))
             
             if voucher.sotienlai_id:
                 cr.execute(''' select id from account_move_line where move_id=%s and credit!=0 limit 1 ''',(move_id,))
@@ -461,6 +466,7 @@ class account_voucher_line(osv.osv):
                                       ('chi_ho','Chi hộ'),],'Loại công nợ'),
         'fusion_id': fields.char('Fusion Thu', size=1024),
         'loai_giaodich': fields.char('Loại giao dịch', size=1024),
+        'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
     }
     
 account_voucher_line()

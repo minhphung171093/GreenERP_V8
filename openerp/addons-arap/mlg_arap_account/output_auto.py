@@ -1117,7 +1117,7 @@ class output_congno_tudong(osv.osv):
                 date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
                 date_now = time.strftime('%Y-%m-%d')
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_phat_sinh','bien_so_xe','so_hop_dong','so_tien','don_vi_chi','dien_giai','ngay_thanh_toan','so_tien_da_thu','so_tien_lai_da_thu']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_hop_dong','so_tien','don_vi_chi','dien_giai','ngay_thanh_toan','so_tien_da_thu','so_tien_lai_da_thu']
                 contents = []
                 sql = '''
                     select ai.id as invoice_id,cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1156,7 +1156,7 @@ class output_congno_tudong(osv.osv):
                                     'loai_doi_tuong': loai_doituong,
                                     'ma_doi_tuong': line['ma_doi_tuong'],
                                     'ten_doi_tuong': line['ten_doi_tuong'],
-                                    'ngay_phat_sinh': ngay_giao_dich,
+                                    'ngay_giao_dich': ngay_giao_dich,
                                     'bien_so_xe': line['bien_so_xe'],
                                     'so_hop_dong': line['so_hop_dong'],
                                     'so_tien': line['so_tien'],
@@ -1176,7 +1176,7 @@ class output_congno_tudong(osv.osv):
                                     'loai_doi_tuong': loai_doituong,
                                     'ma_doi_tuong': line['ma_doi_tuong'],
                                     'ten_doi_tuong': line['ten_doi_tuong'],
-                                    'ngay_phat_sinh': ngay_giao_dich,
+                                    'ngay_giao_dich': ngay_giao_dich,
                                     'bien_so_xe': line['bien_so_xe'],
                                     'so_hop_dong': line['so_hop_dong'],
                                     'so_tien': line['so_tien'],
@@ -1222,7 +1222,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','no_doanh_thu_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1251,7 +1251,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'so_tien': line['so_tien'],
                         'dien_giai': '',
                     })
@@ -1291,7 +1290,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','chi_ho_dien_thoai_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','so_hoa_don','so_dien_thoai','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','so_hoa_don','so_dien_thoai','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1320,7 +1319,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'so_tien': line['so_tien'],
                         'so_hoa_don': line['so_hoa_don'],
                         'so_dien_thoai': line['so_dien_thoai'],
@@ -1362,7 +1360,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','phai_thu_bao_hiem_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_tien','so_hoa_don','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','bien_so_xe','so_tien','so_hoa_don','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1392,7 +1390,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'bien_so_xe': line['bien_so_xe'],
                         'so_tien': line['so_tien'],
                         'so_hoa_don': line['so_hoa_don'],
@@ -1434,7 +1431,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1463,7 +1460,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'so_tien': line['so_tien'],
                         'dien_giai': '',
                     })
@@ -1503,7 +1499,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','thu_no_xuong_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_tien','so_hop_dong','ma_chiet_tinh','ma_xuong','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','bien_so_xe','so_tien','so_hop_dong','ma_chiet_tinh','ma_xuong','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1535,7 +1531,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'bien_so_xe': line['bien_so_xe'],
                         'so_tien': line['so_tien'],
                         'so_hop_dong': line['so_hop_dong'],
@@ -1579,7 +1574,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','thu_phi_thuong_hieu_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_tien','so_hop_dong','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','bien_so_xe','so_tien','so_hop_dong','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1609,7 +1604,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'bien_so_xe': line['bien_so_xe'],
                         'so_tien': line['so_tien'],
                         'so_hop_dong': line['so_hop_dong'],
@@ -1779,7 +1773,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','tra_gop_xe_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_tien','so_hop_dong','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','bien_so_xe','so_tien','so_hop_dong','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1809,7 +1803,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'bien_so_xe': line['bien_so_xe'],
                         'so_tien': line['so_tien'],
                         'so_hop_dong': line['so_hop_dong'],
@@ -1851,7 +1844,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','no_doanh_thu_histaff')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -1880,7 +1873,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'so_tien': line['so_tien'],
                         'dien_giai': '',
                     })
@@ -2056,7 +2048,7 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -2085,7 +2077,6 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
-                        'ngay_giao_dich': '',
                         'so_tien': line['so_tien'],
                         'dien_giai': '',
                     })
@@ -2363,7 +2354,7 @@ class output_congno_tudong(osv.osv):
                 date_end = str(datetime.now() + relativedelta(months=+1, day=1, days=-1))[:10]
                 date_now = time.strftime('%Y-%m-%d')
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_phat_sinh','bien_so_xe','so_tien','so_hop_dong','dien_giai','ngay_thanh_toan','so_tien_da_chi']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ngay_giao_dich','bien_so_xe','so_tien','so_hop_dong','dien_giai','ngay_thanh_toan','so_tien_da_chi']
                 contents = []
                 sql = '''
                     select ai.id as invoice_id,cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
@@ -2398,7 +2389,7 @@ class output_congno_tudong(osv.osv):
                                     'loai_doi_tuong': loai_doituong,
                                     'ma_doi_tuong': line['ma_doi_tuong'],
                                     'ten_doi_tuong': line['ten_doi_tuong'],
-                                    'ngay_phat_sinh': line['ngay_giao_dich'],
+                                    'ngay_giao_dich': line['ngay_giao_dich'],
                                     'bien_so_xe': line['bien_so_xe'],
                                     'so_tien': line['so_tien'],
                                     'so_hop_dong': line['so_hop_dong'],

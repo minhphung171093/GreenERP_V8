@@ -59,13 +59,13 @@
 	                    <group col="4" colspan="2">
 	                    	<group>
 		                    	<field name="chinhanh_id"/>
-		                    	<field name="loai_doituong" required='1'/>
+		                    	<field name="loai_doituong" required='1' on_change="onchange_loaidoituong(loai_doituong)"/>
 			                    <field name="partner_id" options="{'no_create': True}" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]" string="Đối tượng" context="{'partner_for_phaitrakyquy':1,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}"/>
 		                    </group>
 		                    <group>
 			                    <field name="ngay_tra"/>
 			                    <field name="bien_so_xe_id" attrs="{'required':[('loai_doituong','=','nhadautu')]}" options="{'no_create': True}"/>
-			                    <field name="loai_kyquy_id" required='1' options="{'no_create': True}"/>
+			                    <field name="loai_kyquy_id" context="{'timloaikyquy':1,'loai_doituong':loai_doituong}" required='1' options="{'no_create': True}"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">

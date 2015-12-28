@@ -494,7 +494,7 @@ class import_congno_tudong(osv.osv):
                                 noidung_loi='Không tìm thấy biển số xe'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
 
-                            date_invoice=datetime.strptime(data['ngay_phat_sinh'],'%d/%m/%Y').strftime('%Y-%m-%d')
+                            date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
                             donvithuhuong = []
                             if data['don_vi_thu_huong']:
@@ -3128,7 +3128,7 @@ class import_congno_tudong(osv.osv):
                                 noidung_loi='Không tìm thấy biển số xe'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
-                            date_invoice=datetime.strptime(data['ngay_phat_sinh'],'%d/%m/%Y').strftime('%Y-%m-%d')
+                            date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
                             vals.update({
                                 'mlg_type': 'chi_ho',

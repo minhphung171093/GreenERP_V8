@@ -152,6 +152,25 @@ class thu_ky_quy(osv.osv):
                 vals={'loai_doituong': 'nhanvienvanphong'}
         return {'value': vals}
     
+    def onchange_loaidoituong(self, cr, uid, ids, loai_doituong=False, context=None):
+        vals = {'loai_kyquy_id': False}
+        if loai_doituong in ['taixe','nhanvienvanphong']:
+            sql = '''
+                select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC'
+            '''
+            cr.execute(sql)
+            loai_kq_ids = [r[0] for r in cr.fetchall()]
+            vals.update({'loai_kyquy_id': loai_kq_ids and loai_kq_ids[0] or False})
+            
+        if loai_doituong in ['nhadautu']:
+            sql = '''
+                select id from loai_ky_quy where upper(code)='KY_QUY_DH_BD'
+            '''
+            cr.execute(sql)
+            loai_kq_ids = [r[0] for r in cr.fetchall()]
+            vals.update({'loai_kyquy_id': loai_kq_ids and loai_kq_ids[0] or False})
+        return {'value': vals}
+    
 thu_ky_quy()
     
 

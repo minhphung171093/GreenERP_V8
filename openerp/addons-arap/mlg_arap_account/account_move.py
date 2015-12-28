@@ -67,6 +67,7 @@ class account_move_line(osv.osv):
         'con_lai': fields.function(_get_con_lai,type='float', string='Còn lại', store=True),
         'fusion_id': fields.char('Fusion Thu', size=1024),
         'loai_giaodich': fields.char('Loại giao dịch', size=1024),
+        'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
         'sotienlai_line': fields.one2many('so.tien.lai', 'move_line_id', 'So tien lai line')
     }
     

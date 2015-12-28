@@ -112,6 +112,42 @@ class loai_ky_quy(osv.osv):
         (_check_code, 'Không được trùng mã', ['code']),
     ]
     
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        if context.get('timloaikyquy', False) and context.get('loai_doituong', False):
+            if context['loai_doituong'] in ['taixe','nhanvienvanphong']:
+                sql = '''
+                    select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC'
+                '''
+                cr.execute(sql)
+                loai_kq_ids = [r[0] for r in cr.fetchall()]
+                args += [('id','in',loai_kq_ids)]
+                
+            if context['loai_doituong'] in ['nhadautu']:
+                sql = '''
+                    select id from loai_ky_quy where upper(code)='KY_QUY_DH_BD'
+                '''
+                cr.execute(sql)
+                loai_kq_ids = [r[0] for r in cr.fetchall()]
+                args += [('id','in',loai_kq_ids)]
+        
+        return super(loai_ky_quy, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            
+        return self.name_get(cr, user, ids, context=context)
+    
 loai_ky_quy()
 
 class loai_vi_pham(osv.osv):

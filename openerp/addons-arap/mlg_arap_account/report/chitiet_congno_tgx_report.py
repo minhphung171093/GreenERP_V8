@@ -311,20 +311,26 @@ class Parser(report_sxw.rml_parse):
         return invoice.lichsu_thutienlai_line
             
     def get_tonglaithu(self):
-        wizard_data = self.localcontext['data']['form']
-        period_from_id = wizard_data['period_from_id']
-        period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-        chinhanh_id = wizard_data['chinhanh_id']
-        mlg_type = wizard_data['mlg_type']
-        sql = '''
-            select case when sum(so_tien)!=0 then sum(so_tien) else 0 end tonglaithu
-                from so_tien_lai where invoice_id in (select id from account_invoice where mlg_type='%s' and chinhanh_id=%s
-                    and date_invoice between '%s' and '%s' and state in ('open','paid'))
-        '''%(mlg_type,chinhanh_id[0],period_from.date_start,period_to.date_stop)
-        self.cr.execute(sql)
-        return self.cr.fetchone()[0]
+        partner_ids = self.get_doituong()
+        if partner_ids:
+            partner_ids = str(partner_ids).replace('[', '(')
+            partner_ids = str(partner_ids).replace(']', ')')
+            
+            wizard_data = self.localcontext['data']['form']
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+            chinhanh_id = wizard_data['chinhanh_id']
+            mlg_type = wizard_data['mlg_type']
+            sql = '''
+                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end tonglaithu
+                    from so_tien_lai where invoice_id in (select id from account_invoice where mlg_type='%s' and chinhanh_id=%s
+                        and date_invoice between '%s' and '%s' and state in ('open','paid') and partner_id in %s)
+            '''%(mlg_type,chinhanh_id[0],period_from.date_start,period_to.date_stop,partner_ids)
+            self.cr.execute(sql)
+            return self.cr.fetchone()[0]
+        return 0
     
     def get_sdtlkdauky(self, partner_id,bsx_id):
         wizard_data = self.localcontext['data']['form']

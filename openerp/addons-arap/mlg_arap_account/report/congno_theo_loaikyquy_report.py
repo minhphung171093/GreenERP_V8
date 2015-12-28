@@ -92,8 +92,9 @@ class Parser(report_sxw.rml_parse):
             select tkq.name as ma_giaodich, tkq.ngay_thu as ngay_giaodich, cn.code as ma_chinhanh, cn.name as ten_chinhanh,
                 rp.ma_doi_tuong as ma_doituong, rp.name as ten_doituong, dx.code as ma_doixe,
                 dx.name as ten_doixe, bgc.code as ma_baigiaoca, bgc.name as ten_baigiaoca, tnbgc.name as thungan_baigiaoca,
-                dhbgc.name as dieuhanh_baigiaoca, tkq.so_tien as sotien, tkq.dien_giai as diengiai,
-                bsx.name as bien_so_xe,lkq.name as loaikyquy,rp.id as partner_id
+                dhbgc.name as dieuhanh_baigiaoca, tkq.so_tien as sotien_dathu, tkq.dien_giai as diengiai,
+                bsx.name as bien_so_xe,lkq.name as loaikyquy,rp.id as partner_id,tkq.sotien_conlai as sotien_conlai,
+                (COALESCE(tkq.so_tien,0)-COALESCE(tkq.sotien_conlai,0)) as sotien_dacantru
                 
                 from thu_ky_quy tkq
                 left join res_partner rp on tkq.partner_id = rp.id
@@ -104,7 +105,7 @@ class Parser(report_sxw.rml_parse):
                 left join account_account cn on tkq.chinhanh_id = cn.id
                 left join bien_so_xe bsx on tkq.bien_so_xe_id = bsx.id
                 left join loai_ky_quy lkq on tkq.loai_kyquy_id = lkq.id
-                where tkq.state='draft' and tkq.chinhanh_id=%s and tkq.ngay_thu between '%s' and '%s'  
+                where tkq.state='paid' and tkq.chinhanh_id=%s and tkq.ngay_thu between '%s' and '%s'  
         '''%(chinhanh_id[0],from_date,to_date)
 
         if ldt=='taixe':
