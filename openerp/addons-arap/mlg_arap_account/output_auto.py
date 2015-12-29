@@ -102,6 +102,7 @@ class output_congno_tudong(osv.osv):
             rec_aml       record;
             rec_lbh       record;
             rec_lndt      record;
+            rec_lkq       record;
             bal_data      fin_output_theodoanhsothu_oracle_data%ROWTYPE;
             loaicongno    numeric;
             sotien        numeric;
@@ -113,7 +114,7 @@ class output_congno_tudong(osv.osv):
                         group by id,code,name
                 ' using $3
             loop
-                for loaicongno in 1..11
+                for loaicongno in 1..12
                 loop
                     if loaicongno=1 then
                     
@@ -398,6 +399,34 @@ class output_congno_tudong(osv.osv):
                             bal_data.ghichu='';
                             return next bal_data;
                         end if;
+                    end if;
+                    
+                    if loaicongno=12 then
+                        for rec_lkq in execute '
+                            select id,name,so_taikhoan from loai_ky_quy
+                        '
+                        loop
+                            sotien = 0;
+                            tencongno = 'AR_'||rec_lkq.name;
+                            for rec_aml in execute '
+                                select sum(so_tien) as sotien
+                                    from thu_ky_quy
+                                    where chinhanh_id=$4 and state in (''paid'') and loai_kyquy_id=$3
+                                    and ngay_thu between $1 and $2
+                            ' using $1, $2,rec_lkq.id,rec_cn.id
+                            loop
+                                sotien = sotien + coalesce(rec_aml.sotien, 0);
+                            end loop;
+                            if sotien <> 0 then
+                                bal_data.chinhanh=rec_cn.name;
+                                bal_data.machinhanh=rec_cn.code;
+                                bal_data.loaicongno=tencongno;
+                                bal_data.taikhoan=rec_lkq.so_taikhoan;
+                                bal_data.sotien=sotien;
+                                bal_data.ghichu='';
+                                return next bal_data;
+                            end if;
+                        end loop;
                     end if;
                     
                 end loop;
@@ -759,33 +788,9 @@ class output_congno_tudong(osv.osv):
                     group by id,code,name
                 ' using $3
             loop
-                for loaicongno in 1..2
+                for loaicongno in 1..1
                 loop
                     if loaicongno=1 then
-                        sotien = 0;
-                        for rec_aml in execute '
-                            select sum(credit) as sotien
-                                from account_move_line
-                                where move_id in (select move_id from account_voucher
-                                    where reference in (select name from account_invoice
-                                        where mlg_type=''phai_tra_ky_quy'' and chinhanh_id=$3 and state in (''open'',''paid'')))
-                                and date between $1 and $2
-                        ' using $1, $2, rec_cn.id
-                        loop
-                            sotien = sotien + coalesce(rec_aml.sotien, 0);
-                        end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Phải trả ký quỹ';
-                            bal_data.taikhoan='1411011';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
-                    end if;
-                    
-                    if loaicongno=2 then
                         sotien = 0;
                         for rec_aml in execute '
                             select sum(credit) as sotien
@@ -871,30 +876,10 @@ class output_congno_tudong(osv.osv):
                     group by id,code,name
                 ' using $3
             loop
-                for loaicongno in 1..2
+                for loaicongno in 1..1
                 loop
-                    if loaicongno=1 then
-                        sotien = 0;
-                        for rec_aml in execute '
-                            select sum(residual) as sotien from account_invoice
-                                where mlg_type=''phai_tra_ky_quy'' and chinhanh_id=$3 and state in (''open'')
-                                and date_invoice between $1 and $2
-                        ' using $1, $2, rec_cn.id
-                        loop
-                            sotien = sotien + coalesce(rec_aml.sotien, 0);
-                        end loop;
-                        if sotien <> 0 then
-                            bal_data.chinhanh=rec_cn.name;
-                            bal_data.machinhanh=rec_cn.code;
-                            bal_data.loaicongno='AR_Phải trả ký quỹ';
-                            bal_data.taikhoan='1411011';
-                            bal_data.sotien=sotien;
-                            bal_data.ghichu='';
-                            return next bal_data;
-                        end if;
-                    end if;
                     
-                    if loaicongno=2 then
+                    if loaicongno=1 then
                         sotien = 0;
                         for rec_aml in execute '
                             select sum(residual) as sotien from account_invoice
@@ -1646,7 +1631,7 @@ class output_congno_tudong(osv.osv):
             kyquy_obj = self.pool.get('thu.ky.quy')
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai','loai_ky_quy','bien_so_xe']
                 contents = []
                 
                 sql = '''
@@ -1666,6 +1651,11 @@ class output_congno_tudong(osv.osv):
                     loai_doituong=''
                     if partner['taixe']==True:
                         loai_doituong='taixe'
+                        sql = '''
+                            select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC' limit 1
+                        '''
+                        cr.execute(sql)
+                        loai_kq_ids = [r[0] for r in cr.fetchall()]
                         contents.append({
                             'chi_nhanh': partner['ten_chi_nhanh'],
                             'ma_chi_nhanh': partner['ma_chi_nhanh'],
@@ -1674,6 +1664,8 @@ class output_congno_tudong(osv.osv):
                             'ten_doi_tuong': partner['name'],
                             'so_tien': sotien,
                             'dien_giai': '',
+                            'loai_ky_quy': 'KY_QUY_CONG_VIEC',
+                            'bien_so_xe': '',
                         })
                         vals = {
                             'chinhanh_id': partner['chinhanh_id'],
@@ -1681,25 +1673,7 @@ class output_congno_tudong(osv.osv):
                             'partner_id': partner['id'],
                             'so_tien': sotien,
                             'ngay_thu': time.strftime('%Y-%m-%d'),
-                        }
-                        kyquy_obj.create(cr, uid, vals)
-                    if partner['nhanvienvanphong']==True:
-                        loai_doituong='nhanvienvanphong'
-                        contents.append({
-                            'chi_nhanh': partner['ten_chi_nhanh'],
-                            'ma_chi_nhanh': partner['ma_chi_nhanh'],
-                            'loai_doi_tuong': 'Nhân viên văn phòng',
-                            'ma_doi_tuong': partner['ma_doi_tuong'],
-                            'ten_doi_tuong': partner['name'],
-                            'so_tien': sotien,
-                            'dien_giai': '',
-                        })
-                        vals = {
-                            'chinhanh_id': partner['chinhanh_id'],
-                            'loai_doituong': loai_doituong,
-                            'partner_id': partner['id'],
-                            'so_tien': sotien,
-                            'ngay_thu': time.strftime('%Y-%m-%d'),
+                            'loai_kyquy_id': loai_kq_ids[0],
                         }
                         kyquy_obj.create(cr, uid, vals)
                 sql = '''
@@ -1714,6 +1688,11 @@ class output_congno_tudong(osv.osv):
                 '''
                 cr.execute(sql)
                 for ndt in cr.dictfetchall():
+                    sql = '''
+                        select id from loai_ky_quy where upper(code)='KY_QUY_DH_BD' limit 1
+                    '''
+                    cr.execute(sql)
+                    loai_kq_ids = [r[0] for r in cr.fetchall()]
                     if ndt['sotien_phaithu_dinhky']<=ndt['sotien_conlai']:
                         sotien=ndt['sotien_phaithu_dinhky']
                     else:
@@ -1727,6 +1706,8 @@ class output_congno_tudong(osv.osv):
                         'ten_doi_tuong': ndt['name'],
                         'so_tien': sotien,
                         'dien_giai': '',
+                        'loai_ky_quy': 'KY_QUY_DH_BD',
+                        'bien_so_xe': '',
                     })
                     vals = {
                         'chinhanh_id': ndt['chinhanh_id'],
@@ -1734,6 +1715,7 @@ class output_congno_tudong(osv.osv):
                         'partner_id': ndt['id'],
                         'so_tien': sotien,
                         'ngay_thu': time.strftime('%Y-%m-%d'),
+                        'loai_kyquy_id': loai_kq_ids[0],
                     }
                     kyquy_obj.create(cr, uid, vals)
                         
@@ -2117,7 +2099,7 @@ class output_congno_tudong(osv.osv):
             kyquy_obj = self.pool.get('thu.ky.quy')
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai','loai_ky_quy']
                 contents = []
                 
                 sql = '''
@@ -2135,27 +2117,13 @@ class output_congno_tudong(osv.osv):
                     else:
                         sotien=partner['sotien_conlai']
                     loai_doituong=''
-                    if partner['taixe']==True:
-                        loai_doituong='taixe'
-                        contents.append({
-                            'chi_nhanh': partner['ten_chi_nhanh'],
-                            'ma_chi_nhanh': partner['ma_chi_nhanh'],
-                            'loai_doi_tuong': 'Lái xe',
-                            'ma_doi_tuong': partner['ma_doi_tuong'],
-                            'ten_doi_tuong': partner['name'],
-                            'so_tien': sotien,
-                            'dien_giai': '',
-                        })
-                        vals = {
-                            'chinhanh_id': partner['chinhanh_id'],
-                            'loai_doituong': loai_doituong,
-                            'partner_id': partner['id'],
-                            'so_tien': sotien,
-                            'ngay_thu': time.strftime('%Y-%m-%d'),
-                        }
-                        kyquy_obj.create(cr, uid, vals)
                     if partner['nhanvienvanphong']==True:
                         loai_doituong='nhanvienvanphong'
+                        sql = '''
+                            select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC' limit 1
+                        '''
+                        cr.execute(sql)
+                        loai_kq_ids = [r[0] for r in cr.fetchall()]
                         contents.append({
                             'chi_nhanh': partner['ten_chi_nhanh'],
                             'ma_chi_nhanh': partner['ma_chi_nhanh'],
@@ -2164,6 +2132,7 @@ class output_congno_tudong(osv.osv):
                             'ten_doi_tuong': partner['name'],
                             'so_tien': sotien,
                             'dien_giai': '',
+                            'loai_ky_quy': 'KY_QUY_CONG_VIEC',
                         })
                         vals = {
                             'chinhanh_id': partner['chinhanh_id'],
@@ -2171,6 +2140,7 @@ class output_congno_tudong(osv.osv):
                             'partner_id': partner['id'],
                             'so_tien': sotien,
                             'ngay_thu': time.strftime('%Y-%m-%d'),
+                            'loai_kyquy_id': loai_kq_ids[0],
                         }
                         kyquy_obj.create(cr, uid, vals)
 #                 sql = '''
