@@ -34,8 +34,8 @@ class congno_dauky(osv.osv):
     _name = "congno.dauky"
     
     _columns = {
-        'period_id': fields.many2one('account.period','Tháng', readonly=True),
-        'partner_id': fields.many2one('res.partner','Đối tượng', readonly=True),
+        'period_id': fields.many2one('account.period','Tháng', readonly=False),
+        'partner_id': fields.many2one('res.partner','Đối tượng', readonly=False),
         'congno_dauky_line': fields.one2many('congno.dauky.line', 'congno_dauky_id','Chi tiết công nợ'),
     }
     

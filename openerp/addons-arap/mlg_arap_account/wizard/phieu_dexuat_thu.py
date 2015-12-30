@@ -96,7 +96,7 @@ class phieu_de_xuat(osv.osv_memory):
         datas['form'] = self.read(cr, uid, ids)[0]
         datas['form'].update({'active_id':context.get('active_ids',False)})
         if context.get('loai_doituong', False):
-            report_name = 'pdxt_kyquy_'+context['loai_doituong']
+            report_name = 'pdxt_ky_quy_'+context['loai_doituong']
         return {'type': 'ir.actions.report.xml', 'report_name': report_name, 'datas': datas}
     
     def print_trakyquy_report(self, cr, uid, ids, context=None):

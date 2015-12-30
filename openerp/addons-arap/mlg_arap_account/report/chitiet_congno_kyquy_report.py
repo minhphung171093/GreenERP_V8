@@ -44,6 +44,7 @@ class Parser(report_sxw.rml_parse):
             'get_name_loaidoituong': self.get_name_loaidoituong,
             'get_chitiet_congno_ndt': self.get_chitiet_congno_ndt,
             'get_bsx': self.get_bsx,
+            'get_soducuoi': self.get_soducuoi,
         })
         
     def convert_date(self, date):
@@ -306,18 +307,22 @@ class Parser(report_sxw.rml_parse):
     
     def get_tongcongnothu(self):
         tongcongnothu = self.tongcongnothu
-        self.tongcongnothu = 0
         return tongcongnothu
     
     def get_tongcongnocantru(self):
         tongcongnocantru = self.tongcongnocantru
-        self.tongcongnocantru = 0
         return tongcongnocantru
     
     def get_tongcongnochi(self):
         tongcongnochi = self.tongcongnochi
-        self.tongcongnochi = 0
         return tongcongnochi
+    
+    def get_soducuoi(self):
+        soducuoi = self.tongcongnothu-self.tongcongnocantru-self.tongcongnochi
+        self.tongcongnochi = 0
+        self.tongcongnothu = 0
+        self.tongcongnocantru = 0
+        return soducuoi
         
         
     

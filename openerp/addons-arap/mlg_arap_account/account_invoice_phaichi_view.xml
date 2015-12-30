@@ -871,7 +871,7 @@
 	                    	<field name="residual" string="Còn lại" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     	</group>
                     	<group>
-                    		<field name="dien_giai" placeholder="Diễn giải ..." nolabel='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
+                    		<field name="dien_giai" readonly='1' placeholder="Diễn giải ..." nolabel='1' on_change="onchange_dien_giai_st(dien_giai,so_tien,journal_id)"/>
                     	</group>
 	                    <notebook>
 		                    <page string="Payments" groups="base.group_user">

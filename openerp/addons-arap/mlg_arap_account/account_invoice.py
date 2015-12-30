@@ -26,6 +26,7 @@ import time
 from openerp.exceptions import except_orm, Warning, RedirectWarning
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from openerp import netsvc
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -285,6 +286,7 @@ class account_invoice(osv.osv):
             raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo với số tiền nhỏ hơn hoặc bằng "0"!'))
         
         if vals.get('mlg_type', False) and vals['mlg_type'] =='tra_gop_xe' and vals.get('thu_cho_doituong_id'):
+#             wf_service = netsvc.LocalService("workflow")
             ptch_vals = {}
             partner_obj = self.pool.get('res.partner')
             partner = partner_obj.browse(cr, uid, vals['thu_cho_doituong_id'])
@@ -307,7 +309,8 @@ class account_invoice(osv.osv):
             invoice_vals = self.onchange_dien_giai_st(cr, uid, [], ptch_vals['dien_giai'], ptch_vals['so_tien'], ptch_vals['journal_id'], context)['value']
             ptch_vals.update(invoice_vals)
             invoice_id = self.create(cr, uid, ptch_vals)
-        
+#             wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
+            
         if vals.get('mlg_type', False) and vals['mlg_type'] =='phai_tra_ky_quy':
             if vals['loai_doituong'] in ['taixe','nhanvienvanphong']:
                 sql = '''
@@ -330,6 +333,7 @@ class account_invoice(osv.osv):
         return super(account_invoice, self).create(cr, uid, vals, context)
     
     def write(self, cr, uid, ids, vals, context=None):
+        wf_service = netsvc.LocalService("workflow")
         for line in self.browse(cr, uid, ids):
 #             user = line.user_id
 #             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
@@ -377,7 +381,16 @@ class account_invoice(osv.osv):
                 sotien_conno = cr.fetchone()[0]
                 if sotien_hangmuc and sotien_conno>sotien_hangmuc:
                     raise osv.except_osv(_('Cảnh báo!'), _('Không thể duyệt khi đang nợ vượt hạng mức!'))
-                
+            
+            if vals.get('state',False)=='open' and line.mlg_type=='tra_gop_xe':
+                sql = '''
+                    select id from account_invoice where dien_giai like '%'''+line.name+'''%' limit 1
+                '''
+                cr.execute(sql)
+                chiho_ids = [r[0] for r in cr.fetchall()]
+                for chiho_id in chiho_ids:
+                    wf_service.trg_validate(uid, 'account.invoice', chiho_id, 'invoice_open', cr)
+            
         new_write = super(account_invoice, self).write(cr, uid, ids, vals, context)
         for line in self.browse(cr, uid, ids):
             if line.so_tien<=0:

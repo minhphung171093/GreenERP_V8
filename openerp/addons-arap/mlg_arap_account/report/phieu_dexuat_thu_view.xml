@@ -459,11 +459,11 @@
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_hoantamung_nvvp.odt"/>
 
 <!-- Phiếu đề xuất thu phải thu ký quỹ lái xe-->
-    	<record id="pdxt_phai_tra_ky_quy_taixe" model="ir.actions.report.xml">
-	        <field name="name">pdxt_phai_tra_ky_quy_taixe</field>
+    	<record id="pdxt_ky_quy_taixe" model="ir.actions.report.xml">
+	        <field name="name">pdxt_ky_quy_taixe</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">thu.ky.quy</field>
-	        <field name="report_name">pdxt_phai_tra_ky_quy_taixe</field>
+	        <field name="report_name">pdxt_ky_quy_taixe</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
@@ -476,18 +476,18 @@
     	<report 
 			auto="False" 
 			menu="False"
-			id="pdxt_phai_tra_ky_quy_taixe" 
+			id="pdxt_ky_quy_taixe" 
 			model="thu.ky.quy" 
-			name="pdxt_phai_tra_ky_quy_taixe"
+			name="pdxt_ky_quy_taixe"
 	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_lx.odt"/>
 	        
 <!-- Phiếu đề xuất thu phải thu ký quỹ nhà đầu tư-->
-    	<record id="pdxt_phai_tra_ky_quy_nhadautu" model="ir.actions.report.xml">
-	        <field name="name">pdxt_phai_tra_ky_quy_nhadautu</field>
+    	<record id="pdxt_ky_quy_nhadautu" model="ir.actions.report.xml">
+	        <field name="name">pdxt_ky_quy_nhadautu</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">thu.ky.quy</field>
-	        <field name="report_name">pdxt_phai_tra_ky_quy_nhadautu</field>
+	        <field name="report_name">pdxt_ky_quy_nhadautu</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
@@ -500,18 +500,18 @@
     	<report 
 			auto="False" 
 			menu="False"
-			id="pdxt_phai_tra_ky_quy_nhadautu" 
+			id="pdxt_ky_quy_nhadautu" 
 			model="thu.ky.quy" 
-			name="pdxt_phai_tra_ky_quy_nhadautu"
+			name="pdxt_ky_quy_nhadautu"
 	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_ndt.odt"/>
 	        
 <!-- Phiếu đề xuất thu phải thu ký quỹ nhân viên văn phòng-->
-    	<record id="pdxt_phai_tra_ky_quy_nhanvienvanphong" model="ir.actions.report.xml">
-	        <field name="name">pdxt_phai_tra_ky_quy_nhanvienvanphong</field>
+    	<record id="pdxt_ky_quy_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_ky_quy_nhanvienvanphong</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">thu.ky.quy</field>
-	        <field name="report_name">pdxt_phai_tra_ky_quy_nhanvienvanphong</field>
+	        <field name="report_name">pdxt_ky_quy_nhanvienvanphong</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-odt</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
@@ -524,9 +524,9 @@
     	<report 
 			auto="False" 
 			menu="False"
-			id="pdxt_phai_tra_ky_quy_nhanvienvanphong" 
+			id="pdxt_ky_quy_nhanvienvanphong" 
 			model="thu.ky.quy" 
-			name="pdxt_phai_tra_ky_quy_nhanvienvanphong"
+			name="pdxt_ky_quy_nhanvienvanphong"
 	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_kyquy_nvvp.odt"/>
 	        

@@ -1182,7 +1182,7 @@
                 	<field name="chinhanh_id" string="Chi nhánh"/>
                     <field name="date_invoice" string="Ngày giao dịch"/>
                     <field name="partner_id" string="Nhà đầu tư"/>
-                    <field name="account_id" string="Đội kinh doanh"/>
+                    <field name="thu_cho_doituong_id"/>
                     <field name="so_hop_dong" string="Mã hợp đồng"/>
                     <field name="period_id" invisible='1'/>
                     <field name="currency_id" invisible='1'/>

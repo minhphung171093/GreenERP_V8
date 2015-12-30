@@ -428,6 +428,56 @@ class account_voucher(osv.osv):
                         'loai_giaodich': loai_giaodich,
                     })
                     self.write(cr, uid, [voucher.id], {'sotienlai_id':sotienlai_id})
+                    
+                if voucher.mlg_type=='tra_gop_xe' and voucher.amount:
+                    sql = '''
+                        select id from account_invoice where dien_giai like '%'''+invoice.name+'''%' limit 1
+                    '''
+                    cr.execute(sql)
+                    chiho_ids = [r[0] for r in cr.fetchall()]
+                    if chiho_ids:
+                        chiho = self.pool.get('account.invoice').browse(cr, uid, chiho_ids[0])
+                        journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',chiho.chinhanh_id.id)])
+                        vals = {
+                            'amount': voucher.amount,
+                            'partner_id': chiho.partner_id.id,
+                            'reference': chiho.name,
+                            'bai_giaoca_id': chiho.bai_giaoca_id and chiho.bai_giaoca_id.id or False,
+                            'mlg_type': chiho.mlg_type,
+                            'type': 'payment',
+                            'chinhanh_id': chiho.chinhanh_id and chiho.chinhanh_id.id or False,
+                            'journal_id': journal_ids[0],
+                            'date': voucher.date,
+                            'loai_giaodich': 'Giao dịch cấn trừ từ trả góp xe',
+                        }
+                        
+                        context = {
+                            'payment_expected_currency': chiho.currency_id and chiho.currency_id.id or False,
+                            'default_partner_id': chiho.partner_id.id,
+                            'default_amount': voucher.amount,
+                            'default_reference': chiho.name,
+                            'default_bai_giaoca_id': chiho.bai_giaoca_id and chiho.bai_giaoca_id.id or False,
+                            'default_mlg_type': chiho.mlg_type,
+                            'close_after_process': True,
+                            'invoice_type': chiho.type,
+                            'invoice_id': chiho.id,
+                            'default_type': 'payment',
+                            'default_chinhanh_id': chiho.chinhanh_id and chiho.chinhanh_id.id or False,
+                            'type': 'payment',
+                            'loai_giaodich': 'Giao dịch cấn trừ ký quỹ',
+                        }
+                        vals_onchange_partner = self.onchange_partner_id(cr, uid, [],chiho.partner_id.id,journal_ids[0],voucher.amount,chiho.currency_id.id,'payment',voucher.date,context)['value']
+                        vals.update(vals_onchange_partner)
+                        vals.update(
+                            self.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_dr_ids'],False,chiho.partner_id.id,voucher.date,voucher.amount,'payment',chiho.company_id.id,context)['value']
+                        )
+                        line_dr_ids = []
+                        for l in vals['line_dr_ids']:
+                            line_dr_ids.append((0,0,l))
+                        vals.update({'line_dr_ids':line_dr_ids})
+                        voucher_id = self.create(cr, uid, vals,context)
+                        self.button_proforma_voucher(cr, uid, [voucher_id],context)
+                    
         self.signal_workflow(cr, uid, ids, 'proforma_voucher')
         return {'type': 'ir.actions.act_window_close'}
     
