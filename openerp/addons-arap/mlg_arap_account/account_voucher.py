@@ -313,7 +313,7 @@ class account_voucher(osv.osv):
             startdate_now = time.strftime('%Y-%m-01')
             enddate_pre = datetime.strptime(startdate_now,'%Y-%m-%d')+timedelta(days=-1)
             enddate_pre_str = enddate_pre.strftime('%Y-%m-%d')
-            startdate_pre_f = '%Y-'+enddate_pre_str[5:7]+'-01'
+            startdate_pre_f = enddate_pre_str[:4]+'-'+enddate_pre_str[5:7]+'-01'
             startdate_pre_str = time.strftime(startdate_pre_f)
             if line.date<startdate_pre_str:
                 raise osv.except_osv(_('Cảnh báo!'),_('Không được cấn trừ công nợ cho tháng cách tháng hiện tại hơn hai tháng!'))

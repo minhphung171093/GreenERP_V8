@@ -58,7 +58,7 @@
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>
-		                    	<field name="chinhanh_id"/>
+		                    	<field name="chinhanh_id" readonly='1'/>
 		                    	<field name="loai_doituong" on_change="onchange_loaidoituong(loai_doituong)" required='1'/>
 			                    <field name="partner_id" options="{'no_create': True}" domain="['|','|',('taixe','=',True),('nhadautu','=',True),('nhanvienvanphong','=',True)]" string="Đối tượng" context="{'doituong_thukyquy':1,'chinhanh_id':chinhanh_id,'loai_doituong':loai_doituong,'form_view_ref':loai_doituong=='taixe' and 'mlg_arap_account.view_tai_xe_form' or (loai_doituong=='nhanvienvanphong' and 'mlg_arap_account.view_nhanvienvanphong_form' or 'mlg_arap_account.view_nha_dau_tu_form')}"/>
 		                    </group>

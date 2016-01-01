@@ -177,7 +177,7 @@ class account_invoice(osv.osv):
                                       domain="[('type', 'in', ['cash','bank']), ('company_id', '=', company_id)]"),
 #         'account_id': fields.related('partner_id', 'property_account_receivable', type='many2one', relation='account.account', string='Đội xe', readonly=True, store=True),
         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
-        'bien_so_xe': fields.char('Biển số xe', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
+        'bien_so_xe': fields.char('BSX', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
         'ma_xuong_id': fields.many2one('ma.xuong','Mã xưởng', readonly=True, states={'draft': [('readonly', False)]}),
         'so_hop_dong': fields.char('Số hợp đồng', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
         'so_dien_thoai': fields.char('Số điện thoại', size=1024, readonly=True, states={'draft': [('readonly', False)]}),
@@ -188,8 +188,8 @@ class account_invoice(osv.osv):
         'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ DT-BH-AL', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_baohiem_id': fields.many2one('loai.bao.hiem', 'Loại bảo hiểm', readonly=True, states={'draft': [('readonly', False)]}),
-        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
-        'chinhanh_ndt_id': fields.many2one('account.account','Chi nhánh', readonly=True, states={'draft': [('readonly', False)]}),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=False),
+        'chinhanh_ndt_id': fields.many2one('account.account','Chi nhánh NDT', readonly=True, states={'draft': [('readonly', False)]}),
         'so_bien_ban_vi_pham':fields.char('Số biên bản vi phạm',size = 64, readonly=True, states={'draft': [('readonly', False)]}),
         'ngay_vi_pham':fields.date('Ngày vi phạm', readonly=True, states={'draft': [('readonly', False)]}),
         'dien_giai': fields.text('Diễn giải', readonly=True, states={'draft': [('readonly', False)]}),
@@ -422,7 +422,7 @@ class account_invoice(osv.osv):
                 startdate_now = time.strftime('%Y-%m-01')
                 enddate_pre = datetime.strptime(startdate_now,'%Y-%m-%d')+timedelta(days=-1)
                 enddate_pre_str = enddate_pre.strftime('%Y-%m-%d')
-                startdate_pre_f = '%Y-'+enddate_pre_str[5:7]+'-01'
+                startdate_pre_f = enddate_pre_str[:4]+'-'+enddate_pre_str[5:7]+'-01'
                 startdate_pre_str = time.strftime(startdate_pre_f)
                 if line.date_invoice<startdate_pre_str:
                     raise osv.except_osv(_('Cảnh báo!'),_('Không được treo công nợ cho tháng cách tháng hiện tại hơn hai tháng!'))

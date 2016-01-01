@@ -38,7 +38,7 @@ class thu_ky_quy(osv.osv):
             ('paid','Đã thu'),
             ('cancel','Hủy bỏ'),
         ], string='Trạng thái', readonly=True),
-        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=False),
         'partner_id': fields.many2one('res.partner','Đối tượng', required=True, readonly=True, states={'draft': [('readonly', False)]}),
         'ngay_thu': fields.date('Ngày thu', readonly=True, states={'draft': [('readonly', False)]}),
         'user_id': fields.many2one('res.users', 'Nhân viên thu', readonly=True, states={'draft': [('readonly', False)]}),

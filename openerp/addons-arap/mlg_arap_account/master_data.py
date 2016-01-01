@@ -175,6 +175,20 @@ class loai_vi_pham(osv.osv):
         (_check_code, 'Không được trùng mã', ['code']),
     ]
     
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            
+        return self.name_get(cr, user, ids, context=context)
+    
 loai_vi_pham()
 
 class loai_tam_ung(osv.osv):
@@ -200,6 +214,20 @@ class loai_tam_ung(osv.osv):
         (_check_name, 'Không được trùng tên', ['name']),
         (_check_code, 'Không được trùng mã', ['code']),
     ]
+    
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            
+        return self.name_get(cr, user, ids, context=context)
     
 loai_tam_ung()
 
@@ -276,6 +304,18 @@ class bien_so_xe(osv.osv):
 #         ids = self.search(cr, user, args, context=context, limit=limit)
 #         return self.name_get(cr, user, ids, context=context)
     
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            
+        return self.name_get(cr, user, ids, context=context)
+    
 bien_so_xe()
 
 class ma_xuong(osv.osv):
@@ -306,6 +346,20 @@ class ma_xuong(osv.osv):
     _constraints = [
         (_check_code, 'Không được trùng mã', ['code']),
     ]
+    
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            
+        return self.name_get(cr, user, ids, context=context)
     
 ma_xuong()
 
@@ -489,6 +543,20 @@ class loai_bao_hiem(osv.osv):
         (_check_code, 'Không được trùng mã', ['code']),
     ]
     
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            
+        return self.name_get(cr, user, ids, context=context)
+    
 loai_bao_hiem()
 class loai_no_doanh_thu(osv.osv):
     _name = "loai.no.doanh.thu"
@@ -514,6 +582,20 @@ class loai_no_doanh_thu(osv.osv):
         (_check_name, 'Không được trùng tên', ['name']),
         (_check_code, 'Không được trùng mã', ['code']),
     ]
+    
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if context is None:
+            context = {}
+        if not name:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, [('code',operator,name)] + args, limit=limit, context=context)
+            if not ids:
+                ids = self.search(cr, user, [('name',operator,name)] + args, limit=limit, context=context)
+            
+        return self.name_get(cr, user, ids, context=context)
     
 loai_no_doanh_thu()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

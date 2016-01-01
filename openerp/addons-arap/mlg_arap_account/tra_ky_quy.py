@@ -38,7 +38,7 @@ class tra_ky_quy(osv.osv):
             ('paid','Đã trả'),
             ('cancel','Hủy bỏ'),
         ], string='Trạng thái', readonly=True),
-        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=True),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh', readonly=False),
         'partner_id': fields.many2one('res.partner','Đối tượng', required=True, readonly=True, states={'draft': [('readonly', False)]}),
         'ngay_tra': fields.date('Ngày trả', readonly=True, states={'draft': [('readonly', False)]}),
         'user_id': fields.many2one('res.users', 'Nhân viên chi', readonly=True, states={'draft': [('readonly', False)]}),
