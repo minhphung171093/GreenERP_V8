@@ -23,6 +23,9 @@ class Parser(report_sxw.rml_parse):
         super(Parser, self).__init__(cr, uid, name, context=context)
         pool = pooler.get_pool(self.cr.dbname)
         self.tongcongno = 0
+        self.tongnodauky = 0
+        self.tongno = 0
+        self.tongco = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -36,6 +39,9 @@ class Parser(report_sxw.rml_parse):
             'get_to_thang': self.get_to_thang,
             'get_chinhanh': self.get_chinhanh,
             'get_congno': self.get_congno,
+            'get_tongnodauky': self.get_tongnodauky,
+            'get_tongno': self.get_tongno,
+            'get_tongco': self.get_tongco,
         })
         
     def convert_date(self, date):
@@ -123,11 +129,30 @@ class Parser(report_sxw.rml_parse):
                         and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)
             '''%(mlg_type,chinhanh_id[0],partner_id[0],period_id[0])
             self.cr.execute(sql)
-            return self.cr.fetchone()[0]
+            nodauky = self.cr.fetchone()[0]
+            self.tongnodauky += nodauky
+            return nodauky
         return 0
     
     def get_tongcongno(self):
-        return self.tongcongno
+        tongcongno = self.tongcongno
+        self.tongcongno = 0
+        return tongcongno
+    
+    def get_tongnodauky(self):
+        tongnodauky = self.tongnodauky
+        self.tongnodauky = 0
+        return tongnodauky
+    
+    def get_tongno(self):
+        tongno = self.tongno
+        self.tongno = 0
+        return tongno
+    
+    def get_tongco(self):
+        tongco = self.tongco
+        self.tongco = 0
+        return tongco
     
     def get_nocuoiky(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
@@ -174,7 +199,11 @@ class Parser(report_sxw.rml_parse):
                 group by rp.ma_doi_tuong,rp.name
         '''%(partner_id[0],period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
         self.cr.execute(sql)
-        return self.cr.dictfetchall()
+        lines = self.cr.dictfetchall()
+        for line in lines:
+            self.tongno += line['no']
+            self.tongco += line['co']
+        return lines
             
     
     
