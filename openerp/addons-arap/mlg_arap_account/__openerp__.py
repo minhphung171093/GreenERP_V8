@@ -82,6 +82,7 @@
         'congno_dauky_view.xml',
         'schedule_view.xml',
         'report_view.xml',
+        'views/webclient_templates.xml',
         'menu.xml',
     ],
     'css' : [

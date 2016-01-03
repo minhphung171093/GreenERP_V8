@@ -153,7 +153,6 @@
                 <span class="oe_logo_edit">Edit Company data</span>
                 <img src='/web/binary/company_logo'/>
             </a>
-            <h3 style="font-weight:bold;text-align:center;">Quản Lý Công Nợ-ARAP</h3>
             <div>
                 <div>
                     <div class="oe_secondary_menus_container">
@@ -253,9 +252,6 @@
                 <div class="oe_single_form_container modal-content">
                     <div class="oe_single_form_logo">
                         <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}"/>
-                        <br/>
-                        <br/>
-                        <h2 style="font-weight:bold;text-align:center;">Quản Lý Công Nợ-ARAP</h2>
                     </div>
                     <hr/>
                     <t t-raw="0"/>

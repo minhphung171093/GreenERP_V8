@@ -31,6 +31,7 @@ sys.setdefaultencoding('utf-8')
 class tra_ky_quy(osv.osv):
     _name = "tra.ky.quy"
     _inherit = ['mail.thread']
+    _description = "Trả ký quỹ"
     
     _columns = {
         'state': fields.selection([
