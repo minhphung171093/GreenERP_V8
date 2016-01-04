@@ -55,10 +55,10 @@
             <field name="arch" type="xml">
                 <form string="Nợ DT-BH-AL" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
                     	<button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
@@ -215,10 +215,10 @@
             <field name="arch" type="xml">
                 <form string="Chi hộ điện thoại" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
                     	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
@@ -380,10 +380,10 @@
             <field name="arch" type="xml">
                 <form string="Phải thu bảo hiểm" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
                     	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
@@ -544,10 +544,10 @@
             <field name="arch" type="xml">
                 <form string="Phải thu ký quỹ" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
@@ -707,10 +707,10 @@
             <field name="arch" type="xml">
                 <form string="Phạt vi phạm" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
@@ -873,10 +873,10 @@
             <field name="arch" type="xml">
                 <form string="Thu nợ xưởng" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
@@ -1039,10 +1039,10 @@
             <field name="arch" type="xml">
                 <form string="Thu phí thương hiệu" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
@@ -1201,10 +1201,10 @@
             <field name="arch" type="xml">
                 <form string="Trả góp xe" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
@@ -1375,10 +1375,10 @@
             <field name="arch" type="xml">
                 <form string="Hoàn tạm ứng" version='7.0'>
 					<header>
-	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="base.group_user"/>
-	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="base.group_user"/>
+	                    <button name="invoice_open" states="draft" string="Duyệt" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
+	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
-	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="base.group_user"/>
+	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất thu" type="action"/>
                     	<button name="%(action_phieu_de_xuat)d" states="draft" context="{'default_loai':'chi'}" string="In phiếu đề xuất chi" type="action"/>
 	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>

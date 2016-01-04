@@ -45,7 +45,7 @@
             <field name="arch" type="xml">
                 <form string="Thu ký quỹ" version='7.0'>
 					<header>
-	                    <button name="bt_thu" states="draft" type='object' string="Thu" class="oe_highlight"/>
+	                    <button name="bt_thu" states="draft" type='object' string="Thu" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat_thukyquy)d" states="draft" string="In phiếu đề xuất" type="action"/>
 	                    <button name="bt_huybo" states="draft,paid" type='object' string="Hủy bỏ" class="oe_highlight"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
