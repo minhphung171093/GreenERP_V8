@@ -7,8 +7,10 @@
             <a class="oe_logo" t-att-href="'/web/?debug' if debug else '/web'">
                 <span class="oe_logo_edit">Edit Company data</span>
                 <img src='/web/binary/company_logo'/>
+                <br/>
+                <span>Quản Lý Công Nợ-ARAP</span>
             </a>
-            <h3 style="font-weight:bold;text-align:center;">Quản Lý Công Nợ-ARAP</h3>
+            <br/>
             <div>
                 <div>
                     <div class="oe_secondary_menus_container">

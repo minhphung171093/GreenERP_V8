@@ -84,6 +84,7 @@
         'report_view.xml',
         'views/webclient_templates.xml',
         'menu.xml',
+        'static.xml',
     ],
     'css' : [
     ],
