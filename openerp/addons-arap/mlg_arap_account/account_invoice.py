@@ -236,7 +236,7 @@ class account_invoice(osv.osv):
         return user.company_id and user.company_id.currency_id and user.company_id.currency_id.id or False
     
     _defaults = {
-        'date_invoice': time.strftime('%Y-%m-%d'),
+        'date_invoice':  lambda *a: time.strftime('%Y-%m-%d'),
         'journal_id': _get_journal,
         'currency_id': _get_currency,
         'chinhanh_id': _get_chinhanh,

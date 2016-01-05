@@ -128,7 +128,7 @@ class thu_ky_quy(osv.osv):
     
     _defaults = {
         'state': 'draft',
-        'ngay_thu': time.strftime('%Y-%m-%d'),
+        'ngay_thu': lambda *a: time.strftime('%Y-%m-%d'),
         'chinhanh_id': _get_chinhanh,
         'user_id': lambda self, cr, uid, context: uid,
         'currency_id': _get_currency,

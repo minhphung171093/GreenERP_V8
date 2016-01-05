@@ -72,7 +72,7 @@ class phieu_de_xuat(osv.osv_memory):
     
     _defaults = {
         'phuongthuc_thanhtoan': 'tienmat',
-        'ngay': time.strftime('%Y-%m-%d'),
+        'ngay': lambda *a: time.strftime('%Y-%m-%d'),
     }
     
     def print_report(self, cr, uid, ids, context=None):

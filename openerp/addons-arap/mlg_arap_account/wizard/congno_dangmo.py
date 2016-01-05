@@ -35,7 +35,7 @@ class congno_dangmo(osv.osv_memory):
     _defaults = {
         'chinhanh_id': _get_chinhanh,
         'mlg_type': 'no_doanh_thu',
-        'date': time.strftime('%Y-%m-%d'),
+        'date': lambda *a: time.strftime('%Y-%m-%d'),
     }
     
     def print_report(self, cr, uid, ids, context=None):

@@ -38,8 +38,8 @@ class congno_dangchothu(osv.osv_memory):
     _defaults = {
         'chinhanh_id': _get_chinhanh,
         'mlg_type': 'no_doanh_thu',
-        'from_date': time.strftime('%Y-%m-%d'),
-        'to_date': time.strftime('%Y-%m-%d'),
+        'from_date': lambda *a: time.strftime('%Y-%m-%d'),
+        'to_date': lambda *a: time.strftime('%Y-%m-%d'),
     }
     
     def print_report(self, cr, uid, ids, context=None):
