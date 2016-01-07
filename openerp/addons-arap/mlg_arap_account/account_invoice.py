@@ -127,6 +127,7 @@ class account_invoice(osv.osv):
         cur_obj = self.pool.get('res.currency')
         res = {}
         for invoice in self.browse(cr, uid, ids, context=context):
+            res[invoice.id] = 0
             sql = '''
                 select case when sum(so_tien)!=0 then sum(so_tien) else 0 end tong from so_tien_lai where invoice_id=%s
             '''%(invoice.id)
@@ -240,6 +241,7 @@ class account_invoice(osv.osv):
         'journal_id': _get_journal,
         'currency_id': _get_currency,
         'chinhanh_id': _get_chinhanh,
+        'sotien_lai': 0,
     }
     
     def create(self, cr, uid, vals, context=None):

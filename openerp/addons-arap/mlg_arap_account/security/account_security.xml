@@ -28,6 +28,11 @@
 	        <field name="category_id" ref="module_category_mlg_arap"/>
 	        <field name="users" eval="[(4, ref('base.user_root'))]"/>
 	    </record>
+	    <record id="group_mlg_arap_phanquyen_kyquy" model="res.groups">
+	        <field name="name">Phân quyền ký quỹ</field>
+	        <field name="category_id" ref="module_category_mlg_arap"/>
+	        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+	    </record>
 
     </data>
 </openerp>

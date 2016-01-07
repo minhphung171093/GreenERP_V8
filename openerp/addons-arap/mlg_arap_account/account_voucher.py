@@ -57,6 +57,12 @@ class account_voucher(osv.osv):
         'sotien_lai_conlai': fields.float('Số tiền lãi còn lại',digits=(16,0)),
         'sotienlai_id': fields.many2one('so.tien.lai', 'So tien lai'),
     }
+    
+    _defaults = {
+        'sotien_lai_conlai': 0,
+        'sotien_tragopxe': 0,
+    }
+    
     def recompute_voucher_lines(self, cr, uid, ids, partner_id, journal_id, price, currency_id, ttype, date, context=None):
         """
         Returns a dict that contains new values and context
