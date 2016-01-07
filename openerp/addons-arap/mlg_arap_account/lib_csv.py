@@ -7,6 +7,7 @@ import collections
 import shutil
 import ntpath
 import time
+import codecs
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -80,7 +81,7 @@ class csv_ultilities():
         
         result = []
         
-        with open(file_name) as csvfile:
+        with codecs.open(file_name, encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)
             result = list(reader)
         
@@ -156,12 +157,12 @@ class csv_ultilities():
     def _test_read_file(self):
         
         headers = ['Code', 'Name', 'Value']
-        path_file_name = "/home/quocto/testcsvfile/test_file4.csv"
+        path_file_name = "/home/phung11764/FU_0102 Ket Xuat Phieu Chi 7.1.csv"
       
-        if not self._validate_file(path_file_name, headers):
-            # will call sendEmail(self, "Dear All,\n\nFile is ivalid format, please check\n\nThank you", "ARAP Import Error")
-            print "File is invalid format file or not existed"
-            return False
+#         if not self._validate_file(path_file_name, headers):
+#             # will call sendEmail(self, "Dear All,\n\nFile is ivalid format, please check\n\nThank you", "ARAP Import Error")
+#             print "File is invalid format file or not existed"
+#             return False
       
         result = self._read_file(path_file_name)
         for r in result:
@@ -197,7 +198,7 @@ class csv_ultilities():
             
 # csvUti = csv_ultilities()
 #csvUti._test_files_in_folder()
-#csvUti._test_read_file()
+# csvUti._test_read_file()
 #csvUti._test_write_file()
 # csvUti._test_move_files()
 

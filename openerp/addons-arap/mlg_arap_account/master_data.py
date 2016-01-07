@@ -473,7 +473,7 @@ class ir_cron(osv.osv):
                     'view_id': res[1],
                     'res_model': 'alert.warning.form',
                     'domain': [],
-                    'context': {'default_name':'Thành công'},
+                    'context': {'default_name':'Đã thực thi thành công giao dịch vui lòng kiểm tra kết quả tại "Lịch sử giao dịch"'},
                     'type': 'ir.actions.act_window',
                     'target': 'new',
                 }

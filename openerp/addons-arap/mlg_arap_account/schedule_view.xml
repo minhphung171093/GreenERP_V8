@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+    <data noupdate="1">
     
 <!-- Import phải thu - thu nợ xưởng (BDSC)-->
 		<record model="ir.cron" id="import_phaithu_thunoxuong_bdsc_cron">
