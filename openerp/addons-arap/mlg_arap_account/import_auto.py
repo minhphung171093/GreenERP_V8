@@ -2788,6 +2788,13 @@ class import_congno_tudong(osv.osv):
                             except Exception, e:
                                 noidung_loi = 'Số tiền không đúng định dạng'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            
+                            try:
+                                request_ref_number = str(data['REQUEST_REF_NUMBER'])
+                            except Exception, e:
+                                noidung_loi = 'REQUEST_REF_NUMBER không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'REQUEST_REF_NUMBER không đúng định dạng')
+                            
                             sotiendathu = float(data['ACCTD_AMOUNT'])
                             if sotiendathu <= 0:
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
@@ -2796,7 +2803,7 @@ class import_congno_tudong(osv.osv):
                                 select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state,sotien_lai_conlai
                                     from account_invoice where upper(name)='%s' and type='out_invoice'
                                     order by date_invoice
-                            '''%(data['REQUEST_REF_NUMBER'].upper())
+                            '''%(request_ref_number.strip().upper())
                             cr.execute(sql)
                             invoices = cr.dictfetchall()
                             if not invoices:
@@ -2804,20 +2811,20 @@ class import_congno_tudong(osv.osv):
                                     select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state,sotien_lai_conlai
                                         from account_invoice where upper(ref_number)='%s' and type='out_invoice'
                                         order by date_invoice
-                                '''%(data['REQUEST_REF_NUMBER'].upper())
+                                '''%(request_ref_number.strip().upper())
                                 cr.execute(sql)
                                 invoices = cr.dictfetchall()
                             
                             if not invoices:
                                 sql = '''
                                     select id,so_tien,state from thu_ky_quy where upper(name)='%s'
-                                '''%(data['REQUEST_REF_NUMBER'].upper())
+                                '''%(request_ref_number.strip().upper())
                                 cr.execute(sql)
                                 thukyquys = cr.dictfetchall()
                             if not thukyquys:
                                 sql = '''
                                     select id,so_tien,state from tra_ky_quy where upper(name)='%s'
-                                '''%(data['REQUEST_REF_NUMBER'].upper())
+                                '''%(request_ref_number.strip().upper())
                                 cr.execute(sql)
                                 trakyquys = cr.dictfetchall()      
                             
@@ -2826,7 +2833,7 @@ class import_congno_tudong(osv.osv):
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
 #                                         from account_invoice where so_hoa_don='%s' and type='out_invoice'
 #                                         order by date_invoice
-#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 '''%(request_ref_number.strip())
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
@@ -2834,7 +2841,7 @@ class import_congno_tudong(osv.osv):
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
 #                                         from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and type='out_invoice'
 #                                         order by date_invoice
-#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 '''%(request_ref_number.strip())
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
@@ -2842,7 +2849,7 @@ class import_congno_tudong(osv.osv):
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
 #                                         from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and type='out_invoice'
 #                                         order by date_invoice
-#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 '''%(request_ref_number.strip())
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
@@ -2850,7 +2857,7 @@ class import_congno_tudong(osv.osv):
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
 #                                         from account_invoice where so_hop_dong='%s' and type='out_invoice'
 #                                         order by date_invoice
-#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 '''%(request_ref_number.strip())
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()    
                             if not invoices and not thukyquys and not trakyquys:
@@ -3068,6 +3075,13 @@ class import_congno_tudong(osv.osv):
                             except Exception, e:
                                 noidung_loi = 'Số tiền không đúng định dạng'
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
+                            
+                            try:
+                                request_ref_number = str(data['REQUEST_REF_NUMBER'])
+                            except Exception, e:
+                                noidung_loi = 'REQUEST_REF_NUMBER không đúng định dạng'
+                                raise osv.except_osv(_('Cảnh báo!'), 'REQUEST_REF_NUMBER không đúng định dạng')
+                            
                             sotiendathu = float(data['ACCTD_AMOUNT'])
                             if sotiendathu <= 0:
                                 noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
@@ -3076,7 +3090,7 @@ class import_congno_tudong(osv.osv):
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where upper(name)='%s' and state='open'
                                     order by date_invoice
-                            '''%(data['REQUEST_REF_NUMBER'].upper())
+                            '''%(request_ref_number.strip().upper())
                             cr.execute(sql)
                             invoices = cr.dictfetchall()
 #                             if not invoices:
@@ -3084,7 +3098,7 @@ class import_congno_tudong(osv.osv):
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
 #                                         from account_invoice where so_hoa_don='%s' and state='open' and type='in_invoice'
 #                                         order by date_invoice
-#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 '''%(request_ref_number.strip())
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
@@ -3092,7 +3106,7 @@ class import_congno_tudong(osv.osv):
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
 #                                         from account_invoice where bien_so_xe_id in (select id from bien_so_xe where name='%s') and state='open' and type='in_invoice'
 #                                         order by date_invoice
-#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 '''%(request_ref_number.strip())
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
@@ -3100,7 +3114,7 @@ class import_congno_tudong(osv.osv):
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
 #                                         from account_invoice where ma_bang_chiettinh_chiphi_sua='%s' and state='open' and type='in_invoice'
 #                                         order by date_invoice
-#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 '''%(request_ref_number.strip())
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()
 #                             if not invoices:
@@ -3108,7 +3122,7 @@ class import_congno_tudong(osv.osv):
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
 #                                         from account_invoice where so_hop_dong='%s' and state='open' and type='in_invoice'
 #                                         order by date_invoice
-#                                 '''%(data['REQUEST_REF_NUMBER'])
+#                                 '''%(request_ref_number.strip())
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()    
                             if not invoices:
