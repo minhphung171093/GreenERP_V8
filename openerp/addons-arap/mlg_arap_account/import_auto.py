@@ -2783,21 +2783,22 @@ class import_congno_tudong(osv.osv):
                             noidung_loi=''
                             thukyquys = []
                             trakyquys = []
-                            try:
-                                st = float(data['ACCTD_AMOUNT'])
-                            except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             
                             try:
                                 request_ref_number = str(data['REQUEST_REF_NUMBER'])
                             except Exception, e:
-                                noidung_loi = 'REQUEST_REF_NUMBER không đúng định dạng'
+                                noidung_loi = 'REQUEST_REF_NUMBER "%s" không đúng định dạng'%(data['REQUEST_REF_NUMBER'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'REQUEST_REF_NUMBER không đúng định dạng')
+                            
+                            try:
+                                st = float(data['ACCTD_AMOUNT'])
+                            except Exception, e:
+                                noidung_loi = 'REQUEST_REF_NUMBER "%s": Số tiền không đúng định dạng'%(request_ref_number)
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             
                             sotiendathu = float(data['ACCTD_AMOUNT'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='REQUEST_REF_NUMBER "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(request_ref_number)
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,so_tien,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state,sotien_lai_conlai
@@ -2861,23 +2862,23 @@ class import_congno_tudong(osv.osv):
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()    
                             if not invoices and not thukyquys and not trakyquys:
-                                noidung_loi='Không tìm thấy công nợ'
+                                noidung_loi='REQUEST_REF_NUMBER "%s": Không tìm thấy công nợ'%(request_ref_number)
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
                             
                             loai = data['TYPE']
                             if not loai and loai not in ['Thu','thu','chi','Chi']:
-                                noidung_loi='Không tìm thấy TYPE'
+                                noidung_loi='REQUEST_REF_NUMBER "%s": Không tìm thấy TYPE'%(request_ref_number)
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy TYPE')
                             
                             for thukyquy in thukyquys:
                                 if loai in ['Thu','thu'] and thukyquy['state']!='draft':
-                                    noidung_loi='Phiếu đã thu rồi'
+                                    noidung_loi='REQUEST_REF_NUMBER "%s": Phiếu đã thu rồi'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'Phiếu đã thu rồi')
                                 if loai in ['Chi','chi']:
-                                    noidung_loi='TYPE bị sai'
+                                    noidung_loi='REQUEST_REF_NUMBER "%s": TYPE bị sai'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'TYPE bị sai')
                                 if sotiendathu != thukyquy['so_tien']:
-                                    noidung_loi='Số tiền đã thu khác với số tiền đề nghị thu'
+                                    noidung_loi='REQUEST_REF_NUMBER "%s": Số tiền đã thu khác với số tiền đề nghị thu'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'Số tiền đã thu khác với số tiền đề nghị thu')
                                 thukyquy_obj.bt_thu(cr, uid, [thukyquy['id']])
                                 sql = '''
@@ -2888,13 +2889,13 @@ class import_congno_tudong(osv.osv):
                                 
                             for trakyquy in trakyquys:
                                 if loai in ['Chi','chi'] and trakyquy['state']!='draft':
-                                    noidung_loi='Phiếu đã chi rồi'
+                                    noidung_loi='REQUEST_REF_NUMBER "%s": Phiếu đã chi rồi'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'Phiếu đã chi rồi')
                                 if loai in ['Thu','thu']:
-                                    noidung_loi='TYPE bị sai'
+                                    noidung_loi='REQUEST_REF_NUMBER "%s": TYPE bị sai'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'TYPE bị sai')
                                 if sotiendathu != trakyquy['so_tien']:
-                                    noidung_loi='Số tiền đã chi khác với số tiền đề nghị chi'
+                                    noidung_loi='REQUEST_REF_NUMBER "%s": Số tiền đã chi khác với số tiền đề nghị chi'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'Số tiền đã chi khác với số tiền đề nghị chi')
                                 trakyquy_obj.bt_tra(cr, uid, [trakyquy['id']])
                                 sql = '''
@@ -2905,11 +2906,11 @@ class import_congno_tudong(osv.osv):
                             
                             for invoice in invoices:
                                 if loai in ['Chi','chi'] and invoice['state']!='draft':
-                                    noidung_loi='Phiếu đã chi rồi'
+                                    noidung_loi='REQUEST_REF_NUMBER "%s": Phiếu đã chi rồi'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'Phiếu đã chi rồi')
                                 if loai in ['Chi','chi'] and invoice['state']=='draft':
                                     if sotiendathu<(invoice['so_tien']+invoice['sotien_lai_conlai']):
-                                        noidung_loi='Số tiền chi không được nhỏ hơn số tiền đề nghị chi'
+                                        noidung_loi='REQUEST_REF_NUMBER "%s": Số tiền chi không được nhỏ hơn số tiền đề nghị chi'%(request_ref_number)
                                         raise osv.except_osv(_('Warning!'), 'Số tiền chi không được nhỏ hơn số tiền đề nghị chi')
                                     else:
                                         sotiendathu = sotiendathu-(invoice['so_tien']+invoice['sotien_lai_conlai'])
@@ -2920,7 +2921,7 @@ class import_congno_tudong(osv.osv):
                                     cr.execute(sql)
                                 
                                 if loai in ['Thu','thu'] and invoice['state']!='open':
-                                    noidung_loi='Phiếu chưa được chi'
+                                    noidung_loi='REQUEST_REF_NUMBER "%s": Phiếu chưa được chi'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'Phiếu chưa được chi')
                                 if loai in ['Thu','thu'] and invoice['state']=='open':
                                     if (invoice['residual']+invoice['sotien_lai_conlai'])>sotiendathu:
@@ -2936,7 +2937,7 @@ class import_congno_tudong(osv.osv):
                                     journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
                                     
                                     if not data['GL_DATE']:
-                                        noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                        noidung_loi = 'REQUEST_REF_NUMBER "%s": Không tìm thấy ngày thanh toán'%(request_ref_number)
                                         raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                     ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                     
@@ -2993,7 +2994,7 @@ class import_congno_tudong(osv.osv):
                                     
                                     sotiendathu = sotiendathu - amount
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu/chi lớn hơn số tiền đề nghị phải thu/chi'
+                                noidung_loi='REQUEST_REF_NUMBER "%s": Số tiền đã thu/chi lớn hơn số tiền đề nghị phải thu/chi'%(request_ref_number)
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu/chi lớn hơn số tiền đề nghị phải thu/chi')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
@@ -3070,21 +3071,22 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
-                            try:
-                                st = float(data['ACCTD_AMOUNT'])
-                            except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
-                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             
                             try:
                                 request_ref_number = str(data['REQUEST_REF_NUMBER'])
                             except Exception, e:
-                                noidung_loi = 'REQUEST_REF_NUMBER không đúng định dạng'
+                                noidung_loi = 'REQUEST_REF_NUMBER "%s": không đúng định dạng'%(data['REQUEST_REF_NUMBER'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'REQUEST_REF_NUMBER không đúng định dạng')
+                            
+                            try:
+                                st = float(data['ACCTD_AMOUNT'])
+                            except Exception, e:
+                                noidung_loi = 'REQUEST_REF_NUMBER "%s": Số tiền không đúng định dạng'%(request_ref_number)
+                                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             
                             sotiendathu = float(data['ACCTD_AMOUNT'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='REQUEST_REF_NUMBER "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(request_ref_number)
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -3126,7 +3128,7 @@ class import_congno_tudong(osv.osv):
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()    
                             if not invoices:
-                                noidung_loi='Không tìm thấy công nợ'
+                                noidung_loi='REQUEST_REF_NUMBER "%s": Không tìm thấy công nợ'%(request_ref_number)
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
                             
                             sotiendathu = float(data['ACCTD_AMOUNT'])
@@ -3144,7 +3146,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',invoice['chinhanh_id'])])
                                 
                                 if not data['GL_DATE']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'REQUEST_REF_NUMBER "%s": Không tìm thấy ngày thanh toán'%(request_ref_number)
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['GL_DATE'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -3189,7 +3191,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 sotiendathu = sotiendathu - amount
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='REQUEST_REF_NUMBER "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(request_ref_number)
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
