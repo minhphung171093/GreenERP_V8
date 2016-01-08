@@ -55,6 +55,8 @@
                 		<h1>
                 			<label string='Mã phiếu đề xuất'/>
                 			<field name="name" nolabel='1' class="oe_inline" readonly='1'/>
+                			<label string='Fusion Thu'/>
+                			<field name="fusion_id" nolabel='1' class="oe_inline" readonly='1'/>
                 		</h1>
 	                    <group col="4" colspan="2">
 	                    	<group>

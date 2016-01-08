@@ -2762,6 +2762,8 @@ class import_congno_tudong(osv.osv):
         account_obj = self.pool.get('account.account')
         partner_obj = self.pool.get('res.partner')
         lichsu_obj = self.pool.get('lichsu.giaodich')
+        thukyquy_obj = self.pool.get('thu.ky.quy')
+        trakyquy_obj = self.pool.get('tra.ky.quy')
         wf_service = netsvc.LocalService("workflow")
         date_now = time.strftime('%Y-%m-%d')
         try:
@@ -2779,6 +2781,8 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            thukyquys = []
+                            trakyquys = []
                             try:
                                 st = float(data['ACCTD_AMOUNT'])
                             except Exception, e:
@@ -2803,6 +2807,20 @@ class import_congno_tudong(osv.osv):
                                 '''%(data['REQUEST_REF_NUMBER'].upper())
                                 cr.execute(sql)
                                 invoices = cr.dictfetchall()
+                            
+                            if not invoices:
+                                sql = '''
+                                    select id,so_tien,state from thu_ky_quy where upper(name)='%s'
+                                '''%(data['REQUEST_REF_NUMBER'].upper())
+                                cr.execute(sql)
+                                thukyquys = cr.dictfetchall()
+                            if not thukyquys:
+                                sql = '''
+                                    select id,so_tien,state from tra_ky_quy where upper(name)='%s'
+                                '''%(data['REQUEST_REF_NUMBER'].upper())
+                                cr.execute(sql)
+                                trakyquys = cr.dictfetchall()      
+                            
 #                             if not invoices:
 #                                 sql = '''
 #                                     select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id,state
@@ -2835,7 +2853,7 @@ class import_congno_tudong(osv.osv):
 #                                 '''%(data['REQUEST_REF_NUMBER'])
 #                                 cr.execute(sql)
 #                                 invoices = cr.dictfetchall()    
-                            if not invoices:
+                            if not invoices and not thukyquys and not trakyquys:
                                 noidung_loi='Không tìm thấy công nợ'
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy công nợ')
                             
@@ -2843,6 +2861,40 @@ class import_congno_tudong(osv.osv):
                             if not loai and loai not in ['Thu','thu','chi','Chi']:
                                 noidung_loi='Không tìm thấy TYPE'
                                 raise osv.except_osv(_('Warning!'), 'Không tìm thấy TYPE')
+                            
+                            for thukyquy in thukyquys:
+                                if loai in ['Thu','thu'] and thukyquy['state']!='draft':
+                                    noidung_loi='Phiếu đã thu rồi'
+                                    raise osv.except_osv(_('Warning!'), 'Phiếu đã thu rồi')
+                                if loai in ['Chi','chi']:
+                                    noidung_loi='TYPE bị sai'
+                                    raise osv.except_osv(_('Warning!'), 'TYPE bị sai')
+                                if sotiendathu != thukyquy['so_tien']:
+                                    noidung_loi='Số tiền đã thu khác với số tiền đề nghị thu'
+                                    raise osv.except_osv(_('Warning!'), 'Số tiền đã thu khác với số tiền đề nghị thu')
+                                thukyquy_obj.bt_thu(cr, uid, [thukyquy['id']])
+                                sql = '''
+                                    update thu_ky_quy set fusion_id='%s' where id=%s
+                                '''%(data['TRANSACTION_NUMBER'],thukyquy['id'])
+                                cr.execute(sql)
+                                sotiendathu = 0
+                                
+                            for trakyquy in trakyquys:
+                                if loai in ['Chi','chi'] and trakyquy['state']!='draft':
+                                    noidung_loi='Phiếu đã chi rồi'
+                                    raise osv.except_osv(_('Warning!'), 'Phiếu đã chi rồi')
+                                if loai in ['Thu','thu']:
+                                    noidung_loi='TYPE bị sai'
+                                    raise osv.except_osv(_('Warning!'), 'TYPE bị sai')
+                                if sotiendathu != trakyquy['so_tien']:
+                                    noidung_loi='Số tiền đã chi khác với số tiền đề nghị chi'
+                                    raise osv.except_osv(_('Warning!'), 'Số tiền đã chi khác với số tiền đề nghị chi')
+                                trakyquy_obj.bt_tra(cr, uid, [trakyquy['id']])
+                                sql = '''
+                                    update tra_ky_quy set fusion_id='%s' where id=%s
+                                '''%(data['TRANSACTION_NUMBER'],trakyquy['id'])
+                                cr.execute(sql)
+                                sotiendathu = 0
                             
                             for invoice in invoices:
                                 if loai in ['Chi','chi'] and invoice['state']!='draft':

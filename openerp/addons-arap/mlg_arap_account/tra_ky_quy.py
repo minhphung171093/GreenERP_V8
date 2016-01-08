@@ -54,6 +54,7 @@ class tra_ky_quy(osv.osv):
         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe', readonly=True, states={'draft': [('readonly', False)]}),
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ', readonly=True, states={'draft': [('readonly', False)]}),
         'thu_chi_kyquy_ids': fields.many2many('thu.ky.quy', 'thu_chi_kyquy_ref', 'chi_id', 'thu_id', 'Thu chi ký quỹ'),
+        'fusion_id': fields.char('Fusion Chi', size=1024),
     }
     
     def create(self, cr, uid, vals, context=None):

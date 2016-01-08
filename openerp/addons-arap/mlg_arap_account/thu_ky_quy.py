@@ -56,6 +56,7 @@ class thu_ky_quy(osv.osv):
         'loai_kyquy_id': fields.many2one('loai.ky.quy', 'Loại ký quỹ', readonly=True, states={'draft': [('readonly', False)]}),
         'thu_chi_kyquy_ids': fields.many2many('tra.ky.quy', 'thu_chi_kyquy_ref', 'thu_id', 'chi_id', 'Thu chi ký quỹ'),
         'cantru_kyquy_chocongno_ids': fields.many2many('account.invoice', 'cantru_kyquy_chocongno_ref', 'thukyquy_id', 'congno_id', 'Cấn trừ ký quỹ cho công nợ'),
+        'fusion_id': fields.char('Fusion Chi', size=1024),
     }
     
     def create(self, cr, uid, vals, context=None):
