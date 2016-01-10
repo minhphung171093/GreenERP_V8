@@ -58,3 +58,6 @@ access_mlg_arap_account_52,loai.cong.no,mlg_arap_account.model_loai_cong_no,acco
 access_mlg_arap_account_54,loai.no.doanh.thu,mlg_arap_account.model_loai_no_doanh_thu,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_56,so.tien.lai,mlg_arap_account.model_so_tien_lai,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_58,tra.ky.quy,mlg_arap_account.model_tra_ky_quy,account.group_account_manager,1,1,1,1
+
+access_mlg_arap_account_59,tong.cong.no,mlg_arap_account.model_tong_cong_no,mlg_arap_account.group_mlg_arap_readonly,1,1,1,1
+
