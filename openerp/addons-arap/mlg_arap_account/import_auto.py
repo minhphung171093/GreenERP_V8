@@ -2924,6 +2924,16 @@ class import_congno_tudong(osv.osv):
                                     noidung_loi='REQUEST_REF_NUMBER "%s": Phiếu chưa được chi'%(request_ref_number)
                                     raise osv.except_osv(_('Warning!'), 'Phiếu chưa được chi')
                                 if loai in ['Thu','thu'] and invoice['state']=='open':
+                                    
+                                    sql = '''
+                                        select id from account_move_line where upper(ref)='%s' and upper(fusion_id)='%s'
+                                    '''%(invoice['name'].upper(),data['TRANSACTION_NUMBER'].upper())
+                                    cr.execute(sql)
+                                    move_line_ids = [r[0] for r in cr.fetchall()]
+                                    if move_line_ids:
+                                        noidung_loi = 'REQUEST_REF_NUMBER "%s" đã được cấn trừ bởi Fusion "%s"'%(request_ref_number,data['TRANSACTION_NUMBER'])
+                                        raise osv.except_osv(_('Cảnh báo!'), 'đã được cấn trừ')
+                                    
                                     if (invoice['residual']+invoice['sotien_lai_conlai'])>sotiendathu:
                                         amount = sotiendathu
                                         sotien_tragopxe = sotiendathu
