@@ -61,7 +61,7 @@ class Parser(report_sxw.rml_parse):
     
     def get_user(self):
         user = self.pool.get('res.users').browse(self.cr, self.uid, self.uid)
-        return user.name
+        return user.login
         
     def get_sotien(self):
         wizard_data = self.localcontext['data']['form']
