@@ -187,20 +187,25 @@ class res_partner(osv.osv):
     
     def _check_ma_doi_tuong(self, cr, uid, ids, context=None):
         for line in self.browse(cr, uid, ids):
-            object_ids = self.search(cr, uid, [('id','!=', line.id),('ma_doi_tuong','!=', False),('ma_doi_tuong','=', line.ma_doi_tuong)])
+            sql = '''
+                select id from res_partner where id!=%s and ma_doi_tuong is not null and upper(ma_doi_tuong)='%s'
+            '''%(line.id,line.ma_doi_tuong.upper())
+            cr.execute(sql)
+            object_ids = [r[0] for r in cr.fetchall()]
+#             object_ids = self.search(cr, uid, [('id','!=', line.id),('ma_doi_tuong','!=', False),('ma_doi_tuong','=', line.ma_doi_tuong)])
             if object_ids:
                 return False
         return True
     
     def _check_cmnd(self, cr, uid, ids, context=None):
         for line in self.browse(cr, uid, ids):
-            taixe_ids = self.search(cr, uid, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('taixe','=',True)])
+            taixe_ids = self.search(cr, 1, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('taixe','=',True)])
             if line.taixe and taixe_ids:
                 return False
-            nhadautu_ids = self.search(cr, uid, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('nhadautu','=',True)])
+            nhadautu_ids = self.search(cr, 1, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('nhadautu','=',True)])
             if line.nhadautu and nhadautu_ids:
                 return False
-            nhanvienvanphong_ids = self.search(cr, uid, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('nhanvienvanphong','=',True)])
+            nhanvienvanphong_ids = self.search(cr, 1, [('id','!=', line.id),('cmnd','!=', False),('cmnd','=', line.cmnd),('nhanvienvanphong','=',True)])
             if line.nhanvienvanphong and nhanvienvanphong_ids:
                 return False
         return True
@@ -340,6 +345,11 @@ class res_partner(osv.osv):
         
         return super(res_partner, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
     
+    def create(self, cr, uid, vals, context=None):
+        if vals.get('ma_doi_tuong', False):
+            vals['ma_doi_tuong'] = vals['ma_doi_tuong'].strip()
+        return super(res_partner, self).create(cr, uid, vals, context)
+    
     def write(self, cr, uid, ids, vals, context=None):
         if vals.get('chinhanh_id'):
             for partner in self.browse(cr, uid, ids):
@@ -361,6 +371,8 @@ class res_partner(osv.osv):
                    sotien_congno_conlai = cr.fetchone()[0]
                    if sotien_congno_conlai:
                        raise osv.except_osv(_('Cảnh báo!'),_('Không được phép đổi chi nhánh khi công nợ phải thu của chi nhánh củ chưa cấn trừ hết!'))
+        if vals.get('ma_doi_tuong', False):
+            vals['ma_doi_tuong'] = vals['ma_doi_tuong'].strip()
         return super(res_partner, self).write(cr, uid, ids, vals, context)
     
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
