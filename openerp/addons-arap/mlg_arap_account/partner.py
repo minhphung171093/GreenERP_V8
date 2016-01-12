@@ -125,6 +125,20 @@ class res_partner(osv.osv):
                     break
         return res
     
+    def _display_name_compute(self, cr, uid, ids, name, args, context=None):
+        context = dict(context or {})
+        context.pop('show_address', None)
+        context.pop('show_address_only', None)
+        context.pop('show_email', None)
+        return dict(self.name_get(cr, uid, ids, context=context))
+    
+    _display_name = lambda self, *args, **kwargs: self._display_name_compute(*args, **kwargs)
+    
+    _display_name_store_triggers = {
+        'res.partner': (lambda self,cr,uid,ids,context=None: self.search(cr, uid, [('id','child_of',ids)], context=dict(active_test=False)),
+                        ['parent_id', 'is_company', 'name','ma_doi_tuong'], 10)
+    }
+    
     _columns = {
         'property_account_payable': fields.property(
             type='many2one',
@@ -174,6 +188,7 @@ class res_partner(osv.osv):
         'loai_doituong_lienket': fields.selection([('baohiem','Bảo hiểm'),('congty_thanhvien','Công ty thành viên')],'Loại đối tượng liên kết'),
         'doituong_lienket': fields.char('Mã đối tượng liên kết', size=1024),
         'show_ctkq_ndt': fields.function(_get_show_ctkq_ndt,type='boolean',string='Hiện ctkq ndt'),
+        'display_name': fields.function(_display_name, type='char', string='Name', store=_display_name_store_triggers, select=True),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):
