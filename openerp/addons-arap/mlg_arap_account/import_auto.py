@@ -99,18 +99,19 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                         
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi = ''
                             try:
                                 st = float(data['so_tien'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             if float(data['so_tien']) <= 0:
-                                noidung_loi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -120,7 +121,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
-                                noidung_loi = 'Không tìm thấy chi nhánh'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy chi nhánh'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -130,7 +131,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
-                                noidung_loi = 'Không tìm thấy đối tượng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -138,13 +139,13 @@ class import_congno_tudong(osv.osv):
                             loai_doituong=''
                             if partner['taixe']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
@@ -165,7 +166,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
-                                noidung_loi = 'Không tìm thấy biển số xe'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             mx = data['ma_xuong']
@@ -173,11 +174,11 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             ma_xuong_ids = cr.fetchone()
                             if mx and not ma_xuong_ids:
-                                noidung_loi = 'Không tìm thấy mã xưởng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy mã xưởng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy mã xưởng')
                             
                             if not data['ngay_giao_dich']:
-                                noidung_loi = 'Không tìm thấy ngày giao dịch'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày giao dịch'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày giao dịch')
                             date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
@@ -218,6 +219,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -272,18 +275,19 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                         
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi = ''
                             try:
                                 st = float(data['so_tien'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             if float(data['so_tien']) <= 0:
-                                noidung_loi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -293,7 +297,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
-                                noidung_loi = 'Không tìm thấy chi nhánh'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy chi nhánh'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -303,7 +307,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
-                                noidung_loi = 'Không tìm thấy đối tượng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -311,13 +315,13 @@ class import_congno_tudong(osv.osv):
                             loai_doituong=''
                             if partner['taixe']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
@@ -338,11 +342,11 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
-                                noidung_loi = 'Không tìm thấy biển số xe'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             if not data['ngay_giao_dich']:
-                                noidung_loi = 'Không tìm thấy ngày giao dịch'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày giao dịch'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày giao dịch')
                             date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
@@ -381,6 +385,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -435,18 +441,19 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                         
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             if float(data['so_tien']) <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -456,7 +463,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
-                                noidung_loi='Không tìm thấy chi nhánh'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy chi nhánh'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -466,7 +473,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
-                                noidung_loi='Không tìm thấy đối tượng'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -474,13 +481,13 @@ class import_congno_tudong(osv.osv):
                             loai_doituong=''
                             if partner['taixe']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
@@ -498,17 +505,17 @@ class import_congno_tudong(osv.osv):
                             
                             bsx = data['bien_so_xe']
                             if not bsx:
-                                noidung_loi='Không tìm thấy biển số xe trên template'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe trên template')
                             sql = ''' select id from bien_so_xe where upper(name)='%s' '''%(bsx.upper())
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
-                                noidung_loi='Không tìm thấy biển số xe'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             if not data['ngay_giao_dich']:
-                                noidung_loi = 'Không tìm thấy ngày giao dịch'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày giao dịch'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày giao dịch')
                             date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
@@ -557,6 +564,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -611,18 +620,19 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                         
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi = ''
                             try:
                                 st = float(data['so_tien'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             if float(data['so_tien']) <= 0:
-                                noidung_loi = 'Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -632,7 +642,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
-                                noidung_loi = 'Không tìm thấy chi nhánh'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy chi nhánh'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -642,7 +652,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
-                                noidung_loi = 'Không tìm thấy đối tượng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -650,13 +660,13 @@ class import_congno_tudong(osv.osv):
                             loai_doituong=''
                             if partner['taixe']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
@@ -674,17 +684,17 @@ class import_congno_tudong(osv.osv):
                             
                             loai_dt_bh_al = data['loai_dt_bh_al']
                             if not loai_dt_bh_al:
-                                noidung_loi='Không tìm thấy loại DT-BH-AL trên template'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại DT-BH-AL trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL trên template')
                             sql = ''' select id from loai_no_doanh_thu where upper(code)='%s' '''%(loai_dt_bh_al.upper())
                             cr.execute(sql)
                             loai_dt_bh_al_ids = cr.fetchone()
                             if loai_dt_bh_al and not loai_dt_bh_al_ids:
-                                noidung_loi = 'Không tìm thấy loại DT-BH-AL'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại DT-BH-AL'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL')
                             
                             if not data['ngay_giao_dich']:
-                                noidung_loi = 'Không tìm thấy ngày giao dịch'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày giao dịch'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày giao dịch')                            
                             date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
@@ -722,6 +732,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -777,19 +789,20 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -811,7 +824,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -855,7 +868,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                             
                         csvUti._moveFiles([f_path],done_path)
@@ -873,6 +886,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -928,19 +943,20 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -972,7 +988,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -1016,7 +1032,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                             
                         csvUti._moveFiles([f_path],done_path)
@@ -1034,6 +1050,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -1089,26 +1107,27 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where upper(name)='%s' '''%(bsx.upper())
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
-                                noidung_loi='Không tìm thấy biển số xe'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                                 
                             sql = '''
@@ -1141,7 +1160,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -1185,7 +1204,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                             
                         csvUti._moveFiles([f_path],done_path)
@@ -1203,6 +1222,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -1258,19 +1279,20 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -1291,7 +1313,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -1335,7 +1357,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                             
                         csvUti._moveFiles([f_path],done_path)
@@ -1353,6 +1375,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -1408,26 +1432,27 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where upper(name)='%s' '''%(bsx.upper())
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
-                                noidung_loi='Không tìm thấy biển số xe'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             mx = data['ma_xuong']
@@ -1435,7 +1460,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             ma_xuong_ids = cr.fetchone()
                             if mx and not ma_xuong_ids:
-                                noidung_loi='Không tìm thấy mã xưởng'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy mã xưởng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy mã xưởng')
                                 
                             sql = '''
@@ -1476,7 +1501,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -1520,7 +1545,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                             
                         csvUti._moveFiles([f_path],done_path)
@@ -1538,6 +1563,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -1593,26 +1620,27 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where upper(name)='%s' '''%(bsx.upper())
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
-                                noidung_loi='Không tìm thấy biển số xe'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                                 
                             sql = '''
@@ -1645,7 +1673,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -1689,7 +1717,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                             
                         csvUti._moveFiles([f_path],done_path)
@@ -1707,6 +1735,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -1762,26 +1792,27 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             bsx = data['bien_so_xe']
                             sql = ''' select id from bien_so_xe where upper(name)='%s' '''%(bsx.upper())
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
-                                noidung_loi='Không tìm thấy biển số xe'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
 
                             sql = '''
@@ -1816,7 +1847,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -1870,7 +1901,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_id = voucher_obj.create(cr, uid, vals,context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
@@ -1887,6 +1918,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -1942,19 +1975,20 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -1976,7 +2010,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -2020,7 +2054,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                             
                         csvUti._moveFiles([f_path],done_path)
@@ -2038,6 +2072,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -2093,19 +2129,20 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -2126,7 +2163,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -2170,7 +2207,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                             
                         csvUti._moveFiles([f_path],done_path)
@@ -2188,6 +2225,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -2239,18 +2278,19 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             if float(data['so_tien_da_thu']) <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id from account_account where upper(code)='%s' limit 1
@@ -2258,12 +2298,12 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
-                                noidung_loi='Không tìm thấy chi nhánh'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy chi nhánh'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             lkq = data['loai_ky_quy']
                             if not lkq:
-                                noidung_loi='Chưa nhập loại ký quỹ'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chưa nhập loại ký quỹ'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Chưa nhập loại ký quỹ')
                             
                             sql = '''
@@ -2272,7 +2312,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             loai_kq_ids = [r[0] for r in cr.fetchall()]
                             if not loai_kq_ids:
-                                noidung_loi='Không tìm thấy loại ký quỹ'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại ký quỹ'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại ký quỹ')
                             
                             sql = '''
@@ -2281,13 +2321,13 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             ndt = cr.fetchone()
                             if not ndt:
-                                noidung_loi='Không tìm thấy đối tượng'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             bsx_ids = []
                             if ndt[0]:
                                 bsx = data['bien_so_xe']
                                 if not bsx:
-                                    noidung_loi='Không tìm thấy biển số xe đối với loại đối tượng nhà đầu tư'
+                                    noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe đối với loại đối tượng nhà đầu tư'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối với loại đối tượng nhà đầu tư')
                                 sql = '''
                                     select id from bien_so_xe where upper(name)='%s' limit 1
@@ -2295,7 +2335,7 @@ class import_congno_tudong(osv.osv):
                                 cr.execute(sql)
                                 bsx_ids = [r[0] for r in cr.fetchall()]
                                 if not bsx_ids:
-                                    noidung_loi='Không tìm thấy biển số xe'
+                                    noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
                             
                             sql = '''
@@ -2324,6 +2364,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -2379,19 +2421,20 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -2414,7 +2457,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -2457,7 +2500,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
@@ -2474,6 +2517,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -2529,19 +2574,20 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             sotiendathu = float(data['so_tien_da_thu'])
                             if sotiendathu <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
@@ -2563,7 +2609,7 @@ class import_congno_tudong(osv.osv):
                                 journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',line['chinhanh_id'])])
                                 
                                 if not data['ngay_thanh_toan']:
-                                    noidung_loi = 'Không tìm thấy ngày thanh toán'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày thanh toán'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày thanh toán')
                                 ngay_thanh_toan=datetime.strptime(data['ngay_thanh_toan'],'%d/%m/%Y').strftime('%Y-%m-%d')
                                 
@@ -2606,7 +2652,7 @@ class import_congno_tudong(osv.osv):
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                             if sotiendathu>0:
-                                noidung_loi='Số tiền đã thu lớn hơn số tiền đề nghị phải thu'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu lớn hơn số tiền đề nghị phải thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu lớn hơn số tiền đề nghị phải thu')
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
@@ -2623,6 +2669,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -2674,18 +2722,19 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             if float(data['so_tien_da_thu']) <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             sql = '''
                                 select id from account_account where upper(code)='%s' limit 1
@@ -2693,7 +2742,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
-                                noidung_loi='Không tìm thấy chi nhánh'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy chi nhánh'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
 
                             sql = '''
@@ -2719,6 +2768,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -2781,6 +2832,7 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
+                            request_ref_number = ''
                             thukyquys = []
                             trakyquys = []
                             
@@ -3021,6 +3073,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if request_ref_number:
+                                noidung_loi = 'REQUEST_REF_NUMBER "%s": '%request_ref_number+noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -3081,7 +3135,7 @@ class import_congno_tudong(osv.osv):
                     
                         for data in file_data:
                             noidung_loi=''
-                            
+                            request_ref_number = ''
                             try:
                                 request_ref_number = str(data['REQUEST_REF_NUMBER'])
                             except Exception, e:
@@ -3218,6 +3272,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if request_ref_number:
+                                noidung_loi = 'REQUEST_REF_NUMBER "%s": '%request_ref_number+noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -3272,18 +3328,19 @@ class import_congno_tudong(osv.osv):
                 csvUti = lib_csv.csv_ultilities()
                 for file_name in csvUti._read_files_folder(path):
                     f_path = file_name
+                    seq = False
                     try:
                         file_data = csvUti._read_file(f_path)
                     
-                        for data in file_data:
+                        for seq,data in enumerate(file_data):
                             noidung_loi=''
                             try:
                                 st = float(data['so_tien'])
                             except Exception, e:
-                                noidung_loi = 'Số tiền không đúng định dạng'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không đúng định dạng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không đúng định dạng')
                             if float(data['so_tien']) <= 0:
-                                noidung_loi='Số tiền không được phép nhỏ hơn hoặc bằng 0'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             vals={}
                             account_id = False
@@ -3293,7 +3350,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             chinhanh_ids = cr.fetchone()
                             if not chinhanh_ids:
-                                noidung_loi='Không tìm thấy chi nhánh'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy chi nhánh'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy chi nhánh')
                             
                             sql = '''
@@ -3303,7 +3360,7 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             partner = cr.dictfetchone()
                             if not partner:
-                                noidung_loi='Không tìm thấy đối tượng'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy đối tượng')
                             partner_id = partner and partner['id'] or False
                             bai_giaoca_id = partner and partner['bai_giaoca_id'] or False
@@ -3311,13 +3368,13 @@ class import_congno_tudong(osv.osv):
                             loai_doituong=''
                             if partner['taixe']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='taixe'
                                 account_id = partner and partner['account_ht_id'] or False
                             if partner['nhanvienvanphong']==True:
                                 if chinhanh_ids[0]!=partner['chinhanh_id']:
-                                    noidung_loi = 'Chi nhánh không trùng với chi nhánh của đối tượng'
+                                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 loai_doituong='nhanvienvanphong'
                                 account_id = partner and partner['account_ht_id'] or False
@@ -3338,11 +3395,11 @@ class import_congno_tudong(osv.osv):
                             cr.execute(sql)
                             bien_so_xe_ids = cr.fetchone()
                             if bsx and not bien_so_xe_ids:
-                                noidung_loi='Không tìm thấy biển số xe'
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                             
                             if not data['ngay_giao_dich']:
-                                noidung_loi = 'Không tìm thấy ngày giao dịch'
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy ngày giao dịch'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy ngày giao dịch')
                             date_invoice=datetime.strptime(data['ngay_giao_dich'],'%d/%m/%Y').strftime('%Y-%m-%d')
                             
@@ -3381,6 +3438,8 @@ class import_congno_tudong(osv.osv):
                         cr.rollback()
                         if not noidung_loi:
                             noidung_loi = str(e).replace("'","''")
+                            if seq:
+                                noidung_loi = 'Dòng "%s": '%(seq+2) + noidung_loi
                         error_path = dir_path.name+ERROR
                         csvUti._moveFiles([f_path],error_path)
                         ngay = time.strftime('%Y-%m-%d %H:%M:%S')
