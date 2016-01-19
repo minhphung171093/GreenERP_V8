@@ -178,6 +178,9 @@ class import_congno_manually(osv.osv):
                             '''%(chinhanh_ids[0],partner_id)
                             cr.execute(sql)
                             account_ids = [r[0] for r in cr.fetchall()]
+                            if not account_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             account_id = account_ids and account_ids[0] or False
                             vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                             
@@ -335,6 +338,9 @@ class import_congno_manually(osv.osv):
                             '''%(chinhanh_ids[0],partner_id)
                             cr.execute(sql)
                             account_ids = [r[0] for r in cr.fetchall()]
+                            if not account_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             account_id = account_ids and account_ids[0] or False
                             vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                             
@@ -483,6 +489,9 @@ class import_congno_manually(osv.osv):
                             '''%(chinhanh_ids[0],partner_id)
                             cr.execute(sql)
                             account_ids = [r[0] for r in cr.fetchall()]
+                            if not account_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             account_id = account_ids and account_ids[0] or False
                             vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                             
@@ -651,6 +660,9 @@ class import_congno_manually(osv.osv):
                             '''%(chinhanh_ids[0],partner_id)
                             cr.execute(sql)
                             account_ids = [r[0] for r in cr.fetchall()]
+                            if not account_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             account_id = account_ids and account_ids[0] or False
                             vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                             
