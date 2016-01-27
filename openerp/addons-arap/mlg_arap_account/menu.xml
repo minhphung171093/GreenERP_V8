@@ -207,6 +207,16 @@
 					name="Nhập thu nợ xưởng"
 					parent="menu_import_cong_no_thu" sequence="15"/>
 					
+				<menuitem action="action_arap_import_kyquy_congviec"
+					name="Import Ký quỹ công việc"
+		            id="menu_action_arap_import_kyquy_congviec"
+		            parent="menu_import_cong_no_thu" sequence="20"/>
+		            
+	            <menuitem action="action_arap_import_kyquy_dhbd"
+					name="Import Ký quỹ ĐH-BĐ"
+		            id="menu_action_arap_import_kyquy_dhbd"
+		            parent="menu_import_cong_no_thu" sequence="20"/>
+					
 		<menuitem id="menu_root_congno_chi"
 			name="Phải Trả" sequence="3"/>
 			

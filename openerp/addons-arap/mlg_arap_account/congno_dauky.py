@@ -76,6 +76,59 @@ class congno_dauky(osv.osv):
                 cr.execute(sql)
                 congno_dauky_line = []
                 for invoice in cr.dictfetchall():
+                    chitiet_loai_line = []
+                    if invoice['mlg_type']=='no_doanh_thu':
+                        sql = '''
+                            select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,loai_nodoanhthu_id
+                                from account_invoice
+                                where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s
+                                group by loai_nodoanhthu_id
+                        '''%(partner['partner_id'],invoice['mlg_type'],invoice['chinhanh_id'])
+                        cr.execute(sql)
+                        for line in cr.dictfetchall():
+                            chitiet_loai_line.append((0,0,{
+                                'loai_id': line['loai_nodoanhthu_id'],
+                                'so_tien_no': line['so_tien_no'],
+                            }))
+                    if invoice['mlg_type']=='phai_thu_bao_hiem':
+                        sql = '''
+                            select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,loai_baohiem_id
+                                from account_invoice
+                                where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s
+                                group by loai_baohiem_id
+                        '''%(partner['partner_id'],invoice['mlg_type'],invoice['chinhanh_id'])
+                        cr.execute(sql)
+                        for line in cr.dictfetchall():
+                            chitiet_loai_line.append((0,0,{
+                                'loai_id': line['loai_baohiem_id'],
+                                'so_tien_no': line['so_tien_no'],
+                            }))
+                    if invoice['mlg_type']=='phat_vi_pham':
+                        sql = '''
+                            select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,loai_vipham_id
+                                from account_invoice
+                                where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s
+                                group by loai_vipham_id
+                        '''%(partner['partner_id'],invoice['mlg_type'],invoice['chinhanh_id'])
+                        cr.execute(sql)
+                        for line in cr.dictfetchall():
+                            chitiet_loai_line.append((0,0,{
+                                'loai_id': line['loai_vipham_id'],
+                                'so_tien_no': line['so_tien_no'],
+                            }))
+                    if invoice['mlg_type']=='hoan_tam_ung':
+                        sql = '''
+                            select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,loai_tamung_id
+                                from account_invoice
+                                where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s
+                                group by loai_tamung_id
+                        '''%(partner['partner_id'],invoice['mlg_type'],invoice['chinhanh_id'])
+                        cr.execute(sql)
+                        for line in cr.dictfetchall():
+                            chitiet_loai_line.append((0,0,{
+                                'loai_id': line['loai_tamung_id'],
+                                'so_tien_no': line['so_tien_no'],
+                            }))
                     congno_dauky_line.append((0,0,{
                         'chinhanh_id': invoice['chinhanh_id'],
                         'mlg_type': invoice['mlg_type'],
@@ -84,6 +137,7 @@ class congno_dauky(osv.osv):
 #                         'so_hoa_don': invoice['so_hoa_don'],
 #                         'ma_bang_chiettinh_chiphi_sua': invoice['ma_bang_chiettinh_chiphi_sua'],
                         'so_tien_no': invoice['so_tien_no'],
+                        'chitiet_loai_line': chitiet_loai_line,
                     }))
                 self.create(cr, uid, {
                     'period_id': period['id'],
@@ -124,7 +178,41 @@ class congno_dauky_line(osv.osv):
                                       ('chi_ho','Chi hộ')
                                       ],'Loại công nợ'),
         'so_tien_no': fields.float('Số tiền nợ',digits=(16,0)),
+        'chitiet_loai_line': fields.one2many('chitiet.congno.dauky.line', 'congno_dauky_line_id', 'Chi tiết')
     }
 congno_dauky_line()
+
+class chitiet_congno_dauky_line(osv.osv):
+    _name = "chitiet.congno.dauky.line"
+    
+    def _get_tenloai(self, cr, uid, ids, field_name, arg, context=None):
+        res={}
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = ''
+            if line.congno_dauky_line_id.mlg_type=='no_doanh_thu' and line.loai_id:
+                obj = self.pool.get('loai.no.doanh.thu')
+                loai = obj.browse(cr, uid, line.loai_id)
+                res[line.id] = loai.name
+            if line.congno_dauky_line_id.mlg_type=='phai_thu_bao_hiem' and line.loai_id:
+                obj = self.pool.get('loai.bao.hiem')
+                loai = obj.browse(cr, uid, line.loai_id)
+                res[line.id] = loai.name
+            if line.congno_dauky_line_id.mlg_type=='phat_vi_pham' and line.loai_id:
+                obj = self.pool.get('loai.vi.pham')
+                loai = obj.browse(cr, uid, line.loai_id)
+                res[line.id] = loai.name
+            if line.congno_dauky_line_id.mlg_type=='hoan_tam_ung' and line.loai_id:
+                obj = self.pool.get('loai.tam.ung')
+                loai = obj.browse(cr, uid, line.loai_id)
+                res[line.id] = loai.name
+        return res
+    
+    _columns = {
+        'congno_dauky_line_id': fields.many2one('congno.dauky.line','Công nợ đầu kỳ line', ondelete='cascade'),
+        'so_tien_no': fields.float('Số tiền nợ',digits=(16,0)),
+        'loai_id': fields.integer('Loại id'),
+        'loai': fields.function(_get_tenloai, string='Loại', type='char'),
+    }
+chitiet_congno_dauky_line()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -583,6 +583,21 @@ class loai_no_doanh_thu(osv.osv):
         (_check_code, 'Không được trùng mã', ['code']),
     ]
     
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        chinhanh_id = user.chinhanh_id and user.chinhanh_id.id or False
+        if context.get('congnothu_nodoanhthu', False) and context.get('loai_doituong', False):
+            if context['loai_doituong']!='taixe':
+                sql = '''
+                    select id from loai_no_doanh_thu where upper(code)='NO_DOANH_THU'
+                '''
+                cr.execute(sql)
+                loai_ndt_ids = [r[0] for r in cr.fetchall()]
+                args += [('id','not in',loai_ndt_ids)]
+        return super(loai_no_doanh_thu, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
         if not args:
             args = []

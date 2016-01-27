@@ -340,7 +340,11 @@ class import_congno_tudong(osv.osv):
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 account_id = account_ids and account_ids[0] or False
                                 vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
-                                
+                            
+                            if loai_doituong not in ['taixe','nhadautu']:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại đối tượng cho công nợ "Thu phí thương hiệu" chỉ được tạo cho "Lái xe" hoặc "Nhà đầu tư"'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Loại đối tượng cho công nợ "Thu phí thương hiệu" chỉ được tạo cho "Lái xe" hoặc "Nhà đầu tư"')
+                            
                             journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                             
                             bsx = data['bien_so_xe']
@@ -509,7 +513,11 @@ class import_congno_tudong(osv.osv):
                                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                                 account_id = account_ids and account_ids[0] or False
                                 vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
-                                
+                            
+                            if loai_doituong not in ['nhadautu']:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại đối tượng cho công nợ "Trả góp xe" chỉ được tạo cho "Nhà đầu tư"'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Loại đối tượng cho công nợ "Trả góp xe" chỉ được tạo cho "Nhà đầu tư"')
+                            
                             journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                             
                             bsx = data['bien_so_xe']
@@ -692,12 +700,19 @@ class import_congno_tudong(osv.osv):
                                 account_id = account_ids and account_ids[0] or False
                                 vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                                 
+                            if loai_doituong not in ['taixe','nhanvienvanphong']:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại đối tượng cho công nợ "Nợ DT-BH-AL" chỉ được tạo cho "Lái xe" hoặc "Nhân viên văn phòng"'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Loại đối tượng cho công nợ "Nợ DT-BH-AL" chỉ được tạo cho "Lái xe" hoặc "Nhân viên văn phòng"')
+                                
                             journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                             
                             loai_dt_bh_al = data['loai_dt_bh_al']
                             if not loai_dt_bh_al:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại DT-BH-AL trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL trên template')
+                            if loai_doituong=='nhanvienvanphong' and loai_dt_bh_al.upper()=='NO_DOANH_THU':
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại DT-BH-AL "Nợ doanh thu" chỉ dành cho đối tượng lái xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Loại DT-BH-AL "Nợ doanh thu" chỉ dành cho đối tượng lái xe')
                             sql = ''' select id from loai_no_doanh_thu where upper(code)='%s' '''%(loai_dt_bh_al.upper())
                             cr.execute(sql)
                             loai_dt_bh_al_ids = cr.fetchone()

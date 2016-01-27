@@ -1,0 +1,11 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/odoo/!svn/ver/2021/trunk/mlg_arap/openerp/addons-arap/base_concurrency/security
+END
+ir.model.access.csv
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/odoo/!svn/ver/2021/trunk/mlg_arap/openerp/addons-arap/base_concurrency/security/ir.model.access.csv
+END

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+    	<record id="arap_import_kyquy_congviec_tree_view" model="ir.ui.view">
+			<field name="name">arap.import.kyquy.congviec.tree</field>
+			<field name="model">arap.import.kyquy.congviec</field>
+			<field name="arch" type="xml">
+				<tree string="Import Ký quỹ công việc">
+					<field name ="name"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="arap_import_kyquy_congviec_form_view" model="ir.ui.view">
+            <field name="name">arap.import.kyquy.congviec.form</field>
+            <field name="model">arap.import.kyquy.congviec</field>
+            <field name="arch" type="xml">
+                <form string="Import Ký quỹ công việc" version="7.0">
+                    <header>
+	                    <button name="import_account" states='draft' string="Import" type="object" class="oe_highlight" />
+	                    <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"draft":"blue","done":"blue"}'/>
+	                </header>                
+                	<sheet>  
+                		<group>
+                		<field name ="name"/>
+						<label for="datas" string="Data Upload Field"/>
+							<div>
+								<field name="datas" filename="datas_fname"/>
+	                        	<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
+	                        </div>
+                		</group>
+                	</sheet>
+				</form>
+			</field>
+		</record>
+
+        <record id="action_arap_import_kyquy_congviec" model="ir.actions.act_window">
+            <field name="name">Import Ký quỹ công việc</field>
+			<field name="type">ir.actions.act_window</field>
+            <field name="res_model">arap.import.kyquy.congviec</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="arap_import_kyquy_congviec_tree_view"/>
+        </record>
+        
+        <record id="arap_import_kyquy_dhbd_tree_view" model="ir.ui.view">
+			<field name="name">arap.import.kyquy.dhbd.tree</field>
+			<field name="model">arap.import.kyquy.dhbd</field>
+			<field name="arch" type="xml">
+				<tree string="Import Ký quỹ ĐH-BĐ">
+					<field name ="name"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="arap_import_kyquy_dhbd_form_view" model="ir.ui.view">
+            <field name="name">arap.import.kyquy.dhbd.form</field>
+            <field name="model">arap.import.kyquy.dhbd</field>
+            <field name="arch" type="xml">
+                <form string="Import Ký quỹ ĐH-BĐ" version="7.0">
+                    <header>
+	                    <button name="import_account" states='draft' string="Import" type="object" class="oe_highlight" />
+	                    <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"draft":"blue","done":"blue"}'/>
+	                </header>                
+                	<sheet>  
+                		<group>
+                		<field name ="name"/>
+						<label for="datas" string="Data Upload Field"/>
+							<div>
+								<field name="datas" filename="datas_fname"/>
+	                        	<field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
+	                        </div>
+                		</group>
+                	</sheet>
+				</form>
+			</field>
+		</record>
+
+        <record id="action_arap_import_kyquy_dhbd" model="ir.actions.act_window">
+            <field name="name">Import Ký quỹ ĐH-BĐ</field>
+			<field name="type">ir.actions.act_window</field>
+            <field name="res_model">arap.import.kyquy.dhbd</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="arap_import_kyquy_dhbd_tree_view"/>
+        </record>
+
+    </data>
+</openerp>

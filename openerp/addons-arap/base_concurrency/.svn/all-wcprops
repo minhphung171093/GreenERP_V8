@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/odoo/!svn/ver/2021/trunk/mlg_arap/openerp/addons-arap/base_concurrency
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/odoo/!svn/ver/2021/trunk/mlg_arap/openerp/addons-arap/base_concurrency/__init__.py
+END
+__openerp__.py
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/odoo/!svn/ver/2021/trunk/mlg_arap/openerp/addons-arap/base_concurrency/__openerp__.py
+END
+cron.xml
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/odoo/!svn/ver/2021/trunk/mlg_arap/openerp/addons-arap/base_concurrency/cron.xml
+END
+res_users.py
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/odoo/!svn/ver/2021/trunk/mlg_arap/openerp/addons-arap/base_concurrency/res_users.py
+END

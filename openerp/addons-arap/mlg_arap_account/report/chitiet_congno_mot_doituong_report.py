@@ -28,6 +28,8 @@ class Parser(report_sxw.rml_parse):
         self.tongcongno = 0
         self.tongno = 0
         self.tongco = 0
+        self.congno = 0
+        self.congco = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -45,6 +47,10 @@ class Parser(report_sxw.rml_parse):
             'get_lichsu_thutienlai': self.get_lichsu_thutienlai,
             'get_tongno': self.get_tongno,
             'get_tongco': self.get_tongco,
+            'get_cong_no': self.get_cong_no,
+            'get_congco': self.get_congco,
+            'get_loai_congno_tuongung': self.get_loai_congno_tuongung,
+            'get_title_lcntu': self.get_title_lcntu,
         })
         
     def convert_date(self, date):
@@ -89,6 +95,109 @@ class Parser(report_sxw.rml_parse):
             loai_congno_ids = loai_congno_obj.search(self.cr, self.uid, [])
         return loai_congno_obj.browse(self.cr, self.uid, loai_congno_ids)
     
+    def get_loai_congno_tuongung(self, mlg_type):
+        wizard_data = self.localcontext['data']['form']
+        lcntu_ids = []
+        if mlg_type=='no_doanh_thu':
+            loai = 'loai_nodoanhthu'
+            loai_nodoanhthu_id = wizard_data['loai_nodoanhthu_id']
+            if loai_nodoanhthu_id:
+                lcntu_ids.append({
+                    'id':loai_nodoanhthu_id[0],
+                    'name':loai_nodoanhthu_id[1],
+                    'loai':loai
+                })
+            else:
+                sql = '''
+                    select id,name from loai_no_doanh_thu
+                '''
+                self.cr.execute(sql)
+                for lndt in self.cr.fetchall():
+                    lcntu_ids.append({
+                        'id':lndt[0],
+                        'name':lndt[1],
+                        'loai':loai
+                    })
+        elif mlg_type=='phai_thu_bao_hiem':
+            loai = 'loai_baohiem'
+            loai_baohiem_id = wizard_data['loai_baohiem_id']
+            if loai_baohiem_id:
+                lcntu_ids.append({
+                    'id':loai_baohiem_id[0],
+                    'name':loai_baohiem_id[1],
+                    'loai':loai
+                })
+            else:
+                sql = '''
+                    select id,name from loai_bao_hiem
+                '''
+                self.cr.execute(sql)
+                for lndt in self.cr.fetchall():
+                    lcntu_ids.append({
+                        'id':lndt[0],
+                        'name':lndt[1],
+                        'loai':loai
+                    })
+        elif mlg_type=='phat_vi_pham':
+            loai = 'loai_vipham'
+            loai_vipham_id = wizard_data['loai_vipham_id']
+            if loai_vipham_id:
+                lcntu_ids.append({
+                    'id':loai_vipham_id[0],
+                    'name':loai_vipham_id[1],
+                    'loai':loai
+                })
+            else:
+                sql = '''
+                    select id,name from loai_vi_pham
+                '''
+                self.cr.execute(sql)
+                for lndt in self.cr.fetchall():
+                    lcntu_ids.append({
+                        'id':lndt[0],
+                        'name':lndt[1],
+                        'loai':loai
+                    })
+        elif mlg_type=='hoan_tam_ung':
+            loai = 'loai_tamung'
+            loai_tamung_id = wizard_data['loai_tamung_id']
+            if loai_tamung_id:
+                lcntu_ids.append({
+                    'id':loai_tamung_id[0],
+                    'name':loai_tamung_id[1],
+                    'loai':loai
+                })
+            else:
+                sql = '''
+                    select id,name from loai_tam_ung
+                '''
+                self.cr.execute(sql)
+                for lndt in self.cr.fetchall():
+                    lcntu_ids.append({
+                        'id':lndt[0],
+                        'name':lndt[1],
+                        'loai':loai
+                    })
+        else:
+            lcntu_ids.append({
+                'id':False,
+                'name':'',
+                'loai': 'loai_conlai'
+            })
+        return lcntu_ids
+        
+    def get_title_lcntu(self, lcntu):
+        tt = ''
+        if lcntu['loai']=='loai_nodoanhthu':
+            tt = 'Loại nợ DT-BH-AL: '+lcntu['name']
+        if lcntu['loai']=='loai_baohiem':
+            tt = 'Loại bảo hiểm: '+lcntu['name']
+        if lcntu['loai']=='loai_vipham':
+            tt = 'Loại vi phạm: '+lcntu['name']
+        if lcntu['loai']=='loai_tamung':
+            tt = 'Loại tạm ứng: '+lcntu['name']
+        return tt
+    
     def get_title_congno(self, congno):
         tt = ''
         if congno=='Nợ doanh thu':
@@ -113,7 +222,7 @@ class Parser(report_sxw.rml_parse):
             tt='chi_ho'
         return tt
     
-    def get_nodauky(self, mlg_type):
+    def get_nodauky(self, mlg_type, lcntu):
         wizard_data = self.localcontext['data']['form']
         if mlg_type:
             period_id = wizard_data['period_from_id']
@@ -125,6 +234,12 @@ class Parser(report_sxw.rml_parse):
                     from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
                         and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)
             '''%(mlg_type,chinhanh_id[0],partner_id[0],period_id[0])
+            if lcntu and lcntu['loai']!='loai_conlai' and lcntu['id']:
+                sql = '''
+                    select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
+                        from chitiet_congno_dauky_line where congno_dauky_line_id in (select id from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
+                            and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
+                '''%(mlg_type,chinhanh_id[0],partner_id[0],period_id[0],lcntu['id'])
             self.cr.execute(sql)
             return self.cr.fetchone()[0]
         return 0
@@ -144,7 +259,17 @@ class Parser(report_sxw.rml_parse):
         self.tongco = 0
         return tongco
     
-    def get_nocuoiky(self, mlg_type):
+    def get_cong_no(self):
+        congno = self.congno
+        self.congno = 0
+        return congno
+    
+    def get_congco(self):
+        congco = self.congco
+        self.congco = 0
+        return congco
+    
+    def get_nocuoiky(self, mlg_type,lcntu):
         wizard_data = self.localcontext['data']['form']
         if mlg_type:
             period_from_id = wizard_data['period_from_id']
@@ -159,15 +284,31 @@ class Parser(report_sxw.rml_parse):
                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
                         and date_invoice between '%s' and '%s' and state in ('open','paid') 
             '''%(mlg_type,chinhanh_id[0],partner_id[0],period_from.date_start,period_to.date_stop)
+            if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+                sql+='''
+                    and loai_nodoanhthu_id = %s 
+                '''%(lcntu['id'])
+            if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+                sql+='''
+                    and loai_baohiem_id = %s 
+                '''%(lcntu['id'])
+            if lcntu['loai']=='loai_vipham' and lcntu['id']:
+                sql+='''
+                    and loai_vipham_id = %s 
+                '''%(lcntu['id'])
+            if lcntu['loai']=='loai_tamung' and lcntu['id']:
+                sql+='''
+                    and loai_tamung_id = %s 
+                '''%(lcntu['id'])
             self.cr.execute(sql)
             notrongky = self.cr.fetchone()[0]
-            nodauky = self.get_nodauky(mlg_type)
+            nodauky = self.get_nodauky(mlg_type,lcntu)
             nocuoiky = nodauky+notrongky
             self.tongcongno += nocuoiky
             return nocuoiky
         return 0
     
-    def get_chitiet_congno(self, mlg_type):
+    def get_chitiet_congno(self, mlg_type,lcntu):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
@@ -185,13 +326,31 @@ class Parser(report_sxw.rml_parse):
                 left join res_partner rp on rp.id = ai.partner_id
                 
                 where ai.partner_id=%s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
-                    and ai.mlg_type='%s'
+                    and ai.mlg_type='%s' 
         '''%(partner_id[0],period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and ai.loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and ai.loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and ai.loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and ai.loai_tamung_id = %s 
+            '''%(lcntu['id'])
         self.cr.execute(sql)
         lines = self.cr.dictfetchall()
         for line in lines:
             self.tongno += line['no']
             self.tongco += line['co']
+            self.congno += line['no']
+            self.congco += line['co']
         return lines
     
     def get_payment(self, invoice_id):

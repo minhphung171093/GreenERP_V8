@@ -359,6 +359,7 @@ class account_voucher(osv.osv):
                 if date_now[:4]!=voucher.date[:4] or date_now[5:7]!=voucher.date[5:7]:
                     nodauky_obj = self.pool.get('congno.dauky')
                     nodauky_line_obj = self.pool.get('congno.dauky.line')
+                    chitiet_nodauky_line_obj = self.pool.get('chitiet.congno.dauky.line')
                     date_voucher = datetime.strptime(voucher.date,'%Y-%m-%d')
                     end_of_month = str(date_voucher + relativedelta(months=+1, day=1, days=-1))[:10]
                     date_voucher_str = date_voucher.strftime('%Y-%m-%d')
@@ -389,12 +390,108 @@ class account_voucher(osv.osv):
                                     update congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s                            
                                 '''%(voucher.amount,nodauky_line[0])
                                 cr.execute(sql)
+                                
+                                if voucher.mlg_type=='no_doanh_thu' and invoice.loai_nodoanhthu_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],invoice.loai_nodoanhthu_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(voucher.amount,chitiet_line[0])
+                                        cr.execute(sql)
+                                    else:
+                                        chitiet_nodauky_line_obj.create(cr, uid, {
+                                            'congno_dauky_line_id': nodauky_line[0],
+                                            'loai_id': invoice.loai_nodoanhthu_id.id,
+                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                        })
+                                if voucher.mlg_type=='phai_thu_bao_hiem' and invoice.loai_baohiem_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],invoice.loai_baohiem_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(voucher.amount,chitiet_line[0])
+                                        cr.execute(sql)
+                                    else:
+                                        chitiet_nodauky_line_obj.create(cr, uid, {
+                                            'congno_dauky_line_id': nodauky_line[0],
+                                            'loai_id': invoice.loai_baohiem_id.id,
+                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                        })
+                                if voucher.mlg_type=='phat_vi_pham' and invoice.loai_vipham_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],invoice.loai_vipham_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(voucher.amount,chitiet_line[0])
+                                        cr.execute(sql)
+                                    else:
+                                        chitiet_nodauky_line_obj.create(cr, uid, {
+                                            'congno_dauky_line_id': nodauky_line[0],
+                                            'loai_id': invoice.loai_vipham_id.id,
+                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                        })
+                                if voucher.mlg_type=='hoan_tam_ung' and invoice.loai_tamung_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],invoice.loai_tamung_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(voucher.amount,chitiet_line[0])
+                                        cr.execute(sql)
+                                    else:
+                                        chitiet_nodauky_line_obj.create(cr, uid, {
+                                            'congno_dauky_line_id': nodauky_line[0],
+                                            'loai_id': invoice.loai_tamung_id.id,
+                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                        })
+                                
                             else:
+                                chitiet_loai_line=[]
+                                if voucher.mlg_type=='no_doanh_thu' and invoice.loai_nodoanhthu_id:
+                                    chitiet_loai_line = [(0,0,{
+                                                            'loai_id': invoice.loai_nodoanhthu_id.id,
+                                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                                        })]
+                                if voucher.mlg_type=='phai_thu_bao_hiem' and invoice.loai_baohiem_id:
+                                    chitiet_loai_line = [(0,0,{
+                                                            'loai_id': invoice.loai_baohiem_id.id,
+                                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                                        })]
+                                if voucher.mlg_type=='phat_vi_pham' and invoice.loai_vipham_id:
+                                    chitiet_loai_line = [(0,0,{
+                                                            'loai_id': invoice.loai_vipham_id.id,
+                                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                                        })]
+                                if voucher.mlg_type=='hoan_tam_ung' and invoice.loai_tamung_id:
+                                    chitiet_loai_line = [(0,0,{
+                                                            'loai_id': invoice.loai_tamung_id.id,
+                                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                                        })]
                                 nodauky_line_obj.create(cr, uid, {
                                     'congno_dauky_id': nodauky[0],
                                     'chinhanh_id': voucher.chinhanh_id.id,
                                     'mlg_type': voucher.mlg_type,
                                     'so_tien_no': invoice.so_tien-voucher.amount,
+                                    'chitiet_loai_line': chitiet_loai_line,
                                 })
                         else:
                             sql = '''
@@ -406,10 +503,80 @@ class account_voucher(osv.osv):
                             cr.execute(sql)
                             congno_dauky_line = []
                             for inv in cr.dictfetchall():
+                                chitiet_loai_line = []
+                                if inv['mlg_type']=='no_doanh_thu':
+                                    sql = '''
+                                        select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,loai_nodoanhthu_id
+                                            from account_invoice
+                                            where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                            group by loai_nodoanhthu_id
+                                    '''%(voucher.partner_id.id,inv['mlg_type'],inv['chinhanh_id'],period['date_start'])
+                                    cr.execute(sql)
+                                    for inv_line in cr.dictfetchall():
+                                        if voucher.mlg_type=='no_doanh_thu':
+                                            so_tien = inv_line['so_tien_no']-voucher.amount
+                                        else:
+                                            so_tien = inv_line['so_tien_no']
+                                        chitiet_loai_line.append((0,0,{
+                                            'loai_id': inv_line['loai_nodoanhthu_id'],
+                                            'so_tien_no': so_tien,
+                                        }))
+                                if inv['mlg_type']=='phai_thu_bao_hiem':
+                                    sql = '''
+                                        select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,loai_baohiem_id
+                                            from account_invoice
+                                            where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                            group by loai_baohiem_id
+                                    '''%(voucher.partner_id.id,inv['mlg_type'],inv['chinhanh_id'],period['date_start'])
+                                    cr.execute(sql)
+                                    for inv_line in cr.dictfetchall():
+                                        if voucher.mlg_type=='phai_thu_bao_hiem':
+                                            so_tien = inv_line['so_tien_no']-voucher.amount
+                                        else:
+                                            so_tien = inv_line['so_tien_no']
+                                        chitiet_loai_line.append((0,0,{
+                                            'loai_id': inv_line['loai_baohiem_id'],
+                                            'so_tien_no': so_tien,
+                                        }))
+                                if inv['mlg_type']=='phat_vi_pham':
+                                    sql = '''
+                                        select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,loai_vipham_id
+                                            from account_invoice
+                                            where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                            group by loai_vipham_id
+                                    '''%(voucher.partner_id.id,inv['mlg_type'],inv['chinhanh_id'],period['date_start'])
+                                    cr.execute(sql)
+                                    for inv_line in cr.dictfetchall():
+                                        if voucher.mlg_type=='phat_vi_pham':
+                                            so_tien = inv_line['so_tien_no']-voucher.amount
+                                        else:
+                                            so_tien = inv_line['so_tien_no']
+                                        chitiet_loai_line.append((0,0,{
+                                            'loai_id': inv_line['loai_vipham_id'],
+                                            'so_tien_no': so_tien,
+                                        }))
+                                if inv['mlg_type']=='hoan_tam_ung':
+                                    sql = '''
+                                        select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,loai_tamung_id
+                                            from account_invoice
+                                            where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                            group by loai_tamung_id
+                                    '''%(voucher.partner_id.id,inv['mlg_type'],inv['chinhanh_id'],period['date_start'])
+                                    cr.execute(sql)
+                                    for inv_line in cr.dictfetchall():
+                                        if voucher.mlg_type=='hoan_tam_ung':
+                                            so_tien = inv_line['so_tien_no']-voucher.amount
+                                        else:
+                                            so_tien = inv_line['so_tien_no']
+                                        chitiet_loai_line.append((0,0,{
+                                            'loai_id': inv_line['loai_tamung_id'],
+                                            'so_tien_no': so_tien,
+                                        }))
                                 congno_dauky_line.append((0,0,{
                                     'chinhanh_id': inv['chinhanh_id'],
                                     'mlg_type': inv['mlg_type'],
                                     'so_tien_no': inv['so_tien_no']-voucher.amount,
+                                    'chitiet_loai_line': chitiet_loai_line,
                                 }))
                             nodauky_obj.create(cr, uid, {
                                 'period_id': period['id'],

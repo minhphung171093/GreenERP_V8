@@ -83,6 +83,7 @@
         'schedule_view.xml',
         'report_view.xml',
         'views/webclient_templates.xml',
+        'import_kyquy_view.xml',
         'menu.xml',
         'static.xml',
     ],

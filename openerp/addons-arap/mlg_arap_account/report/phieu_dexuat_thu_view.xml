@@ -50,6 +50,30 @@
 	        string="Phiếu đề xuất"
 	        rml="mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_ndt.odt"/>
 
+<!-- Phiếu đề xuất thu nợ doanh thu nhân viên văn phòng-->
+    	<record id="pdxt_no_doanh_thu_nhanvienvanphong" model="ir.actions.report.xml">
+	        <field name="name">pdxt_no_doanh_thu_nhanvienvanphong</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">account.invoice</field>
+	        <field name="report_name">pdxt_no_doanh_thu_nhanvienvanphong</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-odt</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-pdf'),('compatible_types','=','oo-odt')]"/>
+	        <field name="parser_loc">mlg_arap_account/report/phieu_dexuat_thu.py</field>
+	        <field name="report_rml">mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_nvvp.odt</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	<report 
+			auto="False" 
+			menu="False"
+			id="pdxt_no_doanh_thu_nhanvienvanphong" 
+			model="account.invoice" 
+			name="pdxt_no_doanh_thu_nhanvienvanphong"
+	        string="Phiếu đề xuất"
+	        rml="mlg_arap_account/report/phieu_dexuat_thu_nodoanhthu_nvvp.odt"/>
+
 <!-- Phiếu đề xuất thu chi hộ điện thoại lái xe-->
     	<record id="pdxt_chi_ho_dien_thoai_taixe" model="ir.actions.report.xml">
 	        <field name="name">pdxt_chi_ho_dien_thoai_taixe</field>

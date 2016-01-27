@@ -179,11 +179,15 @@ class import_congno_manually(osv.osv):
                             cr.execute(sql)
                             account_ids = [r[0] for r in cr.fetchall()]
                             if not account_ids:
-                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                noidungloi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             account_id = account_ids and account_ids[0] or False
                             vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
-                            
+                        
+                        if loai_doituong not in ['taixe','nhanvienvanphong']:
+                            noidungloi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại đối tượng cho công nợ "Nợ DT-BH-AL" chỉ được tạo cho "Lái xe" hoặc "Nhân viên văn phòng"'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                            raise osv.except_osv(_('Cảnh báo!'), 'Loại đối tượng cho công nợ "Nợ DT-BH-AL" chỉ được tạo cho "Lái xe" hoặc "Nhân viên văn phòng"')
+                        
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
                             noidungloi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy journal trung gian'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
@@ -191,8 +195,11 @@ class import_congno_manually(osv.osv):
                         
                         loai_dt_bh_al = data['loai_dt_bh_al']
                         if not loai_dt_bh_al:
-                            noidung_loi='Không tìm thấy loại DT-BH-AL trên template'
+                            noidungloi='Không tìm thấy loại DT-BH-AL trên template'
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL trên template')
+                        if loai_doituong=='nhanvienvanphong' and loai_dt_bh_al.upper()=='NO_DOANH_THU':
+                            noidungloi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại DT-BH-AL "Nợ doanh thu" chỉ dành cho đối tượng lái xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                            raise osv.except_osv(_('Cảnh báo!'), 'Loại DT-BH-AL "Nợ doanh thu" chỉ dành cho đối tượng lái xe')
                         sql = ''' select id from loai_no_doanh_thu where upper(code)='%s' '''%(loai_dt_bh_al.upper())
                         cr.execute(sql)
                         loai_dt_bh_al_ids = cr.fetchone()
@@ -344,6 +351,10 @@ class import_congno_manually(osv.osv):
                             account_id = account_ids and account_ids[0] or False
                             vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
                             
+                        if loai_doituong not in ['taixe','nhanvienvanphong']:
+                            noidungloi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại đối tượng cho công nợ "Phải thu chi hộ điện thoại" chỉ được tạo cho "Lái xe" hoặc "Nhân viên văn phòng"'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                            raise osv.except_osv(_('Cảnh báo!'), 'Loại đối tượng cho công nợ "Phải thu chi hộ điện thoại" chỉ được tạo cho "Lái xe" hoặc "Nhân viên văn phòng"')
+                            
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
                             noidungloi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy journal trung gian'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
@@ -494,6 +505,10 @@ class import_congno_manually(osv.osv):
                                 raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
                             account_id = account_ids and account_ids[0] or False
                             vals.update({'cmnd': partner['cmnd'],'giayphep_kinhdoanh': partner['giayphep_kinhdoanh'],'chinhanh_ndt_id':chinhanh_ids[0]})
+                            
+                        if loai_doituong not in ['nhadautu']:
+                            noidungloi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại đối tượng cho công nợ "Phải thu bảo hiểm" chỉ được tạo cho "Nhà đầu tư"'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                            raise osv.except_osv(_('Cảnh báo!'), 'Loại đối tượng cho công nợ "Phải thu bảo hiểm" chỉ được tạo cho "Nhà đầu tư"')
                             
                         journal_ids = self.pool.get('account.journal').search(cr, uid, [('code','=','TG')])
                         if not journal_ids:
