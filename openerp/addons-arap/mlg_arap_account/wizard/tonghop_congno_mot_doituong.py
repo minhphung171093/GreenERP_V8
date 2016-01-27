@@ -22,6 +22,10 @@ class tonghop_congno_mot_doituong(osv.osv_memory):
         'partner_id': fields.many2one('res.partner','Đối tượng', required=True),
         'loai_congno_ids': fields.many2many('loai.cong.no', 'thcnmdt_loaicongno_ref', 'thcnmdt_id', 'loaicongno_id','Loại công nợ'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
+        'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng'),
+        'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ DT-BH-AL'),
+        'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
+        'loai_baohiem_id': fields.many2one('loai.bao.hiem', 'Loại bảo hiểm'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

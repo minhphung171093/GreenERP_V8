@@ -33,6 +33,7 @@
             <field name="arch" type="xml">
                 <form string="Công nợ đầu kỳ" version='7.0' create='false' edit='false' delete='false'>
 					<header>
+						<button name='tinh_chi_tiet' string='Tính chi tiết' type='object'/>
 					</header>
                 	<sheet>
 	                    <group col="4" colspan="2">

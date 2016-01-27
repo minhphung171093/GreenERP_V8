@@ -16,6 +16,10 @@
 	                    	<field name='chinhanh_id' readonly='1'/>
 	                    	<field name='loai_congno_ids' widget="many2many_tags" options="{'no_create': True}"/>
 	                    	<field name='partner_id' context="{'cong_no_thu':1,'loai_doituong':loai_doituong}" options="{'no_create': True}"/>
+	                    	<field name='loai_tamung_id' options="{'no_create': True}"/>
+	                    	<field name='loai_nodoanhthu_id' options="{'no_create': True}"/>
+	                    	<field name='loai_vipham_id' options="{'no_create': True}"/>
+	                    	<field name='loai_baohiem_id' options="{'no_create': True}"/>
 	                    </group>
                     </sheet>
                     <footer>

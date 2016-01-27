@@ -148,6 +148,116 @@ class congno_dauky(osv.osv):
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
+    def tinh_chi_tiet(self, cr, uid, ids, context=None):
+        invoice_obj = self.pool.get('account.invoice')
+        for cndk in self.browse(cr, uid, ids):
+            for cndk_line in cndk.congno_dauky_line:
+                if cndk_line.mlg_type=='no_doanh_thu':
+                    sql = '''
+                        select id,name from loai_no_doanh_thu
+                    '''
+                    cr.execute(sql)
+                    for lndt in cr.fetchall():
+                        sql = '''
+                            select id
+                                from account_invoice
+                                where state in ('open','paid') and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                    and loai_nodoanhthu_id=%s
+                        '''%(cndk.partner_id.id,cndk_line.mlg_type,cndk_line.chinhanh_id.id,cndk.period_id.date_start,lndt[0])
+                        cr.execute(sql)
+                        invoice_ids = [r[0] for r in cr.fetchall()]
+                        so_tien_no = 0
+                        for line in invoice_obj.browse(cr, uid, invoice_ids):
+                            so_tien_no += line.so_tien
+                            for pay in line.payment_ids:
+                                if pay.date<cndk.period_id.date_start:
+                                    so_tien_no-=pay.credit
+                        if so_tien_no>0:
+                            self.pool.get('chitiet.congno.dauky.line').create(cr, uid, {
+                                'congno_dauky_line_id': cndk_line.id,
+                                'loai_id': lndt[0],
+                                'so_tien_no': so_tien_no,                                           
+                            })
+                if cndk_line.mlg_type=='phai_thu_bao_hiem':
+                    sql = '''
+                        select id,name from loai_bao_hiem
+                    '''
+                    cr.execute(sql)
+                    for lndt in cr.fetchall():
+                        sql = '''
+                            select id
+                                from account_invoice
+                                where state in ('open','paid') and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                    and loai_baohiem_id=%s
+                        '''%(cndk.partner_id.id,cndk_line.mlg_type,cndk_line.chinhanh_id.id,cndk.period_id.date_start,lndt[0])
+                        cr.execute(sql)
+                        invoice_ids = [r[0] for r in cr.fetchall()]
+                        so_tien_no = 0
+                        for line in invoice_obj.browse(cr, uid, invoice_ids):
+                            so_tien_no += line.so_tien
+                            for pay in line.payment_ids:
+                                if pay.date<cndk.period_id.date_start:
+                                    so_tien_no-=pay.credit
+                        if so_tien_no>0:
+                            self.pool.get('chitiet.congno.dauky.line').create(cr, uid, {
+                                'congno_dauky_line_id': cndk_line.id,
+                                'loai_id': lndt[0],
+                                'so_tien_no': so_tien_no,                                           
+                            })
+                if cndk_line.mlg_type=='phat_vi_pham':
+                    sql = '''
+                        select id,name from loai_vi_pham
+                    '''
+                    cr.execute(sql)
+                    for lndt in cr.fetchall():
+                        sql = '''
+                            select id
+                                from account_invoice
+                                where state in ('open','paid') and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                    and loai_vipham_id=%s
+                        '''%(cndk.partner_id.id,cndk_line.mlg_type,cndk_line.chinhanh_id.id,cndk.period_id.date_start,lndt[0])
+                        cr.execute(sql)
+                        invoice_ids = [r[0] for r in cr.fetchall()]
+                        so_tien_no = 0
+                        for line in invoice_obj.browse(cr, uid, invoice_ids):
+                            so_tien_no += line.so_tien
+                            for pay in line.payment_ids:
+                                if pay.date<cndk.period_id.date_start:
+                                    so_tien_no-=pay.credit
+                        if so_tien_no>0:
+                            self.pool.get('chitiet.congno.dauky.line').create(cr, uid, {
+                                'congno_dauky_line_id': cndk_line.id,
+                                'loai_id': lndt[0],
+                                'so_tien_no': so_tien_no,                                           
+                            })
+                if cndk_line.mlg_type=='hoan_tam_ung':
+                    sql = '''
+                        select id,name from loai_tam_ung
+                    '''
+                    cr.execute(sql)
+                    for lndt in cr.fetchall():
+                        sql = '''
+                            select id
+                                from account_invoice
+                                where state in ('open','paid') and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                    and loai_tamung_id=%s
+                        '''%(cndk.partner_id.id,cndk_line.mlg_type,cndk_line.chinhanh_id.id,cndk.period_id.date_start,lndt[0])
+                        cr.execute(sql)
+                        invoice_ids = [r[0] for r in cr.fetchall()]
+                        so_tien_no = 0
+                        for line in invoice_obj.browse(cr, uid, invoice_ids):
+                            so_tien_no += line.so_tien
+                            for pay in line.payment_ids:
+                                if pay.date<cndk.period_id.date_start:
+                                    so_tien_no-=pay.credit
+                        if so_tien_no>0:
+                            self.pool.get('chitiet.congno.dauky.line').create(cr, uid, {
+                                'congno_dauky_line_id': cndk_line.id,
+                                'loai_id': lndt[0],
+                                'so_tien_no': so_tien_no,                                           
+                            })
+        return True
+    
 congno_dauky()
     
 class congno_dauky_line(osv.osv):
