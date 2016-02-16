@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!--Quan lý phan phoi ve truyen thong-->   
+        <record model="ir.ui.view" id="phanphoi_truyenthong_tree">
+            <field name="name">phanphoi.truyenthong.tree</field>
+            <field name="model">phanphoi.truyenthong</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Phân phối vé truyền thống" >
+                    <field name="ky_ve_id" />
+                    <field name="loai_ve_id" />
+                    <field name="ngay_ph" />
+                </tree>
+            </field>
+        </record>  
+        
+       	<record model="ir.ui.view" id="phanphoi_truyenthong_form">
+	        <field name="name">phanphoi.truyenthong.form</field>
+	        <field name="model">phanphoi.truyenthong</field>
+	        <field name="arch" type="xml">
+	            <form string="Phân phối vé truyền thống" version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+	                		<field name="ky_ve_id" />
+		                    <field name="loai_ve_id" />
+		                    <field name="ngay_ph" />
+			            </group>
+			            <notebook>
+							<page string = "Chi tiết phân phối">
+								<field name="phanphoi_tt_line" nolabel='1'>
+									<tree editable='bottom'>
+										<field name="daily_id" on_change="onchange_daily_id(daily_id)"/>
+										<field name="ten_daily" />
+										<field name="socay_kytruoc" />
+										<field name="sove_kytruoc" /> 
+										<field name="socay_kynay" /> 
+										<field name="sove_kynay" /> 
+										<field name="tang_giam" /> 
+									</tree>
+								</field>
+							</page>
+						</notebook>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="action_phanphoi_truyenthong">
+            <field name="name">Phân phối vé truyền thống</field>
+            <field name="res_model">phanphoi.truyenthong</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+
+    
+    </data>
+</openerp>

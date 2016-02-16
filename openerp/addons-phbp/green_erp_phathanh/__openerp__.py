@@ -28,6 +28,10 @@
     'website' : 'http://incomtech.com/',
     'depends': ['green_erp_base'],
     'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'quanly_phanphoi_view.xml',
+        'menu.xml',
     ],
     'installable': True,
     'auto_install': False,
