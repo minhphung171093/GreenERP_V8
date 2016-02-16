@@ -30,7 +30,7 @@
 					parent="menu_danh_muc" sequence="16"/>
 					
 				<menuitem id="menu_action_ky_ve"
-					action="action_loai_ve"
+					action="action_ky_ve"
 					name="Kỳ vé"
 					parent="menu_danh_muc" sequence="20"/>
 					
