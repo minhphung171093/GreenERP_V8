@@ -31,7 +31,7 @@
                     <field name="name" />
                     <field name="ten" />
                     <field name="tinh_tp_id" />
-                    <field name="khu_vuc_id" />
+                    
                 </tree>
             </field>
         </record>  
@@ -46,7 +46,6 @@
 	                		<field name="name" />
 		                    <field name="ten" />
 		                    <field name="tinh_tp_id" />
-		                    <field name="khu_vuc_id" />
 			            </group>
 		            </sheet>		                
 	            </form>
@@ -59,42 +58,24 @@
             <field name="view_mode">tree,form</field>
         </record>  
 
-<!--Khu vực-->   
+<!--Điểm trả ế-->   
         <record model="ir.ui.view" id="khu_vuc_tree">
             <field name="name">khu.vuc.tree</field>
             <field name="model">khu.vuc</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Khu vực" editable='top'>
+                <tree string="Điểm trả ế" editable='top'>
                     <field name="name" />
                 </tree>
             </field>
         </record>  
         <record model="ir.actions.act_window" id="action_khu_vuc">
-            <field name="name">Khu vực</field>
+            <field name="name">Điểm trả ế</field>
             <field name="res_model">khu.vuc</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>  
 
-<!--quận-->   
-        <record model="ir.ui.view" id="quan_huyen_tree">
-            <field name="name">quan.huyen.tree</field>
-            <field name="model">quan.huyen</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Quận/Huyện" editable='top'>
-                    <field name="name" />
-                    <field name="tinh_thanh_id" />
-                </tree>
-            </field>
-        </record>  
-        <record model="ir.actions.act_window" id="action_quan_huyen">
-            <field name="name">Quận/Huyện</field>
-            <field name="res_model">quan.huyen</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>  
         
 <!--Phường xã-->   
   <!--      <record model="ir.ui.view" id="phuong_xa_tree">
@@ -115,41 +96,41 @@
             <field name="view_mode">tree,form</field>
         </record>  
         -->
-<!--Tiêu chí-->   
-        <record model="ir.ui.view" id="tieu_chi_tree">
-            <field name="name">tieu.chi.tree</field>
-            <field name="model">tieu.chi</field>
+<!--Kỳ vé-->   
+        <record model="ir.ui.view" id="ky_ve_tree">
+            <field name="name">ky.ve.tree</field>
+            <field name="model">ky.ve</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Tiêu chí" editable='top'>
+                <tree string="Kỳ vé" editable='top'>
                     <field name="name" />
                 </tree>
             </field>
         </record>  
-        <record model="ir.actions.act_window" id="action_tieu_chi">
-            <field name="name">Tiêu chí</field>
-            <field name="res_model">tieu.chi</field>
+        <record model="ir.actions.act_window" id="action_ky_ve">
+            <field name="name">Kỳ vé</field>
+            <field name="res_model">ky.ve</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>  
     
-<!--Cơ quan quản lý-->   
-        <record model="ir.ui.view" id="coquan_quanly_tree">
-            <field name="name">coquan.quanly.tree</field>
-            <field name="model">coquan.quanly</field>
+<!--Loại vé-->   
+        <record model="ir.ui.view" id="loai_ve_tree">
+            <field name="name">loai.ve.tree</field>
+            <field name="model">loai.ve</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Cơ quan quản lý" editable='top'>
+                <tree string="Loại vé" editable='top'>
                     <field name="name" />
                 </tree>
             </field>
         </record>  
-        <record model="ir.actions.act_window" id="action_coquan_quanly">
-            <field name="name">Cơ quan quản lý</field>
-            <field name="res_model">coquan.quanly</field>
+        <record model="ir.actions.act_window" id="action_loai_ve">
+            <field name="name">Loại vé</field>
+            <field name="res_model">loai.ve</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-        </record> 
+        </record>  
         
 <!--Phân loại-->   
         <record model="ir.ui.view" id="phan_loai_tree">

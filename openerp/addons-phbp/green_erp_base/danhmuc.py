@@ -30,37 +30,39 @@ class dai_ly(osv.osv):
         'name': fields.char('Mã Đại Lý',size = 1024, required = True),
         'ten': fields.char('Tên Đại Lý',size = 1024, required = True),
         'tinh_tp_id': fields.many2one( 'tinh.tp','Tỉnh/Thành Phố', required = True),
-        'khu_vuc_id': fields.many2one( 'khu.vuc','Thuộc khu vực', required = True),
+#         'khu_vuc_id': fields.many2one( 'khu.vuc','Thuộc khu vực', required = True),
                 }
 dai_ly()
 
 class khu_vuc(osv.osv):
     _name = "khu.vuc"
     _columns = {
-        'name': fields.char('Mã Khu Vực',size = 1024, required = True),
+        'name': fields.char('Mã Điểm trả ế',size = 1024, required = True),
                 }
 khu_vuc()
-class quan_huyen(osv.osv):
-    _name = "quan.huyen"
-    _columns = {
-        'name': fields.char('Quận (huyện)',size = 1024, required = True),
-        'tinh_thanh_id':fields.many2one('tinh.tp','Thuộc Tỉnh/Thành phố', required = True),
-                }
-quan_huyen()
 
-class tieu_chi(osv.osv):
-    _name = "tieu.chi"
-    _columns = {
-        'name': fields.char('Tên tiêu chí',size = 1024, required = True),
-                }
-tieu_chi()
 
-class coquan_quanly(osv.osv):
-    _name = "coquan.quanly"
+# class quan_huyen(osv.osv):
+#     _name = "quan.huyen"
+#     _columns = {
+#         'name': fields.char('Quận (huyện)',size = 1024, required = True),
+#         'tinh_thanh_id':fields.many2one('tinh.tp','Thuộc Tỉnh/Thành phố', required = True),
+#                 }
+# quan_huyen()
+
+class ky_ve(osv.osv):
+    _name = "ky.ve"
     _columns = {
-        'name': fields.char('Tên cơ quan quản lý',size = 1024, required = True),
+        'name': fields.char('Mã kỳ vé',size = 1024, required = True),
                 }
-coquan_quanly()
+ky_ve()
+
+class loai_ve(osv.osv):
+    _name = "loai.ve"
+    _columns = {
+        'name': fields.char('Loại vé',size = 1024, required = True),
+                }
+loai_ve()
 
 class phan_loai(osv.osv):
     _name = "phan.loai"

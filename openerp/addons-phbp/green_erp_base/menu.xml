@@ -20,21 +20,21 @@
 
 				<menuitem id="menu_action_khu_vuc"
 					action="action_khu_vuc"
-					name="Khu vực"
+					name="Điểm trả ế"
 					parent="menu_danh_muc" sequence="15"/>
 
 					
-<!--  				<menuitem id="menu_action_quan_huyen"
-					action="action_quan_huyen"
-					name="Quận/Huyện"
-					parent="menu_danh_muc" sequence="15"/>
+  				<menuitem id="menu_action_loai_ve"
+					action="action_loai_ve"
+					name="Loại vé"
+					parent="menu_danh_muc" sequence="16"/>
 					
-				<menuitem id="menu_action_phuong_xa"
-					action="action_phuong_xa"
-					name="Phường/Xã"
+				<menuitem id="menu_action_ky_ve"
+					action="action_loai_ve"
+					name="Kỳ vé"
 					parent="menu_danh_muc" sequence="20"/>
 					
-				<menuitem id="menu_action_tieu_chi"
+<!--				<menuitem id="menu_action_tieu_chi"
 					action="action_tieu_chi"
 					name="Tiêu chí"
 					parent="menu_danh_muc" sequence="25"/>
