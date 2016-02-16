@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record id="tragopxe_wizard_form_view" model="ir.ui.view">
+	        <field name="name">tragopxe.wizard.form</field>
+	        <field name="model">tragopxe.wizard</field>
+	        <field eval="20" name="priority"/>
+	        <field name="arch" type="xml">
+	            <form string="Trả góp xe" version="7.0">
+	                <group>
+	                	<field name="so_hop_dong"/>
+	                </group>
+	                <footer>
+	                    <button name="bt_xemcongno" string="Xem công nợ" type='object' class="oe_highlight"/>
+	                </footer>
+	            </form>
+	        </field>
+    	</record>
+
+	    <record model="ir.actions.act_window" id="action_tragopxe_wizard">
+	        <field name="name">Trả góp xe</field>
+	        <field name="res_model">tragopxe.wizard</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="tragopxe_wizard_form_view" />
+	        <field name="target">new</field>
+	    </record>
+	    
+	    <record id="view_tragopxe_tattoan_form" model="ir.ui.view">
+	        <field name="name">tragopxe.tattoan.form</field>
+	        <field name="model">tragopxe.tattoan</field>
+	        <field eval="20" name="priority"/>
+	        <field name="arch" type="xml">
+	            <form string="Trả góp xe tất toán" version="7.0" create='false' edit='false' delete='false'>
+	            	<header>
+	            		<button name="bt_tattoan" string="Tất toán" attrs="{'invisible':[('show_tattoan','=',False)]}" type='object' class="oe_highlight"/>
+	            		<field name="show_tattoan" invisible='1'/>
+	            	</header>
+	                <group>
+	                	<h1>
+	                		<label string="Số hợp đồng: "/>
+	                		<field name="so_hop_dong" class="oe_inline"/>
+	                	</h1>
+	                </group>
+	                <group string="Các công nợ">
+	                	<field name="tra_gop_xe_ids" nolabel='1' context="{'tree_view_ref': 'mlg_arap_account.view_tra_gop_xe_tree','form_view_ref': 'mlg_arap_account.view_tra_gop_xe_form'}"/>
+	                </group>
+	            </form>
+	        </field>
+    	</record>
+	    
+    </data>
+</openerp>
+

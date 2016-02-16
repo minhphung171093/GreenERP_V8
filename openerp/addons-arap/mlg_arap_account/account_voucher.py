@@ -355,8 +355,8 @@ class account_voucher(osv.osv):
                 if invoice.date_invoice>voucher.date:
                     raise osv.except_osv(_('Cảnh báo!'), 'Ngày thanh toán phải lớn hơn ngày công nợ!')
                 
-                date_now = time.strftime('%Y-%m-%d')
-                if date_now[:4]!=voucher.date[:4] or date_now[5:7]!=voucher.date[5:7]:
+                startdate_now = time.strftime('%Y-%m-01')
+                if voucher.date<startdate_now:
                     nodauky_obj = self.pool.get('congno.dauky')
                     nodauky_line_obj = self.pool.get('congno.dauky.line')
                     chitiet_nodauky_line_obj = self.pool.get('chitiet.congno.dauky.line')

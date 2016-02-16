@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<menuitem id="menu_xuat_hoa_don"
+			name="Xuất hóa đơn" sequence="12"/>
+			
+			<menuitem id="menu_xuathoadongiam"
+				name="Xuất hóa đơn giảm"
+				parent="menu_xuat_hoa_don" sequence="10"/>
+				
+				<menuitem id="menu_action_tragopxe_wizard"
+					action="action_tragopxe_wizard"
+					name="Trả góp xe"
+					parent="menu_xuathoadongiam" sequence="10"/>
+					
+			<menuitem id="menu_baocao_doichieu"
+				name="Báo cáo - đối chiếu"
+				parent="menu_xuat_hoa_don" sequence="20"/>
+				
+				<menuitem id="menu_action_chitiet_congno_tgx_tattoan"
+					action="action_chitiet_congno_tgx_tattoan"
+					name="Chi tiết trả góp xe"
+					parent="menu_baocao_doichieu" sequence="10"/>
+					
+	</data>
+</openerp>

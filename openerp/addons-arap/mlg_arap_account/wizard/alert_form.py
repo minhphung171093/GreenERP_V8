@@ -19,3 +19,17 @@ class alert_warning_form(osv.osv_memory):
 
     
 alert_warning_form()
+
+class tinh_chi_tiet_wizard(osv.osv_memory):
+    _name = "tinh.chi.tiet.wizard"
+    _columns = {    
+                'name': fields.char(string="Title", size=1024, readonly=True),
+                }
+    
+    def bt_tinhchitiet(self, cr, uid, ids, context=None):
+        if context.get('active_ids', False):
+            self.pool.get('congno.dauky').tinh_chi_tiet(cr, uid, context['active_ids'], context)
+        return True
+    
+tinh_chi_tiet_wizard()
+

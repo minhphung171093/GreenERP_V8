@@ -336,7 +336,9 @@ class account_invoice(osv.osv):
     
     def write(self, cr, uid, ids, vals, context=None):
         wf_service = netsvc.LocalService("workflow")
+        old_state_vals = {}
         for line in self.browse(cr, uid, ids):
+            old_state_vals[line.id]=line.state
 #             user = line.user_id
 #             vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
 #             if ((vals.get('loai_doituong',False) and vals['loai_doituong']!='nhadautu') or ('loai_doituong' not in vals and line.loai_doituong and line.loai_doituong!='nhadautu')) and vals.get('partner_id',False):
@@ -418,7 +420,100 @@ class account_invoice(osv.osv):
                     sotien_dathu = cr.fetchone()[0]
                     if sotien_dathu<line.so_tien:
                         raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
-                    
+            
+            if vals.get('state',False)=='cancel' and old_state_vals and old_state_vals[line.id]=='open':
+                date_now = time.strftime('%Y-%m-%d')
+                startdate_now = time.strftime('%Y-%m-01')
+                enddate_pre = datetime.strptime(startdate_now,'%Y-%m-%d')+timedelta(days=-1)
+                enddate_pre_str = enddate_pre.strftime('%Y-%m-%d')
+                startdate_pre_f = enddate_pre_str[:4]+'-'+enddate_pre_str[5:7]+'-01'
+                startdate_pre_str = time.strftime(startdate_pre_f)
+                if line.date_invoice<startdate_pre_str:
+                    raise osv.except_osv(_('Cảnh báo!'),_('Không được hủy công nợ cho tháng cách tháng hiện tại hơn hai tháng!'))
+                if line.date_invoice<startdate_now:
+                    nodauky_obj = self.pool.get('congno.dauky')
+                    nodauky_line_obj = self.pool.get('congno.dauky.line')
+                    chitiet_nodauky_line_obj = self.pool.get('chitiet.congno.dauky.line')
+                    date_invoice = datetime.strptime(line.date_invoice,'%Y-%m-%d')
+                    end_of_month = str(date_invoice + relativedelta(months=+1, day=1, days=-1))[:10]
+                    date_invoice_str = date_invoice.strftime('%Y-%m-%d')
+                    day = int(end_of_month[8:10])-int(date_invoice_str[8:10])+3
+                    next_month = date_invoice + timedelta(days=day)
+                    next_month_str = next_month.strftime('%Y-%m-%d')
+                    sql = '''
+                        select id,date_start,date_stop from account_period
+                            where '%s' between date_start and date_stop and special != 't' limit 1 
+                    '''%(next_month_str)
+                    cr.execute(sql)
+                    period = cr.dictfetchone()
+                    if period:
+                        sql = '''
+                            select id from congno_dauky where period_id=%s and partner_id=%s
+                        '''%(period['id'],line.partner_id.id)
+                        cr.execute(sql)
+                        nodauky = cr.fetchone()
+                        if nodauky:
+                            sql = '''
+                                select id from congno_dauky_line
+                                    where congno_dauky_id=%s and chinhanh_id=%s and mlg_type='%s'
+                            '''%(nodauky[0], line.chinhanh_id.id, line.mlg_type)
+                            cr.execute(sql)
+                            nodauky_line = cr.fetchone()
+                            if nodauky_line:
+                                sql = '''
+                                    update congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s                            
+                                '''%(line.so_tien,nodauky_line[0])
+                                cr.execute(sql)
+                                
+                                if line.mlg_type=='no_doanh_thu' and line.loai_nodoanhthu_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],line.loai_nodoanhthu_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(line.so_tien,chitiet_line[0])
+                                        cr.execute(sql)
+                                if line.mlg_type=='phai_thu_bao_hiem' and line.loai_baohiem_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],line.loai_baohiem_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(line.so_tien,chitiet_line[0])
+                                        cr.execute(sql)
+                                if line.mlg_type=='phat_vi_pham' and line.loai_vipham_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],line.loai_vipham_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(line.so_tien,chitiet_line[0])
+                                        cr.execute(sql)
+                                if line.mlg_type=='hoan_tam_ung' and line.loai_tamung_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],line.loai_tamung_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(line.so_tien,chitiet_line[0])
+                                        cr.execute(sql)
+                
             if vals.get('state',False)=='open':
                 date_now = time.strftime('%Y-%m-%d')
                 startdate_now = time.strftime('%Y-%m-01')
@@ -428,8 +523,7 @@ class account_invoice(osv.osv):
                 startdate_pre_str = time.strftime(startdate_pre_f)
                 if line.date_invoice<startdate_pre_str:
                     raise osv.except_osv(_('Cảnh báo!'),_('Không được treo công nợ cho tháng cách tháng hiện tại hơn hai tháng!'))
-                
-                if date_now[:4]!=line.date_invoice[:4] or date_now[5:7]!=line.date_invoice[5:7]:
+                if line.date_invoice<startdate_now:
                     nodauky_obj = self.pool.get('congno.dauky')
                     nodauky_line_obj = self.pool.get('congno.dauky.line')
                     chitiet_nodauky_line_obj = self.pool.get('chitiet.congno.dauky.line')

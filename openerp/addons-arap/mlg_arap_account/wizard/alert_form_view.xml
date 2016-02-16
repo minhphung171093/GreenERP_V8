@@ -25,6 +25,35 @@
 	        <field name="view_id" ref="alert_warning_form_view" />
 	        <field name="target">new</field>
 	    </record>
+	    
+	    <record id="tinh_chi_tiet_wizard_form_view" model="ir.ui.view">
+	        <field name="name">tinh.chi.tiet.wizard.form</field>
+	        <field name="model">tinh.chi.tiet.wizard</field>
+	        <field eval="20" name="priority"/>
+	        <field name="arch" type="xml">
+	            <form string="Tính chi tiết" version="7.0">
+	                <h1>
+	                	<field name="name" nolabel="1" invisible="0"/>
+	                </h1>
+	                <footer>
+	                	<button name="bt_tinhchitiet" type="object" string="Thực hiện" class="oe_highlight"/>
+	                	hoặc
+	                    <button string="Hủy bỏ" class="oe_highlight" special="cancel" />
+	                </footer>
+	            </form>
+	        </field>
+    	</record>
+
+	    <record model="ir.actions.act_window" id="action_tinh_chi_tiet_wizard">
+	        <field name="name">Tính chi tiết</field>
+	        <field name="res_model">tinh.chi.tiet.wizard</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="tinh_chi_tiet_wizard_form_view" />
+	        <field name="context">{'default_name': 'Bạn thật sự muốn tính chi tiết các dòng đã chọn?'}</field>
+	        <field name="target">new</field>
+	    </record>
+	    
     </data>
 </openerp>
 

@@ -134,6 +134,7 @@
 	                        	<field name="giayphep_kinhdoanh" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        	<field name="phone" string="Điện thoại"/>
 			                    <field name="email"/>
+			                    <field name="da_nghi"/>
 			                    <field name="loai_doituong_lienket" attrs="{'invisible':[('nhadautu','=',False)]}"/>
 	                        </group>
 	                    </group>
@@ -279,6 +280,7 @@
 	                        	<field name="phone" string="Điện thoại"/>
 			                    <field name="email"/>
 			                    <field name="loai_doituong_lienket" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+			                    <field name="da_nghi"/>
 	                        </group>
 	                    </group>
 	
@@ -427,6 +429,7 @@
 	                        	<field name="phone" string="Điện thoại"/>
 			                    <field name="email"/>
 			                    <field name="loai_doituong_lienket" attrs="{'invisible':[('nhadautu','=',False)]}"/>
+			                    <field name="da_nghi"/>
 	                        </group>
 	                    </group>
 	
@@ -569,6 +572,7 @@
 			                    <field name="property_account_receivable" invisible='1'/>
 	                        	<field name="property_account_payable" invisible='1'/>
 	                        	<field name="account_ht_id" invisible='1'/>
+	                        	<field name="da_nghi"/>
 	                        </group>
 	                    </group>
 	

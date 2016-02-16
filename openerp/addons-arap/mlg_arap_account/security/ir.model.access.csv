@@ -17,6 +17,7 @@ access_mlg_arap_account_15,loai.bao.hiem,mlg_arap_account.model_loai_bao_hiem,ba
 access_mlg_arap_account_16,import.congno.tudong,mlg_arap_account.model_import_congno_tudong,base.group_user,1,0,0,0
 access_mlg_arap_account_17,congno.dauky,mlg_arap_account.model_congno_dauky,base.group_user,1,0,0,0
 access_mlg_arap_account_18,congno.dauky.line,mlg_arap_account.model_congno_dauky_line,base.group_user,1,0,0,0
+access_mlg_arap_account_60,chitiet.congno.dauky.line,mlg_arap_account.model_chitiet_congno_dauky_line,base.group_user,1,0,0,0
 access_mlg_arap_account_19,import.congno.tudong,mlg_arap_account.model_import_congno_tudong,base.group_user,1,0,0,0
 access_mlg_arap_account_20,import.congno.manually,mlg_arap_account.model_import_congno_manually,base.group_user,1,0,0,0
 access_mlg_arap_account_21,cauhinh.thumuc.import,mlg_arap_account.model_cauhinh_thumuc_import,base.group_user,1,0,0,0
@@ -47,6 +48,7 @@ access_mlg_arap_account_41,loai.bao.hiem,mlg_arap_account.model_loai_bao_hiem,ac
 access_mlg_arap_account_42,import.congno.tudong,mlg_arap_account.model_import_congno_tudong,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_43,congno.dauky,mlg_arap_account.model_congno_dauky,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_44,congno.dauky.line,mlg_arap_account.model_congno_dauky_line,account.group_account_manager,1,1,1,1
+access_mlg_arap_account_61,chitiet.congno.dauky.line,mlg_arap_account.model_chitiet_congno_dauky_line,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_45,import.congno.tudong,mlg_arap_account.model_import_congno_tudong,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_46,import.congno.manually,mlg_arap_account.model_import_congno_manually,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_47,cauhinh.thumuc.import,mlg_arap_account.model_cauhinh_thumuc_import,account.group_account_manager,1,1,1,1

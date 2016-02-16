@@ -164,6 +164,7 @@ class res_partner(osv.osv):
         'nhadautu': fields.boolean('Nhà đầu tư'),
         'nhadautugiantiep': fields.boolean('Nhà đầu tư gián tiếp'),
         'nhanvienvanphong': fields.boolean('Nhân viên văn phòng'),
+        'da_nghi': fields.boolean('Đã nghỉ'),
         'chinhanh_line': fields.one2many('chi.nhanh.line','partner_id','Chi nhánh NDT'),
         'cmnd': fields.char('Số CMND', size=1024),
         'mst': fields.char('Mã số thuế', size=1024),

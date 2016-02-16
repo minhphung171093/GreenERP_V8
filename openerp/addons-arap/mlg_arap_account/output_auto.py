@@ -1217,7 +1217,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='no_doanh_thu' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        where ai.mlg_type='no_doanh_thu' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
                 '''
@@ -1285,7 +1285,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='chi_ho_dien_thoai' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        where ai.mlg_type='chi_ho_dien_thoai' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name, ai.so_hoa_don, ai.so_dien_thoai
                 '''
@@ -1356,7 +1356,7 @@ class output_congno_tudong(osv.osv):
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         
-                        where ai.mlg_type='phai_thu_bao_hiem' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        where ai.mlg_type='phai_thu_bao_hiem' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hoa_don
                 '''
@@ -1426,7 +1426,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='phat_vi_pham' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        where ai.mlg_type='phat_vi_pham' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
                 '''
@@ -1497,7 +1497,7 @@ class output_congno_tudong(osv.osv):
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         left join ma_xuong mx on mx.id=ai.ma_xuong_id
                         
-                        where ai.mlg_type='thu_no_xuong' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        where ai.mlg_type='thu_no_xuong' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hop_dong,ai.ma_bang_chiettinh_chiphi_sua,mx.code
                 '''
@@ -1570,7 +1570,7 @@ class output_congno_tudong(osv.osv):
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         
-                        where ai.mlg_type='thu_phi_thuong_hieu' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        where ai.mlg_type='thu_phi_thuong_hieu' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hop_dong
                 '''
@@ -1640,7 +1640,7 @@ class output_congno_tudong(osv.osv):
                         rp.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cn.name as ten_chi_nhanh, cn.code as ma_chi_nhanh
                         from res_partner rp
                         left join account_account cn on cn.id=rp.chinhanh_id
-                        where rp.sotien_conlai>0 and rp.taixe = True
+                        where rp.sotien_conlai>0 and rp.taixe = True and (rp.da_nghi!=True or rp.da_nghi is null)
                 '''
                 cr.execute(sql)
                 for partner in cr.dictfetchall():
@@ -1766,7 +1766,7 @@ class output_congno_tudong(osv.osv):
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
                         
-                        where ai.mlg_type='tra_gop_xe' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        where ai.mlg_type='tra_gop_xe' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hop_dong
                 '''
@@ -1836,7 +1836,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='no_doanh_thu' and state='open' and dt.nhanvienvanphong = True
+                        where ai.mlg_type='no_doanh_thu' and state='open' and dt.nhanvienvanphong = True and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
                 '''
@@ -1904,7 +1904,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='phat_vi_pham' and state='open' and ai.loai_doituong='nhanvienvanphong'
+                        where ai.mlg_type='phat_vi_pham' and state='open' and ai.loai_doituong='nhanvienvanphong' and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
                 '''
@@ -1972,7 +1972,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='hoan_tam_ung' and state='open' and ai.loai_doituong='nhanvienvanphong'
+                        where ai.mlg_type='hoan_tam_ung' and state='open' and ai.loai_doituong='nhanvienvanphong' and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
                 '''
@@ -2040,7 +2040,7 @@ class output_congno_tudong(osv.osv):
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         
-                        where ai.mlg_type='hoan_tam_ung' and state='open' and (dt.taixe = True or dt.nhadautu = True)
+                        where ai.mlg_type='hoan_tam_ung' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
                         group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
                 '''
@@ -2108,7 +2108,7 @@ class output_congno_tudong(osv.osv):
                         rp.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cn.name as ten_chi_nhanh, cn.code as ma_chi_nhanh
                         from res_partner rp
                         left join account_account cn on cn.id=rp.chinhanh_id
-                        where rp.sotien_conlai>0 and rp.nhanvienvanphong = True
+                        where rp.sotien_conlai>0 and rp.nhanvienvanphong = True and (rp.da_nghi!=True or rp.da_nghi is null)
                 '''
                 cr.execute(sql)
                 for partner in cr.dictfetchall():
