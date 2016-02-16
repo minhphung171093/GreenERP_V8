@@ -12,8 +12,19 @@
 					action="action_tinh_tp"
 					name="Tỉnh/Thành phố"
 					parent="menu_danh_muc" sequence="10"/>
+
+				<menuitem id="menu_dai_ly_action"
+					action="dai_ly_action"
+					name="Đại lý"
+					parent="menu_danh_muc" sequence="12"/>
+
+				<menuitem id="menu_action_khu_vuc"
+					action="action_khu_vuc"
+					name="Khu vực"
+					parent="menu_danh_muc" sequence="15"/>
+
 					
-				<menuitem id="menu_action_quan_huyen"
+<!--  				<menuitem id="menu_action_quan_huyen"
 					action="action_quan_huyen"
 					name="Quận/Huyện"
 					parent="menu_danh_muc" sequence="15"/>
@@ -41,7 +52,7 @@
 				<menuitem id="menu_action_hethong_dambao_attp"
 					action="action_hethong_dambao_attp"
 					name="Hệ thống đảm bảo ATTP"
-					parent="menu_danh_muc" sequence="40"/>
+					parent="menu_danh_muc" sequence="40"/> -->
 					
     </data>	
 </openerp>

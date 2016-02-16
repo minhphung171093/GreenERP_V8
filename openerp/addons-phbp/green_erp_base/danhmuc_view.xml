@@ -10,12 +10,69 @@
             <field name="arch" type="xml">
                 <tree string="Tỉnh/Thành phố" editable='top'>
                     <field name="name" />
+                    <field name="ten" />
                 </tree>
             </field>
         </record>  
         <record model="ir.actions.act_window" id="action_tinh_tp">
             <field name="name">Tỉnh/Thành phố</field>
             <field name="res_model">tinh.tp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+
+<!--đại lý-->   
+        <record model="ir.ui.view" id="dai_ly_tree">
+            <field name="name">dai.ly.tree</field>
+            <field name="model">dai.ly</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Đại lý" >
+                    <field name="name" />
+                    <field name="ten" />
+                    <field name="tinh_tp_id" />
+                    <field name="khu_vuc_id" />
+                </tree>
+            </field>
+        </record>  
+        
+       	<record model="ir.ui.view" id="dai_ly_form">
+	        <field name="name">dai.ly.form</field>
+	        <field name="model">dai.ly</field>
+	        <field name="arch" type="xml">
+	            <form string="Đại lý" version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+	                		<field name="name" />
+		                    <field name="ten" />
+		                    <field name="tinh_tp_id" />
+		                    <field name="khu_vuc_id" />
+			            </group>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="dai_ly_action">
+            <field name="name">Đại lý</field>
+            <field name="res_model">dai.ly</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+
+<!--Khu vực-->   
+        <record model="ir.ui.view" id="khu_vuc_tree">
+            <field name="name">khu.vuc.tree</field>
+            <field name="model">khu.vuc</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Khu vực" editable='top'>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>  
+        <record model="ir.actions.act_window" id="action_khu_vuc">
+            <field name="name">Khu vực</field>
+            <field name="res_model">khu.vuc</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>  
@@ -40,7 +97,7 @@
         </record>  
         
 <!--Phường xã-->   
-        <record model="ir.ui.view" id="phuong_xa_tree">
+  <!--      <record model="ir.ui.view" id="phuong_xa_tree">
             <field name="name">phuong.xa.tree</field>
             <field name="model">phuong.xa</field>
             <field name="type">tree</field>
@@ -57,7 +114,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>  
-        
+        -->
 <!--Tiêu chí-->   
         <record model="ir.ui.view" id="tieu_chi_tree">
             <field name="name">tieu.chi.tree</field>

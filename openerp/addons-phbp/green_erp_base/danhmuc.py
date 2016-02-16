@@ -19,18 +19,27 @@ from openerp import modules
 class tinh_tp(osv.osv):
     _name = "tinh.tp"
     _columns = {
-        'name': fields.char('Tỉnh/Thành Phố',size = 1024, required = True),
+        'name': fields.char('Mã Tỉnh/Thành Phố',size = 1024, required = True),
+        'ten': fields.char('Tên Tỉnh/Thành Phố',size = 1024, required = True),
                 }
 tinh_tp()
 
-class phuong_xa(osv.osv):
-    _name = "phuong.xa"
+class dai_ly(osv.osv):
+    _name = "dai.ly"
     _columns = {
-        'name': fields.char('Phường (xã)',size = 1024, required = True),
-         'quan_huyen_id': fields.many2one( 'quan.huyen','Quận (huyện)', required = True),
+        'name': fields.char('Mã Đại Lý',size = 1024, required = True),
+        'ten': fields.char('Tên Đại Lý',size = 1024, required = True),
+        'tinh_tp_id': fields.many2one( 'tinh.tp','Tỉnh/Thành Phố', required = True),
+        'khu_vuc_id': fields.many2one( 'khu.vuc','Thuộc khu vực', required = True),
                 }
-phuong_xa()
+dai_ly()
 
+class khu_vuc(osv.osv):
+    _name = "khu.vuc"
+    _columns = {
+        'name': fields.char('Mã Khu Vực',size = 1024, required = True),
+                }
+khu_vuc()
 class quan_huyen(osv.osv):
     _name = "quan.huyen"
     _columns = {
