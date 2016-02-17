@@ -30,6 +30,7 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'report/dieuchinh_kehoach_pp_ve_report_view.xml',
         'quanly_phanphoi_view.xml',
 #         'quanly_nhap_ve_e_view.xml',
         'menu.xml',

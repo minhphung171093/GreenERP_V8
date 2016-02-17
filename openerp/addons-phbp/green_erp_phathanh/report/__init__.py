@@ -1,8 +1,9 @@
-# -*- coding: utf-8# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
+#    Copyright (C) 2011-2012 Serpent Consulting Services (<http://www.serpentcs.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,23 +20,13 @@
 #
 ##############################################################################
 
-{
-    'name': 'GreenERP BASE',
-    'version': '1.0',
-    'category': 'GreenERP',
-    'sequence': 1,
-    'author': 'nguyentoanit@gmail.com',
-    'website' : 'http://incomtech.com/',
-    'depends': ['report_aeroo','report_aeroo_controller','web','web_google_map','web_readonly_bypass'],
-    'data': [
-        'security/security.xml',
-        'security/ir.model.access.csv',
-        'ir_ui_menu_view.xml',
-        'danhmuc_view.xml',
-        'menu.xml',
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': True,
-}
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4: -*-
+#----------------------------------------------------------
+# A Module to School Fees Management System
+#-------------------------------------------------------
+import hoadon_vat
+import doanhthu_banhang_report
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
+
+
+
