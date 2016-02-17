@@ -18,5 +18,11 @@
 					name="Điều chỉnh kế hoạch phân phối vé"
 					parent="menu_quanly_phanphoi" sequence="3"/>
 					
+				<menuitem id="menu_action_nhap_ve_e"
+					action="action_nhap_ve_e"
+					name="Nhập vé ế theo khu vực"
+					parent="menu_quanly_phanphoi" sequence="2"/>
+
+					
     </data>	
 </openerp>
