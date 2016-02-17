@@ -12,6 +12,11 @@
 					action="action_phanphoi_truyenthong"
 					name="Danh sách kế hoạch phân phối vé truyền thống"
 					parent="menu_quanly_phanphoi" sequence="1"/>
+					
+				<menuitem id="menu_action_nhap_ve_e"
+					action="action_nhap_ve_e"
+					name="Nhập vé ế theo khu vực"
+					parent="menu_quanly_phanphoi" sequence="2"/>
 
 					
     </data>	

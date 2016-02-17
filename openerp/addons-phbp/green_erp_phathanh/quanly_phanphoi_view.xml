@@ -53,6 +53,58 @@
             <field name="view_mode">tree,form</field>
         </record>  
 
+<!--Quan lý nhập vé ế theo khu vực-->   
+        <record model="ir.ui.view" id="nhap_ve_e_tree">
+            <field name="name">nhap.ve.e.tree</field>
+            <field name="model">nhap.ve.e</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Nhập vé ế theo khu vực" >
+                    <field name="ky_ve_id" />
+                    <field name="loai_ve_id" />
+                    <field name="ngay_mo_thuong" />
+                </tree>
+            </field>
+        </record>  
+        
+       	<record model="ir.ui.view" id="nhap_ve_e_form">
+	        <field name="name">nhap.ve.e.form</field>
+	        <field name="model">nhap.ve.e</field>
+	        <field name="arch" type="xml">
+	            <form string="Nhập vé ế theo khu vực" version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+	                		<field name="ky_ve_id" />
+		                    <field name="loai_ve_id" />
+		                    <field name="ngay_mo_thuong" />
+			            </group>
+			            <notebook>
+							<page string = "Chi tiết nhập vé ế">
+								<field name="nhap_ve_e_line" nolabel='1'>
+									<tree editable='bottom' >
+										<field name="daily_id" on_change="onchange_daily_id(daily_id)"/>
+										<field name="ten_daily" />
+										<field name="diem_tra_e_id" />
+										<field name="ma_khu_vuc" /> 
+										<field name="ve_e_theo_bangke" /> 
+										<field name="kiem_dem_thua" /> 
+										<field name="kiem_dem_thieu"/> 
+										<field name="thuc_kiem" /> 
+										<field name="ghi_chu" /> 
+									</tree>
+								</field>
+							</page>
+						</notebook>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="action_nhap_ve_e">
+            <field name="name">Nhập vé ế theo khu vực</field>
+            <field name="res_model">nhap.ve.e</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
     
     </data>
 </openerp>

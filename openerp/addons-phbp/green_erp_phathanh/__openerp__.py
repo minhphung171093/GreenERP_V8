@@ -31,7 +31,7 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'quanly_phanphoi_view.xml',
-        'quanly_nhap_ve_e_view.xml',
+#         'quanly_nhap_ve_e_view.xml',
         'menu.xml',
     ],
     'installable': True,
