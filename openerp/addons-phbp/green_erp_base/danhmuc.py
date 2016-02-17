@@ -55,6 +55,22 @@ class ky_ve(osv.osv):
     _columns = {
         'name': fields.char('Mã kỳ vé',size = 1024, required = True),
                 }
+    
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        if context.get('search_ky_ve'):
+            sql = '''
+                select id from ky_ve
+                where id not in (select ky_ve_id from phanphoi_truyenthong where ky_ve_id is not null)
+            '''
+            cr.execute(sql)
+            ky_ve_ids = [row[0] for row in cr.fetchall()]
+            args += [('id','in',ky_ve_ids)]
+        return super(ky_ve, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+       ids = self.search(cr, user, args, context=context, limit=limit)
+       return self.name_get(cr, user, ids, context=context)
 ky_ve()
 
 class loai_ve(osv.osv):

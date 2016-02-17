@@ -23,8 +23,8 @@
 	            <form string="Phân phối vé truyền thống" version="7.0">
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="ky_ve_id" />
-		                    <field name="loai_ve_id" />
+	                		<field name="ky_ve_id" context="{'search_ky_ve':1}" on_change="onchange_previous_phanphoi(ky_ve_id,loai_ve_id)"/>
+		                    <field name="loai_ve_id" on_change="onchange_previous_phanphoi(ky_ve_id,loai_ve_id)"/>
 		                    <field name="ngay_ph" />
 			            </group>
 			            <notebook>

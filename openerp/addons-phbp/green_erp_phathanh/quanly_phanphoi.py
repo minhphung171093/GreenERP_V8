@@ -24,6 +24,31 @@ class phanphoi_truyenthong(osv.osv):
         'ngay_ph': fields.date('Ngày phát hành',required = True),
         'phanphoi_tt_line': fields.one2many('phanphoi.tt.line','phanphoi_tt_id','Phan phoi line'),
                 }
+    
+    def onchange_previous_phanphoi(self, cr, uid, ids, ky_ve_id=False, loai_ve_id=False):
+        vals = {}
+        phanphoi_ids = []
+        mang = []
+        if ky_ve_id and loai_ve_id:
+            sql = '''
+                select id from phanphoi_truyenthong where loai_ve_id = %s 
+                order by create_date desc limit 1
+            '''%(loai_ve_id)
+            cr.execute(sql)
+            phanphoi_ids = [r[0] for r in cr.fetchall()]
+            if phanphoi_ids:
+                pp = self.browse(cr,uid,phanphoi_ids[0])   
+                for line in pp.phanphoi_tt_line:
+                    mang.append((0,0,{
+                                      'daily_id': line.daily_id.id,
+                                      'ten_daily': line.ten_daily,
+                                      'socay_kytruoc': line.socay_kynay,
+                                      'sove_kytruoc': line.sove_kynay,
+                                      }))
+                                 
+                vals = {'phanphoi_tt_line':mang,
+                    }
+        return {'value': vals} 
 phanphoi_truyenthong()
 
 class phanphoi_tt_line(osv.osv):
@@ -48,13 +73,16 @@ class phanphoi_tt_line(osv.osv):
                                                 'phanphoi.tt.line':(lambda self, cr, uid, ids, c={}: ids, ['socay_kytruoc','socay_kynay'], 10),
                                             }),
                 }
-    def onchange_daily_id(self, cr, uid, ids, daily_id=False, gan_cho_ids=False):
+    
+    def onchange_daily_id(self, cr, uid, ids, daily_id=False):
         vals = {}
         if daily_id :
             daily = self.pool.get('dai.ly').browse(cr,uid,daily_id)
             vals = {'ten_daily':daily.ten,
                 }
         return {'value': vals}  
+    
+    
 phanphoi_tt_line()
 
 
