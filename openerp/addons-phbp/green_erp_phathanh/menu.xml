@@ -12,7 +12,11 @@
 					action="action_phanphoi_truyenthong"
 					name="Danh sách kế hoạch phân phối vé truyền thống"
 					parent="menu_quanly_phanphoi" sequence="1"/>
-
+				
+				<menuitem id="menu_action_dieuchinh_phanphoi_ve"
+					action="action_dieuchinh_phanphoi_ve"
+					name="Điều chỉnh kế hoạch phân phối vé"
+					parent="menu_quanly_phanphoi" sequence="3"/>
 					
     </data>	
 </openerp>

@@ -52,6 +52,59 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>  
+        
+<!--Dieu chinh ke hoach phan phoi-->   
+        <record model="ir.ui.view" id="dieuchinh_phanphoi_ve_tree">
+            <field name="name">dieuchinh.phanphoi.ve.tree</field>
+            <field name="model">dieuchinh.phanphoi.ve</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Điều chỉnh kế hoạch phân phối vé" >
+                    <field name="ky_ve_id" />
+                    <field name="loai_ve_id" />
+                    <field name="ngay_ph" />
+                    <field name="tong_ve_pp" />
+                    <field name="tong_ve_dc" />
+                    <field name="tong_ve_sau_dc" />
+                </tree>
+            </field>
+        </record>  
+        
+       	<record model="ir.ui.view" id="dieuchinh_phanphoi_ve_form">
+	        <field name="name">dieuchinh.phanphoi.ve.form</field>
+	        <field name="model">dieuchinh.phanphoi.ve</field>
+	        <field name="arch" type="xml">
+	            <form string="Điều chỉnh kế hoạch phân phối vé" version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+	                		<field name="ky_ve_id" context="{'search_ky_ve':1}" on_change="onchange_previous_phanphoi(ky_ve_id,loai_ve_id)"/>
+		                    <field name="loai_ve_id" on_change="onchange_previous_phanphoi(ky_ve_id,loai_ve_id)"/>
+		                    <field name="ngay_ph" />
+			            </group>
+			            <notebook>
+							<page string = "Chi tiết điều chỉnh">
+								<field name="dieuchinh_line" nolabel='1'>
+									<tree editable='bottom'>
+										<field name="daily_id" context="{'search_dai_ly':1,'ky_ve_id':parent.ky_ve_id,'loai_ve_id':parent.loai_ve_id,'ngay_ph':parent.ngay_ph}" on_change="onchange_daily_id(daily_id)"/>
+										<field name="ten_daily" />
+										<field name="sove_duocduyet" />
+										<field name="sove_dc" /> 
+										<field name="sove_sau_dc" /> 
+										<field name="phanphoi_line_id" invisible = '1'/> 
+									</tree>
+								</field>
+							</page>
+						</notebook>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="action_dieuchinh_phanphoi_ve">
+            <field name="name">Điều chỉnh kế hoạch phân phối vé</field>
+            <field name="res_model">dieuchinh.phanphoi.ve</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
 
     
     </data>

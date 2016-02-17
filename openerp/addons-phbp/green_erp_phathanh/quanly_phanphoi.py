@@ -68,7 +68,7 @@ class phanphoi_tt_line(osv.osv):
         'sove_kytruoc': fields.float('Số vé kỳ trước'),
         'socay_kynay': fields.float('Số cây kỳ này'),
         'sove_kynay': fields.float('Số vé kỳ này'),
-        'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)',
+        'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)',multi='sums',
                                     type='float', store={
                                                 'phanphoi.tt.line':(lambda self, cr, uid, ids, c={}: ids, ['socay_kytruoc','socay_kynay'], 10),
                                             }),
@@ -85,12 +85,88 @@ class phanphoi_tt_line(osv.osv):
     
 phanphoi_tt_line()
 
-
-class hethong_dambao_attp(osv.osv):
-    _name = "hethong.dambao.attp"
+class dieuchinh_phanphoi_ve(osv.osv):
+    _name = "dieuchinh.phanphoi.ve"
+    
+    def _get_dieuchinh(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool.get('dieuchinh.line').browse(cr, uid, ids, context=context):
+            result[line.dieuchinh_id.id] = True
+        return result.keys()
+    
+    def amount_all(self, cr, uid, ids, field_name, args, context=None):
+        res = {}
+        for dc in self.browse(cr,uid,ids,context=context):
+            res[dc.id] = {
+                'tong_ve_pp': 0.0,
+                'tong_ve_dc': 0.0,
+                'tong_ve_sau_dc': 0.0,
+            }
+#             sql = '''
+#                 select case when sum(sove_kynay)!=0 then sum(sove_kynay) else 0 end tong_ve_pp
+#                 from phanphoi_tt_line where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id)
+#             '''
+            val1 = 0
+            val2 = 0
+            for line in dc.dieuchinh_line:
+                val1 += line.sove_duocduyet
+                val2 += line.sove_dc
+            res[dc.id]['tong_ve_pp'] = val1
+            res[dc.id]['tong_ve_dc'] = val2
+            res[dc.id]['tong_ve_sau_dc'] = val1+val2
+        return res
+    
     _columns = {
-        'name': fields.char('Hệ thống đảm bảo ATTP',size = 1024, required = True),
+        'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
+        'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
+        'ngay_ph': fields.date('Ngày phát hành',required = True),
+        'dieuchinh_line': fields.one2many('dieuchinh.line','dieuchinh_id','Dieu Chinh line'),
+        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng vé phân phối',
+                                         store={
+                'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
+                'dieuchinh.line': (_get_dieuchinh, ['price_unit', 'sub_total', 'product_uom_qty', 'freight'], 10)}),
+        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng vé điều chỉnh',
+                                      store={
+                'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
+                'dieuchinh.line': (_get_dieuchinh, ['price_unit', 'sub_total', 'product_uom_qty', 'freight'], 10)}),
+        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng vé sau điều chỉnh',
+                                        store={
+                'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
+                'dieuchinh.line': (_get_dieuchinh, ['price_unit', 'sub_total', 'product_uom_qty', 'freight'], 10)}),
                 }
-hethong_dambao_attp()
+dieuchinh_phanphoi_ve()
+
+class dieuchinh_line(osv.osv):
+    _name = "dieuchinh.line"
+    
+    def _total_ve(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for dc in self.browse(cr,uid,ids):
+            res[dc.id]=dc.sove_duocduyet+dc.sove_dc
+        return res
+    
+    _columns = {
+        'dieuchinh_id': fields.many2one('dieuchinh.phanphoi.ve','Dieu chinh phan phoi', ondelete='cascade'),
+        'ten_daily': fields.char('Tên Đại Lý',size = 1024),
+        'daily_id': fields.many2one('dai.ly','Đại lý'),
+        'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
+        'sove_duocduyet': fields.float('Số vé được duyệt', readonly=True),
+        'sove_dc': fields.float('Số vé điều chỉnh'),
+        'sove_sau_dc':fields.function(_total_ve, string='Tổng số vé sau điều chỉnh',multi='sums',
+                                    type='float', store={
+                                                'dieuchinh.line':(lambda self, cr, uid, ids, c={}: ids, ['sove_duocduyet','sove_dc'], 10),
+                                            }),
+                }
+    
+    def onchange_daily_id(self, cr, uid, ids, daily_id=False):
+        vals = {}
+        if daily_id :
+            daily = self.pool.get('dai.ly').browse(cr,uid,daily_id)
+            vals = {'ten_daily':daily.ten,
+                }
+        return {'value': vals}  
+    
+    
+dieuchinh_line()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

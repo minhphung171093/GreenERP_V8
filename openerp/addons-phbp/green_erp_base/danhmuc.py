@@ -32,6 +32,23 @@ class dai_ly(osv.osv):
         'tinh_tp_id': fields.many2one( 'tinh.tp','Tỉnh/Thành Phố', required = True),
 #         'khu_vuc_id': fields.many2one( 'khu.vuc','Thuộc khu vực', required = True),
                 }
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        if context.get('search_dai_ly'):
+            if context.get('ky_ve_id') and context.get('loai_ve_id') and context.get('ngay_ph'):
+                sql = '''
+                    select daily_id from phanphoi_tt_line
+                    where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s and ngay_ph = '%s')
+                '''%(context.get('ky_ve_id'), context.get('loai_ve_id'), context.get('ngay_ph'))
+                cr.execute(sql)
+                dai_ly_ids = [row[0] for row in cr.fetchall()]
+                args += [('id','in',dai_ly_ids)]
+        return super(dai_ly, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+    def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+       ids = self.search(cr, user, args, context=context, limit=limit)
+       return self.name_get(cr, user, ids, context=context)
+    
 dai_ly()
 
 class khu_vuc(osv.osv):
