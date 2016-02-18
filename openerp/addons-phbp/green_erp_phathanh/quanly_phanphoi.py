@@ -334,12 +334,12 @@ class kh_in_ve_tt(osv.osv):
         'sl_in_moi_dot':fields.char('Số lượng vé in mỗi đợt',size = 1024),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
         'tong_so_ve_in':fields.function(_tinh_tong_so_ve_in, string='Tổng số vé in trong tháng',
-                                    type='integer', store={
+                                    type='float', store={
                                                 'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
                                                 'kh.in.ve.tt.line':(_get_order, ['sl_ve_in'], 10),
                                             }),
         'tong_so_dot_in':fields.function(_tinh_tong_so_dot_in, string='Tổng số đợt in',
-                                    type='integer', store={
+                                    type='float', store={
                                                 'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
                                                 'kh.in.ve.tt.line':(_get_order, [], 10),
                                             }),
@@ -354,7 +354,7 @@ class kh_in_ve_tt_line(osv.osv):
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
         'ngay_mo_thuong': fields.date('Ngày mở số'),
         'ngay_nhan': fields.date('Ngày nhận',required = True),
-        'sl_ve_in': fields.integer('Số lượng vé in (vé)'),
+        'sl_ve_in': fields.float('Số lượng vé in (vé)'),
                 }
     def onchange_ky_ve_id(self, cr, uid, ids, ky_ve_id=False):
         vals = {}

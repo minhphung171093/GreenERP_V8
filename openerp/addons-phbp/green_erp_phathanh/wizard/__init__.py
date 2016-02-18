@@ -1,6 +1,6 @@
-# -*- coding: utf-8# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
-#
+#    
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2004-2010 Tiny SPRL (<http://tiny.be>).
 #
@@ -15,28 +15,13 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.     
 #
 ##############################################################################
 
-{
-    'name': 'GreenERP Phát Hành',
-    'version': '1.0',
-    'category': 'GreenERP',
-    'sequence': 1,
-    'author': 'nguyentoanit@gmail.com',
-    'website' : 'http://incomtech.com/',
-    'depends': ['green_erp_base'],
-    'data': [
-        'security/security.xml',
-        'security/ir.model.access.csv',
-        'report/dieuchinh_kehoach_pp_ve_report_view.xml',
-        'quanly_phanphoi_view.xml',
-        'wizard/baocao_nhanh_kyve_view.xml',
-        'menu.xml',
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': True,
-}
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4: -*-
+import baocao_nhanh_kyve
+# import danhsach_canhtranh
+# import congno_vacine
+# import danhsach_khachhang
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

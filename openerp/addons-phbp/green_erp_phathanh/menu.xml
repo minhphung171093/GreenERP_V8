@@ -26,7 +26,10 @@
 					action="action_kh_in_ve_tt"
 					name="Kế hoạch in vé số truyền thống"
 					parent="menu_quanly_phanphoi" sequence="4"/>
-
+				<menuitem id="menu_action_baocao_nhanh_kyve"
+					action="action_baocao_nhanh_kyve"
+					name="Báo cáo nhanh theo kỳ vé"
+					parent="menu_quanly_phanphoi" sequence="7"/>
 					
     </data>	
 </openerp>
