@@ -5,7 +5,7 @@
 	        <field name="name">baocao_nhanh_ky_ve_report</field>
 	        <field name="type">ir.actions.report.xml</field>
 	        <field name="model">baocao.nhanh.ky.ve</field>
-	        <field name="report_name">baocao_nhanh_ky_ve_report1</field>
+	        <field name="report_name">baocao_nhanh_ky_ve_report</field>
 	        <field name="report_type">aeroo</field>
 	        <field name="in_format">oo-ods</field>
 	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
