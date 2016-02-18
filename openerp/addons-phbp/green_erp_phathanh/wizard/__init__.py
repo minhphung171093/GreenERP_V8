@@ -20,6 +20,7 @@
 ##############################################################################
 
 import baocao_nhanh_kyve
+import baocao_tieuthu_kyve
 # import danhsach_canhtranh
 # import congno_vacine
 # import danhsach_khachhang

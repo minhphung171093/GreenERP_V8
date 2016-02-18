@@ -30,6 +30,12 @@
 					action="action_baocao_nhanh_kyve"
 					name="Báo cáo nhanh theo kỳ vé"
 					parent="menu_quanly_phanphoi" sequence="7"/>
-					
+			<menuitem id="menu_baocao"
+				name="Báo cáo"
+				parent="quanly_root" sequence="2"/>
+				<menuitem id="menu_action_baocao_tieuthu_kyve"
+					action="action_baocao_tieuthu_kyve"
+					name="Báo cáo tiêu thụ kỳ vé"
+					parent="menu_baocao" sequence="1"/>
     </data>	
 </openerp>

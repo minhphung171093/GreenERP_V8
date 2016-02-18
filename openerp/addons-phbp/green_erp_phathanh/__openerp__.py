@@ -34,6 +34,7 @@
         'report/baocao_nhanh_ky_ve_report_view.xml',
         'quanly_phanphoi_view.xml',
         'wizard/baocao_nhanh_kyve_view.xml',
+        'wizard/baocao_tieuthu_kyve_view.xml',
         'menu.xml',
     ],
     'installable': True,
