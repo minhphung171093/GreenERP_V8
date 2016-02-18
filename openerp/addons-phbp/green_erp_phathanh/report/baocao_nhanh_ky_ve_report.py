@@ -19,13 +19,12 @@
 #
 ##############################################################################
 import time
-from datetime import datetime
 from openerp.report import report_sxw
 from openerp import pooler
-from openerp.osv import osv,fields
+from openerp.osv import osv
 from openerp.tools.translate import _
 import random
-# from datetime import date
+from datetime import date
 from dateutil.rrule import rrule, DAILY
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -35,33 +34,45 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-class baocao_nhanh_kyve(osv.osv_memory):
-    _name = 'baocao.nhanh.kyve'
-     
-    _columns = {
-        'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
-        'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
-        'ngay_mo_thuong': fields.date('Ngày mở thưởng'),
-                }
-    def onchange_ky_ve_id(self, cr, uid, ids, ky_ve_id=False):
-        vals = {}
-        if ky_ve_id :
-            ky_ve = self.pool.get('ky.ve').browse(cr,uid,ky_ve_id)
-            vals = {'ngay_mo_thuong':ky_ve.ngay_mo_thuong,
-                }
-        return {'value': vals}  
-     
-
-    def print_report(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        datas = {'ids': context.get('active_ids', [])}
-        datas['model'] = 'baocao.nhanh.kyve' 
-        datas['form'] = self.read(cr, uid, ids)[0]
-        datas['form'].update({'active_id':context.get('active_ids',False)})
-        return {'type': 'ir.actions.report.xml', 'report_name': 'baocao_nhanh_ky_ve_report', 'datas': datas}
+class Parser(report_sxw.rml_parse):
     
-baocao_nhanh_kyve()
-
+    def __init__(self, cr, uid, name, context):
+        super(Parser, self).__init__(cr, uid, name, context=context)
+        pool = pooler.get_pool(self.cr.dbname)
+        self.localcontext.update({
+            'convert_date': self.convert_date,
+            'get_date': self.get_date,
+            'convert_int': self.convert_int,
+            'convert_f_amount': self.convert_f_amount,
+        })
+        
+    def convert_date(self, date):
+        if date:
+            date = datetime.strptime(date, DATE_FORMAT)
+            return date.strftime('%d/%m/%Y')
+        
+    def convert_f_amount(self, amount):
+        a = format(amount,',')
+        b = a.split('.')
+#         if len(b)==2 and len(b[1])==1:
+#             a+='0'
+        return b[0]
+        
+    def convert_int(self,number):
+        return int(number)
+    
+    def get_date(self, date=False):
+        res={}
+        if not date:
+            date = time.strftime('%Y-%m-%d')
+        day = date[8:10],
+        month = date[5:7],
+        year = date[:4],
+        res={
+            'day' : day,
+            'month' : month,
+            'year' : year,
+            }
+        return res
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

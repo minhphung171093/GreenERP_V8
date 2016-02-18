@@ -25,6 +25,7 @@
 #-------------------------------------------------------
 import hoadon_vat
 import doanhthu_banhang_report
+import baocao_nhanh_ky_ve_report
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
 
