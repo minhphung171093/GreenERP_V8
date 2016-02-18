@@ -104,6 +104,7 @@
             <field name="arch" type="xml">
                 <tree string="Kỳ vé" editable='top'>
                     <field name="name" />
+                    <field name="ngay_mo_thuong" />
                 </tree>
             </field>
         </record>  

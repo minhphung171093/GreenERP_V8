@@ -93,7 +93,16 @@ class dieuchinh_phanphoi_ve(osv.osv):
         for line in self.pool.get('dieuchinh.line').browse(cr, uid, ids, context=context):
             result[line.dieuchinh_id.id] = True
         return result.keys()
-    
+    def name_get(self, cr, uid, ids, context=None):
+        if not ids:
+            return []
+        res = []
+        reads = self.read(cr, uid, ids, ['ky_ve_id'], context)
+   
+        for record in reads:
+            name = (record['ky_ve_id'] or '')
+            res.append((record['id'], name))
+        return res   
     def amount_all(self, cr, uid, ids, field_name, args, context=None):
         res = {}
         for dc in self.browse(cr,uid,ids,context=context):
@@ -235,9 +244,16 @@ class nhap_ve_e(osv.osv):
     _columns = {
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
-        'ngay_mo_thuong': fields.date('Ngày mở thưởng',required = True),
+        'ngay_mo_thuong': fields.date('Ngày mở thưởng'),
         'nhap_ve_e_line': fields.one2many('nhap.ve.e.line','nhap_ve_e_id','Nhap ve e line'),
                 }
+    def onchange_ky_ve_id(self, cr, uid, ids, ky_ve_id=False):
+        vals = {}
+        if ky_ve_id :
+            ky_ve = self.pool.get('ky.ve').browse(cr,uid,ky_ve_id)
+            vals = {'ngay_mo_thuong':ky_ve.ngay_mo_thuong,
+                }
+        return {'value': vals}  
 nhap_ve_e()
 
 class nhap_ve_e_line(osv.osv):
@@ -283,4 +299,70 @@ class nhap_ve_e_line(osv.osv):
                 }
         return {'value': vals}  
 nhap_ve_e_line()
+
+class kh_in_ve_tt(osv.osv):
+    _name = "kh.in.ve.tt"
+
+    def _tinh_tong_so_ve_in(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for tg in self.browse(cr,uid,ids):
+#             res[tg.id] = {
+#                 'tong_so_ve_in': 0.0,
+#             }
+            val1=0
+            for line in tg.kh_in_ve_tt_line:
+                val1+=line.sl_ve_in
+            res[tg.id]=val1    
+        return res
+    def _tinh_tong_so_dot_in(self, cr, uid, ids, name, arg, context=None):
+        res = {}
+        for tg in self.browse(cr,uid,ids):
+            sql='''
+                select COUNT(id) from kh_in_ve_tt_line where kh_in_ve_tt_id=%s
+            '''%(tg.id)
+            cr.execute(sql)
+            val1 = cr.fetchone()[0]
+            res[tg.id]=val1    
+        return res
+    def _get_order(self, cr, uid, ids, context=None):
+        result = {}
+        for line in self.pool.get('kh.in.ve.tt.line').browse(cr, uid, ids, context=context):
+            result[line.kh_in_ve_tt_id.id] = True
+        return result.keys()
+    _columns = {
+        'name':fields.char('Tháng',size = 2,required=True),
+        'year':fields.char('Năm',size = 4,required=True),
+        'sl_in_moi_dot':fields.char('Số lượng vé in mỗi đợt',size = 1024),
+        'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
+        'tong_so_ve_in':fields.function(_tinh_tong_so_ve_in, string='Tổng số vé in trong tháng',
+                                    type='integer', store={
+                                                'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
+                                                'kh.in.ve.tt.line':(_get_order, ['sl_ve_in'], 10),
+                                            }),
+        'tong_so_dot_in':fields.function(_tinh_tong_so_dot_in, string='Tổng số đợt in',
+                                    type='integer', store={
+                                                'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
+                                                'kh.in.ve.tt.line':(_get_order, [], 10),
+                                            }),
+        'kich_co':fields.char('Kích cỡ',size = 1024),
+        'kh_in_ve_tt_line': fields.one2many('kh.in.ve.tt.line','kh_in_ve_tt_id','Nhap ve e line'),
+                }
+kh_in_ve_tt()
+class kh_in_ve_tt_line(osv.osv):
+    _name = "kh.in.ve.tt.line"
+    _columns = {
+        'kh_in_ve_tt_id': fields.many2one('kh.in.ve.tt','Kế hoạch in tt', ondelete='cascade'),
+        'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
+        'ngay_mo_thuong': fields.date('Ngày mở số'),
+        'ngay_nhan': fields.date('Ngày nhận',required = True),
+        'sl_ve_in': fields.integer('Số lượng vé in (vé)'),
+                }
+    def onchange_ky_ve_id(self, cr, uid, ids, ky_ve_id=False):
+        vals = {}
+        if ky_ve_id :
+            ky_ve = self.pool.get('ky.ve').browse(cr,uid,ky_ve_id)
+            vals = {'ngay_mo_thuong':ky_ve.ngay_mo_thuong,
+                }
+        return {'value': vals}  
+kh_in_ve_tt_line()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -153,9 +153,9 @@
 	            <form string="Nhập vé ế theo khu vực" version="7.0">
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="ky_ve_id" />
+	                		<field name="ky_ve_id" on_change="onchange_ky_ve_id(ky_ve_id)" />
 		                    <field name="loai_ve_id" />
-		                    <field name="ngay_mo_thuong" />
+		                    <field name="ngay_mo_thuong" readonly="1" />
 			            </group>
 			            <notebook>
 							<page string = "Chi tiết nhập vé ế">
@@ -183,6 +183,63 @@
             <field name="res_model">nhap.ve.e</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'readonly_by_pass': True}</field>
+        </record>  
+
+<!--Kế hoạch in vé số truyền thống-->   
+        <record model="ir.ui.view" id="kh_in_ve_tt_tree">
+            <field name="name">kh.in.ve.tt.tree</field>
+            <field name="model">kh.in.ve.tt</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Kế hoạch in vé số truyền thống" >
+                    <field name="name" />
+                    <field name="year" />
+                    <field name="tong_so_dot_in" />  
+                    <field name="loai_ve_id" />
+                    <field name="tong_so_ve_in" />
+                </tree>
+            </field>
+        </record>  
+        
+       	<record model="ir.ui.view" id="kh_in_ve_tt_form">
+	        <field name="name">kh.in.ve.tt.form</field>
+	        <field name="model">kh.in.ve.tt</field>
+	        <field name="arch" type="xml">
+	            <form string="Kế hoạch in vé số truyền thống" version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+	                		<field name="name" />
+	                		<field name="year" />
+	                        <field name="tong_so_dot_in" />
+	                        <field name="tong_so_ve_in" />
+		                    <field name="loai_ve_id" />
+		                    <field name="sl_in_moi_dot" />
+		                    
+		                    <field name="kich_co" />
+			            </group>
+			            <notebook>
+							<page string = "Chi tiết Kế hoạch in">
+								<field name="kh_in_ve_tt_line" nolabel='1'>
+									<tree editable='bottom' >
+										<field name="ngay_mo_thuong" readonly="1" />
+										<field name="ky_ve_id" on_change="onchange_ky_ve_id(ky_ve_id)" />
+										<field name="ngay_nhan" /> 
+										<field name="sl_ve_in" /> 
+									</tree>
+								</field>
+							</page>
+						</notebook>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="action_kh_in_ve_tt">
+            <field name="name">Kế hoạch in vé số truyền thống</field>
+            <field name="res_model">kh.in.ve.tt</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'readonly_by_pass': True}</field>
         </record>  
     
     </data>
