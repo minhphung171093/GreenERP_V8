@@ -420,7 +420,6 @@ class Parser(report_sxw.rml_parse):
                 sql+='''
                     and ai.loai_tamung_id = %s 
                 '''%(lcntu['id'])
-            sql += ''' group by rp.ma_doi_tuong,rp.name '''
             self.cr.execute(sql)
             no = self.cr.fetchone()[0]
             
@@ -429,8 +428,8 @@ class Parser(report_sxw.rml_parse):
                     from account_move_line
                     where move_id in (select move_id from account_voucher
                         where reference in (select name from account_invoice
-                            where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' 
-            '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start,period_to.date_stop)
+                            where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<='%s' 
+            '''%(mlg_type,chinhanh_id[0],partner_id,period_to.date_stop)
             if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
                 sql+='''
                     and loai_nodoanhthu_id = %s 
@@ -448,7 +447,7 @@ class Parser(report_sxw.rml_parse):
                     and loai_tamung_id = %s 
                 '''%(lcntu['id'])
             sql += ''' ))
-                    and date<'%s' '''
+                    and date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
             self.cr.execute(sql)
             co = self.cr.fetchone()[0]
             
@@ -490,13 +489,12 @@ class Parser(report_sxw.rml_parse):
             sql+='''
                 and ai.loai_tamung_id = %s 
             '''%(lcntu['id'])
-        sql += ''' group by rp.ma_doi_tuong,rp.name '''
         self.cr.execute(sql)
         no = self.cr.fetchone()[0]
         self.tongno += no
         return no
     
-    def get_co(self, partner_id):
+    def get_co(self, partner_id,lcntu):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
@@ -509,8 +507,8 @@ class Parser(report_sxw.rml_parse):
                 from account_move_line
                 where move_id in (select move_id from account_voucher
                     where reference in (select name from account_invoice
-                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' 
-        '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start,period_to.date_stop)
+                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<='%s' 
+        '''%(mlg_type,chinhanh_id[0],partner_id,period_to.date_stop)
         if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
             sql+='''
                 and loai_nodoanhthu_id = %s 
@@ -528,7 +526,7 @@ class Parser(report_sxw.rml_parse):
                 and loai_tamung_id = %s 
             '''%(lcntu['id'])
         sql += ''' ))
-                and date<'%s' '''
+                and date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
         self.cr.execute(sql)
         co = self.cr.fetchone()[0]
         self.tongco += co
