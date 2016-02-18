@@ -22,6 +22,10 @@
 					action="action_nhap_ve_e"
 					name="Nhập vé ế theo khu vực"
 					parent="menu_quanly_phanphoi" sequence="2"/>
+				<menuitem id="menu_action_kh_in_ve_tt"
+					action="action_kh_in_ve_tt"
+					name="Kế hoạch in vé số truyền thống"
+					parent="menu_quanly_phanphoi" sequence="4"/>
 
 					
     </data>	

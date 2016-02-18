@@ -71,6 +71,7 @@ class ky_ve(osv.osv):
     _name = "ky.ve"
     _columns = {
         'name': fields.char('Mã kỳ vé',size = 1024, required = True),
+        'ngay_mo_thuong':fields.date('Ngày mở thưởng', required = True)
                 }
     
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
