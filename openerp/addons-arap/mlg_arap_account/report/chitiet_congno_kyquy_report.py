@@ -95,7 +95,16 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         partner_ids = wizard_data['partner_ids']
         if partner_ids:
-            return partner_ids
+            p_ids = []
+            partner_obj = self.pool.get('res.partner')
+            for partner in partner_obj.browse(self.cr, self.uid, partner_ids):
+                if ldt=='taixe' and partner.taixe:
+                    p_ids.append(partner.id)
+                if ldt=='nhadautu' and partner.nhadautu:
+                    p_ids.append(partner.id)
+                if ldt=='nhanvienvanphong' and partner.nhanvienvanphong:
+                    p_ids.append(partner.id)
+            return p_ids
         else:
             period_from_id = wizard_data['period_from_id']
             period_to_id = wizard_data['period_to_id']

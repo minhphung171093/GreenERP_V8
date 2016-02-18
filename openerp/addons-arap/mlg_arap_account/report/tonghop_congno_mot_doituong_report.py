@@ -298,7 +298,25 @@ class Parser(report_sxw.rml_parse):
                 '''%(lcntu['id'])
             self.cr.execute(sql)
             notrongky = self.cr.fetchone()[0]
-            nodauky = self.get_nodauky(mlg_type,lcntu)
+            
+            period_id = wizard_data['period_from_id']
+            chinhanh_id = wizard_data['chinhanh_id']
+            partner_id = wizard_data['partner_id']
+#             mlg_type = self.get_title_congno(congno)
+            sql = '''
+                select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
+                    from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
+                        and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)
+            '''%(mlg_type,chinhanh_id[0],partner_id[0],period_id[0])
+            if lcntu['loai']!='loai_conlai' and lcntu['id']:
+                sql = '''
+                    select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
+                        from chitiet_congno_dauky_line where congno_dauky_line_id in (select id from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
+                            and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
+                '''%(mlg_type,chinhanh_id[0],partner_id[0],period_id[0],lcntu['id'])
+            self.cr.execute(sql)
+            nodauky = self.cr.fetchone()[0]
+            
             nocuoiky = nodauky+notrongky
             self.tongcongno += nocuoiky
             return nocuoiky
@@ -346,6 +364,61 @@ class Parser(report_sxw.rml_parse):
         for line in lines:
             self.tongno += line['no']
             self.tongco += line['co']
+            
+        if not lines:
+            period_id = wizard_data['period_from_id']
+            chinhanh_id = wizard_data['chinhanh_id']
+            partner_id = wizard_data['partner_id']
+#             mlg_type = self.get_title_congno(congno)
+            sql = '''
+                select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
+                    from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
+                        and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)
+            '''%(mlg_type,chinhanh_id[0],partner_id[0],period_id[0])
+            if lcntu['loai']!='loai_conlai' and lcntu['id']:
+                sql = '''
+                    select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
+                        from chitiet_congno_dauky_line where congno_dauky_line_id in (select id from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
+                            and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
+                '''%(mlg_type,chinhanh_id[0],partner_id[0],period_id[0],lcntu['id'])
+            self.cr.execute(sql)
+            nodauky = self.cr.fetchone()[0]
+            
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+            chinhanh_id = wizard_data['chinhanh_id']
+            partner_id = wizard_data['partner_id']
+#             mlg_type = self.get_title_congno(congno)
+            sql = '''
+                select case when sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0)) else 0 end notrongky
+                    from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
+                        and date_invoice between '%s' and '%s' and state in ('open','paid') 
+            '''%(mlg_type,chinhanh_id[0],partner_id[0],period_from.date_start,period_to.date_stop)
+            if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+                sql+='''
+                    and loai_nodoanhthu_id = %s 
+                '''%(lcntu['id'])
+            if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+                sql+='''
+                    and loai_baohiem_id = %s 
+                '''%(lcntu['id'])
+            if lcntu['loai']=='loai_vipham' and lcntu['id']:
+                sql+='''
+                    and loai_vipham_id = %s 
+                '''%(lcntu['id'])
+            if lcntu['loai']=='loai_tamung' and lcntu['id']:
+                sql+='''
+                    and loai_tamung_id = %s 
+                '''%(lcntu['id'])
+            self.cr.execute(sql)
+            notrongky = self.cr.fetchone()[0]
+            nocuoiky = nodauky+notrongky
+            if nocuoiky:
+                partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id[0])
+                lines = [{'madoituong':partner.ma_doi_tuong,'tendoituong':partner.name,'no':0,'co':0}]
+            
         return lines
             
     
