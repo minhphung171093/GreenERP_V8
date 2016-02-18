@@ -57,7 +57,7 @@ class phanphoi_tt_line(osv.osv):
     def _tang_giam(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for tg in self.browse(cr,uid,ids):
-            res[tg.id]=tg.socay_kytruoc-tg.socay_kynay
+            res[tg.id]=tg.socay_kynay-tg.socay_kytruoc
         return res
     
     _columns = {
@@ -68,7 +68,7 @@ class phanphoi_tt_line(osv.osv):
         'sove_kytruoc': fields.float('Số vé kỳ trước'),
         'socay_kynay': fields.float('Số cây kỳ này'),
         'sove_kynay': fields.float('Số vé kỳ này'),
-        'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)',multi='sums',
+        'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)',
                                     type='float', store={
                                                 'phanphoi.tt.line':(lambda self, cr, uid, ids, c={}: ids, ['socay_kytruoc','socay_kynay'], 10),
                                             }),
@@ -111,10 +111,6 @@ class dieuchinh_phanphoi_ve(osv.osv):
                 'tong_ve_dc': 0.0,
                 'tong_ve_sau_dc': 0.0,
             }
-#             sql = '''
-#                 select case when sum(sove_kynay)!=0 then sum(sove_kynay) else 0 end tong_ve_pp
-#                 from phanphoi_tt_line where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id)
-#             '''
             val1 = 0
             val2 = 0
             for line in dc.dieuchinh_line:
@@ -125,23 +121,54 @@ class dieuchinh_phanphoi_ve(osv.osv):
             res[dc.id]['tong_ve_sau_dc'] = val1+val2
         return res
     
+    def total_amount_all(self, cr, uid, ids, field_name, args, context=None):
+        res = {}
+        for dc in self.browse(cr,uid,ids,context=context):
+            res[dc.id] = {
+                'total_ve_pp': 0.0,
+                'total_ve_dc': 0.0,
+                'total_ve_sau_dc': 0.0,
+            }
+            sql = '''
+                select case when sum(sove_kynay)!=0 then sum(sove_kynay) else 0 end tong_ve_pp
+                from phanphoi_tt_line where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id=%s and loai_ve_id=%s and ngay_ph='%s')
+            '''%(dc.ky_ve_id.id, dc.loai_ve_id.id, dc.ngay_ph)
+            cr.execute(sql)
+            val1 = cr.fetchone()[0]
+            val2 = 0
+            for line in dc.dieuchinh_line:
+                val2 += line.sove_dc
+            res[dc.id]['total_ve_pp'] = val1
+            res[dc.id]['total_ve_dc'] = val2
+            res[dc.id]['total_ve_sau_dc'] = val1+val2
+        return res
+    
     _columns = {
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
         'ngay_ph': fields.date('Ngày phát hành',required = True),
         'dieuchinh_line': fields.one2many('dieuchinh.line','dieuchinh_id','Dieu Chinh line'),
-        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng vé phân phối',
+        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng số vé được duyệt',
                                          store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
-                'dieuchinh.line': (_get_dieuchinh, ['price_unit', 'sub_total', 'product_uom_qty', 'freight'], 10)}),
-        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng vé điều chỉnh',
+                'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
+        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng số vé điều chỉnh',
+                                      store={
+                'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
+                'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
+        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',
+                                        store={
+                'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
+                'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
+                
+        'total_ve_pp': fields.function(total_amount_all, multi='sums',string='Tổng số vé phân phối theo KH',
+                                         store=True),
+        'total_ve_dc': fields.function(total_amount_all, multi='sums',string='Số vé điều chỉnh so với kế hoạch',
                                       store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['price_unit', 'sub_total', 'product_uom_qty', 'freight'], 10)}),
-        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng vé sau điều chỉnh',
-                                        store={
-                'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
-                'dieuchinh.line': (_get_dieuchinh, ['price_unit', 'sub_total', 'product_uom_qty', 'freight'], 10)}),
+        'total_ve_sau_dc': fields.function(total_amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',
+                                        store=True),
                 }
     
     def onchange_ky_ve(self, cr, uid, ids, ky_ve_id=False):
@@ -157,6 +184,18 @@ class dieuchinh_phanphoi_ve(osv.osv):
             vals = {'ngay_ph':ngay_ph[0],
                 }
         return {'value': vals} 
+    
+    def print_xls(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+#         datas = {'ids': context.get('active_ids', [])}
+#         for line in self.browse(cr, uid, ids, context=context):
+#             context.update({'active_ids': [line.id]})
+        datas = {'ids': ids}
+        datas['model'] = 'dieuchinh.phanphoi.ve'
+        datas['form'] = self.read(cr, uid, ids)[0]
+        datas['form'].update({'active_id':context.get('active_ids',False)})
+        return {'type': 'ir.actions.report.xml', 'report_name': 'dieuchinh_kehoach_pp_ve_report', 'datas': datas}
 dieuchinh_phanphoi_ve()
 
 class dieuchinh_line(osv.osv):
@@ -175,17 +214,24 @@ class dieuchinh_line(osv.osv):
         'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
         'sove_duocduyet': fields.float('Số vé được duyệt', readonly=True),
         'sove_dc': fields.float('Số vé điều chỉnh'),
-        'sove_sau_dc':fields.function(_total_ve, string='Tổng số vé sau điều chỉnh',multi='sums',
+        'sove_sau_dc':fields.function(_total_ve, string='Số vé sau điều chỉnh',
                                     type='float', store={
                                                 'dieuchinh.line':(lambda self, cr, uid, ids, c={}: ids, ['sove_duocduyet','sove_dc'], 10),
                                             }),
                 }
     
-    def onchange_daily_id(self, cr, uid, ids, daily_id=False):
+    def onchange_daily_dc_id(self, cr, uid, ids, daily_id=False, ky_ve_id=False):
         vals = {}
-        if daily_id :
+        if daily_id and ky_ve_id:
             daily = self.pool.get('dai.ly').browse(cr,uid,daily_id)
+            sql = '''
+                select sove_kynay,id from phanphoi_tt_line where daily_id = %s and phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s)
+            '''%(daily_id, ky_ve_id)
+            cr.execute(sql)
+            ve = cr.fetchone()
             vals = {'ten_daily':daily.ten,
+                    'sove_duocduyet': ve[0],
+                    'phanphoi_line_id': ve[1],
                 }
         return {'value': vals}  
     
