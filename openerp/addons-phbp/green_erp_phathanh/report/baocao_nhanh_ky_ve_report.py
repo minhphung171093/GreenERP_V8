@@ -42,7 +42,8 @@ class Parser(report_sxw.rml_parse):
         self.localcontext.update({
             'convert_date': self.convert_date,
             'get_date': self.get_date,
-            'convert_int': self.convert_int,
+            'get_ky_ve': self.get_ky_ve,
+            'get_loai_ve': self.get_loai_ve,
             'convert_f_amount': self.convert_f_amount,
         })
         
@@ -58,13 +59,22 @@ class Parser(report_sxw.rml_parse):
 #             a+='0'
         return b[0]
         
-    def convert_int(self,number):
-        return int(number)
+    def get_ky_ve(self):
+        wizard_data = self.localcontext['data']['form']
+        ky_ve_id = wizard_data['ky_ve_id']
+        ky_ve = self.pool.get('ky.ve').browse(self.cr,self.uid,ky_ve_id[0])
+        return ky_ve.name
     
-    def get_date(self, date=False):
+    def get_loai_ve(self):
+        wizard_data = self.localcontext['data']['form']
+        loai_ve_id = wizard_data['loai_ve_id']
+        loai_ve = self.pool.get('loai.ve').browse(self.cr,self.uid,loai_ve_id[0])
+        return loai_ve.name
+    
+    def get_date(self):
         res={}
-        if not date:
-            date = time.strftime('%Y-%m-%d')
+        wizard_data = self.localcontext['data']['form']
+        date = wizard_data['ngay_mo_thuong']
         day = date[8:10],
         month = date[5:7],
         year = date[:4],
@@ -74,5 +84,53 @@ class Parser(report_sxw.rml_parse):
             'year' : year,
             }
         return res
+    
+    def get_lines(self):
+        wizard_data = self.localcontext['data']['form']
+        loai_ve_id = wizard_data['loai_ve_id']
+        ky_ve_id = wizard_data['ky_ve_id']
+        sql ='''
+                SELECT ten,name,id FROM tinh_tp 
+                order by name
+            '''
+        self.cr.execute(sql)
+        for tinh in self.cr.dictfetchall():
+            line_ids=[]
+            total_ph = 0
+            total_ve = 0
+            total_sl_tieuthu = 0
+            total_thanhtien_tieuthu = 0
+            total_doanhthu_tieuthu = 0
+            total_tanggiam = 0
+            sql ='''
+                SELECT id FROM phanphoi_tt_line where daily_id in (select id from dai_ly where tinh_tp_id = %s) 
+                and phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
+            '''%(tinh['id'],ky_ve_id[0],loai_ve_id[0])
+            self.cr.execute(sql)
+            dl_ids = [r[0] for r in cr.fetchall()]
+            if dl_ids:
+                for seq,dl in enumerate(self.pool.get('phanphoi.tt.line').browse(self.cr,self.uid,dl_ids)):
+                    sql = '''
+                        select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s
+                    '''%(dl.id)
+                    self.cr.execute(sql)
+                    co_dc = cr.fetchone()
+                    if co_dc:
+                        sl_phathanh = co_dc[0]
+                    else:
+                        sl_phathanh = dl.sove_kynay
+                    line_ids.append({
+                                        'stt': seq+1,
+                                        'ten_dl': dl.ten_dl or '',
+                                        'ma_dl': dl.daily_id.name or '',
+                                        'sl_phathanh': sl_phathanh,
+                                        })
+                
+                
+            
+            
+            
+            
+        return loai_ve.name
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

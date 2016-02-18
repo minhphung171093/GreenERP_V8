@@ -289,6 +289,7 @@ class nhap_ve_e_line(osv.osv):
         'ma_khu_vuc': fields.char('Mã Khu Vực',size = 1024, required = True),
         've_e_theo_bangke': fields.integer('Số vé ế theo bảng kê'),
         'thuc_kiem': fields.integer('Thực kiểm'),
+        'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
         'kiem_dem_thieu':fields.function(_thieu_thua, string='Kiểm đếm (Thiếu)',multi='sums',
                                     type='integer', store={
                                                 'nhap.ve.e.line':(lambda self, cr, uid, ids, c={}: ids, ['ve_e_theo_bangke','thuc_kiem'], 10),
@@ -297,14 +298,21 @@ class nhap_ve_e_line(osv.osv):
                                     type='integer', store={
                                                 'nhap.ve.e.line':(lambda self, cr, uid, ids, c={}: ids, ['ve_e_theo_bangke','thuc_kiem'], 10),
                                             }),
-        'ghi_chu':fields.char('Tên Đại Lý',size = 1024),
+        'ghi_chu':fields.char('Ghi chú',size = 1024),
                 }
-    def onchange_daily_id(self, cr, uid, ids, daily_id=False, gan_cho_ids=False):
+    
+    def onchange_daily_id(self, cr, uid, ids, daily_id=False, ky_ve_id=False):
         vals = {}
-        if daily_id :
+        if daily_id and ky_ve_id:
             daily = self.pool.get('dai.ly').browse(cr,uid,daily_id)
+            sql = '''
+                select id from phanphoi_tt_line where daily_id = %s and phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s)
+            '''%(daily_id, ky_ve_id)
+            cr.execute(sql)
+            ve = cr.fetchone()
             vals = {'ten_daily':daily.ten,
                     'ma_khu_vuc':daily.tinh_tp_id.name,
+                    'phanphoi_line_id': ve[0],
                 }
         return {'value': vals}  
 nhap_ve_e_line()

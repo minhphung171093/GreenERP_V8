@@ -36,11 +36,11 @@ class dai_ly(osv.osv):
         if context is None:
             context = {}
         if context.get('search_dai_ly'):
-            if context.get('ky_ve_id') and context.get('loai_ve_id') and context.get('ngay_ph'):
+            if context.get('ky_ve_id') and context.get('loai_ve_id'):
                 sql = '''
                     select daily_id from phanphoi_tt_line
-                    where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s and ngay_ph = '%s')
-                '''%(context.get('ky_ve_id'), context.get('loai_ve_id'), context.get('ngay_ph'))
+                    where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
+                '''%(context.get('ky_ve_id'), context.get('loai_ve_id'))
                 cr.execute(sql)
                 dai_ly_ids = [row[0] for row in cr.fetchall()]
                 args += [('id','in',dai_ly_ids)]
@@ -89,6 +89,14 @@ class ky_ve(osv.osv):
             sql = '''
                 select id from ky_ve
                 where id not in (select ky_ve_id from dieuchinh_phanphoi_ve where ky_ve_id is not null) and id in (select ky_ve_id from phanphoi_truyenthong)
+            '''
+            cr.execute(sql)
+            ky_ve_ids = [row[0] for row in cr.fetchall()]
+            args += [('id','in',ky_ve_ids)]
+        if context.get('search_ky_ve_e'):
+            sql = '''
+                select id from ky_ve
+                where id not in (select ky_ve_id from nhap_ve_e where ky_ve_id is not null) and id in (select ky_ve_id from phanphoi_truyenthong)
             '''
             cr.execute(sql)
             ky_ve_ids = [row[0] for row in cr.fetchall()]
