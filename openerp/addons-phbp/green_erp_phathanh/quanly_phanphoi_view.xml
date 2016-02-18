@@ -83,6 +83,7 @@
 	                		<field name="ky_ve_id" on_change="onchange_ky_ve(ky_ve_id)" context="{'search_ky_ve_dieuchinh':1}"/>
 		                    <field name="loai_ve_id"/>
 		                    <field name="ngay_ph" />
+		                    <field name="ngay_dc" />
 			            </group>
 			            <notebook>
 							<page string = "Chi tiết điều chỉnh">

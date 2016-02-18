@@ -147,6 +147,7 @@ class dieuchinh_phanphoi_ve(osv.osv):
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
         'ngay_ph': fields.date('Ngày phát hành',required = True),
+        'ngay_dc': fields.date('Ngày điều chỉnh',required = True),
         'dieuchinh_line': fields.one2many('dieuchinh.line','dieuchinh_id','Dieu Chinh line'),
         'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng số vé được duyệt',
                                          store={
