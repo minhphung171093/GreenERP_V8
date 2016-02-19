@@ -38,6 +38,7 @@
 										<field name="socay_kynay" /> 
 										<field name="sove_kynay" /> 
 										<field name="tang_giam" /> 
+										<field name="phanphoi_line_kytruoc_id" invisible = '1'/> 
 									</tree>
 								</field>
 							</page>
@@ -170,6 +171,7 @@
 										<field name="kiem_dem_thieu"/> 
 										<field name="thuc_kiem" /> 
 										<field name="ghi_chu" /> 
+										<field name="phanphoi_line_id" invisible = '1'/> 
 									</tree>
 								</field>
 							</page>
