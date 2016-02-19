@@ -22,5 +22,10 @@
 					name="Chi tiết trả góp xe"
 					parent="menu_baocao_doichieu" sequence="10"/>
 					
+				<menuitem id="menu_action_tonghop_congno_tgx_tattoan"
+					action="action_tonghop_congno_tgx_tattoan"
+					name="Tổng hợp trả góp xe"
+					parent="menu_baocao_doichieu" sequence="10"/>
+					
 	</data>
 </openerp>

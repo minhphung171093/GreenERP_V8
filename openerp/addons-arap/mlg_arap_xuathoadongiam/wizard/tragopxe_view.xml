@@ -8,7 +8,7 @@
 	        <field name="arch" type="xml">
 	            <form string="Trả góp xe" version="7.0">
 	                <group>
-	                	<field name="so_hop_dong"/>
+	                	<field name="bien_so_xe_id" options="{'no_create': True}"/>
 	                </group>
 	                <footer>
 	                    <button name="bt_xemcongno" string="Xem công nợ" type='object' class="oe_highlight"/>
@@ -38,8 +38,8 @@
 	            	</header>
 	                <group>
 	                	<h1>
-	                		<label string="Số hợp đồng: "/>
-	                		<field name="so_hop_dong" class="oe_inline"/>
+	                		<label string="Biển số xe: "/>
+	                		<field name="bien_so_xe_id" class="oe_inline"/>
 	                	</h1>
 	                </group>
 	                <group string="Các công nợ">

@@ -29,6 +29,10 @@ class Parser(report_sxw.rml_parse):
         self.tongnodauky = 0
         self.tongno = 0
         self.tongco = 0
+        self.tongcong_congno = 0
+        self.tongcong_nodauky = 0
+        self.tongcong_no = 0
+        self.tongcong_co = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -53,6 +57,10 @@ class Parser(report_sxw.rml_parse):
             'get_tendoituong': self.get_tendoituong,
             'get_no': self.get_no,
             'get_co': self.get_co,
+            'get_tongcong_congno': self.get_tongcong_congno,
+            'get_tongcong_nodauky': self.get_tongcong_nodauky,
+            'get_tongcong_no': self.get_tongcong_no,
+            'get_tongcong_co': self.get_tongcong_co,
         })
         
     def convert_date(self, date):
@@ -248,22 +256,46 @@ class Parser(report_sxw.rml_parse):
     def get_tongcongno(self):
         tongcongno = self.tongcongno
         self.tongcongno = 0
+        self.tongcong_congno += tongcongno
         return tongcongno
     
     def get_tongnodauky(self):
         tongnodauky = self.tongnodauky
         self.tongnodauky = 0
+        self.tongcong_nodauky += tongnodauky
         return tongnodauky
     
     def get_tongno(self):
         tongno = self.tongno
         self.tongno = 0
+        self.tongcong_no += tongno
         return tongno
     
     def get_tongco(self):
         tongco = self.tongco
         self.tongco = 0
+        self.tongcong_co += tongco
         return tongco
+    
+    def get_tongcong_congno(self):
+        tongcong_congno = self.tongcong_congno
+        self.tongcong_congno = 0
+        return tongcong_congno
+    
+    def get_tongcong_nodauky(self):
+        tongcong_nodauky = self.tongcong_nodauky
+        self.tongcong_nodauky = 0
+        return tongcong_nodauky
+    
+    def get_tongcong_no(self):
+        tongcong_no = self.tongcong_no
+        self.tongcong_no = 0
+        return tongcong_no
+    
+    def get_tongcong_co(self):
+        tongcong_co = self.tongcong_co
+        self.tongcong_co = 0
+        return tongcong_co
     
     def get_loai_congno_tuongung(self, ldt):
         wizard_data = self.localcontext['data']['form']

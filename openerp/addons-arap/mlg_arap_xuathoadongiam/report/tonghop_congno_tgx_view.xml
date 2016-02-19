@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+<!-- Tổng hợp công nợ trả góp xe -->
+    	<record id="tonghop_congno_tgx_tattoan_report" model="ir.actions.report.xml">
+	        <field name="name">tonghop_congno_tgx_tattoan_report</field>
+	        <field name="type">ir.actions.report.xml</field>
+	        <field name="model">tonghop.congno.tgx.tattoan</field>
+	        <field name="report_name">tonghop_congno_tgx_tattoan_report</field>
+	        <field name="report_type">aeroo</field>
+	        <field name="in_format">oo-ods</field>
+	        <field name="out_format" model="report.mimetypes" search="[('code','=','oo-xls'),('compatible_types','=','oo-ods')]"/>
+	        <field name="parser_loc">mlg_arap_xuathoadongiam/report/tonghop_congno_tgx_report.py</field>
+	        <field name="report_rml">mlg_arap_xuathoadongiam/report/tonghop_congno_tgx_report.ods</field>
+	        <field name="parser_state">loc</field>
+	        <field name="tml_source">file</field>
+	        <field name="attachment_use" eval="0"/>
+    	</record> 
+    	   
+    	<report 
+			auto="False" 
+			menu="False"
+			id="tonghop_congno_tgx_tattoan_report" 
+			model="tonghop.congno.tgx.tattoan" 
+			name="tonghop_congno_tgx_tattoan_report"
+	        string="Tổng hợp công nợ trả góp xe"
+	        rml="mlg_arap_xuathoadongiam/report/tonghop_congno_tgx_report.ods"/> 	
+	        
+	        
+	</data>
+</openerp>

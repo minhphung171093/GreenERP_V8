@@ -27,8 +27,10 @@
     'depends': ['mlg_arap_account'],
     'data': [
         'report/chitiet_congno_tgx_view.xml',
+        'report/tonghop_congno_tgx_view.xml',
         'wizard/tragopxe_view.xml',
         'wizard/chitiet_congno_tgx_view.xml',
+        'wizard/tonghop_congno_tgx_view.xml',
         'menu.xml',
     ],
     'css' : [

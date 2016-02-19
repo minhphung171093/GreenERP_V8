@@ -30,6 +30,9 @@ class Parser(report_sxw.rml_parse):
         self.tongco = 0
         self.congno = 0
         self.congco = 0
+        self.tongcong_no = 0
+        self.tongcong_co = 0
+        self.tongcong_congno = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -53,6 +56,9 @@ class Parser(report_sxw.rml_parse):
             'get_congco': self.get_congco,
             'get_loai_congno_tuongung': self.get_loai_congno_tuongung,
             'get_title_lcntu': self.get_title_lcntu,
+            'get_tongcong_no': self.get_tongcong_no,
+            'get_tongcong_co': self.get_tongcong_co,
+            'get_tongcong_congno': self.get_tongcong_congno,
         })
         
     def convert_date(self, date):
@@ -338,17 +344,35 @@ class Parser(report_sxw.rml_parse):
     def get_tongcongno(self):
         tongcongno = self.tongcongno
         self.tongcongno = 0
+        self.tongcong_congno += tongcongno
         return tongcongno
     
     def get_tongno(self):
         tongno = self.tongno
         self.tongno = 0
+        self.tongcong_no += tongno
         return tongno
     
     def get_tongco(self):
         tongco = self.tongco
         self.tongco = 0
+        self.tongcong_co += tongco
         return tongco
+    
+    def get_tongcong_congno(self):
+        tongcong_congno = self.tongcong_congno
+        self.tongcong_congno = 0
+        return tongcong_congno
+    
+    def get_tongcong_no(self):
+        tongcong_no = self.tongcong_no
+        self.tongcong_no = 0
+        return tongcong_no
+    
+    def get_tongcong_co(self):
+        tongcong_co = self.tongcong_co
+        self.tongcong_co = 0
+        return tongcong_co
     
     def get_congno(self):
         congno = self.congno

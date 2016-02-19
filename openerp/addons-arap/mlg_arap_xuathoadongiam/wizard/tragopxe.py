@@ -14,18 +14,18 @@ sys.setdefaultencoding('utf-8')
 class tragopxe_wizard(osv.osv_memory):
     _name = "tragopxe.wizard"
     _columns = {    
-        'so_hop_dong': fields.char('Số hợp đồng', size=1024, required=True),
+        'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe', required=True),
     }
     
     def bt_xemcongno(self, cr, uid, ids, context=None):
         this = self.browse(cr, uid, ids[0])
         sql = '''
-            select id from account_invoice where mlg_type='tra_gop_xe' and so_hop_dong='%s'
-        '''%(this.so_hop_dong)
+            select id from account_invoice where mlg_type='tra_gop_xe' and bien_so_xe_id=%s
+        '''%(this.bien_so_xe_id.id)
         cr.execute(sql)
         invoice_ids = [r[0] for r in cr.fetchall()]
         vals = {
-            'so_hop_dong': this.so_hop_dong,
+            'bien_so_xe_id': this.bien_so_xe_id.id,
             'tra_gop_xe_ids': [(6,0,invoice_ids)],
         }
         tattoan_id = self.pool.get('tragopxe.tattoan').create(cr, uid, vals)
@@ -67,7 +67,7 @@ class tragopxe_tattoan(osv.osv_memory):
         return res
     
     _columns = {    
-        'so_hop_dong': fields.char('Số hợp đồng', size=1024),
+        'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
         'show_tattoan': fields.function(_get_tattoan, type='boolean', string='Show tất toán'),
         'tra_gop_xe_ids': fields.many2many('account.invoice','tragopxetattoan_invoice_ref', 'tattoan_id', 'invoice_id','Các công nợ'),
     }

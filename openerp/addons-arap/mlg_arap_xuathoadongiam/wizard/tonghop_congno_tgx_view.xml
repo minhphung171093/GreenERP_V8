@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Báo cáo tổng hợp công nợ trả góp xe -->
+        <record id="view_tonghop_congno_tgx_tattoan_report" model="ir.ui.view">
+            <field name="name">tonghop.report.tgx.tattoan</field>
+            <field name="model">tonghop.congno.tgx.tattoan</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo tổng hợp công nợ trả góp xe" version="7.0">
+                	<sheet version="7.0">
+	                	<group col='4' colspan='2'>
+	                    	<field name='period_from_id' required='1' domain="[('special','!=',True)]"/>
+	                    	<field name='period_to_id' required='1' domain="[('special','!=',True)]"/>
+	                    	<field name='chinhanh_id' readonly='1'/>
+	                    	<field name='tatca'/>
+	                    	<field name='partner_ids' attrs="{'invisible':[('tatca','=',True)]}" widget="many2many_tags" domain="[('nhadautugiantiep','=',True)]"/>
+	                    	<field name='mlg_type' invisible='1'/>
+	                    </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'tonghop_congno_tgx_tattoan_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_tonghop_congno_tgx_tattoan" model="ir.actions.act_window">
+            <field name="name">Báo cáo tổng hợp công nợ trả góp xe</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tonghop.congno.tgx.tattoan</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_tonghop_congno_tgx_tattoan_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+    </data>
+</openerp>
+
