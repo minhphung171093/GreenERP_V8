@@ -330,29 +330,23 @@ class nhap_ve_e_line(osv.osv):
     
     def _check_ve_e_theo_bangke(self, cr, uid, ids, context=None):
         for sl in self.browse(cr, uid, ids, context=context):
-            val0 = 0
-            val1 = 0
-            val2 = 0
-#             sql='''
-#                 select sum(ve_e_theo_bangke) as tong_ve_e from nhap_ve_e_line where daily_id=%s 
-#                     and nhap_ve_e_id in (select id from nhap_ve_e where ky_ve_id = %s and loai_ve_id = %s)
-#             '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
-#             cr.execute(sql)
-#             val2 = cr.fetchone()
+            pp = 0
+            dieu_chinh = 0
+            ve_e = 0
             sql='''
                 select sove_sau_dc from dieuchinh_line where daily_id=%s 
                     and dieuchinh_id in (select id from dieuchinh_phanphoi_ve where ky_ve_id = %s and loai_ve_id = %s)
             '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
             cr.execute(sql)
-            val1 = cr.fetchone()
-            if val1!=0:
+            dieu_chinh = cr.fetchone()
+            if dieu_chinh > 0:
                 sql='''
                     select sum(ve_e_theo_bangke) as tong_ve_e from nhap_ve_e_line where daily_id=%s 
                         and nhap_ve_e_id in (select id from nhap_ve_e where ky_ve_id = %s and loai_ve_id = %s)
                 '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
                 cr.execute(sql)
-                val2 = cr.fetchone()
-                if val2 and val1<val2:
+                ve_e = cr.fetchone()
+                if ve_e and dieu_chinh<ve_e:
                     raise osv.except_osv(_('Cảnh Báo!'),_(' Tổng số lượng vé ế nhập vào không được lớn hơn số lượng vé đã được điều chỉnh của đại lý %s !')%(sl.daily_id.name,))
                     return False
             else:
@@ -361,10 +355,17 @@ class nhap_ve_e_line(osv.osv):
                         and phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
                 '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
                 cr.execute(sql)
-                val0 = cr.fetchone()
-                if val2 and val0<val2:
-                    raise osv.except_osv(_('Cảnh Báo!'),_(' Tổng số lượng vé ế nhập vào không được lớn hơn số lượng vé đã được phân phối của đại lý %s !')%(sl.daily_id.name,))
-                    return False
+                pp = cr.fetchone()
+                if pp > 0:
+                    sql='''
+                        select sum(ve_e_theo_bangke) as tong_ve_e from nhap_ve_e_line where daily_id=%s 
+                            and nhap_ve_e_id in (select id from nhap_ve_e where ky_ve_id = %s and loai_ve_id = %s)
+                    '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
+                    cr.execute(sql)
+                    ve_e = cr.fetchone()
+                    if ve_e and pp<ve_e:
+                        raise osv.except_osv(_('Cảnh Báo!'),_(' Tổng số lượng vé ế nhập vào không được lớn hơn số lượng vé đã được phân phối của đại lý %s !')%(sl.daily_id.name,))
+                        return False
         return True
          
     _constraints = [
