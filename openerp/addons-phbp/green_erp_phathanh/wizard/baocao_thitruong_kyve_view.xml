@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="baocao_thitruong_kyve_form" model="ir.ui.view">
+            <field name="name">baocao.thitruong.kyve.form</field>
+            <field name="model">baocao.thitruong.kyve</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo thị trường theo kỳ vé" version="7.0">
+                    <group>
+                    	<field name="ky_ve_id" context="{'search_baocao_kyve':1}" on_change="onchange_ky_ve_id(ky_ve_id)" />
+                    	<field name="loai_ve_id"/>
+                    	<field name="ngay_mo_thuong" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Hủy bỏ" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_baocao_thitruong_kyve">
+	        <field name="name">Báo cáo thị trường theo kỳ vé</field>
+	        <field name="res_model">baocao.thitruong.kyve</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="baocao_thitruong_kyve_form" />
+	        <field name="target">new</field>
+	        <field name="context">{'readonly_by_pass': True}</field>
+	    </record>
+	    
+
+    </data>
+</openerp>
+

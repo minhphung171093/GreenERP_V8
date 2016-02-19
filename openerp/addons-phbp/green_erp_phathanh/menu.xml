@@ -37,5 +37,9 @@
 					action="action_baocao_tieuthu_kyve"
 					name="Báo cáo tiêu thụ kỳ vé"
 					parent="menu_baocao" sequence="1"/>
+				<menuitem id="menu_action_baocao_thitruong_kyve"
+					action="action_baocao_thitruong_kyve"
+					name="Báo cáo thị trường theo kỳ vé"
+					parent="menu_baocao" sequence="5"/>
     </data>	
 </openerp>
