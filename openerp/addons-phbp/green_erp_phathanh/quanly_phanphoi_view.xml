@@ -153,7 +153,7 @@
 	            <form string="Nhập vé ế theo khu vực" version="7.0">
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="ky_ve_id" on_change="onchange_ky_ve_id(ky_ve_id)" />
+	                		<field name="ky_ve_id" on_change="onchange_ky_ve_id(ky_ve_id)" context="{'search_ky_ve_e':1}"/>
 		                    <field name="loai_ve_id" />
 		                    <field name="ngay_mo_thuong" readonly="1" />
 			            </group>
@@ -161,7 +161,7 @@
 							<page string = "Chi tiết nhập vé ế">
 								<field name="nhap_ve_e_line" nolabel='1'>
 									<tree editable='bottom' >
-										<field name="daily_id" on_change="onchange_daily_id(daily_id)"/>
+										<field name="daily_id" context="{'search_dai_ly':1,'ky_ve_id':parent.ky_ve_id,'loai_ve_id':parent.loai_ve_id}" on_change="onchange_daily_id(daily_id,parent.ky_ve_id)"/>
 										<field name="ten_daily" />
 										<field name="diem_tra_e_id" />
 										<field name="ma_khu_vuc" /> 

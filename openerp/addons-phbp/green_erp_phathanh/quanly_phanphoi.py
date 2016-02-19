@@ -39,11 +39,20 @@ class phanphoi_truyenthong(osv.osv):
             if phanphoi_ids:
                 pp = self.browse(cr,uid,phanphoi_ids[0])   
                 for line in pp.phanphoi_tt_line:
+                    sql = '''
+                        select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s
+                    '''%(line.id)
+                    cr.execute(sql)
+                    ve_dc = cr.fetchone()
+                    if ve_dc:
+                        ve_kytruoc = ve_dc[0]
+                    else:
+                        ve_kytruoc = line.sove_kynay
                     mang.append((0,0,{
                                       'daily_id': line.daily_id.id,
                                       'ten_daily': line.ten_daily,
                                       'socay_kytruoc': line.socay_kynay,
-                                      'sove_kytruoc': line.sove_kynay,
+                                      'sove_kytruoc': ve_kytruoc,
                                       }))
                                  
                 vals = {'phanphoi_tt_line':mang,
@@ -65,9 +74,9 @@ class phanphoi_tt_line(osv.osv):
         'ten_daily': fields.char('Tên Đại Lý',size = 1024, required = True),
         'daily_id': fields.many2one('dai.ly','Đại lý', required = True),
         'socay_kytruoc': fields.float('Số cây kỳ trước'),
-        'sove_kytruoc': fields.float('Số vé kỳ trước'),
+        'sove_kytruoc': fields.integer('Số vé kỳ trước'),
         'socay_kynay': fields.float('Số cây kỳ này'),
-        'sove_kynay': fields.float('Số vé kỳ này'),
+        'sove_kynay': fields.integer('Số vé kỳ này'),
         'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)',
                                     type='float', store={
                                                 'phanphoi.tt.line':(lambda self, cr, uid, ids, c={}: ids, ['socay_kytruoc','socay_kynay'], 10),
@@ -107,9 +116,9 @@ class dieuchinh_phanphoi_ve(osv.osv):
         res = {}
         for dc in self.browse(cr,uid,ids,context=context):
             res[dc.id] = {
-                'tong_ve_pp': 0.0,
-                'tong_ve_dc': 0.0,
-                'tong_ve_sau_dc': 0.0,
+                'tong_ve_pp': 0,
+                'tong_ve_dc': 0,
+                'tong_ve_sau_dc': 0,
             }
             val1 = 0
             val2 = 0
@@ -125,9 +134,9 @@ class dieuchinh_phanphoi_ve(osv.osv):
         res = {}
         for dc in self.browse(cr,uid,ids,context=context):
             res[dc.id] = {
-                'total_ve_pp': 0.0,
-                'total_ve_dc': 0.0,
-                'total_ve_sau_dc': 0.0,
+                'total_ve_pp': 0,
+                'total_ve_dc': 0,
+                'total_ve_sau_dc': 0,
             }
             sql = '''
                 select case when sum(sove_kynay)!=0 then sum(sove_kynay) else 0 end tong_ve_pp
@@ -149,26 +158,26 @@ class dieuchinh_phanphoi_ve(osv.osv):
         'ngay_ph': fields.date('Ngày phát hành',required = True),
         'ngay_dc': fields.date('Ngày điều chỉnh',required = True),
         'dieuchinh_line': fields.one2many('dieuchinh.line','dieuchinh_id','Dieu Chinh line'),
-        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng số vé được duyệt',
+        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng số vé được duyệt',type='integer',
                                          store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
-        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng số vé điều chỉnh',
+        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng số vé điều chỉnh',type='integer',
                                       store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
-        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',
+        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='integer',
                                         store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
                 
-        'total_ve_pp': fields.function(total_amount_all, multi='sums',string='Tổng số vé phân phối theo KH',
+        'total_ve_pp': fields.function(total_amount_all, multi='sums',string='Tổng số vé phân phối theo KH',type='integer',
                                          store=True),
-        'total_ve_dc': fields.function(total_amount_all, multi='sums',string='Số vé điều chỉnh so với kế hoạch',
+        'total_ve_dc': fields.function(total_amount_all, multi='sums',string='Số vé điều chỉnh so với kế hoạch',type='integer',
                                       store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
-                'dieuchinh.line': (_get_dieuchinh, ['price_unit', 'sub_total', 'product_uom_qty', 'freight'], 10)}),
-        'total_ve_sau_dc': fields.function(total_amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',
+                'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
+        'total_ve_sau_dc': fields.function(total_amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='integer',
                                         store=True),
                 }
     
@@ -213,10 +222,10 @@ class dieuchinh_line(osv.osv):
         'ten_daily': fields.char('Tên Đại Lý',size = 1024),
         'daily_id': fields.many2one('dai.ly','Đại lý'),
         'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
-        'sove_duocduyet': fields.float('Số vé được duyệt', readonly=True),
-        'sove_dc': fields.float('Số vé điều chỉnh'),
+        'sove_duocduyet': fields.integer('Số vé được duyệt', readonly=True),
+        'sove_dc': fields.integer('Số vé điều chỉnh'),
         'sove_sau_dc':fields.function(_total_ve, string='Số vé sau điều chỉnh',
-                                    type='float', store={
+                                    type='integer', store={
                                                 'dieuchinh.line':(lambda self, cr, uid, ids, c={}: ids, ['sove_duocduyet','sove_dc'], 10),
                                             }),
                 }
@@ -247,6 +256,31 @@ class nhap_ve_e(osv.osv):
         'ngay_mo_thuong': fields.date('Ngày mở thưởng'),
         'nhap_ve_e_line': fields.one2many('nhap.ve.e.line','nhap_ve_e_id','Nhap ve e line'),
                 }
+#     def _check_sl_ve_e(self, cr, uid, ids, context=None):
+#         for sl in self.browse(cr, uid, ids, context=context):
+#             val1 = 0
+#             val2 = 0
+#             sql='''
+#                 select sove_sau_dc from dieuchinh_line where daily_id=%s 
+#                     and dieuchinh_id in (select id from dieuchinh_phanphoi_ve where ky_ve_id = %s and loai_ve_id = %s)
+#             '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
+#             cr.execute(sql)
+#             val1 = cr.fetchone()
+#             if val1:
+#                 sql='''
+#                     select sum(ve_e_theo_bangke) as tong_ve_e from nhap_ve_e_line where daily_id=%s 
+#                         and nhap_ve_e_id in (select id from nhap_ve_e where ky_ve_id = %s and loai_ve_id = %s)
+#                 '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
+#                 cr.execute(sql)
+#                 val2 = cr.fetchone()
+#                 if val2 and val1<val2:
+#                     raise osv.except_osv(_('Warning!'),_(' Tổng số lượng vé ế nhập vào không được lớn hơn số lượng vé đã được điều chỉnh !'))
+#                     return False
+#         return True
+#         
+#     _constraints = [
+#         (_check_sl_ve_e, 'Identical Data', []),
+#     ]  
     def onchange_ky_ve_id(self, cr, uid, ids, ky_ve_id=False):
         vals = {}
         if ky_ve_id :
@@ -278,24 +312,74 @@ class nhap_ve_e_line(osv.osv):
         'daily_id': fields.many2one('dai.ly','Đại lý', required = True),
         'diem_tra_e_id': fields.many2one('khu.vuc','Mã điểm trả ế', required = True),
         'ma_khu_vuc': fields.char('Mã Khu Vực',size = 1024, required = True),
-        've_e_theo_bangke': fields.float('Số vé ế theo bảng kê'),
-        'thuc_kiem': fields.float('Thực kiểm'),
+        've_e_theo_bangke': fields.integer('Số vé ế theo bảng kê'),
+        'thuc_kiem': fields.integer('Thực kiểm'),
+        'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
         'kiem_dem_thieu':fields.function(_thieu_thua, string='Kiểm đếm (Thiếu)',multi='sums',
-                                    type='float', store={
+                                    type='integer', store={
                                                 'nhap.ve.e.line':(lambda self, cr, uid, ids, c={}: ids, ['ve_e_theo_bangke','thuc_kiem'], 10),
                                             }),
         'kiem_dem_thua':fields.function(_thieu_thua, string='Kiểm đếm (Thừa)',multi='sums',
-                                    type='float', store={
+                                    type='integer', store={
                                                 'nhap.ve.e.line':(lambda self, cr, uid, ids, c={}: ids, ['ve_e_theo_bangke','thuc_kiem'], 10),
                                             }),
-        'ghi_chu':fields.char('Tên Đại Lý',size = 1024),
+        'ghi_chu':fields.char('Ghi chú',size = 1024),
                 }
-    def onchange_daily_id(self, cr, uid, ids, daily_id=False, gan_cho_ids=False):
+    
+    def _check_ve_e_theo_bangke(self, cr, uid, ids, context=None):
+        for sl in self.browse(cr, uid, ids, context=context):
+            val0 = 0
+            val1 = 0
+            val2 = 0
+#             sql='''
+#                 select sum(ve_e_theo_bangke) as tong_ve_e from nhap_ve_e_line where daily_id=%s 
+#                     and nhap_ve_e_id in (select id from nhap_ve_e where ky_ve_id = %s and loai_ve_id = %s)
+#             '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
+#             cr.execute(sql)
+#             val2 = cr.fetchone()
+            sql='''
+                select sove_sau_dc from dieuchinh_line where daily_id=%s 
+                    and dieuchinh_id in (select id from dieuchinh_phanphoi_ve where ky_ve_id = %s and loai_ve_id = %s)
+            '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
+            cr.execute(sql)
+            val1 = cr.fetchone()
+            if val1!=0:
+                sql='''
+                    select sum(ve_e_theo_bangke) as tong_ve_e from nhap_ve_e_line where daily_id=%s 
+                        and nhap_ve_e_id in (select id from nhap_ve_e where ky_ve_id = %s and loai_ve_id = %s)
+                '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
+                cr.execute(sql)
+                val2 = cr.fetchone()
+                if val2 and val1<val2:
+                    raise osv.except_osv(_('Cảnh Báo!'),_(' Tổng số lượng vé ế nhập vào không được lớn hơn số lượng vé đã được điều chỉnh của đại lý %s !')%(sl.daily_id.name,))
+                    return False
+            else:
+                sql='''
+                    select sove_kynay from phanphoi_tt_line where daily_id=%s 
+                        and phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
+                '''%(sl.daily_id.id,sl.nhap_ve_e_id.ky_ve_id.id,sl.nhap_ve_e_id.loai_ve_id.id)
+                cr.execute(sql)
+                val0 = cr.fetchone()
+                if val2 and val0<val2:
+                    raise osv.except_osv(_('Cảnh Báo!'),_(' Tổng số lượng vé ế nhập vào không được lớn hơn số lượng vé đã được phân phối của đại lý %s !')%(sl.daily_id.name,))
+                    return False
+        return True
+         
+    _constraints = [
+        (_check_ve_e_theo_bangke, '', ['ve_e_theo_bangke']),
+    ]     
+    def onchange_daily_id(self, cr, uid, ids, daily_id=False, ky_ve_id=False):
         vals = {}
-        if daily_id :
+        if daily_id and ky_ve_id:
             daily = self.pool.get('dai.ly').browse(cr,uid,daily_id)
+            sql = '''
+                select id from phanphoi_tt_line where daily_id = %s and phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s)
+            '''%(daily_id, ky_ve_id)
+            cr.execute(sql)
+            ve = cr.fetchone()
             vals = {'ten_daily':daily.ten,
                     'ma_khu_vuc':daily.tinh_tp_id.name,
+                    'phanphoi_line_id': ve[0],
                 }
         return {'value': vals}  
 nhap_ve_e_line()
@@ -335,12 +419,12 @@ class kh_in_ve_tt(osv.osv):
         'sl_in_moi_dot':fields.char('Số lượng vé in mỗi đợt',size = 1024),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
         'tong_so_ve_in':fields.function(_tinh_tong_so_ve_in, string='Tổng số vé in trong tháng',
-                                    type='float', store={
+                                    type='integer', store={
                                                 'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
                                                 'kh.in.ve.tt.line':(_get_order, ['sl_ve_in'], 10),
                                             }),
         'tong_so_dot_in':fields.function(_tinh_tong_so_dot_in, string='Tổng số đợt in',
-                                    type='float', store={
+                                    type='integer', store={
                                                 'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
                                                 'kh.in.ve.tt.line':(_get_order, [], 10),
                                             }),
@@ -355,7 +439,7 @@ class kh_in_ve_tt_line(osv.osv):
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
         'ngay_mo_thuong': fields.date('Ngày mở số'),
         'ngay_nhan': fields.date('Ngày nhận',required = True),
-        'sl_ve_in': fields.float('Số lượng vé in (vé)'),
+        'sl_ve_in': fields.integer('Số lượng vé in (vé)'),
                 }
     def onchange_ky_ve_id(self, cr, uid, ids, ky_ve_id=False):
         vals = {}
