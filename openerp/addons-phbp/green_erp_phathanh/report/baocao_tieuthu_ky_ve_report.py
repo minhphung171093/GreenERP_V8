@@ -44,7 +44,11 @@ class Parser(report_sxw.rml_parse):
         self.total_sl_tieuthu = 0
         self.total_thanhtien_tieuthu = 0
         self.total_ti_le = 0
-        self.total_doanhthu_kytruoc = 0
+        self.total_sl_sosanh_kytruoc = 0
+        self.total_sl_tieuthu_truoc = 0
+        self.total_sl_phathanh_truoc = 0
+        self.total_ti_le_truoc = 0
+        self.total_tile_sosanh_kytruoc = 0
         self.total_tang_giam = 0
         self.localcontext.update({
             'convert_date': self.convert_date,
@@ -53,6 +57,7 @@ class Parser(report_sxw.rml_parse):
             'get_loai_ve': self.get_loai_ve,
             'convert_f_amount': self.convert_f_amount,
             'get_lines': self.get_lines,
+            'get_in': self.get_in,
         })
         
     def convert_date(self, date):
@@ -78,6 +83,20 @@ class Parser(report_sxw.rml_parse):
         loai_ve_id = wizard_data['loai_ve_id']
         loai_ve = self.pool.get('loai.ve').browse(self.cr,self.uid,loai_ve_id[0])
         return loai_ve.name
+    
+    def get_in(self):
+        wizard_data = self.localcontext['data']['form']
+        ky_ve_id = wizard_data['ky_ve_id']
+        sql = '''
+            select sl_ve_in from kh_in_ve_tt_line where ky_ve_id = %s 
+        '''%(ky_ve_id[0])
+        self.cr.execute(sql)
+        sl_ve_in = self.cr.fetchone()
+        if sl_ve_in:
+            sl_ve = sl_ve_in[0]
+        else:
+            sl_ve = 0
+        return sl_ve
     
     def get_date(self):
         res={}
@@ -110,7 +129,11 @@ class Parser(report_sxw.rml_parse):
             total_sl_tieuthu = 0
             total_thanhtien_tieuthu = 0
             total_ti_le = 0
-            total_doanhthu_kytruoc = 0
+            total_sl_sosanh_kytruoc = 0
+            total_sl_tieuthu_truoc = 0
+            total_sl_phathanh_truoc = 0
+            total_ti_le_truoc = 0
+            total_tile_sosanh_kytruoc = 0
             total_tang_giam = 0
             sql ='''
                 SELECT id FROM phanphoi_tt_line where daily_id in (select id from dai_ly where tinh_tp_id = %s) 
@@ -147,8 +170,12 @@ class Parser(report_sxw.rml_parse):
                     
                     sl_tieuthu = sl_phathanh-ve_e
                     thanhtien_tieuthu = sl_tieuthu*ve
-                    ti_le = float(sl_tieuthu)*100/float(sl_phathanh)
-                    doanhthu_kytruoc = (dl.sove_kytruoc-ve_e_truoc)*ve
+                    ti_le = float(sl_tieuthu)*100/float(sl_phathanh)  
+                    sl_tieuthu_truoc = dl.sove_kytruoc-ve_e_truoc
+                    sl_phathanh_truoc = dl.sove_kytruoc
+                    sl_sosanh_kytruoc = (sl_tieuthu)-(sl_tieuthu_truoc)
+                    ti_le_truoc = float(sl_tieuthu_truoc)*100/float(sl_phathanh_truoc)  
+                    doanhthu_kytruoc = (sl_tieuthu_truoc)*ve
                     tang_giam = thanhtien_tieuthu-doanhthu_kytruoc
                     line_ids.append({
                                         'stt': seq+1,
@@ -159,7 +186,8 @@ class Parser(report_sxw.rml_parse):
                                         'sl_tieuthu': sl_tieuthu,
                                         'thanhtien_tieuthu': thanhtien_tieuthu,
                                         'ti_le': ti_le,
-                                        'doanhthu_kytruoc': doanhthu_kytruoc,
+                                        'sl_sosanh_kytruoc': sl_sosanh_kytruoc,
+                                        'tile_sosanh_kytruoc': round(ti_le-ti_le_truoc,1),
                                         'tang_giam': tang_giam,
                                         })
                 
@@ -168,7 +196,11 @@ class Parser(report_sxw.rml_parse):
                     total_sl_tieuthu += sl_tieuthu
                     total_thanhtien_tieuthu += thanhtien_tieuthu
                     total_ti_le = float(total_sl_tieuthu)*100/float(total_sl_phathanh)
-                    total_doanhthu_kytruoc += doanhthu_kytruoc
+                    total_sl_sosanh_kytruoc += sl_sosanh_kytruoc
+                    total_sl_tieuthu_truoc += sl_tieuthu_truoc
+                    total_sl_phathanh_truoc += sl_phathanh_truoc
+                    total_ti_le_truoc = float(total_sl_tieuthu_truoc)*100/float(total_sl_phathanh_truoc)
+                    total_tile_sosanh_kytruoc = total_ti_le - total_ti_le_truoc
                     total_tang_giam += tang_giam
                 
                 self.total_sl_phathanh += total_sl_phathanh
@@ -176,7 +208,11 @@ class Parser(report_sxw.rml_parse):
                 self.total_sl_tieuthu += total_sl_tieuthu
                 self.total_thanhtien_tieuthu += total_thanhtien_tieuthu
                 self.total_ti_le = float(self.total_sl_tieuthu)*100/float(self.total_sl_phathanh)
-                self.total_doanhthu_kytruoc += total_doanhthu_kytruoc
+                self.total_sl_sosanh_kytruoc += total_sl_sosanh_kytruoc
+                self.total_sl_tieuthu_truoc += total_sl_tieuthu_truoc
+                self.total_sl_phathanh_truoc += total_sl_phathanh_truoc
+                self.total_ti_le_truoc = float(self.total_sl_tieuthu_truoc)*100/float(self.total_sl_phathanh_truoc)
+                self.total_tile_sosanh_kytruoc = self.total_ti_le-self.total_ti_le_truoc
                 self.total_tang_giam += total_tang_giam
                 
                 mang.append({
@@ -188,7 +224,8 @@ class Parser(report_sxw.rml_parse):
                                 'sl_tieuthu': total_sl_tieuthu,
                                 'thanhtien_tieuthu': total_thanhtien_tieuthu,
                                 'ti_le': round(total_ti_le,1),
-                                'doanhthu_kytruoc': total_doanhthu_kytruoc,
+                                'sl_sosanh_kytruoc': total_sl_sosanh_kytruoc,
+                                'tile_sosanh_kytruoc': round(total_tile_sosanh_kytruoc,1),
                                 'tang_giam': total_tang_giam,
                             })
                 
@@ -202,7 +239,8 @@ class Parser(report_sxw.rml_parse):
                                 'sl_tieuthu': line['sl_tieuthu'],
                                 'thanhtien_tieuthu': line['thanhtien_tieuthu'],
                                 'ti_le': round(line['ti_le'],1),
-                                'doanhthu_kytruoc': line['doanhthu_kytruoc'],
+                                'sl_sosanh_kytruoc': line['sl_sosanh_kytruoc'],
+                                'tile_sosanh_kytruoc': round(line['tile_sosanh_kytruoc'],1),
                                 'tang_giam': line['tang_giam'],
                                      })
         mang.append({
@@ -214,7 +252,8 @@ class Parser(report_sxw.rml_parse):
                         'sl_tieuthu': self.total_sl_tieuthu,
                         'thanhtien_tieuthu': self.total_thanhtien_tieuthu,
                         'ti_le': round(self.total_ti_le,1),
-                        'doanhthu_kytruoc': self.total_doanhthu_kytruoc,
+                        'sl_sosanh_kytruoc': self.total_sl_sosanh_kytruoc,
+                        'tile_sosanh_kytruoc': round(self.total_tile_sosanh_kytruoc,1),
                         'tang_giam': self.total_tang_giam,
                              })
                     
