@@ -34,6 +34,7 @@
         'wizard/baocao_tieuthu_kyve_view.xml',
         'report/dieuchinh_kehoach_pp_ve_report_view.xml',
         'report/baocao_nhanh_ky_ve_report_view.xml',
+        'report/baocao_tieuthu_ky_ve_report_view.xml',
         'quanly_phanphoi_view.xml',
         
         'menu.xml',
