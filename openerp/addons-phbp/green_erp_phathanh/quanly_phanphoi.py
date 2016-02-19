@@ -53,6 +53,7 @@ class phanphoi_truyenthong(osv.osv):
                                       'ten_daily': line.ten_daily,
                                       'socay_kytruoc': line.socay_kynay,
                                       'sove_kytruoc': ve_kytruoc,
+                                      'phanphoi_line_kytruoc_id': line.id,
                                       }))
                                  
                 vals = {'phanphoi_tt_line':mang,
@@ -77,6 +78,7 @@ class phanphoi_tt_line(osv.osv):
         'sove_kytruoc': fields.integer('Số vé kỳ trước'),
         'socay_kynay': fields.float('Số cây kỳ này'),
         'sove_kynay': fields.integer('Số vé kỳ này'),
+        'phanphoi_line_kytruoc_id': fields.many2one('phanphoi.tt.line','Phan phoi line ky truoc'),
         'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)',
                                     type='float', store={
                                                 'phanphoi.tt.line':(lambda self, cr, uid, ids, c={}: ids, ['socay_kytruoc','socay_kynay'], 10),
