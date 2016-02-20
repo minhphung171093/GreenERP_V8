@@ -55,6 +55,7 @@ class khu_vuc(osv.osv):
     _name = "khu.vuc"
     _columns = {
         'name': fields.char('Mã Điểm trả ế',size = 1024, required = True),
+        'ten': fields.char('Tên Điểm trả ế',size = 1024, required = True),
                 }
 khu_vuc()
 
