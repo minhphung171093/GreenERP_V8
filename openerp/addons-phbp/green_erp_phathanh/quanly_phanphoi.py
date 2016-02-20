@@ -452,4 +452,54 @@ class kh_in_ve_tt_line(osv.osv):
                 }
         return {'value': vals}  
 kh_in_ve_tt_line()
+
+class kh_in_ve_tu_chon(osv.osv):
+    _name = "kh.in.ve.tu.chon"
+
+#     def _tinh_tong_so_ve_in(self, cr, uid, ids, name, arg, context=None):
+#         res = {}
+#         for tg in self.browse(cr,uid,ids):
+# #             res[tg.id] = {
+# #                 'tong_so_ve_in': 0.0,
+# #             }
+#             val1=0
+#             for line in tg.kh_in_ve_tt_line:
+#                 val1+=line.sl_ve_in
+#             res[tg.id]=val1    
+#         return res
+#     def _tinh_tong_so_dot_in(self, cr, uid, ids, name, arg, context=None):
+#         res = {}
+#         for tg in self.browse(cr,uid,ids):
+#             sql='''
+#                 select COUNT(id) from kh_in_ve_tt_line where kh_in_ve_tt_id=%s
+#             '''%(tg.id)
+#             cr.execute(sql)
+#             val1 = cr.fetchone()[0]
+#             res[tg.id]=val1    
+#         return res
+#     def _get_order(self, cr, uid, ids, context=None):
+#         result = {}
+#         for line in self.pool.get('kh.in.ve.tt.line').browse(cr, uid, ids, context=context):
+#             result[line.kh_in_ve_tt_id.id] = True
+#         return result.keys()
+    _columns = {
+        'name':fields.char('Đợt',size = 2,required=True),
+        'year':fields.char('Năm',size = 4,required=True),
+        'thoigian_giaohang': fields.date('Thời gian giao hàng',required = True),
+        'noi_dung_khac':fields.char('Các nội dung khác',size = 1024),
+        
+        'kh_in_ve_tu_chon_line': fields.one2many('kh.in.ve.tu.chon.line','kh_in_ve_tu_chon_id','Nhap ve e line'),
+                }
+kh_in_ve_tu_chon()
+class kh_in_ve_tu_chon_line(osv.osv):
+    _name = "kh.in.ve.tu.chon.line"
+    _columns = {
+        'kh_in_ve_tu_chon_id': fields.many2one('kh.in.ve.tt','Kế hoạch in tt', ondelete='cascade'),
+        'loai_ve_id': fields.many2one('loai.ve','Mệnh giá',required = True),
+        'ky_hieu': fields.char('Ký hiệu',size = 1024,required=True),
+        'seri': fields.integer('Số seri'),
+        'so_luong': fields.integer('Số lượng đặt in'),
+                }
+
+kh_in_ve_tu_chon_line()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

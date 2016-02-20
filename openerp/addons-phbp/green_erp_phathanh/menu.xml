@@ -26,6 +26,10 @@
 					action="action_kh_in_ve_tt"
 					name="Kế hoạch in vé số truyền thống"
 					parent="menu_quanly_phanphoi" sequence="4"/>
+				<menuitem id="menu_action_kh_in_ve_tu_chon"
+					action="action_kh_in_ve_tu_chon"
+					name="Kế hoạch in vé số tự chọn"
+					parent="menu_quanly_phanphoi" sequence="5"/>
 			<menuitem id="menu_baocao"
 				name="Báo cáo"
 				parent="quanly_root" sequence="2"/>
@@ -41,5 +45,9 @@
 					action="action_baocao_thitruong_kyve"
 					name="Báo cáo thị trường theo kỳ vé"
 					parent="menu_baocao" sequence="5"/>
+				<menuitem id="menu_action_baocao_thuhoi_ve"
+					action="action_baocao_thuhoi_ve"
+					name="Báo cáo thu hồi vé ế theo khu vực"
+					parent="menu_baocao" sequence="6"/>
     </data>	
 </openerp>

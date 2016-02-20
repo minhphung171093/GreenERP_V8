@@ -22,6 +22,7 @@
 import baocao_nhanh_kyve
 import baocao_tieuthu_kyve
 import baocao_thitruong_kyve
+import baocao_thuhoi_ve
 # import congno_vacine
 # import danhsach_khachhang
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

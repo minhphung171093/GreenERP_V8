@@ -243,6 +243,57 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{'readonly_by_pass': True}</field>
         </record>  
+
+<!--Kế hoạch in vé số tự chọn-->   
+        <record model="ir.ui.view" id="kh_in_ve_tu_chon_tree">
+            <field name="name">kh.in.ve.tu.chon.tree</field>
+            <field name="model">kh.in.ve.tu.chon</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Kế hoạch in vé số tự chọn" >
+                    <field name="name" />
+                    <field name="year" />
+                    <field name="thoigian_giaohang" />  
+                    <field name="noi_dung_khac" />
+                </tree>
+            </field>
+        </record>  
+        
+       	<record model="ir.ui.view" id="kh_in_ve_tu_chon_form">
+	        <field name="name">kh.in.ve.tu.chon.form</field>
+	        <field name="model">kh.in.ve.tu.chon</field>
+	        <field name="arch" type="xml">
+	            <form string="Kế hoạch in vé số tự chọn" version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+	                		<field name="name" />
+	                		<field name="year" />
+	                        <field name="thoigian_giaohang" />  
+                    		<field name="noi_dung_khac" />
+			            </group>
+			            <notebook>
+							<page string = "Chi tiết Kế hoạch in">
+								<field name="kh_in_ve_tu_chon_line" nolabel='1'>
+									<tree editable='bottom' >
+										<field name="loai_ve_id"  />
+										<field name="ky_hieu" />
+										<field name="seri" /> 
+										<field name="so_luong" /> 
+									</tree>
+								</field>
+							</page>
+						</notebook>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="action_kh_in_ve_tu_chon">
+            <field name="name">Kế hoạch in vé số tự chọn</field>
+            <field name="res_model">kh.in.ve.tu.chon</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'readonly_by_pass': True}</field>
+        </record>  
     
     </data>
 </openerp>
