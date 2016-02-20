@@ -147,7 +147,7 @@ class Parser(report_sxw.rml_parse):
                     
                     sl_tieuthu = sl_phathanh-ve_e
                     thanhtien_tieuthu = sl_tieuthu*ve
-                    ti_le = float(sl_tieuthu)*100/float(sl_phathanh)
+                    ti_le = float(sl_phathanh) and float(sl_tieuthu)*100/float(sl_phathanh) or 0
                     line_ids.append({
                                         'stt': seq+1,
                                         'ten_dl': diem.ten_daily or '',
@@ -165,13 +165,13 @@ class Parser(report_sxw.rml_parse):
                     total_ve_e += ve_e
                     total_sl_tieuthu += sl_tieuthu
                     total_thanhtien_tieuthu += thanhtien_tieuthu
-                    total_ti_le = float(total_sl_tieuthu)*100/float(total_sl_phathanh)
+                    total_ti_le = float(total_sl_phathanh) and float(total_sl_tieuthu)*100/float(total_sl_phathanh) or 0
                 
                 self.total_sl_phathanh += total_sl_phathanh
                 self.total_ve_e += total_ve_e
                 self.total_sl_tieuthu += total_sl_tieuthu
                 self.total_thanhtien_tieuthu += total_thanhtien_tieuthu
-                self.total_ti_le = float(self.total_sl_tieuthu)*100/float(self.total_sl_phathanh)
+                self.total_ti_le = float(self.total_sl_phathanh) and float(self.total_sl_tieuthu)*100/float(self.total_sl_phathanh) or 0
                 
                 for line in line_ids:
                     mang.append({
@@ -189,7 +189,7 @@ class Parser(report_sxw.rml_parse):
                                      })
                 mang.append({
                                 'stt': '',
-                                'ten_dl': diem_tra_e['name'] + ' Total', 
+                                'ten_dl': diem_tra_e['name'] + u' Total', 
                                 'ma_diem_tra_e': '',
                                 'ma_dl': '',
                                 'ma_kv': '',
@@ -201,7 +201,7 @@ class Parser(report_sxw.rml_parse):
                             })
         mang.append({
                         'stt': '',
-                        'ten_dl': 'Grand Total', 
+                        'ten_dl': u'Grand Total', 
                         'ma_diem_tra_e': '',
                         'ma_dl': '',
                         'ma_kv': '',

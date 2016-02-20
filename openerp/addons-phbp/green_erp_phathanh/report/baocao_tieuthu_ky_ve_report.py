@@ -158,23 +158,25 @@ class Parser(report_sxw.rml_parse):
                     '''%(dl.id)
                     self.cr.execute(sql)
                     ve_e = self.cr.dictfetchone()['tong_ve_e']
-                    
-                    sql = '''
-                        select case when sum(ve_e_theo_bangke)!=0 then sum(ve_e_theo_bangke) else 0 end tong_ve_e_truoc
-                        from nhap_ve_e_line where phanphoi_line_id = %s
-                    '''%(dl.phanphoi_line_kytruoc_id.id)
-                    self.cr.execute(sql)
-                    ve_e_truoc = self.cr.dictfetchone()['tong_ve_e_truoc']
+                    if dl.phanphoi_line_kytruoc_id:
+                        sql = '''
+                            select case when sum(ve_e_theo_bangke)!=0 then sum(ve_e_theo_bangke) else 0 end tong_ve_e_truoc
+                            from nhap_ve_e_line where phanphoi_line_id = %s
+                        '''%(dl.phanphoi_line_kytruoc_id.id)
+                        self.cr.execute(sql)
+                        ve_e_truoc = self.cr.dictfetchone()['tong_ve_e_truoc']
+                    else:
+                        ve_e_truoc = 0
                     if dl.phanphoi_tt_id.loai_ve_id.name == '10000':
                         ve = 10000
                     
                     sl_tieuthu = sl_phathanh-ve_e
                     thanhtien_tieuthu = sl_tieuthu*ve
-                    ti_le = float(sl_tieuthu)*100/float(sl_phathanh)  
+                    ti_le = float(sl_phathanh) and float(sl_tieuthu)*100/float(sl_phathanh) or 0
                     sl_tieuthu_truoc = dl.sove_kytruoc-ve_e_truoc
                     sl_phathanh_truoc = dl.sove_kytruoc
                     sl_sosanh_kytruoc = (sl_tieuthu)-(sl_tieuthu_truoc)
-                    ti_le_truoc = float(sl_tieuthu_truoc)*100/float(sl_phathanh_truoc)  
+                    ti_le_truoc = float(sl_phathanh_truoc) and float(sl_tieuthu_truoc)*100/float(sl_phathanh_truoc) or 0 
                     doanhthu_kytruoc = (sl_tieuthu_truoc)*ve
                     tang_giam = thanhtien_tieuthu-doanhthu_kytruoc
                     line_ids.append({
@@ -195,11 +197,11 @@ class Parser(report_sxw.rml_parse):
                     total_ve_e += ve_e
                     total_sl_tieuthu += sl_tieuthu
                     total_thanhtien_tieuthu += thanhtien_tieuthu
-                    total_ti_le = float(total_sl_tieuthu)*100/float(total_sl_phathanh)
+                    total_ti_le = float(total_sl_phathanh) and float(total_sl_tieuthu)*100/float(total_sl_phathanh) or 0
                     total_sl_sosanh_kytruoc += sl_sosanh_kytruoc
                     total_sl_tieuthu_truoc += sl_tieuthu_truoc
                     total_sl_phathanh_truoc += sl_phathanh_truoc
-                    total_ti_le_truoc = float(total_sl_tieuthu_truoc)*100/float(total_sl_phathanh_truoc)
+                    total_ti_le_truoc = float(total_sl_phathanh_truoc) and float(total_sl_tieuthu_truoc)*100/float(total_sl_phathanh_truoc) or 0
                     total_tile_sosanh_kytruoc = total_ti_le - total_ti_le_truoc
                     total_tang_giam += tang_giam
                 
@@ -207,11 +209,11 @@ class Parser(report_sxw.rml_parse):
                 self.total_ve_e += total_ve_e
                 self.total_sl_tieuthu += total_sl_tieuthu
                 self.total_thanhtien_tieuthu += total_thanhtien_tieuthu
-                self.total_ti_le = float(self.total_sl_tieuthu)*100/float(self.total_sl_phathanh)
+                self.total_ti_le = float(self.total_sl_phathanh) and float(self.total_sl_tieuthu)*100/float(self.total_sl_phathanh) or 0
                 self.total_sl_sosanh_kytruoc += total_sl_sosanh_kytruoc
                 self.total_sl_tieuthu_truoc += total_sl_tieuthu_truoc
                 self.total_sl_phathanh_truoc += total_sl_phathanh_truoc
-                self.total_ti_le_truoc = float(self.total_sl_tieuthu_truoc)*100/float(self.total_sl_phathanh_truoc)
+                self.total_ti_le_truoc = float(self.total_sl_phathanh_truoc) and float(self.total_sl_tieuthu_truoc)*100/float(self.total_sl_phathanh_truoc) or 0
                 self.total_tile_sosanh_kytruoc = self.total_ti_le-self.total_ti_le_truoc
                 self.total_tang_giam += total_tang_giam
                 
@@ -245,7 +247,7 @@ class Parser(report_sxw.rml_parse):
                                      })
         mang.append({
                         'stt': '',
-                        'ten_dl': 'TỔNG', 
+                        'ten_dl': u'TỔNG', 
                         'ma_dl': '',
                         'sl_phathanh': self.total_sl_phathanh,
                         'sl_ve_e': self.total_ve_e,
