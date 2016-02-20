@@ -99,11 +99,11 @@ class Parser(report_sxw.rml_parse):
         ky_ve_id = wizard_data['ky_ve_id']
         mang = []
         sql ='''
-                SELECT ten,name,id FROM tinh_tp 
+                SELECT name,id FROM khu_vuc 
                 order by name
             '''
         self.cr.execute(sql)
-        for tinh in self.cr.dictfetchall():
+        for diem_tra_e in self.cr.dictfetchall():
             line_ids=[]
             total_sl_phathanh = 0
             total_ve_e = 0
@@ -113,54 +113,52 @@ class Parser(report_sxw.rml_parse):
             total_doanhthu_kytruoc = 0
             total_tang_giam = 0
             sql ='''
-                SELECT id FROM phanphoi_tt_line where daily_id in (select id from dai_ly where tinh_tp_id = %s) 
-                and phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
-            '''%(tinh['id'],ky_ve_id[0],loai_ve_id[0])
+                SELECT id FROM nhap_ve_e_line where diem_tra_e_id = %s 
+                and nhap_ve_e_id in (select id from nhap_ve_e where ky_ve_id = %s and loai_ve_id = %s)
+            '''%(diem_tra_e['id'],ky_ve_id[0],loai_ve_id[0])
             self.cr.execute(sql)
-            dl_ids = [r[0] for r in self.cr.fetchall()]
-            if dl_ids:
-                for seq,dl in enumerate(self.pool.get('phanphoi.tt.line').browse(self.cr,self.uid,dl_ids)):
+            diem_ids = [r[0] for r in self.cr.fetchall()]
+            if diem_ids:
+                for seq,diem in enumerate(self.pool.get('nhap.ve.e.line').browse(self.cr,self.uid,diem_ids)):
                     sql = '''
                         select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s
-                    '''%(dl.id)
+                    '''%(diem.phanphoi_line_id.id)
                     self.cr.execute(sql)
                     co_dc = self.cr.fetchone()
                     if co_dc:
                         sl_phathanh = co_dc[0]
                     else:
-                        sl_phathanh = dl.sove_kynay
+                        sql = '''
+                            select sove_kynay from phanphoi_tt_line where id = %s
+                        '''%(diem.phanphoi_line_id.id)
+                        self.cr.execute(sql)
+                        ve_pp = self.cr.fetchone()
+                        if ve_pp:
+                            sl_phathanh = ve_pp[0]
                     sql = '''
                         select case when sum(ve_e_theo_bangke)!=0 then sum(ve_e_theo_bangke) else 0 end tong_ve_e
-                        from nhap_ve_e_line where phanphoi_line_id = %s
-                    '''%(dl.id)
+                        from nhap_ve_e_line where phanphoi_line_id = %s and diem_tra_e_id = %s
+                    '''%(diem.phanphoi_line_id.id, diem.diem_tra_e_id.id)
                     self.cr.execute(sql)
                     ve_e = self.cr.dictfetchone()['tong_ve_e']
                     
-                    sql = '''
-                        select case when sum(ve_e_theo_bangke)!=0 then sum(ve_e_theo_bangke) else 0 end tong_ve_e_truoc
-                        from nhap_ve_e_line where phanphoi_line_id = %s
-                    '''%(dl.phanphoi_line_kytruoc_id.id)
-                    self.cr.execute(sql)
-                    ve_e_truoc = self.cr.dictfetchone()['tong_ve_e_truoc']
-                    if dl.phanphoi_tt_id.loai_ve_id.name == '10000':
+                    if diem.nhap_ve_e_id.loai_ve_id.name == '10000':
                         ve = 10000
                     
                     sl_tieuthu = sl_phathanh-ve_e
                     thanhtien_tieuthu = sl_tieuthu*ve
                     ti_le = float(sl_tieuthu)*100/float(sl_phathanh)
-                    doanhthu_kytruoc = (dl.sove_kytruoc-ve_e_truoc)*ve
-                    tang_giam = thanhtien_tieuthu-doanhthu_kytruoc
                     line_ids.append({
                                         'stt': seq+1,
-                                        'ten_dl': dl.ten_daily or '',
-                                        'ma_dl': dl.daily_id.name or '',
+                                        'ten_dl': diem.ten_daily or '',
+                                        'ma_diem_tra_e': diem.diem_tra_e_id.name or '',
+                                        'ma_dl': diem.daily_id.name or '',
+                                        'ma_kv': diem.ma_khu_vuc or '',
                                         'sl_phathanh': sl_phathanh,
                                         'sl_ve_e': ve_e,
                                         'sl_tieuthu': sl_tieuthu,
                                         'thanhtien_tieuthu': thanhtien_tieuthu,
                                         'ti_le': ti_le,
-                                        'doanhthu_kytruoc': doanhthu_kytruoc,
-                                        'tang_giam': tang_giam,
                                         })
                 
                     total_sl_phathanh += sl_phathanh
@@ -168,54 +166,50 @@ class Parser(report_sxw.rml_parse):
                     total_sl_tieuthu += sl_tieuthu
                     total_thanhtien_tieuthu += thanhtien_tieuthu
                     total_ti_le = float(total_sl_tieuthu)*100/float(total_sl_phathanh)
-                    total_doanhthu_kytruoc += doanhthu_kytruoc
-                    total_tang_giam += tang_giam
                 
                 self.total_sl_phathanh += total_sl_phathanh
                 self.total_ve_e += total_ve_e
                 self.total_sl_tieuthu += total_sl_tieuthu
                 self.total_thanhtien_tieuthu += total_thanhtien_tieuthu
                 self.total_ti_le = float(self.total_sl_tieuthu)*100/float(self.total_sl_phathanh)
-                self.total_doanhthu_kytruoc += total_doanhthu_kytruoc
-                self.total_tang_giam += total_tang_giam
-                
-                mang.append({
-                                'stt': '',
-                                'ten_dl': tinh['ten'], 
-                                'ma_dl': '',
-                                'sl_phathanh': total_sl_phathanh,
-                                'sl_ve_e': total_ve_e,
-                                'sl_tieuthu': total_sl_tieuthu,
-                                'thanhtien_tieuthu': total_thanhtien_tieuthu,
-                                'ti_le': round(total_ti_le,1),
-                                'doanhthu_kytruoc': total_doanhthu_kytruoc,
-                                'tang_giam': total_tang_giam,
-                            })
                 
                 for line in line_ids:
                     mang.append({
                                 'stt': line['stt'],
                                 'ten_dl': line['ten_dl'], 
+                                'ma_diem_tra_e': line['ma_diem_tra_e'],
                                 'ma_dl': line['ma_dl'],
+                                'ma_kv': line['ma_kv'],
                                 'sl_phathanh': line['sl_phathanh'],
                                 'sl_ve_e': line['sl_ve_e'],
                                 'sl_tieuthu': line['sl_tieuthu'],
                                 'thanhtien_tieuthu': line['thanhtien_tieuthu'],
-                                'ti_le': round(line['ti_le'],1),
-                                'doanhthu_kytruoc': line['doanhthu_kytruoc'],
-                                'tang_giam': line['tang_giam'],
+#                                 'ti_le': str(round(line['ti_le'],0)) + '%',
+                                'ti_le': int(round(line['ti_le'],0)),
                                      })
+                mang.append({
+                                'stt': '',
+                                'ten_dl': diem_tra_e['name'] + ' Total', 
+                                'ma_diem_tra_e': '',
+                                'ma_dl': '',
+                                'ma_kv': '',
+                                'sl_phathanh': total_sl_phathanh,
+                                'sl_ve_e': total_ve_e,
+                                'sl_tieuthu': total_sl_tieuthu,
+                                'thanhtien_tieuthu': total_thanhtien_tieuthu,
+                                'ti_le': '',
+                            })
         mang.append({
                         'stt': '',
-                        'ten_dl': 'TỔNG', 
+                        'ten_dl': 'Grand Total', 
+                        'ma_diem_tra_e': '',
                         'ma_dl': '',
+                        'ma_kv': '',
                         'sl_phathanh': self.total_sl_phathanh,
                         'sl_ve_e': self.total_ve_e,
                         'sl_tieuthu': self.total_sl_tieuthu,
                         'thanhtien_tieuthu': self.total_thanhtien_tieuthu,
-                        'ti_le': round(self.total_ti_le,1),
-                        'doanhthu_kytruoc': self.total_doanhthu_kytruoc,
-                        'tang_giam': self.total_tang_giam,
+                        'ti_le': '',
                              })
                     
         return mang
