@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="baocao_tonghop_tieuthu_form" model="ir.ui.view">
+            <field name="name">baocao.tonghop.tieuthu.form</field>
+            <field name="model">baocao.tonghop.tieuthu</field>
+            <field name="arch" type="xml">
+                <form string="Báo cáo tiêu thụ kỳ vé" version="7.0">
+                    <group>
+                    	<field name="ky_ve_id" context="{'search_baocao_kyve':1}" on_change="onchange_ky_ve_id(ky_ve_id,ngay_mo_thuong)" />
+                    	<field name="name" />
+                    	<field name="loai_ve" />
+                    	<field name="loai_ve_id"/>
+                    	<field name="ngay_mo_thuong" readonly="1" on_change="onchange_ky_ve_id(ky_ve_id,ngay_mo_thuong)" />
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Hủy bỏ" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_baocao_tieuthu_kyve">
+	        <field name="name">Báo cáo tổng hợp kết quả tiêu thụ vé</field>
+	        <field name="res_model">baocao.tonghop.tieuthu</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="baocao_tonghop_tieuthu_form" />
+	        <field name="target">new</field>
+	        <field name="context">{'readonly_by_pass': True}</field>
+	    </record>
+	    
+
+    </data>
+</openerp>
+
