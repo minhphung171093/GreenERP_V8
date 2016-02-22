@@ -98,9 +98,9 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         loai_ve = wizard_data['loai_ve']
         if loai_ve == 'tt':
-            return 'Truyền thống'
+            return u'Truyền thống'
         if loai_ve == 'tc':
-            return 'Tự chọn'
+            return u'Tự chọn'
     
     def get_menh_gia(self):
         wizard_data = self.localcontext['data']['form']
