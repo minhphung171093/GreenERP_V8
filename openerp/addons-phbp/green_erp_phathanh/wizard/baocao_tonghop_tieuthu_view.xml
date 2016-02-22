@@ -23,7 +23,7 @@
             </field>
         </record>
         
-        <record model="ir.actions.act_window" id="action_baocao_tieuthu_kyve">
+        <record model="ir.actions.act_window" id="action_baocao_tonghop_tieuthu">
 	        <field name="name">Báo cáo tổng hợp kết quả tiêu thụ vé</field>
 	        <field name="res_model">baocao.tonghop.tieuthu</field>
 	        <field name="view_type">form</field>

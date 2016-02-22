@@ -55,10 +55,23 @@ class Parser(report_sxw.rml_parse):
             'get_date': self.get_date,
             'get_ky_ve': self.get_ky_ve,
             'get_loai_ve': self.get_loai_ve,
+            'get_menh_gia': self.get_menh_gia,
             'convert_f_amount': self.convert_f_amount,
             'get_lines': self.get_lines,
             'get_in': self.get_in,
+            'get_namekv': self.get_namekv,
+            'get_ngay_mt': self.get_ngay_mt,
         })
+    
+    def get_namekv(self):
+        wizard_data = self.localcontext['data']['form']
+        name = wizard_data['name']
+        return name
+    
+    def get_ngay_mt(self):
+        wizard_data = self.localcontext['data']['form']
+        ngay = wizard_data['ngay_mo_thuong']
+        return ngay
         
     def convert_date(self, date):
         if date:
@@ -66,11 +79,14 @@ class Parser(report_sxw.rml_parse):
             return date.strftime('%d/%m/%Y')
         
     def convert_f_amount(self, amount):
-        a = format(amount,',')
-        b = a.split('.')
-#         if len(b)==2 and len(b[1])==1:
-#             a+='0'
-        return b[0]
+        if amount:
+            a = format(amount,',')
+            b = a.split('.')
+    #         if len(b)==2 and len(b[1])==1:
+    #             a+='0'
+            return b[0]
+        else:
+            return ''
         
     def get_ky_ve(self):
         wizard_data = self.localcontext['data']['form']
@@ -79,6 +95,14 @@ class Parser(report_sxw.rml_parse):
         return ky_ve.name
     
     def get_loai_ve(self):
+        wizard_data = self.localcontext['data']['form']
+        loai_ve = wizard_data['loai_ve']
+        if loai_ve == 'tt':
+            return 'Truyền thống'
+        if loai_ve == 'tc':
+            return 'Tự chọn'
+    
+    def get_menh_gia(self):
         wizard_data = self.localcontext['data']['form']
         loai_ve_id = wizard_data['loai_ve_id']
         loai_ve = self.pool.get('loai.ve').browse(self.cr,self.uid,loai_ve_id[0])
@@ -117,146 +141,90 @@ class Parser(report_sxw.rml_parse):
         loai_ve_id = wizard_data['loai_ve_id']
         ky_ve_id = wizard_data['ky_ve_id']
         mang = []
-        sql ='''
-                SELECT ten,name,id FROM tinh_tp 
-                order by name
-            '''
+        sql = '''
+            SELECT id FROM phanphoi_tt_line 
+            where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
+        '''%(ky_ve_id[0],loai_ve_id[0])
         self.cr.execute(sql)
-        for tinh in self.cr.dictfetchall():
-            line_ids=[]
-            total_sl_phathanh = 0
-            total_ve_e = 0
-            total_sl_tieuthu = 0
-            total_thanhtien_tieuthu = 0
-            total_ti_le = 0
-            total_sl_sosanh_kytruoc = 0
-            total_sl_tieuthu_truoc = 0
-            total_sl_phathanh_truoc = 0
-            total_ti_le_truoc = 0
-            total_tile_sosanh_kytruoc = 0
-            total_tang_giam = 0
-            sql ='''
-                SELECT id FROM phanphoi_tt_line where daily_id in (select id from dai_ly where tinh_tp_id = %s) 
-                and phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
-            '''%(tinh['id'],ky_ve_id[0],loai_ve_id[0])
+        dl_ids = [r[0] for r in self.cr.fetchall()]
+        total_sl_phathanh = 0
+        total_ve_e = 0
+        total_sl_tieuthu = 0
+        total_thanhtien_tieuthu = 0
+        ve = 0
+        for dl in self.pool.get('phanphoi.tt.line').browse(self.cr,self.uid,dl_ids):
+            sql = '''
+                select case when sum(sl_ve_in)!=0 then sum(sl_ve_in) else 0 end sl_ve_in from kh_in_ve_tt_line where ky_ve_id = %s 
+            '''%(ky_ve_id[0])
             self.cr.execute(sql)
-            dl_ids = [r[0] for r in self.cr.fetchall()]
-            if dl_ids:
-                for seq,dl in enumerate(self.pool.get('phanphoi.tt.line').browse(self.cr,self.uid,dl_ids)):
-                    sql = '''
-                        select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s
-                    '''%(dl.id)
-                    self.cr.execute(sql)
-                    co_dc = self.cr.fetchone()
-                    if co_dc:
-                        sl_phathanh = co_dc[0]
-                    else:
-                        sl_phathanh = dl.sove_kynay
-                    sql = '''
-                        select case when sum(ve_e_theo_bangke)!=0 then sum(ve_e_theo_bangke) else 0 end tong_ve_e
-                        from nhap_ve_e_line where phanphoi_line_id = %s
-                    '''%(dl.id)
-                    self.cr.execute(sql)
-                    ve_e = self.cr.dictfetchone()['tong_ve_e']
-                    if dl.phanphoi_line_kytruoc_id:
-                        sql = '''
-                            select case when sum(ve_e_theo_bangke)!=0 then sum(ve_e_theo_bangke) else 0 end tong_ve_e_truoc
-                            from nhap_ve_e_line where phanphoi_line_id = %s
-                        '''%(dl.phanphoi_line_kytruoc_id.id)
-                        self.cr.execute(sql)
-                        ve_e_truoc = self.cr.dictfetchone()['tong_ve_e_truoc']
-                    else:
-                        ve_e_truoc = 0
-                    if dl.phanphoi_tt_id.loai_ve_id.name == '10000':
-                        ve = 10000
-                    
-                    sl_tieuthu = sl_phathanh-ve_e
-                    thanhtien_tieuthu = sl_tieuthu*ve
-                    ti_le = float(sl_phathanh) and float(sl_tieuthu)*100/float(sl_phathanh) or 0
-                    sl_tieuthu_truoc = dl.sove_kytruoc-ve_e_truoc
-                    sl_phathanh_truoc = dl.sove_kytruoc
-                    sl_sosanh_kytruoc = (sl_tieuthu)-(sl_tieuthu_truoc)
-                    ti_le_truoc = float(sl_phathanh_truoc) and float(sl_tieuthu_truoc)*100/float(sl_phathanh_truoc) or 0 
-                    doanhthu_kytruoc = (sl_tieuthu_truoc)*ve
-                    tang_giam = thanhtien_tieuthu-doanhthu_kytruoc
-                    line_ids.append({
-                                        'stt': seq+1,
-                                        'ten_dl': dl.ten_daily or '',
-                                        'ma_dl': dl.daily_id.name or '',
-                                        'sl_phathanh': sl_phathanh,
-                                        'sl_ve_e': ve_e,
-                                        'sl_tieuthu': sl_tieuthu,
-                                        'thanhtien_tieuthu': thanhtien_tieuthu,
-                                        'ti_le': ti_le,
-                                        'sl_sosanh_kytruoc': sl_sosanh_kytruoc,
-                                        'tile_sosanh_kytruoc': round(ti_le-ti_le_truoc,1),
-                                        'tang_giam': tang_giam,
-                                        })
-                
-                    total_sl_phathanh += sl_phathanh
-                    total_ve_e += ve_e
-                    total_sl_tieuthu += sl_tieuthu
-                    total_thanhtien_tieuthu += thanhtien_tieuthu
-                    total_ti_le = float(total_sl_phathanh) and float(total_sl_tieuthu)*100/float(total_sl_phathanh) or 0
-                    total_sl_sosanh_kytruoc += sl_sosanh_kytruoc
-                    total_sl_tieuthu_truoc += sl_tieuthu_truoc
-                    total_sl_phathanh_truoc += sl_phathanh_truoc
-                    total_ti_le_truoc = float(total_sl_phathanh_truoc) and float(total_sl_tieuthu_truoc)*100/float(total_sl_phathanh_truoc) or 0
-                    total_tile_sosanh_kytruoc = total_ti_le - total_ti_le_truoc
-                    total_tang_giam += tang_giam
-                
-                self.total_sl_phathanh += total_sl_phathanh
-                self.total_ve_e += total_ve_e
-                self.total_sl_tieuthu += total_sl_tieuthu
-                self.total_thanhtien_tieuthu += total_thanhtien_tieuthu
-                self.total_ti_le = float(self.total_sl_phathanh) and float(self.total_sl_tieuthu)*100/float(self.total_sl_phathanh) or 0
-                self.total_sl_sosanh_kytruoc += total_sl_sosanh_kytruoc
-                self.total_sl_tieuthu_truoc += total_sl_tieuthu_truoc
-                self.total_sl_phathanh_truoc += total_sl_phathanh_truoc
-                self.total_ti_le_truoc = float(self.total_sl_phathanh_truoc) and float(self.total_sl_tieuthu_truoc)*100/float(self.total_sl_phathanh_truoc) or 0
-                self.total_tile_sosanh_kytruoc = self.total_ti_le-self.total_ti_le_truoc
-                self.total_tang_giam += total_tang_giam
-                
-                mang.append({
-                                'stt': '',
-                                'ten_dl': tinh['ten'], 
-                                'ma_dl': '',
-                                'sl_phathanh': total_sl_phathanh,
-                                'sl_ve_e': total_ve_e,
-                                'sl_tieuthu': total_sl_tieuthu,
-                                'thanhtien_tieuthu': total_thanhtien_tieuthu,
-                                'ti_le': round(total_ti_le,1),
-                                'sl_sosanh_kytruoc': total_sl_sosanh_kytruoc,
-                                'tile_sosanh_kytruoc': round(total_tile_sosanh_kytruoc,1),
-                                'tang_giam': total_tang_giam,
-                            })
-                
-                for line in line_ids:
-                    mang.append({
-                                'stt': line['stt'],
-                                'ten_dl': line['ten_dl'], 
-                                'ma_dl': line['ma_dl'],
-                                'sl_phathanh': line['sl_phathanh'],
-                                'sl_ve_e': line['sl_ve_e'],
-                                'sl_tieuthu': line['sl_tieuthu'],
-                                'thanhtien_tieuthu': line['thanhtien_tieuthu'],
-                                'ti_le': round(line['ti_le'],1),
-                                'sl_sosanh_kytruoc': line['sl_sosanh_kytruoc'],
-                                'tile_sosanh_kytruoc': round(line['tile_sosanh_kytruoc'],1),
-                                'tang_giam': line['tang_giam'],
-                                     })
+            sl_ve_in = self.cr.dictfetchone()['sl_ve_in']
+            sql = '''
+                select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s
+            '''%(dl.id)
+            self.cr.execute(sql)
+            co_dc = self.cr.fetchone()
+            if co_dc:
+                sl_phathanh = co_dc[0]
+            else:
+                sl_phathanh = dl.sove_kynay
+            sql = '''
+                select case when sum(ve_e_theo_bangke)!=0 then sum(ve_e_theo_bangke) else 0 end tong_ve_e
+                from nhap_ve_e_line where phanphoi_line_id = %s
+            '''%(dl.id)
+            self.cr.execute(sql)
+            ve_e = self.cr.dictfetchone()['tong_ve_e']
+            if dl.phanphoi_tt_id.loai_ve_id.name == '10000':
+                ve = 10000
+            else:
+                raise osv.except_osv(_('Warning!'),_('Chưa cấu hình loại vé mới.!'))
+            
+            sl_tieuthu = sl_phathanh-ve_e
+            thanhtien_tieuthu = sl_tieuthu*ve
+            thanhtien_ve_in = sl_ve_in*ve
+        
+            total_sl_phathanh += sl_phathanh
+            total_ve_e += ve_e
+            total_sl_tieuthu += sl_tieuthu
+            total_thanhtien_tieuthu += thanhtien_tieuthu
+        
+#         self.total_sl_phathanh += total_sl_phathanh
+#         self.total_ve_e += total_ve_e
+#         self.total_sl_tieuthu += total_sl_tieuthu
+#         self.total_thanhtien_tieuthu += total_thanhtien_tieuthu
+        
         mang.append({
-                        'stt': '',
-                        'ten_dl': u'TỔNG', 
-                        'ma_dl': '',
-                        'sl_phathanh': self.total_sl_phathanh,
-                        'sl_ve_e': self.total_ve_e,
-                        'sl_tieuthu': self.total_sl_tieuthu,
-                        'thanhtien_tieuthu': self.total_thanhtien_tieuthu,
-                        'ti_le': round(self.total_ti_le,1),
-                        'sl_sosanh_kytruoc': self.total_sl_sosanh_kytruoc,
-                        'tile_sosanh_kytruoc': round(self.total_tile_sosanh_kytruoc,1),
-                        'tang_giam': self.total_tang_giam,
+                        'stt': u'1',
+                        'chi_tieu': u'Số lượng vé in ấn', 
+                        'so_luong': sl_ve_in,
+                        'gia_tri': thanhtien_ve_in,
+                    })
+        
+        mang.append({
+                    'stt': u'2',
+                    'chi_tieu': u'Số lượng vé chưa đưa vào lưu thông (vé tồn kho)', 
+                    'so_luong': '',
+                    'gia_tri': '',
+                         })
+        
+        mang.append({
+                    'stt': u'3',
+                    'chi_tieu': u'Số lượng vé đưa vào lưu thông (vé phát hành)', 
+                    'so_luong': total_sl_phathanh,
+                    'gia_tri': total_sl_phathanh*ve,
+                             })
+        
+        mang.append({
+                    'stt': u'4',
+                    'chi_tieu': u'Số lượng vé đã phát hành không tiêu thụ hết (vé ế)', 
+                    'so_luong': total_ve_e,
+                    'gia_tri': total_ve_e*ve,
+                             })
+        
+        mang.append({
+                    'stt': u'5',
+                    'chi_tieu': u'Số lượng vé tiêu thụ', 
+                    'so_luong': total_sl_phathanh-total_ve_e,
+                    'gia_tri': (total_sl_phathanh-total_ve_e)*ve,
                              })
                     
         return mang

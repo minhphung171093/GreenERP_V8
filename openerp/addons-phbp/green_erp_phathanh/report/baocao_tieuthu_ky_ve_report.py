@@ -88,15 +88,11 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         ky_ve_id = wizard_data['ky_ve_id']
         sql = '''
-            select sl_ve_in from kh_in_ve_tt_line where ky_ve_id = %s 
+            select case when sum(sl_ve_in)!=0 then sum(sl_ve_in) else 0 end sl_ve_in from kh_in_ve_tt_line where ky_ve_id = %s 
         '''%(ky_ve_id[0])
         self.cr.execute(sql)
-        sl_ve_in = self.cr.fetchone()
-        if sl_ve_in:
-            sl_ve = sl_ve_in[0]
-        else:
-            sl_ve = 0
-        return sl_ve
+        sl_ve_in = self.cr.dictfetchone()['sl_ve_in']
+        return sl_ve_in
     
     def get_date(self):
         res={}
@@ -169,6 +165,8 @@ class Parser(report_sxw.rml_parse):
                         ve_e_truoc = 0
                     if dl.phanphoi_tt_id.loai_ve_id.name == '10000':
                         ve = 10000
+                    else:
+                        raise osv.except_osv(_('Warning!'),_('Chưa cấu hình loại vé mới.!'))
                     
                     sl_tieuthu = sl_phathanh-ve_e
                     thanhtien_tieuthu = sl_tieuthu*ve

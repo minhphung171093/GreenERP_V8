@@ -146,6 +146,8 @@ class Parser(report_sxw.rml_parse):
                         ve_e_truoc = 0
                     if dl.phanphoi_tt_id.loai_ve_id.name == '10000':
                         ve = 10000
+                    else:
+                        raise osv.except_osv(_('Warning!'),_('Chưa cấu hình loại vé mới.!'))
                     
                     sl_tieuthu = sl_phathanh-ve_e
                     thanhtien_tieuthu = sl_tieuthu*ve
