@@ -35,8 +35,8 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-class baocao_nhanh_kyve(osv.osv_memory):
-    _name = 'baocao.nhanh.kyve'
+class baocao_tieuthu_kyve(osv.osv_memory):
+    _name = 'baocao.tieuthu.kyve'
      
     _columns = {
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
@@ -56,12 +56,12 @@ class baocao_nhanh_kyve(osv.osv_memory):
         if context is None:
             context = {}
         datas = {'ids': context.get('active_ids', [])}
-        datas['model'] = 'baocao.nhanh.kyve' 
+        datas['model'] = 'baocao.tieuthu.kyve' 
         datas['form'] = self.read(cr, uid, ids)[0]
         datas['form'].update({'active_id':context.get('active_ids',False)})
-        return {'type': 'ir.actions.report.xml', 'report_name': 'baocao_nhanh_ky_ve_report', 'datas': datas}
+        return {'type': 'ir.actions.report.xml', 'report_name': 'baocao_tieuthu_ky_ve_report', 'datas': datas}
     
-baocao_nhanh_kyve()
+baocao_tieuthu_kyve()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

@@ -2,11 +2,11 @@
 <openerp>
     <data>
 
-        <record id="baocao_nhanh_kyve_form" model="ir.ui.view">
-            <field name="name">baocao.nhanh.kyve.form</field>
-            <field name="model">baocao.nhanh.kyve</field>
+        <record id="baocao_tieuthu_kyve_form" model="ir.ui.view">
+            <field name="name">baocao.tieuthu.kyve.form</field>
+            <field name="model">baocao.tieuthu.kyve</field>
             <field name="arch" type="xml">
-                <form string="Báo cáo nhanh theo kỳ vé" version="7.0">
+                <form string="Báo cáo tiêu thụ kỳ vé" version="7.0">
                     <group>
                     	<field name="ky_ve_id" context="{'search_baocao_kyve':1}" on_change="onchange_ky_ve_id(ky_ve_id)" />
                     	<field name="loai_ve_id"/>
@@ -21,12 +21,12 @@
             </field>
         </record>
         
-        <record model="ir.actions.act_window" id="action_baocao_nhanh_kyve">
-	        <field name="name">Báo cáo nhanh theo kỳ vé</field>
-	        <field name="res_model">baocao.nhanh.kyve</field>
+        <record model="ir.actions.act_window" id="action_baocao_tieuthu_kyve">
+	        <field name="name">Báo cáo tiêu thụ kỳ vé</field>
+	        <field name="res_model">baocao.tieuthu.kyve</field>
 	        <field name="view_type">form</field>
 	        <field name="view_mode">form</field>
-	        <field name="view_id" ref="baocao_nhanh_kyve_form" />
+	        <field name="view_id" ref="baocao_tieuthu_kyve_form" />
 	        <field name="target">new</field>
 	        <field name="context">{'readonly_by_pass': True}</field>
 	    </record>
