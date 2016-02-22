@@ -59,7 +59,7 @@ class baocao_thuhoi_ve(osv.osv_memory):
         datas['model'] = 'baocao.thuhoi.ve' 
         datas['form'] = self.read(cr, uid, ids)[0]
         datas['form'].update({'active_id':context.get('active_ids',False)})
-        return {'type': 'ir.actions.report.xml', 'report_name': 'baocao_tieuthu_ky_ve_report', 'datas': datas}
+        return {'type': 'ir.actions.report.xml', 'report_name': 'baocao_thuhoi_ve_report', 'datas': datas}
     
 baocao_thuhoi_ve()
 
