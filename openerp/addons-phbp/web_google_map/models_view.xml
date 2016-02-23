@@ -30,8 +30,8 @@
 	                        <field name="user_id" colspan="1" />
 	                        <field name="points" colspan="4" invisible='1'/>
 	                    </group>
-	                    <group colspan="4" col="4" string="Danh sách Partner">
-	                    	<field name="partner_ids" nolabel='1'/>
+	                    <group colspan="4" col="4" string="Danh sách Đại Lý">
+	                    	<field name="dai_ly_ids" nolabel='1'/>
 	                    </group>
 	                    <group colspan="4" col="4" string="Bản đồ">
 	                        <field name="map" nolabel="1" widget="gmap" colspan="4" />

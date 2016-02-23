@@ -410,7 +410,7 @@ openerp.web_google_map = function(instance) {
 						  	google.maps.event.addListener(circle, 'radius_changed', function() {
 							    var radius = circle.getRadius();
 							    
-							    var model = new instance.web.Model("res.partner");
+							    var model = new instance.web.Model("dai.ly");
 							    var id = $.bbq.getState().id;
 							    var active_model = $.bbq.getState().model;
 							    model.call('write_radius', [id,active_model,{'radius':radius}]).done(function(r) {
@@ -423,7 +423,7 @@ openerp.web_google_map = function(instance) {
 							google.maps.event.addListener(circle, 'center_changed', function() {
 							    var center = circle.getCenter();
 							    
-							    var model = new instance.web.Model("res.partner");
+							    var model = new instance.web.Model("dai.ly");
 							    var id = $.bbq.getState().id;
 							    var active_model = $.bbq.getState().model;
 							    model.call('write_center', [id,active_model,{'center':center}]).done(function(r) {

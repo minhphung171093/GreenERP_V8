@@ -42,10 +42,18 @@
 	        <field name="arch" type="xml">
 	            <form string="Đại lý" version="7.0">
 	            	<sheet>
-		            	<group col="4" colspan="2">
-	                		<field name="name" />
-		                    <field name="ten" />
-		                    <field name="tinh_tp_id" />
+		            	<group col="4" colspan="4">
+	                		<field name="name" colspan="1"/>
+		                    <field name="ten" colspan="1"/>
+		                    <field name="tinh_tp_id" colspan="1"/>
+	                    	<field name="lat" colspan="1" />
+	                        <field name="lng" colspan="1" />
+	                        <field name="radius" colspan="1" invisible="1" />
+	                        <field name="mo_ta" colspan="4" widget="text_ckeditor4"/>
+	                        <field name="map" nolabel="1"
+	                               widget="gmap" colspan="4" />
+	                        
+	                        <field name="points" colspan="1" invisible="1" />
 			            </group>
 		            </sheet>		                
 	            </form>

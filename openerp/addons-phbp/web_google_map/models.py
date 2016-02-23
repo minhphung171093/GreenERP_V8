@@ -75,6 +75,7 @@ class rp_google_map(osv.osv):
         'points': fields.text('Points'),
         'user_id': fields.many2one('res.users','Người tạo'),
         'partner_ids': fields.many2many('res.partner', 'rpgooglemap_partner_ref','rp_google_id','partner_id', 'Danh sách Partner'),
+        'dai_ly_ids': fields.many2many('dai.ly', 'rpgooglemap_daily_ref','rp_google_id','dai_ly_id', 'Danh sách Đại Lý'),
     }
     
     _defaults = {
@@ -83,27 +84,27 @@ class rp_google_map(osv.osv):
     
     def onchange_toado_bankinh(self, cr, uid, ids, lat=False, lng=False, radius=False, context=None):
         vals = {}
-        partner_obj = self.pool.get('res.partner')
+        daily_obj = self.pool.get('dai.ly')
         if lat and lng and radius:
             points = ''
             sql = '''
-                select id,lat,lng,mo_ta from res_partner where lat is not null and lat!=0 and lng is not null and lng!=0
+                select id,lat,lng,mo_ta from dai_ly where lat is not null and lat!=0 and lng is not null and lng!=0
             '''
             cr.execute(sql)
-            partner_ids = []
-            for partner in cr.dictfetchall():
+            dai_ly_ids = []
+            for daily in cr.dictfetchall():
                 km = 0
                 try:
-                    km = partner_obj.haversine(lng,lat,partner['lng'],partner['lat'])
+                    km = daily_obj.haversine(lng,lat,daily['lng'],daily['lat'])
                 except Exception, e:
                     pass
                 if km and km*1000<=radius:
-                    partner_ids.append(partner['id'])
-                    points+=str(partner['lat'])+'phung_cat_giatri'+str(partner['lng'])+'phung_cat_giatri'+(partner['mo_ta'] or '')+'phung_cat_diem'
+                    dai_ly_ids.append(daily['id'])
+                    points+=str(daily['lat'])+'phung_cat_giatri'+str(daily['lng'])+'phung_cat_giatri'+(daily['mo_ta'] or '')+'phung_cat_diem'
 
             if points:
                 points=points[:-14]
-            vals = {'points':points,'partner_ids':[(6,0,partner_ids)]}
+            vals = {'points':points,'dai_ly_ids':[(6,0,dai_ly_ids)]}
         return {'value': vals}
     
 rp_google_map()
