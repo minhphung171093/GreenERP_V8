@@ -234,6 +234,8 @@ openerp.web_google_map = function(instance) {
             return {
                 'lat': getFixedValue(this.widget_lat.get_value()),
                 'lng': getFixedValue(this.widget_lng.get_value()),
+                'radius': getFixedValue(this.widget_radius.get_value()),
+                'points': this.widget_points.get_value(),
             };
         },
 
@@ -247,6 +249,12 @@ openerp.web_google_map = function(instance) {
             this.widget_lng.$el.find('input').val(record.lng);
             // will set value from dom AND set the form dirty
             this.widget_lng.store_dom_value();
+            this.widget_radius.$el.find('input').val(record.radius);
+            // will set value from dom AND set the form dirty
+            this.widget_radius.store_dom_value();
+            this.widget_points.$el.find('input').val(record.points);
+            // will set value from dom AND set the form dirty
+            this.widget_points.store_dom_value();
         },
 
         /**
@@ -278,6 +286,8 @@ openerp.web_google_map = function(instance) {
 
             this.widget_lat = this.view.fields.lat;
             this.widget_lng = this.view.fields.lng;
+            this.widget_radius = this.view.fields.radius;
+            this.widget_points = this.view.fields.points;
 
 
             // In forms, we could be hidden in a notebook. Thus we couldn't
@@ -370,7 +380,80 @@ openerp.web_google_map = function(instance) {
                                 var location = _position_to_location(marker.getPosition());
                                 self.set_location(location);
                             });
+                        
+                        var contentString = 'TAM';
+                        var infowindow = new google.maps.InfoWindow({
+						    content: contentString
+					    });
+					    marker.addListener('click', function() {
+						    infowindow.open(map, marker);
+					    });
+					    
                         map.setCenter(point);
+                        
+                        if (location.radius!==0){
+	                        var circle = new google.maps.Circle({  //PHUNG ve duong tron
+								map: map,
+								radius: location.radius,    // 10 miles in metres
+								
+								strokeColor: "#FF0000",
+							    strokeOpacity: 0.8,
+							    strokeWeight: 2,
+							    fillOpacity: 0.35,
+	
+								clickable: true,
+	        					editable: true,
+	
+								fillColor: '#AA0000'
+							});
+							circle.bindTo('center', marker, 'position');
+						  	google.maps.event.addListener(circle, 'radius_changed', function() {
+							    var radius = circle.getRadius();
+							    
+							    var model = new instance.web.Model("dai.ly");
+							    var id = $.bbq.getState().id;
+							    var active_model = $.bbq.getState().model;
+							    model.call('write_radius', [id,active_model,{'radius':radius}]).done(function(r) {
+							    	self.getParent().reload().done(function(c){
+							    		self.draw_map();
+							    	});
+								    //process the value returned from 'button_function' as per your requirement.
+								});
+							});
+							google.maps.event.addListener(circle, 'center_changed', function() {
+							    var center = circle.getCenter();
+							    
+							    var model = new instance.web.Model("dai.ly");
+							    var id = $.bbq.getState().id;
+							    var active_model = $.bbq.getState().model;
+							    model.call('write_center', [id,active_model,{'center':center}]).done(function(r) {
+							    	self.getParent().reload().done(function(c){
+							    		self.draw_map();
+							    	});
+							    	
+								    //process the value returned from 'button_function' as per your requirement.
+								});
+							});
+						}
+						//https://developers.google.com/maps/documentation/javascript/reference
+						if (location.points!==false){
+							var points = location.points.split('phung_cat_diem');
+							points.forEach(function(entry) {
+								p = entry.split('phung_cat_giatri');
+								var new_point = new google.maps.LatLng(p[0], p[1]);
+							    var new_marker = new google.maps.Marker({
+		                            'map': map,
+		                            'position': new_point,
+		                            'draggable': self.edit_mode
+		                        });
+		                        var infowindow = new google.maps.InfoWindow({
+								    content: p[2]
+							    });
+							    new_marker.addListener('click', function() {
+								    infowindow.open(map, new_marker);
+							    });
+							});				
+						}
                     });
                 } catch (e) {
                     console.log(e);
