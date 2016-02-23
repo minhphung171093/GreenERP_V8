@@ -26,6 +26,7 @@ class tonghop_congno_mot_doituong(osv.osv_memory):
         'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ DT-BH-AL'),
         'loai_vipham_id': fields.many2one('loai.vi.pham', 'Loại vi phạm'),
         'loai_baohiem_id': fields.many2one('loai.bao.hiem', 'Loại bảo hiểm'),
+        'ma_xuong_id': fields.many2one('ma.xuong','Mã xưởng'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

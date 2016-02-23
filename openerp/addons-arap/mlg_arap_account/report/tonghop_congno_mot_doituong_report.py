@@ -130,6 +130,7 @@ class Parser(report_sxw.rml_parse):
     
     def get_loai_congno_tuongung(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
+        chinhanh_id = wizard_data['chinhanh_id']
         lcntu_ids = []
         if mlg_type=='no_doanh_thu':
             loai = 'loai_nodoanhthu'
@@ -191,6 +192,26 @@ class Parser(report_sxw.rml_parse):
                         'name':lndt[1],
                         'loai':loai
                     })
+        elif mlg_type=='thu_no_xuong':
+            loai = 'maxuong'
+            ma_xuong_id = wizard_data['ma_xuong_id']
+            if ma_xuong_id:
+                lcntu_ids.append({
+                    'id':ma_xuong_id[0],
+                    'name':ma_xuong_id[1],
+                    'loai':loai
+                })
+            else:
+                sql = '''
+                    select id,name from ma_xuong where chinhanh_id=%s
+                '''%(chinhanh_id[0])
+                self.cr.execute(sql)
+                for lndt in self.cr.fetchall():
+                    lcntu_ids.append({
+                        'id':lndt[0],
+                        'name':lndt[1],
+                        'loai':loai
+                    })
         elif mlg_type=='hoan_tam_ung':
             loai = 'loai_tamung'
             loai_tamung_id = wizard_data['loai_tamung_id']
@@ -227,6 +248,8 @@ class Parser(report_sxw.rml_parse):
             tt = 'Loại bảo hiểm: '+lcntu['name']
         if lcntu['loai']=='loai_vipham':
             tt = 'Loại vi phạm: '+lcntu['name']
+        if lcntu['loai']=='maxuong':
+            tt = 'Mã xưởng: '+lcntu['name']
         if lcntu['loai']=='loai_tamung':
             tt = 'Loại tạm ứng: '+lcntu['name']
         return tt
@@ -328,6 +351,10 @@ class Parser(report_sxw.rml_parse):
             sql+='''
                 and ai.loai_vipham_id = %s 
             '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ai.ma_xuong_id = %s 
+            '''%(lcntu['id'])
         if lcntu['loai']=='loai_tamung' and lcntu['id']:
             sql+='''
                 and ai.loai_tamung_id = %s 
@@ -363,6 +390,10 @@ class Parser(report_sxw.rml_parse):
         if lcntu['loai']=='loai_vipham' and lcntu['id']:
             sql+='''
                 and loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ma_xuong_id = %s 
             '''%(lcntu['id'])
         if lcntu['loai']=='loai_tamung' and lcntu['id']:
             sql+='''
@@ -406,6 +437,10 @@ class Parser(report_sxw.rml_parse):
             if lcntu['loai']=='loai_vipham' and lcntu['id']:
                 sql+='''
                     and ai.loai_vipham_id = %s 
+                '''%(lcntu['id'])
+            if lcntu['loai']=='maxuong' and lcntu['id']:
+                sql+='''
+                    and ai.ma_xuong_id = %s 
                 '''%(lcntu['id'])
             if lcntu['loai']=='loai_tamung' and lcntu['id']:
                 sql+='''
@@ -456,6 +491,10 @@ class Parser(report_sxw.rml_parse):
                 sql+='''
                     and loai_vipham_id = %s 
                 '''%(lcntu['id'])
+            if lcntu['loai']=='maxuong' and lcntu['id']:
+                sql+='''
+                    and ma_xuong_id = %s 
+                '''%(lcntu['id'])
             if lcntu['loai']=='loai_tamung' and lcntu['id']:
                 sql+='''
                     and loai_tamung_id = %s 
@@ -503,6 +542,10 @@ class Parser(report_sxw.rml_parse):
         if lcntu['loai']=='loai_vipham' and lcntu['id']:
             sql+='''
                 and ai.loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ai.ma_xuong_id = %s 
             '''%(lcntu['id'])
         if lcntu['loai']=='loai_tamung' and lcntu['id']:
             sql+='''
@@ -557,6 +600,10 @@ class Parser(report_sxw.rml_parse):
             if lcntu['loai']=='loai_vipham' and lcntu['id']:
                 sql+='''
                     and loai_vipham_id = %s 
+                '''%(lcntu['id'])
+            if lcntu['loai']=='maxuong' and lcntu['id']:
+                sql+='''
+                    and ma_xuong_id = %s 
                 '''%(lcntu['id'])
             if lcntu['loai']=='loai_tamung' and lcntu['id']:
                 sql+='''
