@@ -135,6 +135,7 @@ class loai_hinh(osv.osv):
     _name = "loai.hinh"
     _columns = {
         'name': fields.char('Tên',size = 1024, required = True),
+        'doanh_thu': fields.selection([('xs','Xổ số'), ('ks','Khách sạn')], 'Doanh thu', required = True),
         'loai_hinh_line': fields.one2many('loai.hinh.line','loai_hinh_id','Loai hinh line'),
                 }
 #     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
@@ -158,7 +159,8 @@ class loai_hinh_line(osv.osv):
     _name = "loai.hinh.line"
     _columns = {
         'name': fields.char('Tên',size = 1024, required = True),
-        'loai_hinh_id': fields.many2one('loai.hinh','Loại hình'),
+        'is_ty_le': fields.boolean('Có tính tỉ lệ'),
+        'loai_hinh_id': fields.many2one('loai.hinh','Loại hình',ondelete="cascade"),
                 }
 loai_hinh_line()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

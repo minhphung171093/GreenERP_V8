@@ -315,14 +315,14 @@
 	            <form string="Kế hoạch doanh thu theo loại hình" version="7.0">
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="loai_hinh_id" />
+	                		<field name="loai_hinh_id" on_change = "onchange_loai_hinh_id(loai_hinh_id)"/>
 	                		<field name="year" />
 			            </group>
 			            <notebook>
 							<page string = "Chi tiết chỉ tiêu">
 								<field name="dt_theo_loaihinh_line" nolabel='1'>
 									<tree editable='bottom' >
-										<field name="chi_tieu"  />
+										<field name="chi_tieu_id" options="{'create': false, 'create_edit': false}" />
 										<field name="kehoach_namtruoc" />
 										<field name="thuchien_namtruoc" /> 
 										<field name="kehoach_namnay" />

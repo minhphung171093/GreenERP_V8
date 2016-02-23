@@ -510,25 +510,54 @@ class doanhthu_theo_loaihinh(osv.osv):
         'loai_hinh_id': fields.many2one('loai.hinh','Loại hình',required = True),
         'dt_theo_loaihinh_line': fields.one2many('dt.theo.loaihinh.line','doanh_thu_id','Doanh thu line'),
                 }
-    
+    def onchange_loai_hinh_id(self, cr, uid, ids, loai_hinh_id=False):
+        vals = {}
+        dt_line = []
+        if loai_hinh_id:
+            loai_hinh = self.pool.get('loai.hinh').browse(cr,uid,loai_hinh_id)
+            for line in loai_hinh.loai_hinh_line:
+                dt_line.append((0,0,{
+                                     'chi_tieu_id':line.id,
+                                     }))
+            vals = {'dt_theo_loaihinh_line':dt_line,
+                }
+        return {'value': vals}  
 doanhthu_theo_loaihinh()
 
 class dt_theo_loaihinh_line(osv.osv):
     _name = "dt.theo.loaihinh.line"
     
-    
+    def _ty_le(self, cr, uid, ids, field_name, args, context=None):
+        res = {}
+        for line in self.browse(cr,uid,ids,context=context):
+            val1=''
+            val2=''
+            res[line.id] = {
+                'tyle': 0,
+                'tyle_phandau': 0,
+            }
+            if line.chi_tieu_id.is_ty_le == True:
+                val1 = float(line.thuchien_namtruoc) and float(line.kehoach_namnay)*100/float(line.thuchien_namtruoc) or 0
+                val1 = round(val1,0)
+                val2 = float(line.thuchien_namtruoc) and float(line.phan_dau)*100/float(line.thuchien_namtruoc) or 0
+                val2 = round(val2,0)
+            res[line.id]['tyle'] = val1
+            res[line.id]['tyle_phandau'] = val2
+        return res
     _columns = {
         'doanh_thu_id': fields.many2one('doanhthu.theo.loaihinh','Chi tiết', ondelete='cascade'),
-        'chi_tieu': fields.char('Chỉ tiêu',size = 1024, readonly = True),
+        'chi_tieu_id': fields.many2one('loai.hinh.line','Chỉ tiêu', required = True),
         'kehoach_namtruoc': fields.float('Kế hoạch năm trước'),
         'thuchien_namtruoc': fields.float('Thực hiện năm trước'),
         'kehoach_namnay': fields.float('Kế hoạch năm nay'),
-        'tyle': fields.float('Tỷ lệ so thực hiện năm trước'),
-        'phan_dau': fields.float('Kế hoạch phấn đấu'),
-        'tyle_phandau': fields.float('Tỷ lệ so thực hiện năm trước'),
+#         'tyle': fields.float('Tỷ lệ so thực hiện năm trước'),
+        'tyle':fields.function(_ty_le, string='Tỷ lệ so thực hiện năm trước(%)', type='char',
+                                    multi='sums'),
+        'phan_dau': fields.float('Kế hoạch phấn đấu năm nay'),
+#         'tyle_phandau': fields.float('Tỷ lệ so thực hiện năm trước'),
+        'tyle_phandau':fields.function(_ty_le, string='Tỷ lệ so thực hiện năm trước(%)', type='char',
+                                    multi='sums'),
                 }
-    
-    
     
 dt_theo_loaihinh_line()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
