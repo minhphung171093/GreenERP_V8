@@ -292,7 +292,10 @@ class account_voucher(osv.osv):
             
             if voucher.loai_giaodich:
                 cr.execute(''' update account_move_line set loai_giaodich=%s where move_id=%s ''',(voucher.loai_giaodich,move_id,))
-                
+             
+            if voucher.name:
+                cr.execute(''' update account_move_line set note_giaodich=%s where move_id=%s ''',(voucher.name,move_id,))
+                   
             if voucher.bien_so_xe_id:
                 cr.execute(''' update account_move_line set bien_so_xe_id=%s where move_id=%s ''',(voucher.bien_so_xe_id.id,move_id,))
             

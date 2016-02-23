@@ -106,6 +106,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -270,6 +271,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -436,6 +438,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -596,6 +599,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -760,6 +764,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -929,6 +934,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -1091,6 +1097,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -1255,6 +1262,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>
@@ -1432,6 +1440,7 @@
 	                                <tree string="Payments">
 	                                    <field name="date" string="Ngày thanh toán"/>
 	                                    <field name="loai_giaodich"/>
+	                                    <field name="note_giaodich"/>
 	                                    <field name="fusion_id"/>
 	                                    <field name="move_id" string="Bút toán"/>
 	                                    <field name="journal_id" groups="base.group_user" string="Phương thức thanh toán"/>

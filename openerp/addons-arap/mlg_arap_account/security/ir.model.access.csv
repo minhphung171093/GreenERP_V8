@@ -29,6 +29,7 @@ access_mlg_arap_account_26,loai.cong.no,mlg_arap_account.model_loai_cong_no,base
 access_mlg_arap_account_53,loai.no.doanh.thu,mlg_arap_account.model_loai_no_doanh_thu,base.group_user,1,0,0,0
 access_mlg_arap_account_55,so.tien.lai,mlg_arap_account.model_so_tien_lai,base.group_user,1,1,1,1
 access_mlg_arap_account_57,tra.ky.quy,mlg_arap_account.model_tra_ky_quy,base.group_user,1,0,0,0
+access_mlg_arap_account_62,lichsu.inphieu,mlg_arap_account.model_lichsu_inphieu,base.group_user,1,1,1,1
 
 access_mlg_arap_account_27,thungan.bai.giaoca,mlg_arap_account.model_thungan_bai_giaoca,account.group_account_manager,1,1,1,1
 access_mlg_arap_account_28,dieuhanh.bai.giaoca,mlg_arap_account.model_dieuhanh_bai_giaoca,account.group_account_manager,1,1,1,1

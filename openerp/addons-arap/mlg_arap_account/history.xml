@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+      <record id="view_lichsu_inphieu_tree" model="ir.ui.view">
+            <field name="name">lichsu.inphieu.tree</field>
+            <field name="model">lichsu.inphieu</field>
+            <field name="arch" type="xml">
+                <tree string="Lịch sử  in phiếu" create='false' edit='false' delete='false'>
+                    <field name="name"/>
+                    <field name="chinhanh_id"/>
+                    <field name="mlg_type"/>
+                    <field name="create_user_id"/>
+                    <field name="so_tien"/>
+                    <field name="date_print"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_lichsu_inphieu" model="ir.actions.act_window">
+            <field name="name">Lịch sử in phiếu</field>
+            <field name="res_model">lichsu.inphieu</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_lichsu_inphieu_tree"/>
+        </record>
+        </data>
+</openerp>

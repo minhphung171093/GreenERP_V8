@@ -338,6 +338,11 @@
 					action="action_lichsu_giaodich"
 					parent="menu_danhmuc_dungchung" sequence="25"/>
 					
+				<menuitem id="menu_action_lichsu_inphieu"
+					name="Lịch sử  in phiếu"
+					action="action_lichsu_inphieu"
+					parent="menu_danhmuc_dungchung" sequence="26"/>
+					
 		<menuitem id="menu_root_luocdo"
 			name="Lược Đồ" sequence="15"/>
 			

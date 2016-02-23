@@ -17,3 +17,4 @@ import import_auto
 import output_auto
 import congno_dauky
 import import_kyquy
+import history

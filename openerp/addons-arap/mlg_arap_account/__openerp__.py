@@ -84,6 +84,7 @@
         'report_view.xml',
         'views/webclient_templates.xml',
         'import_kyquy_view.xml',
+        'history.xml',
         'menu.xml',
         'static.xml',
     ],

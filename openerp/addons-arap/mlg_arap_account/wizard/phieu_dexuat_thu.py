@@ -86,6 +86,17 @@ class phieu_de_xuat(osv.osv_memory):
             report_name = 'pdxt_'+context['mlg_type']+'_'+context['loai_doituong']
             if context['mlg_type']=='chi_ho':
                 report_name = 'pdxt_chi_ho'
+        lichsu_in_obj = self.pool.get('lichsu.inphieu')
+        invoice_obj = self.pool.get('account.invoice')
+        for inv in invoice_obj.browse(cr, uid,  datas['ids']):
+            lichsu_in_obj.create(cr, uid, {
+                                'name': inv.name,
+                                'chinhanh_id':inv.chinhanh_id.id,
+                                'date_print': time.strftime('%Y-%m-%d %H:%M:%S'),
+                                'so_tien': datas['form']['so_tien'],
+                                'create_user_id': uid,
+                                'mlg_type': context['mlg_type'],
+                            })
         return {'type': 'ir.actions.report.xml', 'report_name': report_name, 'datas': datas}
     
     def print_thukyquy_report(self, cr, uid, ids, context=None):
@@ -97,6 +108,18 @@ class phieu_de_xuat(osv.osv_memory):
         datas['form'].update({'active_id':context.get('active_ids',False)})
         if context.get('loai_doituong', False):
             report_name = 'pdxt_ky_quy_'+context['loai_doituong']
+            
+        lichsu_in_obj = self.pool.get('lichsu.inphieu')
+        kyquy_obj = self.pool.get('thu.ky.quy')
+        for kq in kyquy_obj.browse(cr, uid,  datas['ids']):
+            lichsu_in_obj.create(cr, uid, {
+                                'name': kq.name,
+                                'chinhanh_id':kq.chinhanh_id.id,
+                                'date_print': time.strftime('%Y-%m-%d %H:%M:%S'),
+                                'so_tien': datas['form']['so_tien'],
+                                'create_user_id': uid,
+                                'mlg_type': 'phai_thu_ky_quy',
+                            })
         return {'type': 'ir.actions.report.xml', 'report_name': report_name, 'datas': datas}
     
     def print_trakyquy_report(self, cr, uid, ids, context=None):
@@ -108,6 +131,18 @@ class phieu_de_xuat(osv.osv_memory):
         datas['form'].update({'active_id':context.get('active_ids',False)})
         if context.get('loai_doituong', False):
             report_name = 'pdxtra_kyquy_'+context['loai_doituong']
+            
+        lichsu_in_obj = self.pool.get('lichsu.inphieu')
+        kyquy_obj = self.pool.get('tra.ky.quy')
+        for kq in kyquy_obj.browse(cr, uid,  datas['ids']):
+            lichsu_in_obj.create(cr, uid, {
+                                'name': kq.name,
+                                'chinhanh_id':kq.chinhanh_id.id,
+                                'date_print': time.strftime('%Y-%m-%d %H:%M:%S'),
+                                'so_tien': datas['form']['so_tien'],
+                                'create_user_id': uid,
+                                'mlg_type': 'phai_tra_ky_quy',
+                            })
         return {'type': 'ir.actions.report.xml', 'report_name': report_name, 'datas': datas}
         
 phieu_de_xuat()
