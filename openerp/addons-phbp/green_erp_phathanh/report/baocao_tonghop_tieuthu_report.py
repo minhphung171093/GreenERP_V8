@@ -98,9 +98,9 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         loai_ve = wizard_data['loai_ve']
         if loai_ve == 'tt':
-            return 'Truyền thống'
+            return u'Truyền thống'
         if loai_ve == 'tc':
-            return 'Tự chọn'
+            return u'Tự chọn'
     
     def get_menh_gia(self):
         wizard_data = self.localcontext['data']['form']
@@ -173,10 +173,7 @@ class Parser(report_sxw.rml_parse):
             '''%(dl.id)
             self.cr.execute(sql)
             ve_e = self.cr.dictfetchone()['tong_ve_e']
-            if dl.phanphoi_tt_id.loai_ve_id.name == '10000':
-                ve = 10000
-            else:
-                raise osv.except_osv(_('Warning!'),_('Chưa cấu hình loại vé mới.!'))
+            ve = dl.phanphoi_tt_id.loai_ve_id.gia_tri
             
             sl_tieuthu = sl_phathanh-ve_e
             thanhtien_tieuthu = sl_tieuthu*ve

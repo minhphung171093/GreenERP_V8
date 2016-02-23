@@ -30,6 +30,10 @@
 					action="action_kh_in_ve_tu_chon"
 					name="Kế hoạch in vé số tự chọn"
 					parent="menu_quanly_phanphoi" sequence="5"/>
+				<menuitem id="menu_action_doanhthu_theo_loaihinh"
+					action="action_doanhthu_theo_loaihinh"
+					name="Kế hoạch doanh thu theo loại hình"
+					parent="menu_quanly_phanphoi" sequence="7"/>
 			<menuitem id="menu_baocao"
 				name="Báo cáo"
 				parent="quanly_root" sequence="2"/>
