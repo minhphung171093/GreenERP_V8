@@ -463,11 +463,12 @@ class Parser(report_sxw.rml_parse):
         mlg_type = wizard_data['mlg_type']
         sql = '''
             select ai.id as invoice_id,ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
-                (COALESCE(ai.so_tien,0)+COALESCE(sotien_lai,0)) as no,ai.loai_giaodich as loai_giaodich,ai.dien_giai as dien_giai,
+                (COALESCE(ai.so_tien,0)+COALESCE(sotien_lai,0)) as no,ai.loai_giaodich as loai_giaodich,ai.dien_giai as dien_giai,bsx.name as bien_so_xe,
                 (COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)-COALESCE(ai.residual,0)-COALESCE(ai.sotien_lai_conlai,0)) as co,ai.fusion_id as fusion_id
             
                 from account_invoice ai
                 left join res_partner rp on rp.id = ai.partner_id
+                left join bien_so_xe bsx on ai.bien_so_xe_id=bsx.id
                 
                 where ai.partner_id=%s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
                     and ai.mlg_type='%s' 

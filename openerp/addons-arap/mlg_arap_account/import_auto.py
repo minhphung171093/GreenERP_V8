@@ -822,6 +822,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -866,6 +869,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -976,6 +980,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -1030,6 +1037,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -1140,6 +1148,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -1202,6 +1213,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -1312,6 +1324,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -1355,6 +1370,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -1465,6 +1481,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -1543,6 +1562,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -1653,6 +1673,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -1715,6 +1738,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -1825,6 +1849,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -1899,6 +1926,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -2008,6 +2036,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -2051,7 +2082,8 @@ class import_congno_tudong(osv.osv):
                                     'chinhanh_id': line['chinhanh_id'],
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
-                                    'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'loai_giaodich': 'Giao dịch cấn trừ từ HISTAFF',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -2162,6 +2194,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -2205,6 +2240,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ SHIFT',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -2454,6 +2490,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -2499,6 +2538,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ HISTAFF',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -2607,6 +2647,9 @@ class import_congno_tudong(osv.osv):
                     
                         for seq,data in enumerate(file_data):
                             noidung_loi=''
+                            dien_giai=''
+                            if data.get('dien_giai',False):
+                                dien_giai = data['dien_giai']
                             try:
                                 st = float(data['so_tien_da_thu'])
                             except Exception, e:
@@ -2651,6 +2694,7 @@ class import_congno_tudong(osv.osv):
                                     'journal_id': journal_ids[0],
                                     'date': ngay_thanh_toan,
                                     'loai_giaodich': 'Giao dịch cấn trừ từ HISTAFF',
+                                    'name': dien_giai,
                                 }
                                 
                                 context = {
@@ -2862,7 +2906,9 @@ class import_congno_tudong(osv.osv):
                             request_ref_number = ''
                             thukyquys = []
                             trakyquys = []
-                            
+                            dien_giai=''
+                            if data.get('NOTE',False):
+                                dien_giai = data['NOTE']
                             try:
                                 request_ref_number = str(data['REQUEST_REF_NUMBER'])
                             except Exception, e:
@@ -3052,6 +3098,7 @@ class import_congno_tudong(osv.osv):
                                         'date': ngay_thanh_toan,
                                         'fusion_id': data['TRANSACTION_NUMBER'],
                                         'loai_giaodich': 'Giao dịch cấn trừ từ ORACLE',
+                                        'name': dien_giai,
                                     }
                                     
                                     context = {
