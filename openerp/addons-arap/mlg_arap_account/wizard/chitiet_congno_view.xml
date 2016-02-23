@@ -23,7 +23,7 @@
 	                    	<field name='loai_nodoanhthu_id' options="{'no_create': True}" attrs="{'invisible':[('mlg_type','!=','no_doanh_thu')]}"/>
 	                    	<field name='loai_vipham_id' options="{'no_create': True}" attrs="{'invisible':[('mlg_type','!=','phat_vi_pham')]}"/>
 	                    	<field name='loai_baohiem_id' options="{'no_create': True}" attrs="{'invisible':[('mlg_type','!=','phai_thu_bao_hiem')]}"/>
-	                    	<field name='ma_xuong_id' options="{'no_create': True}" attrs="{'invisible':[('mlg_type','!=','thu_no_xuong')]}"/>
+	                    	<field name='ma_xuong_id' domain="[('chinhanh_id','=',chinhanh_id)]" options="{'no_create': True}" attrs="{'invisible':[('mlg_type','!=','thu_no_xuong')]}"/>
 	                    </group>
                     </sheet>
                     <footer>

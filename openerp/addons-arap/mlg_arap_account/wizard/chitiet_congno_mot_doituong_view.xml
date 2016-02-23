@@ -20,7 +20,7 @@
 	                    	<field name='loai_nodoanhthu_id' options="{'no_create': True}"/>
 	                    	<field name='loai_vipham_id' options="{'no_create': True}"/>
 	                    	<field name='loai_baohiem_id' options="{'no_create': True}"/>
-	                    	<field name='ma_xuong_id' options="{'no_create': True}"/>
+	                    	<field name='ma_xuong_id' domain="[('chinhanh_id','=',chinhanh_id)]" options="{'no_create': True}"/>
 	                    </group>
                     </sheet>
                     <footer>
