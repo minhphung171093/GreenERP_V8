@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate='1'>
+		<record model="cauhinh.kyquy.bddh" id="cauhinh_kyquy_bddh_1">
+            <field name="name">2</field>
+            <field name="so_tien">1000000</field>
+        </record>
+	</data>
+	
+    <data>
+        <record id="view_cauhinh_kyquy_bddh_form" model="ir.ui.view">
+            <field name="name">cauhinh.kyquy.bddh.form</field>
+            <field name="model">cauhinh.kyquy.bddh</field>
+            <field name="arch" type="xml">
+                <form string="Cấu hình ký quỹ BĐĐH" create='false' delete='false'>
+	                <sheet>
+                        <group>
+		                    <field name="name"/>
+		                    <field name="so_tien"/>
+                        </group>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_cauhinh_kyquy_bddh" model="ir.actions.act_window">
+            <field name="name">Cấu hình ký quỹ BĐĐH</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cauhinh.kyquy.bddh</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="view_id" ref="view_cauhinh_kyquy_bddh_form"/>
+            <field name="res_id" ref="cauhinh_kyquy_bddh_1"/>
+        </record>
+       
+    </data>
+</openerp>

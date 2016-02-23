@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record id="view_tra_gop_xe_form_inherit" model="ir.ui.view">
+            <field name="name">tra.gop.xe.form.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="mlg_arap_account.view_tra_gop_xe_form"/>
+            <field name="arch" type="xml">
+                <field name="so_hop_dong" position="after">
+                	<field name="tat_toan" readonly='1'/>
+                </field>
+            </field>
+        </record>        
+	</data>
+</openerp>

@@ -82,16 +82,13 @@ class Parser(report_sxw.rml_parse):
     def get_doituong(self):
         wizard_data = self.localcontext['data']['form']
         partner_ids = wizard_data['partner_ids']
-        tatca = wizard_data['tatca']
         chinhanh_id = wizard_data['chinhanh_id']
         if partner_ids:
             return partner_ids
         else:
-            if not tatca:
-                return ['mlg']
-            partner_ids = ['mlg']
+            partner_ids = []
             sql='''
-                select partner_id from chi_nhanh_line where chinhanh_id=%s group by partner_id
+                select partner_id from chi_nhanh_line where chinhanh_id=%s and partner_id in (select id from res_partner where nhadautugiantiep=True) group by partner_id
             '''%(chinhanh_id[0])
             self.cr.execute(sql)
             for r in self.cr.fetchall():
@@ -100,8 +97,6 @@ class Parser(report_sxw.rml_parse):
     
     def get_title_doituong(self, partner_id):
         if partner_id:
-            if partner_id=='mlg':
-                return 'MLG'
             partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
             return (partner.ma_doi_tuong or '')+'_'+(partner.name or '')
         return ''
@@ -113,21 +108,22 @@ class Parser(report_sxw.rml_parse):
         period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
         period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
-        if partner_id=='mlg':
-            sql = '''
-                select id, name from bien_so_xe where id in (
-                        select bien_so_xe_id from account_invoice where mlg_type='tra_gop_xe' and thu_cho_doituong_id is null and state in ('open','paid')
-                            and chinhanh_id=%s and date_invoice<='%s' and (tat_toan!=True or tat_toan is null) and so_tien!=residual 
-                    )
-            '''%(chinhanh_id[0],period_to.date_stop)
+        tat_toan = wizard_data['tat_toan']
+        sql = '''
+            select id, name from bien_so_xe where id in (
+                    select bien_so_xe_id from account_invoice where mlg_type='tra_gop_xe' and thu_cho_doituong_id=%s and state in ('open','paid')
+                        and chinhanh_id=%s and date_invoice<='%s' and so_tien!=residual 
+        '''%(partner_id,chinhanh_id[0],period_to.date_stop)
+        if not tat_toan:
+            sql +='''
+                and (tat_toan!=True or tat_toan is null) 
+                ) 
+            '''
         else:
-            sql = '''
-                select id, name from bien_so_xe where id in (
-                        select bien_so_xe_id from account_invoice where mlg_type='tra_gop_xe' and thu_cho_doituong_id=%s and state in ('open','paid')
-                            and chinhanh_id=%s and date_invoice<='%s' and (tat_toan!=True or tat_toan is null) and so_tien!=residual 
-                    )
-            '''%(partner_id,chinhanh_id[0],period_to.date_stop)
-            
+            sql +='''
+                and (tat_toan=True) 
+                ) 
+            '''
         self.cr.execute(sql)
         return self.cr.dictfetchall()
     
@@ -171,26 +167,25 @@ class Parser(report_sxw.rml_parse):
         period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
         period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
-        if partner_id=='mlg':
-            sql = '''
-                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
-                    from account_move_line
-                    where move_id in (select move_id from account_voucher
-                        where reference in (select name from account_invoice
-                            where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id is null and date_invoice<='%s'
-                               and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+        tat_toan = wizard_data['tat_toan']
+        sql = '''
+            select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                from account_move_line
+                where move_id in (select move_id from account_voucher
+                    where reference in (select name from account_invoice
+                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
+                           
+        '''%(chinhanh_id[0],partner_id,period_to.date_stop)
+        if not tat_toan:
+            sql +='''
+                and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
                     and date<'%s'
-            '''%(chinhanh_id[0],period_to.date_stop,bsx_id,period_from.date_start)
+            '''%(bsx_id,period_from.date_start)
         else:
-            sql = '''
-                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
-                    from account_move_line
-                    where move_id in (select move_id from account_voucher
-                        where reference in (select name from account_invoice
-                            where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
-                               and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+            sql +='''
+                and (tat_toan=True) and bien_so_xe_id=%s ))
                     and date<'%s'
-            '''%(chinhanh_id[0],partner_id,period_to.date_stop,bsx_id,period_from.date_start)
+            '''%(bsx_id,period_from.date_start)
         self.cr.execute(sql)
         sdtlkdauky = self.cr.fetchone()[0]
         self.sdtlkdauky += sdtlkdauky
@@ -203,26 +198,25 @@ class Parser(report_sxw.rml_parse):
         period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
         period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
-        if partner_id=='mlg':
-            sql = '''
-                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
-                    from account_move_line
-                    where move_id in (select move_id from account_voucher
-                        where reference in (select name from account_invoice
-                            where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id is null and date_invoice<='%s'
-                               and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+        tat_toan = wizard_data['tat_toan']
+        sql = '''
+            select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                from account_move_line
+                where move_id in (select move_id from account_voucher
+                    where reference in (select name from account_invoice
+                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
+                           
+        '''%(chinhanh_id[0],partner_id,period_to.date_stop)
+        if not tat_toan:
+            sql +='''
+                and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
                     and date between '%s' and '%s'
-            '''%(chinhanh_id[0],period_to.date_stop,bsx_id,period_from.date_start,period_to.date_stop)
+            '''%(bsx_id,period_from.date_start,period_to.date_stop)
         else:
-            sql = '''
-                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
-                    from account_move_line
-                    where move_id in (select move_id from account_voucher
-                        where reference in (select name from account_invoice
-                            where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
-                               and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+            sql +='''
+                and (tat_toan=True) and bien_so_xe_id=%s ))
                     and date between '%s' and '%s'
-            '''%(chinhanh_id[0],partner_id,period_to.date_stop,bsx_id,period_from.date_start,period_to.date_stop)
+            '''%(bsx_id,period_from.date_start,period_to.date_stop)
         self.cr.execute(sql)
         sdttrongky = self.cr.fetchone()[0]
         self.sdttrongky += sdttrongky
@@ -235,26 +229,25 @@ class Parser(report_sxw.rml_parse):
         period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
         period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
-        if partner_id=='mlg':
-            sql = '''
-                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
-                    from account_move_line
-                    where move_id in (select move_id from account_voucher
-                        where reference in (select name from account_invoice
-                            where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id is null and date_invoice<='%s'
-                               and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+        tat_toan = wizard_data['tat_toan']
+        sql = '''
+            select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                from account_move_line
+                where move_id in (select move_id from account_voucher
+                    where reference in (select name from account_invoice
+                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
+                           
+        '''%(chinhanh_id[0],partner_id,period_to.date_stop)
+        if not tat_toan:
+            sql +='''
+                and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
                     and date<='%s'
-            '''%(chinhanh_id[0],period_to.date_stop,bsx_id,period_to.date_stop)
+            '''%(bsx_id,period_to.date_stop)
         else:
-            sql = '''
-                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
-                    from account_move_line
-                    where move_id in (select move_id from account_voucher
-                        where reference in (select name from account_invoice
-                            where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
-                               and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+            sql +='''
+                and (tat_toan=True) and bien_so_xe_id=%s ))
                     and date<='%s'
-            '''%(chinhanh_id[0],partner_id,period_to.date_stop,bsx_id,period_to.date_stop)
+            '''%(bsx_id,period_to.date_stop)
         self.cr.execute(sql)
         sdtlkcuoiky = self.cr.fetchone()[0]
         self.sdtlkcuoiky += sdtlkcuoiky

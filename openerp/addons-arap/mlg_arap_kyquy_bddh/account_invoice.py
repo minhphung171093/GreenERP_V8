@@ -287,45 +287,31 @@ class account_invoice(osv.osv):
         if not vals.get('so_tien',False) or (vals.get('so_tien') and vals['so_tien']<=0):
             raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo với số tiền nhỏ hơn hoặc bằng "0"!'))
         
-        if vals.get('mlg_type', False) and vals['mlg_type'] =='tra_gop_xe' and vals.get('chinhanh_id',False):
+        if vals.get('mlg_type', False) and vals['mlg_type'] =='tra_gop_xe' and vals.get('thu_cho_doituong_id'):
 #             wf_service = netsvc.LocalService("workflow")
-            if vals.get('thu_cho_doituong_id',False):
-                sql = '''
-                    select id from res_partner where id=%s and nhadautugiantiep=True and ma_doi_tuong in (select code from account_account where id=%s)
-                '''%(vals['thu_cho_doituong_id'],vals['chinhanh_id'])
-                cr.execute(sql)
-                partner_ids = [r[0] for r in cr.fetchall()]
-                if not partner_ids:
-                    ptch_vals = {}
-                    partner_obj = self.pool.get('res.partner')
-                    partner = partner_obj.browse(cr, uid, vals['thu_cho_doituong_id'])
-                    partner_tgx = partner_obj.browse(cr, uid, vals['partner_id'])
-                    ptch_vals.update(self.onchange_nhadautugiantiep(cr, uid, [], partner.id, context)['value'])
-                    ptch_vals.update({
-                        'mlg_type': 'chi_ho',
-                        'type': 'in_invoice',
-                        'chinhanh_id': vals['chinhanh_id'],
-                        'partner_id': partner.id,
-                        'date_invoice': vals['date_invoice'],
-                        'so_tien': vals.get('so_tien', 0),
-                        'dien_giai': 'Tạo từ trả góp xe %s cho đối tượng [%s] %s'%(vals['name'],partner_tgx.ma_doi_tuong,partner_tgx.name),
-                        'journal_id': vals['journal_id'],
-                        'so_hop_dong': vals.get('so_hop_dong', False),
-                        'bai_giaoca_id': vals.get('bai_giaoca_id', False),
-                        'bien_so_xe_id': vals.get('bien_so_xe_id', False),
-                        'loai_giaodich': 'Giao dịch tạo tự động từ trả góp xe',
-                    })
-                    invoice_vals = self.onchange_dien_giai_st(cr, uid, [], ptch_vals['dien_giai'], ptch_vals['so_tien'], ptch_vals['journal_id'], context)['value']
-                    ptch_vals.update(invoice_vals)
-                    invoice_id = self.create(cr, uid, ptch_vals)
+            ptch_vals = {}
+            partner_obj = self.pool.get('res.partner')
+            partner = partner_obj.browse(cr, uid, vals['thu_cho_doituong_id'])
+            partner_tgx = partner_obj.browse(cr, uid, vals['partner_id'])
+            ptch_vals.update(self.onchange_nhadautugiantiep(cr, uid, [], partner.id, context)['value'])
+            ptch_vals.update({
+                'mlg_type': 'chi_ho',
+                'type': 'in_invoice',
+                'chinhanh_id': vals['chinhanh_id'],
+                'partner_id': partner.id,
+                'date_invoice': vals['date_invoice'],
+                'so_tien': vals.get('so_tien', 0),
+                'dien_giai': 'Tạo từ trả góp xe %s cho đối tượng [%s] %s'%(vals['name'],partner_tgx.ma_doi_tuong,partner_tgx.name),
+                'journal_id': vals['journal_id'],
+                'so_hop_dong': vals.get('so_hop_dong', False),
+                'bai_giaoca_id': vals.get('bai_giaoca_id', False),
+                'bien_so_xe_id': vals.get('bien_so_xe_id', False),
+                'loai_giaodich': 'Giao dịch tạo tự động từ trả góp xe',
+            })
+            invoice_vals = self.onchange_dien_giai_st(cr, uid, [], ptch_vals['dien_giai'], ptch_vals['so_tien'], ptch_vals['journal_id'], context)['value']
+            ptch_vals.update(invoice_vals)
+            invoice_id = self.create(cr, uid, ptch_vals)
 #             wf_service.trg_validate(uid, 'account.invoice', invoice_id, 'invoice_open', cr)
-            if 'thu_cho_doituong_id' not in vals or not vals.get('thu_cho_doituong_id', False):
-                sql = '''
-                    select id from res_partner where nhadautugiantiep=True and ma_doi_tuong in (select code from account_account where id=%s)
-                '''%(vals['chinhanh_id'])
-                cr.execute(sql)
-                partner_ids = [r[0] for r in cr.fetchall()]
-                vals.update({'thu_cho_doituong_id':partner_ids and partner_ids[0] or False})
             
         if vals.get('mlg_type', False) and vals['mlg_type'] =='phai_tra_ky_quy':
             if vals['loai_doituong'] in ['taixe','nhanvienvanphong']:
@@ -1072,41 +1058,6 @@ class account_invoice(osv.osv):
                 'type': inv.type in ('out_invoice','out_refund') and 'receipt' or 'payment'
             }
         }
-        
-    def xoa_thanh_toan(self, cr, uid, mlg_type, invoice_number, context=None):
-        try:
-            voucher_obj = self.pool.get('account.voucher')
-            wf_service = netsvc.LocalService("workflow")
-            sql = '''
-                select id from account_voucher where reference='%s'
-            '''%(invoice_number)
-            cr.execute(sql)
-            vouhcer_ids = [r[0] for r in cr.fetchall()]
-            voucher_obj.cancel_voucher(cr, 1, vouhcer_ids, context)
-            voucher_obj.unlink(cr, 1, vouhcer_ids)
-        except Exception, e:
-            cr.rollback()
-        return True
-    
-    def xoa_cong_no(self, cr, uid, mlg_type, invoice_number, context=None):
-        try:
-            wf_service = netsvc.LocalService("workflow")
-            self.xoa_thanh_toan(cr, 1, mlg_type, invoice_number, context)
-            sql = '''
-                select id from account_invoice where mlg_type='%s' and name='%s'
-            '''%(mlg_type, invoice_number)
-            cr.execute(sql)
-            invoice_ids = [r[0] for r in cr.fetchall()]
-            for invoice_id in invoice_ids:
-                wf_service.trg_validate(1, 'account.invoice', invoice_id, 'invoice_cancel', cr)
-                sql = '''
-                    delete from account_invoice_line where invoice_id=%s;
-                    delete from account_invoice where id=%s;
-                '''%(invoice_id,invoice_id)
-                cr.execute(sql)
-        except Exception, e:
-            cr.rollback()
-        return True
     
 account_invoice()
 

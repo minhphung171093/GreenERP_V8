@@ -33,7 +33,7 @@
 	        <field name="arch" type="xml">
 	            <form string="Trả góp xe tất toán" version="7.0" create='false' edit='false' delete='false'>
 	            	<header>
-	            		<button name="bt_tattoan" string="Tất toán" attrs="{'invisible':[('show_tattoan','=',False)]}" type='object' class="oe_highlight"/>
+	            		<button name="bt_tattoan" confirm="Bạn thật sự muốn tất toán danh sách công nợ bên dưới?" string="Tất toán" attrs="{'invisible':[('show_tattoan','=',False)]}" type='object' class="oe_highlight"/>
 	            		<field name="show_tattoan" invisible='1'/>
 	            	</header>
 	                <group>

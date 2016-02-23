@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<menuitem id="menu_action_cauhinh_kyquy_bddh"
+			action="action_cauhinh_kyquy_bddh"
+			name="Cấu hình ký quỹ BĐĐH"
+			parent="mlg_arap_account.menu_cauhinh_arap" sequence="40"/>
+					
+	</data>
+</openerp>

@@ -20,18 +20,15 @@
 ##############################################################################
 
 {
-    'name': 'MLG ARAP Xuất Hóa Đơn Giảm',
+    'name': 'MLG ARAP Ký Quỹ BĐĐH',
     'version': '1.0',
     'category': 'ARAP',
     'sequence': 1,
     'depends': ['mlg_arap_account'],
     'data': [
-        'report/chitiet_congno_tgx_view.xml',
-        'report/tonghop_congno_tgx_view.xml',
-        'wizard/tragopxe_view.xml',
-        'wizard/chitiet_congno_tgx_view.xml',
-        'wizard/tonghop_congno_tgx_view.xml',
-        'account_invoice_phaithu_view.xml',
+        'security/ir.model.access.csv',
+        'kyquy_bddh_view.xml',
+        'schedule_view.xml',
         'menu.xml',
     ],
     'css' : [

@@ -13,8 +13,8 @@
 	                    	<field name='period_from_id' required='1' domain="[('special','!=',True)]"/>
 	                    	<field name='period_to_id' required='1' domain="[('special','!=',True)]"/>
 	                    	<field name='chinhanh_id' readonly='1'/>
-	                    	<field name='tatca'/>
-	                    	<field name='partner_ids' attrs="{'invisible':[('tatca','=',True)]}" widget="many2many_tags" domain="[('nhadautugiantiep','=',True)]"/>
+	                    	<field name='partner_ids' widget="many2many_tags" domain="[('nhadautugiantiep','=',True)]"/>
+	                    	<field name='tat_toan'/>
 	                    	<field name='mlg_type' invisible='1'/>
 	                    </group>
                     </sheet>

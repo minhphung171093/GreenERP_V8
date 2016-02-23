@@ -1,4 +1,4 @@
-# -*- coding: utf-8# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
@@ -19,29 +19,22 @@
 #
 ##############################################################################
 
-{
-    'name': 'MLG ARAP Xuất Hóa Đơn Giảm',
-    'version': '1.0',
-    'category': 'ARAP',
-    'sequence': 1,
-    'depends': ['mlg_arap_account'],
-    'data': [
-        'report/chitiet_congno_tgx_view.xml',
-        'report/tonghop_congno_tgx_view.xml',
-        'wizard/tragopxe_view.xml',
-        'wizard/chitiet_congno_tgx_view.xml',
-        'wizard/tonghop_congno_tgx_view.xml',
-        'account_invoice_phaithu_view.xml',
-        'menu.xml',
-    ],
-    'css' : [
-    ],
-    'qweb': [
-    ],
-    'js': [
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': True,
-}
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4: -*-
+from operator import itemgetter
+import time
+
+from openerp.osv import fields, osv
+from openerp import api
+from openerp.tools.translate import _
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+class res_partner(osv.osv):
+    _inherit = 'res.partner'
+
+    _columns = {
+        'bien_so_xe_ids': fields.many2many('bien.so.xe', 'partner_biensoxe_ref', 'partner_id', 'bsx_id','Biển số xe'),
+    }
+    
+res_partner()
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -1,4 +1,4 @@
-# -*- coding: utf-8# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
@@ -19,29 +19,29 @@
 #
 ##############################################################################
 
-{
-    'name': 'MLG ARAP Xuất Hóa Đơn Giảm',
-    'version': '1.0',
-    'category': 'ARAP',
-    'sequence': 1,
-    'depends': ['mlg_arap_account'],
-    'data': [
-        'report/chitiet_congno_tgx_view.xml',
-        'report/tonghop_congno_tgx_view.xml',
-        'wizard/tragopxe_view.xml',
-        'wizard/chitiet_congno_tgx_view.xml',
-        'wizard/tonghop_congno_tgx_view.xml',
-        'account_invoice_phaithu_view.xml',
-        'menu.xml',
-    ],
-    'css' : [
-    ],
-    'qweb': [
-    ],
-    'js': [
-    ],
-    'installable': True,
-    'auto_install': False,
-    'application': True,
-}
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4: -*-
+import openerp.addons.decimal_precision as dp
+from openerp.osv import fields, osv, expression
+from openerp.tools.translate import _
+import time
+from openerp.exceptions import except_orm, Warning, RedirectWarning
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+from openerp import netsvc
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+class cauhinh_kyquy_bddh(osv.osv):
+    _name = "cauhinh.kyquy.bddh"
+    
+    _columns = {
+        'name': fields.integer('Số tháng', required=True),
+        'so_tien': fields.integer('Số tiền', digits=(16,0), required=True),
+    }
+    
+    def tinh_kyquy_bddh(self, cr, uid, context=None):
+        
+        return True
+    
+cauhinh_kyquy_bddh()
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

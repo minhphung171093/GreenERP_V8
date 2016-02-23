@@ -30,6 +30,7 @@ class chitiet_congno_tgx_tattoan(osv.osv_memory):
                                       ('tra_gop_xe','Trả góp xe'),
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
                                       ],'Loại công nợ'),
+        'tat_toan': fields.boolean('Đã xuất hóa đơn'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

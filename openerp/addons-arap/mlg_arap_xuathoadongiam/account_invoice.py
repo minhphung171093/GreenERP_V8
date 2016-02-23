@@ -35,7 +35,7 @@ class account_invoice(osv.osv):
     _inherit = "account.invoice"
     
     _columns = {
-        'tat_toan': fields.boolean('Tất toán'),
+        'tat_toan': fields.boolean('Đã xuất hóa đơn'),
     }
     
 account_invoice()
