@@ -142,10 +142,7 @@ class Parser(report_sxw.rml_parse):
                     self.cr.execute(sql)
                     ve_e = self.cr.dictfetchone()['tong_ve_e']
                     
-                    if diem.nhap_ve_e_id.loai_ve_id.name == '10000':
-                        ve = 10000
-                    else:
-                        raise osv.except_osv(_('Warning!'),_('Chưa cấu hình loại vé mới.!'))
+                    ve = diem.nhap_ve_e_id.loai_ve_id.gia_tri
                     
                     sl_tieuthu = sl_phathanh-ve_e
                     thanhtien_tieuthu = sl_tieuthu*ve

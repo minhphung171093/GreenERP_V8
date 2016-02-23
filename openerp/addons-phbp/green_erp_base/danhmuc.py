@@ -120,6 +120,7 @@ class loai_ve(osv.osv):
     _name = "loai.ve"
     _columns = {
         'name': fields.char('Loại vé',size = 1024, required = True),
+        'gia_tri': fields.integer('Gía trị', required = True),
                 }
 loai_ve()
 

@@ -164,8 +164,7 @@ class Parser(report_sxw.rml_parse):
                     else:
                         ve_e_truoc = 0
                     
-#                     if diem.nhap_ve_e_id.loai_ve_id.name == '10000':
-#                         ve = 10000
+#                     ve = diem.nhap_ve_e_id.loai_ve_id.gia_tri
                     
 #                     sl_tieuthu = sl_phathanh-ve_e
 #                     thanhtien_tieuthu = sl_tieuthu*ve
@@ -240,8 +239,7 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         loai_ve_id = wizard_data['loai_ve_id']
         loai_ve = self.pool.get('loai.ve').browse(self.cr,self.uid,loai_ve_id[0])
-        if loai_ve.name == "10000":
-            return (self.total_sl_phathanh-self.total_ve_e)*10000
+        return (self.total_sl_phathanh-self.total_ve_e)*loai_ve.gia_tri
     def get_phathanh_kytruoc(self):
         return self.total_sl_phathanh_truoc
     def get_tieuthu_kytruoc(self):
@@ -250,7 +248,6 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         loai_ve_id = wizard_data['loai_ve_id']
         loai_ve = self.pool.get('loai.ve').browse(self.cr,self.uid,loai_ve_id[0])
-        if loai_ve.name == "10000":
-            return (self.total_sl_phathanh_truoc-self.total_ve_e_truoc)*10000
+        return (self.total_sl_phathanh_truoc-self.total_ve_e_truoc)*loai_ve.gia_tri
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
