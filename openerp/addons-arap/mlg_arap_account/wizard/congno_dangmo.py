@@ -25,7 +25,7 @@ class congno_dangmo(osv.osv_memory):
                                       ('tra_gop_xe','Trả góp xe'),
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
-                                      ('chi_ho','Phải trả chi hộ'),],'Loại công nợ'),
+                                      ('chi_ho','Phải trả chi hộ'),],'Công nợ'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):

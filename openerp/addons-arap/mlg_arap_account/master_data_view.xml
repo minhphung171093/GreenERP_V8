@@ -202,6 +202,7 @@
                 <tree string="Mã xưởng" editable='top'>
                     <field name="code"/>
                     <field name="name"/>
+                    <field name="chinhanh_id" required='1' domain="[('parent_id.code','=','1')]" options="{'no_create': True}"/>
                 </tree>
             </field>
         </record>

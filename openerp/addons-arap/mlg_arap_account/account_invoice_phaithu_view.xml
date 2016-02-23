@@ -917,7 +917,7 @@
 			                    <field name="giayphep_kinhdoanh" attrs="{'invisible':[('loai_doituong','!=','nhadautu')]}"/>
 			                    <field name="so_hop_dong"/>
 	                    		<field name="ma_bang_chiettinh_chiphi_sua"/>
-	                    		<field name="ma_xuong_id" options="{'no_create': True}"/>
+	                    		<field name="ma_xuong_id" required='1' domain="[('chinhanh_id','=',chinhanh_id)]" options="{'no_create': True}"/>
 		                    </group>
 	                    </group>
                     	<group col="4" colspan="2">

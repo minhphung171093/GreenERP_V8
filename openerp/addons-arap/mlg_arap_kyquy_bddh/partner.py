@@ -29,12 +29,24 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-class res_partner(osv.osv):
-    _inherit = 'res.partner'
+class chi_nhanh_line(osv.osv):
+    _inherit = 'chi.nhanh.line'
 
     _columns = {
         'bien_so_xe_ids': fields.many2many('bien.so.xe', 'partner_biensoxe_ref', 'partner_id', 'bsx_id','Biển số xe'),
     }
     
-res_partner()
+chi_nhanh_line()
+
+class lichsu_kyquy_bddh(osv.osv):
+    _name = 'lichsu.kyquy.bddh'
+    _order = 'name desc'
+    
+    _columns = {
+        'name': fields.date('Ngày chạy'),
+        'chinhanh_line_id': fields.many2one('chi.nhanh.line','Chi nhánh line'),
+        'bien_so_xe_id': fields.many2one('bien.so.xe', 'Biển số xe'),
+    }
+    
+lichsu_kyquy_bddh()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

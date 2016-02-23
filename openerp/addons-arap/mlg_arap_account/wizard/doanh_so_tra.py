@@ -107,7 +107,7 @@ class doanh_so_tra_line(osv.osv_memory):
         'doanhsotra_id': fields.many2one('doanh.so.tra', 'Doanh số trả', ondelete='cascade'),
         'chinhanh': fields.char('Chi nhánh', size=1024),
         'machinhanh': fields.char('Mã chi nhánh', size=1024),
-        'loaicongno': fields.char('Loại công nợ', size=1024),
+        'loaicongno': fields.char('Công nợ', size=1024),
         'taikhoan': fields.char('Tài khoản', size=1024),
         'sotien': fields.float('Số tiền',digits=(16,0)),
         'ghichu': fields.char('Ghi chú', size=1024),

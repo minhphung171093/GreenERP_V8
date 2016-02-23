@@ -695,6 +695,9 @@ class import_congno_manually(osv.osv):
                             raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
                         
                         mx = data['ma_xuong']
+                        if not mx:
+                            noidungloi='Không tìm thấy mã xưởng trên template'
+                            raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy mã xưởng trên template')
                         sql = ''' select id from ma_xuong where upper(code)='%s' '''%(mx.upper())
                         cr.execute(sql)
                         ma_xuong_ids = cr.fetchone()

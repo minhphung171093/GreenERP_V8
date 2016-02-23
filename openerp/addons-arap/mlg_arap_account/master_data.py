@@ -323,6 +323,7 @@ class ma_xuong(osv.osv):
     _columns = {
         'name': fields.char('Tên', size=1024, required=True),
         'code': fields.char('Mã', size=1024, required=True),
+        'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
     }
     
     def name_get(self, cr, uid, ids, context=None):

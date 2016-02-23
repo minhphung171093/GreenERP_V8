@@ -66,7 +66,7 @@ class phieu_de_xuat(osv.osv_memory):
                                       ('chi_bao_hiem','Chi bảo hiểm'),
                                       ('phai_tra_ky_quy','Phải trả ký quỹ'),
                                       ('tam_ung','Tạm ứng'),
-                                      ('chi_ho','Chi hộ'),],'Loại công nợ'),
+                                      ('chi_ho','Chi hộ'),],'Công nợ'),
         'loai': fields.selection([('thu','Thu'),('chi','Chi')],'Loại'),
     }
     

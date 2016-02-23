@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_mlg_arap_kyquy_bddh_1,cauhinh_kyquy_bddh,mlg_arap_kyquy_bddh.model_cauhinh_kyquy_bddh,base.group_user,1,1,1,1
+access_mlg_arap_kyquy_bddh_2,lichsu_kyquy_bddh,mlg_arap_kyquy_bddh.model_lichsu_kyquy_bddh,base.group_user,1,1,1,1

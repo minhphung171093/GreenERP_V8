@@ -25,7 +25,7 @@ class congno_dangcho(osv.osv_memory):
                                       ('thu_phi_thuong_hieu','Thu phí thương hiệu'),
                                       ('tra_gop_xe','Trả góp xe'),
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
-                                      ],'Loại công nợ'),
+                                      ],'Công nợ'),
         'loai_doituong': fields.selection([('taixe','Lái xe'),
                                            ('nhadautu','Nhà đầu tư'),
                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng'),

@@ -40,7 +40,22 @@ class cauhinh_kyquy_bddh(osv.osv):
     }
     
     def tinh_kyquy_bddh(self, cr, uid, context=None):
-        
+        try:
+            sql = '''
+                select name,so_tien from cauhinh_kyquy_bddh limit 1
+            '''
+            cr.execute(sql)
+            date_now = time.strftime('%Y-%m-%d')
+            for line in cr.dictfetchall():
+                sql = '''
+                    select rp.id as partner_id
+                        from res_partner rp
+                        left join chi_nhanh_line cnl on cnl.partner_id=rp.id
+                        left join lichsu_kyquy_bddh lskqbddh on lskqbddh.chinhanh_line_id=cnl.id
+                        where 
+                '''
+        except Exception, e:
+            cr.rollback()
         return True
     
 cauhinh_kyquy_bddh()

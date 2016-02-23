@@ -20,7 +20,7 @@ class tonghop_congno_mot_doituong(osv.osv_memory):
                                            ('nhadautu','Nhà đầu tư'),
                                            ('nhanvienvanphong','Nhân viên văn phòng')], 'Loại đối tượng', required=True),
         'partner_id': fields.many2one('res.partner','Đối tượng', required=True),
-        'loai_congno_ids': fields.many2many('loai.cong.no', 'thcnmdt_loaicongno_ref', 'thcnmdt_id', 'loaicongno_id','Loại công nợ'),
+        'loai_congno_ids': fields.many2many('loai.cong.no', 'thcnmdt_loaicongno_ref', 'thcnmdt_id', 'loaicongno_id','Công nợ'),
         'chinhanh_id': fields.many2one('account.account','Chi nhánh'),
         'loai_tamung_id': fields.many2one('loai.tam.ung', 'Loại tạm ứng'),
         'loai_nodoanhthu_id': fields.many2one('loai.no.doanh.thu', 'Loại nợ DT-BH-AL'),

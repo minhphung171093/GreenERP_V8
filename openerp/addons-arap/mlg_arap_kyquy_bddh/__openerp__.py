@@ -29,6 +29,7 @@
         'security/ir.model.access.csv',
         'kyquy_bddh_view.xml',
         'schedule_view.xml',
+        'partner_view.xml',
         'menu.xml',
     ],
     'css' : [
