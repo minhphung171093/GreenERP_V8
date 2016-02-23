@@ -131,11 +131,34 @@ class phan_loai(osv.osv):
                 }
 phan_loai()
 
-class hethong_dambao_attp(osv.osv):
-    _name = "hethong.dambao.attp"
+class loai_hinh(osv.osv):
+    _name = "loai.hinh"
     _columns = {
-        'name': fields.char('Hệ thống đảm bảo ATTP',size = 1024, required = True),
+        'name': fields.char('Tên',size = 1024, required = True),
+        'loai_hinh_line': fields.one2many('loai.hinh.line','loai_hinh_id','Loai hinh line'),
                 }
-hethong_dambao_attp()
-
+#     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+#         if context is None:
+#             context = {}
+#         if context.get('search_dai_ly'):
+#             if context.get('ky_ve_id') and context.get('loai_ve_id'):
+#                 sql = '''
+#                     select daily_id from phanphoi_tt_line
+#                     where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
+#                 '''%(context.get('ky_ve_id'), context.get('loai_ve_id'))
+#                 cr.execute(sql)
+#                 dai_ly_ids = [row[0] for row in cr.fetchall()]
+#                 args += [('id','in',dai_ly_ids)]
+#         return super(dai_ly, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+#     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
+#        ids = self.search(cr, user, args, context=context, limit=limit)
+#        return self.name_get(cr, user, ids, context=context)
+loai_hinh()
+class loai_hinh_line(osv.osv):
+    _name = "loai.hinh.line"
+    _columns = {
+        'name': fields.char('Tên',size = 1024, required = True),
+        'loai_hinh_id': fields.many2one('loai.hinh','Loại hình'),
+                }
+loai_hinh_line()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

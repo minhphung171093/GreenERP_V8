@@ -34,12 +34,12 @@
 					name="Kỳ vé"
 					parent="menu_danh_muc" sequence="20"/>
 					
-<!--				<menuitem id="menu_action_tieu_chi"
-					action="action_tieu_chi"
-					name="Tiêu chí"
+				<menuitem id="menu_action_loai_hinh"
+					action="action_loai_hinh"
+					name="Loại hình"
 					parent="menu_danh_muc" sequence="25"/>
 					
-				<menuitem id="menu_action_coquan_quanly"
+<!--				<menuitem id="menu_action_coquan_quanly"
 					action="action_coquan_quanly"
 					name="Cơ quan quản lý"
 					parent="menu_danh_muc" sequence="30"/>

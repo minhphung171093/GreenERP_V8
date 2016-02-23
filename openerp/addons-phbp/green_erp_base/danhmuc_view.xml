@@ -153,23 +153,47 @@
             <field name="view_mode">tree,form</field>
         </record> 
         
-<!--Hệ thống đảm bảo ATTP-->   
-        <record model="ir.ui.view" id="hethong_dambao_attp_tree">
-            <field name="name">hethong.dambao.attp.tree</field>
-            <field name="model">hethong.dambao.attp</field>
+
+<!--Loại hình kinh doanh-->   
+        <record model="ir.ui.view" id="loai_hinh_tree">
+            <field name="name">loai.hinh.tree</field>
+            <field name="model">loai.hinh</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Hệ thống đảm bảo ATTP" editable='top'>
+                <tree string="Loại hình kinh doanh" >
                     <field name="name" />
                 </tree>
             </field>
         </record>  
-        <record model="ir.actions.act_window" id="action_hethong_dambao_attp">
-            <field name="name">Hệ thống đảm bảo ATTP</field>
-            <field name="res_model">hethong.dambao.attp</field>
+        
+       	<record model="ir.ui.view" id="loai_hinh_form">
+	        <field name="name">loai.hinh.form</field>
+	        <field name="model">loai.hinh</field>
+	        <field name="arch" type="xml">
+	            <form string="Loại hình kinh doanh" version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+		                    <field name="name" />
+			            </group>
+			            <notebook>
+							<page string = "Chi tiết chỉ tiêu">
+								<field name="loai_hinh_line" nolabel='1'>
+									<tree editable='bottom'>
+										<field name="name" />
+									</tree>
+								</field>
+							</page>
+						</notebook>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="action_loai_hinh">
+            <field name="name">Loại hình kinh doanh</field>
+            <field name="res_model">loai.hinh</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-        </record> 
+        </record>  
     
     </data>
 </openerp>

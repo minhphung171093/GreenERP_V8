@@ -502,4 +502,33 @@ class kh_in_ve_tu_chon_line(osv.osv):
                 }
 
 kh_in_ve_tu_chon_line()
+
+class doanhthu_theo_loaihinh(osv.osv):
+    _name = "doanhthu.theo.loaihinh"
+    _columns = {
+        'year': fields.selection([(num, str(num)) for num in range(2013, 2050)], 'Năm', required = True),
+        'loai_hinh_id': fields.many2one('loai.hinh','Loại hình',required = True),
+        'dt_theo_loaihinh_line': fields.one2many('dt.theo.loaihinh.line','doanh_thu_id','Doanh thu line'),
+                }
+    
+doanhthu_theo_loaihinh()
+
+class dt_theo_loaihinh_line(osv.osv):
+    _name = "dt.theo.loaihinh.line"
+    
+    
+    _columns = {
+        'doanh_thu_id': fields.many2one('doanhthu.theo.loaihinh','Chi tiết', ondelete='cascade'),
+        'chi_tieu': fields.char('Chỉ tiêu',size = 1024, readonly = True),
+        'kehoach_namtruoc': fields.float('Kế hoạch năm trước'),
+        'thuchien_namtruoc': fields.float('Thực hiện năm trước'),
+        'kehoach_namnay': fields.float('Kế hoạch năm nay'),
+        'tyle': fields.float('Tỷ lệ so thực hiện năm trước'),
+        'phan_dau': fields.float('Kế hoạch phấn đấu'),
+        'tyle_phandau': fields.float('Tỷ lệ so thực hiện năm trước'),
+                }
+    
+    
+    
+dt_theo_loaihinh_line()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

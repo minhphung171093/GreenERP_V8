@@ -8,10 +8,10 @@
             <field name="arch" type="xml">
                 <form string="Báo cáo tiêu thụ kỳ vé" version="7.0">
                     <group>
-                    	<field name="ky_ve_id" context="{'search_baocao_kyve':1}" on_change="onchange_ky_ve_id(ky_ve_id,ngay_mo_thuong)" />
+                    	<field name="ky_ve_id" options="{'create': false, 'create_edit': false}" context="{'search_baocao_kyve':1}" on_change="onchange_ky_ve_id(ky_ve_id,ngay_mo_thuong)" />
                     	<field name="name" />
                     	<field name="loai_ve" />
-                    	<field name="loai_ve_id"/>
+                    	<field name="loai_ve_id" options="{'create': false, 'create_edit': false}" />
                     	<field name="ngay_mo_thuong" readonly="1" on_change="onchange_ky_ve_id(ky_ve_id,ngay_mo_thuong)" />
                     </group>
                     <footer>
