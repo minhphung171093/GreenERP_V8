@@ -40,6 +40,18 @@ class dai_ly(osv.osv):
         'points': fields.text('Points'), 
         'mo_ta': fields.text('Mo ta'),
                 }
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if not ids:
+            return []
+        res = []
+        reads = self.read(cr, uid, ids, ['name','ten'], context)
+   
+        for record in reads:
+            name = record['name'] + '-' +'['+record['ten']+']'
+            res.append((record['id'], name))
+        return res  
+    
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context is None:
             context = {}
@@ -146,7 +158,7 @@ class ky_ve(osv.osv):
         if context.get('search_ky_ve_dieuchinh'):
             sql = '''
                 select id from ky_ve
-                where id not in (select ky_ve_id from dieuchinh_phanphoi_ve where ky_ve_id is not null) and id in (select ky_ve_id from phanphoi_truyenthong)
+                where id in (select ky_ve_id from phanphoi_truyenthong)
             '''
             cr.execute(sql)
             ky_ve_ids = [row[0] for row in cr.fetchall()]

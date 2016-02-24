@@ -93,6 +93,16 @@ class phanphoi_tt_line(osv.osv):
                 }
         return {'value': vals}  
     
+    def _check_daily_id(self, cr, uid, ids, context=None):
+        for dl in self.browse(cr, uid, ids, context=context):
+            dl_ids = self.search(cr,uid,[('id','!=',dl.id),('daily_id','=',dl.daily_id.id),('phanphoi_tt_id','=',dl.phanphoi_tt_id.id)])
+            if dl_ids:
+                raise osv.except_osv(_('Warning!'),_('Bạn không được chọn trùng đại lý trong cùng một kỳ vé!'))
+        return True
+         
+    _constraints = [
+        (_check_daily_id, '', ['daily_id']),
+    ]
     
 phanphoi_tt_line()
 
@@ -220,7 +230,7 @@ class dieuchinh_line(osv.osv):
     _columns = {
         'dieuchinh_id': fields.many2one('dieuchinh.phanphoi.ve','Dieu chinh phan phoi', ondelete='cascade'),
         'ten_daily': fields.char('Tên Đại Lý',size = 1024),
-        'daily_id': fields.many2one('dai.ly','Đại lý'),
+        'daily_id': fields.many2one('dai.ly','Đại lý', required = True),
         'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
         'sove_duocduyet': fields.integer('Số vé được duyệt', readonly=True),
         'sove_dc': fields.integer('Số vé điều chỉnh'),
@@ -229,6 +239,17 @@ class dieuchinh_line(osv.osv):
                                                 'dieuchinh.line':(lambda self, cr, uid, ids, c={}: ids, ['sove_duocduyet','sove_dc'], 10),
                                             }),
                 }
+    
+    def _check_daily_id(self, cr, uid, ids, context=None):
+        for dl in self.browse(cr, uid, ids, context=context):
+            dl_ids = self.search(cr,uid,[('id','!=',dl.id),('daily_id','=',dl.daily_id.id),('dieuchinh_id','=',dl.dieuchinh_id.id)])
+            if dl_ids:
+                raise osv.except_osv(_('Warning!'),_('Bạn không được chọn trùng đại lý trong cùng một kỳ vé!'))
+        return True
+         
+    _constraints = [
+        (_check_daily_id, '', ['daily_id']),
+    ]
     
     def onchange_daily_dc_id(self, cr, uid, ids, daily_id=False, ky_ve_id=False):
         vals = {}
