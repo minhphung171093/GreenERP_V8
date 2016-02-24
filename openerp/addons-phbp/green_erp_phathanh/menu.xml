@@ -69,5 +69,9 @@
 					action="action_baocao_kehoach_doanhthu"
 					name="Tổng hợp kế hoạch doanh thu"
 					parent="menu_baocao" sequence="9"/>
+				<menuitem id="menu_action_tonghop_nhapxuat_ton"
+					action="action_tonghop_nhapxuat_ton"
+					name="Tổng hợp nhập - xuất - tồn kho vé số tự chọn"
+					parent="menu_baocao" sequence="10"/>
     </data>	
 </openerp>

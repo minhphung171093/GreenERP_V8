@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="tonghop_nhapxuat_ton_form" model="ir.ui.view">
+            <field name="name">tonghop.nhapxuat.ton.form</field>
+            <field name="model">tonghop.nhapxuat.ton</field>
+            <field name="arch" type="xml">
+                <form string="Tổng hợp nhập - xuất - tồn kho vé số tự chọn" version="7.0">
+                    <group>
+                    	<field name="name" />
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Hủy bỏ" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_tonghop_nhapxuat_ton">
+	        <field name="name">Tổng hợp nhập - xuất - tồn kho vé số tự chọn</field>
+	        <field name="res_model">tonghop.nhapxuat.ton</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="tonghop_nhapxuat_ton_form" />
+	        <field name="target">new</field>
+	        <field name="context">{'readonly_by_pass': True}</field>
+	    </record>
+	    
+
+    </data>
+</openerp>
+
