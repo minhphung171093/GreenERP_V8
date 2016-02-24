@@ -33,20 +33,23 @@ class chi_nhanh_line(osv.osv):
     _inherit = 'chi.nhanh.line'
 
     _columns = {
-        'bien_so_xe_ids': fields.many2many('bien.so.xe', 'partner_biensoxe_ref', 'partner_id', 'bsx_id','Biển số xe'),
+        'bien_so_xe_ids': fields.many2many('bien.so.xe', 'chinhanhline_biensoxe_ref', 'chinhanhline_id', 'bsx_id','Biển số xe'),
+        'ngaychay_cuoi': fields.date('Ngày chạy cuối'),
     }
     
 chi_nhanh_line()
 
 class lichsu_kyquy_bddh(osv.osv):
-    _name = 'lichsu.kyquy.bddh'
+    _name = "lichsu.kyquy.bddh"
     _order = 'name desc'
-    
     _columns = {
-        'name': fields.date('Ngày chạy'),
-        'chinhanh_line_id': fields.many2one('chi.nhanh.line','Chi nhánh line'),
-        'bien_so_xe_id': fields.many2one('bien.so.xe', 'Biển số xe'),
+        'name': fields.datetime('Ngày'),
+        'partner_id': fields.many2one('res.partner', 'Nhà đầu tư'),
+        'chinhanh_id': fields.many2one('account.account', 'Chi nhánh'),
+        'bien_so_xe_ids': fields.many2many('bien.so.xe', 'lichsubddh_biensoxe_ref', 'lichsubddh_id', 'bsx_id','Biển số xe'),
+        'trang_thai': fields.text('Trạng thái'),
+        'noidung_loi': fields.text('Ghi chú'),
     }
-    
 lichsu_kyquy_bddh()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
