@@ -583,7 +583,7 @@ dt_theo_loaihinh_line()
 class nhap_ve(osv.osv):
     _name = "nhap.ve"
     _columns = {
-        'name':fields.char('Đợt',size = 2,required=True),
+        'name':fields.char('Đợt',size = 64,required=True),
         'ngay_nhap': fields.date('Ngày nhập',required = True),
         'nhap_ve_line': fields.one2many('nhap.ve.line','nhap_ve_id','Nhap ve line'),
                 }
