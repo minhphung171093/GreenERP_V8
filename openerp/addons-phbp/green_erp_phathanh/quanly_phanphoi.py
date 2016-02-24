@@ -558,4 +558,57 @@ class dt_theo_loaihinh_line(osv.osv):
                 }
     
 dt_theo_loaihinh_line()
+
+class nhap_ve(osv.osv):
+    _name = "nhap.ve"
+    _columns = {
+        'name':fields.char('Đợt',size = 2,required=True),
+        'ngay_nhap': fields.date('Ngày nhập',required = True),
+        'nhap_ve_line': fields.one2many('nhap.ve.line','nhap_ve_id','Nhap ve line'),
+                }
+nhap_ve()
+class nhap_ve_line(osv.osv):
+    _name = "nhap.ve.line"
+    _columns = {
+        'nhap_ve_id': fields.many2one('nhap.ve','Nhập vé', ondelete='cascade'),
+        'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
+        'thanh_tien': fields.integer('Thành tiền',readonly=True),
+        'so_luong': fields.integer('Số lượng'),
+                }
+    def onchange_thanh_tien(self, cr, uid, ids, loai_ve_id=False,so_luong=False):
+        vals = {}
+        dt_line = []
+        if loai_ve_id and so_luong:
+            loai_ve = self.pool.get('loai.ve').browse(cr,uid,loai_ve_id)
+            thanh_tien = loai_ve.gia_tri * so_luong
+            vals = {'thanh_tien':thanh_tien,
+                }
+        return {'value': vals}  
+nhap_ve_line()
+
+class xuat_ve(osv.osv):
+    _name = "xuat.ve"
+    _columns = {
+        'name': fields.date('Ngày xuất',required = True),
+        'xuat_ve_line': fields.one2many('xuat.ve.line','xuat_ve_id','Xuat ve line'),
+                }
+xuat_ve()
+class xuat_ve_line(osv.osv):
+    _name = "xuat.ve.line"
+    _columns = {
+        'xuat_ve_id': fields.many2one('xuat.ve','Xuất vé', ondelete='cascade'),
+        'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
+        'thanh_tien': fields.integer('Thành tiền',readonly=True),
+        'so_luong': fields.integer('Số lượng'),
+                }
+    def onchange_thanh_tien(self, cr, uid, ids, loai_ve_id=False,so_luong=False):
+        vals = {}
+        dt_line = []
+        if loai_ve_id and so_luong:
+            loai_ve = self.pool.get('loai.ve').browse(cr,uid,loai_ve_id)
+            thanh_tien = loai_ve.gia_tri * so_luong
+            vals = {'thanh_tien':thanh_tien,
+                }
+        return {'value': vals}  
+xuat_ve_line()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
