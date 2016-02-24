@@ -176,9 +176,7 @@ class dieuchinh_phanphoi_ve(osv.osv):
         'total_ve_pp': fields.function(total_amount_all, multi='sums',string='Tổng số vé phân phối theo KH',type='integer',
                                          store=True),
         'total_ve_dc': fields.function(total_amount_all, multi='sums',string='Số vé điều chỉnh so với kế hoạch',type='integer',
-                                      store={
-                'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
-                'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
+                                      store=True),
         'total_ve_sau_dc': fields.function(total_amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='integer',
                                         store=True),
                 }

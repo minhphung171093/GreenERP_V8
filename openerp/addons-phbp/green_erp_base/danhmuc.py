@@ -44,6 +44,9 @@ class dai_ly(osv.osv):
                 cr.execute(sql)
                 dai_ly_ids = [row[0] for row in cr.fetchall()]
                 args += [('id','in',dai_ly_ids)]
+            if not context.get('ky_ve_id') or not context.get('loai_ve_id'):
+                dai_ly_ids = False
+                args += [('id','in',dai_ly_ids)]
         return super(dai_ly, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
        ids = self.search(cr, user, args, context=context, limit=limit)
