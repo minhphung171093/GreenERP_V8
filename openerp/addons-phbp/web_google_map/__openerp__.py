@@ -47,10 +47,11 @@ you need to do is just put the next string to the view.
 """,
     'author': 'simplee.fr - Infosreda LLC',
     'website': 'http://github.com/0k/web_google_map',
-    'depends': ['base', 'web'],
+    'depends': ['base', 'web', 'web_ckeditor4'],
     'data': [
         'views/template.xml',
         'views/gmap_view.xml',
+        'models_view.xml',
     ],
     'update_xml': [],
     'active': True,

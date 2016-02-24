@@ -39,23 +39,27 @@
 				parent="quanly_root" sequence="2"/>
 				<menuitem id="menu_action_baocao_nhanh_kyve"
 					action="action_baocao_nhanh_kyve"
-					name="Báo cáo nhanh theo kỳ vé"
+					name="Nhanh theo kỳ vé"
 					parent="menu_baocao" sequence="1"/>
 				<menuitem id="menu_action_baocao_tieuthu_kyve"
 					action="action_baocao_tieuthu_kyve"
-					name="Báo cáo tiêu thụ kỳ vé"
+					name="Tiêu thụ kỳ vé"
 					parent="menu_baocao" sequence="2"/>
 				<menuitem id="menu_action_baocao_thitruong_kyve"
 					action="action_baocao_thitruong_kyve"
-					name="Báo cáo thị trường theo kỳ vé"
+					name="Thị trường theo kỳ vé"
 					parent="menu_baocao" sequence="5"/>
 				<menuitem id="menu_action_baocao_thuhoi_ve"
 					action="action_baocao_thuhoi_ve"
-					name="Báo cáo thu hồi vé ế theo khu vực"
+					name="Thu hồi vé ế theo khu vực"
 					parent="menu_baocao" sequence="6"/>
 				<menuitem id="menu_action_baocao_tonghop_tieuthu"
 					action="action_baocao_tonghop_tieuthu"
-					name="Báo cáo tổng hợp kết quả tiêu thụ vé"
+					name="Tổng hợp kết quả tiêu thụ vé"
 					parent="menu_baocao" sequence="8"/>
+				<menuitem id="menu_action_baocao_kehoach_doanhthu"
+					action="action_baocao_kehoach_doanhthu"
+					name="Tổng hợp kế hoạch doanh thu"
+					parent="menu_baocao" sequence="9"/>
     </data>	
 </openerp>
