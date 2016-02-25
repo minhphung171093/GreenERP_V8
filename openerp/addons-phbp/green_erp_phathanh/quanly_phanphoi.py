@@ -75,9 +75,9 @@ class phanphoi_tt_line(osv.osv):
         'ten_daily': fields.char('Tên Đại Lý',size = 1024, required = True),
         'daily_id': fields.many2one('dai.ly','Đại lý', required = True),
         'socay_kytruoc': fields.float('Số cây kỳ trước'),
-        'sove_kytruoc': fields.integer('Số vé kỳ trước'),
+        'sove_kytruoc': fields.float('Số vé kỳ trước'),
         'socay_kynay': fields.float('Số cây kỳ này'),
-        'sove_kynay': fields.integer('Số vé kỳ này'),
+        'sove_kynay': fields.float('Số vé kỳ này'),
         'phanphoi_line_kytruoc_id': fields.many2one('phanphoi.tt.line','Phan phoi line ky truoc'),
         'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)',
                                     type='float', store={
@@ -170,24 +170,24 @@ class dieuchinh_phanphoi_ve(osv.osv):
         'ngay_ph': fields.date('Ngày phát hành',required = True),
         'ngay_dc': fields.date('Ngày điều chỉnh',required = True),
         'dieuchinh_line': fields.one2many('dieuchinh.line','dieuchinh_id','Dieu Chinh line'),
-        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng số vé được duyệt',type='integer',
+        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng số vé được duyệt',type='float',
                                          store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
-        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng số vé điều chỉnh',type='integer',
+        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng số vé điều chỉnh',type='float',
                                       store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
-        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='integer',
+        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='float',
                                         store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
                 
-        'total_ve_pp': fields.function(total_amount_all, multi='sums',string='Tổng số vé phân phối theo KH',type='integer',
+        'total_ve_pp': fields.function(total_amount_all, multi='sums',string='Tổng số vé phân phối theo KH',type='float',
                                          store=True),
-        'total_ve_dc': fields.function(total_amount_all, multi='sums',string='Số vé điều chỉnh so với kế hoạch',type='integer',
+        'total_ve_dc': fields.function(total_amount_all, multi='sums',string='Số vé điều chỉnh so với kế hoạch',type='float',
                                       store=True),
-        'total_ve_sau_dc': fields.function(total_amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='integer',
+        'total_ve_sau_dc': fields.function(total_amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='float',
                                         store=True),
                 }
     
@@ -232,10 +232,10 @@ class dieuchinh_line(osv.osv):
         'ten_daily': fields.char('Tên Đại Lý',size = 1024),
         'daily_id': fields.many2one('dai.ly','Đại lý', required = True),
         'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
-        'sove_duocduyet': fields.integer('Số vé được duyệt', readonly=True),
-        'sove_dc': fields.integer('Số vé điều chỉnh'),
+        'sove_duocduyet': fields.float('Số vé được duyệt', readonly=True),
+        'sove_dc': fields.float('Số vé điều chỉnh'),
         'sove_sau_dc':fields.function(_total_ve, string='Số vé sau điều chỉnh',
-                                    type='integer', store={
+                                    type='float', store={
                                                 'dieuchinh.line':(lambda self, cr, uid, ids, c={}: ids, ['sove_duocduyet','sove_dc'], 10),
                                             }),
                 }
@@ -333,15 +333,15 @@ class nhap_ve_e_line(osv.osv):
         'daily_id': fields.many2one('dai.ly','Đại lý', required = True),
         'diem_tra_e_id': fields.many2one('khu.vuc','Mã điểm trả ế', required = True),
         'ma_khu_vuc': fields.char('Mã Khu Vực',size = 1024, required = True),
-        've_e_theo_bangke': fields.integer('Số vé ế theo bảng kê'),
-        'thuc_kiem': fields.integer('Thực kiểm'),
+        've_e_theo_bangke': fields.float('Số vé ế theo bảng kê'),
+        'thuc_kiem': fields.float('Thực kiểm'),
         'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
         'kiem_dem_thieu':fields.function(_thieu_thua, string='Kiểm đếm (Thiếu)',multi='sums',
-                                    type='integer', store={
+                                    type='float', store={
                                                 'nhap.ve.e.line':(lambda self, cr, uid, ids, c={}: ids, ['ve_e_theo_bangke','thuc_kiem'], 10),
                                             }),
         'kiem_dem_thua':fields.function(_thieu_thua, string='Kiểm đếm (Thừa)',multi='sums',
-                                    type='integer', store={
+                                    type='float', store={
                                                 'nhap.ve.e.line':(lambda self, cr, uid, ids, c={}: ids, ['ve_e_theo_bangke','thuc_kiem'], 10),
                                             }),
         'ghi_chu':fields.char('Ghi chú',size = 1024),
@@ -441,12 +441,12 @@ class kh_in_ve_tt(osv.osv):
         'sl_in_moi_dot':fields.char('Số lượng vé in mỗi đợt',size = 1024),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
         'tong_so_ve_in':fields.function(_tinh_tong_so_ve_in, string='Tổng số vé in trong tháng',
-                                    type='integer', store={
+                                    type='float', store={
                                                 'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
                                                 'kh.in.ve.tt.line':(_get_order, ['sl_ve_in'], 10),
                                             }),
         'tong_so_dot_in':fields.function(_tinh_tong_so_dot_in, string='Tổng số đợt in',
-                                    type='integer', store={
+                                    type='float', store={
                                                 'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
                                                 'kh.in.ve.tt.line':(_get_order, [], 10),
                                             }),
@@ -461,7 +461,7 @@ class kh_in_ve_tt_line(osv.osv):
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé',required = True),
         'ngay_mo_thuong': fields.date('Ngày mở số'),
         'ngay_nhan': fields.date('Ngày nhận',required = True),
-        'sl_ve_in': fields.integer('Số lượng vé in (vé)'),
+        'sl_ve_in': fields.float('Số lượng vé in (vé)'),
                 }
     def onchange_ky_ve_id(self, cr, uid, ids, ky_ve_id=False):
         vals = {}
@@ -516,8 +516,8 @@ class kh_in_ve_tu_chon_line(osv.osv):
         'kh_in_ve_tu_chon_id': fields.many2one('kh.in.ve.tt','Kế hoạch in tt', ondelete='cascade'),
         'loai_ve_id': fields.many2one('loai.ve','Mệnh giá',required = True),
         'ky_hieu': fields.char('Ký hiệu',size = 1024,required=True),
-        'seri': fields.integer('Số seri'),
-        'so_luong': fields.integer('Số lượng đặt in'),
+        'seri': fields.float('Số seri'),
+        'so_luong': fields.float('Số lượng đặt in'),
                 }
 
 kh_in_ve_tu_chon_line()
@@ -593,8 +593,8 @@ class nhap_ve_line(osv.osv):
     _columns = {
         'nhap_ve_id': fields.many2one('nhap.ve','Nhập vé', ondelete='cascade'),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
-        'thanh_tien': fields.integer('Thành tiền',readonly=True),
-        'so_luong': fields.integer('Số lượng'),
+        'thanh_tien': fields.float('Thành tiền',readonly=True),
+        'so_luong': fields.float('Số lượng'),
                 }
     def onchange_thanh_tien(self, cr, uid, ids, loai_ve_id=False,so_luong=False):
         vals = {}
@@ -619,8 +619,8 @@ class xuat_ve_line(osv.osv):
     _columns = {
         'xuat_ve_id': fields.many2one('xuat.ve','Xuất vé', ondelete='cascade'),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
-        'thanh_tien': fields.integer('Thành tiền',readonly=True),
-        'so_luong': fields.integer('Số lượng'),
+        'thanh_tien': fields.float('Thành tiền',readonly=True),
+        'so_luong': fields.float('Số lượng'),
                 }
     def onchange_thanh_tien(self, cr, uid, ids, loai_ve_id=False,so_luong=False):
         vals = {}
