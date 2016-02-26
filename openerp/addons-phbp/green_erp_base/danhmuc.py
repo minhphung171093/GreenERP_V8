@@ -40,6 +40,18 @@ class dai_ly(osv.osv):
         'points': fields.text('Points'), 
         'mo_ta': fields.text('Mo ta'),
                 }
+    
+    def name_get(self, cr, uid, ids, context=None):
+        if not ids:
+            return []
+        res = []
+        reads = self.read(cr, uid, ids, ['name','ten'], context)
+   
+        for record in reads:
+            name = record['name'] + '-' +'['+record['ten']+']'
+            res.append((record['id'], name))
+        return res  
+    
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         if context is None:
             context = {}
@@ -51,6 +63,9 @@ class dai_ly(osv.osv):
                 '''%(context.get('ky_ve_id'), context.get('loai_ve_id'))
                 cr.execute(sql)
                 dai_ly_ids = [row[0] for row in cr.fetchall()]
+                args += [('id','in',dai_ly_ids)]
+            if not context.get('ky_ve_id') or not context.get('loai_ve_id'):
+                dai_ly_ids = False
                 args += [('id','in',dai_ly_ids)]
         return super(dai_ly, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
     def name_search(self, cr, user, name, args=None, operator='ilike', context=None, limit=100):
@@ -143,7 +158,7 @@ class ky_ve(osv.osv):
         if context.get('search_ky_ve_dieuchinh'):
             sql = '''
                 select id from ky_ve
-                where id not in (select ky_ve_id from dieuchinh_phanphoi_ve where ky_ve_id is not null) and id in (select ky_ve_id from phanphoi_truyenthong)
+                where id in (select ky_ve_id from phanphoi_truyenthong)
             '''
             cr.execute(sql)
             ky_ve_ids = [row[0] for row in cr.fetchall()]
@@ -166,7 +181,7 @@ class loai_ve(osv.osv):
     _name = "loai.ve"
     _columns = {
         'name': fields.char('Loại vé',size = 1024, required = True),
-        'gia_tri': fields.integer('Gía trị', required = True),
+        'gia_tri': fields.float('Gía trị', required = True),
                 }
 loai_ve()
 
@@ -181,6 +196,7 @@ class loai_hinh(osv.osv):
     _name = "loai.hinh"
     _columns = {
         'name': fields.char('Tên',size = 1024, required = True),
+        'doanh_thu': fields.selection([('xs','Xổ số'), ('ks','Khách sạn')], 'Doanh thu', required = True),
         'loai_hinh_line': fields.one2many('loai.hinh.line','loai_hinh_id','Loai hinh line'),
                 }
 #     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
@@ -204,7 +220,8 @@ class loai_hinh_line(osv.osv):
     _name = "loai.hinh.line"
     _columns = {
         'name': fields.char('Tên',size = 1024, required = True),
-        'loai_hinh_id': fields.many2one('loai.hinh','Loại hình'),
+        'is_ty_le': fields.boolean('Có tính tỉ lệ'),
+        'loai_hinh_id': fields.many2one('loai.hinh','Loại hình',ondelete="cascade"),
                 }
 loai_hinh_line()
 

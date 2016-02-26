@@ -140,7 +140,7 @@ class Parser(report_sxw.rml_parse):
             if dl_ids:
                 for seq,dl in enumerate(self.pool.get('phanphoi.tt.line').browse(self.cr,self.uid,dl_ids)):
                     sql = '''
-                        select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s
+                        select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s order by create_date desc limit 1
                     '''%(dl.id)
                     self.cr.execute(sql)
                     co_dc = self.cr.fetchone()

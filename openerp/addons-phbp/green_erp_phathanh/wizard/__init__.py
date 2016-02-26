@@ -26,5 +26,7 @@ import baocao_thuhoi_ve
 import baocao_tonghop_tieuthu
 import graph_report
 # import danhsach_khachhang
+import baocao_kehoach_doanhthu
+import tonghop_nhapxuat_ton
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

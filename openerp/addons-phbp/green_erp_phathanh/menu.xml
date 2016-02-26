@@ -10,12 +10,12 @@
 				
 				<menuitem id="menu_action_phanphoi_truyenthong"
 					action="action_phanphoi_truyenthong"
-					name="Danh sách kế hoạch phân phối vé truyền thống"
+					name="DSKH phân phối vé truyền thống"
 					parent="menu_quanly_phanphoi" sequence="1"/>
 				
 				<menuitem id="menu_action_dieuchinh_phanphoi_ve"
 					action="action_dieuchinh_phanphoi_ve"
-					name="Điều chỉnh kế hoạch phân phối vé"
+					name="Điều chỉnh KH phân phối vé"
 					parent="menu_quanly_phanphoi" sequence="3"/>
 					
 				<menuitem id="menu_action_nhap_ve_e"
@@ -24,50 +24,62 @@
 					parent="menu_quanly_phanphoi" sequence="2"/>
 				<menuitem id="menu_action_kh_in_ve_tt"
 					action="action_kh_in_ve_tt"
-					name="Kế hoạch in vé số truyền thống"
+					name="KH in vé số truyền thống"
 					parent="menu_quanly_phanphoi" sequence="4"/>
-				<menuitem id="menu_action_kh_in_ve_tu_chon"
-					action="action_kh_in_ve_tu_chon"
-					name="Kế hoạch in vé số tự chọn"
-					parent="menu_quanly_phanphoi" sequence="5"/>
 				<menuitem id="menu_action_doanhthu_theo_loaihinh"
 					action="action_doanhthu_theo_loaihinh"
-					name="Kế hoạch doanh thu theo loại hình"
+					name="KH doanh thu theo loại hình"
 					parent="menu_quanly_phanphoi" sequence="7"/>
+				<menuitem id="menu_action_nhap_ve"
+					action="action_nhap_ve"
+					name="KH in vé số tự chọn"
+					parent="menu_quanly_phanphoi" sequence="8"/>
+				<menuitem id="menu_action_xuat_ve"
+					action="action_xuat_ve"
+					name="Xuất vé"
+					parent="menu_quanly_phanphoi" sequence="9"/>					
 			<menuitem id="menu_baocao"
 				name="Báo cáo"
 				parent="quanly_root" sequence="2"/>
 				<menuitem id="menu_action_baocao_nhanh_kyve"
 					action="action_baocao_nhanh_kyve"
-					name="Báo cáo nhanh theo kỳ vé"
+					name="Nhanh theo kỳ vé"
 					parent="menu_baocao" sequence="1"/>
 				<menuitem id="menu_action_baocao_tieuthu_kyve"
 					action="action_baocao_tieuthu_kyve"
-					name="Báo cáo tiêu thụ kỳ vé"
+					name="Tiêu thụ kỳ vé"
 					parent="menu_baocao" sequence="2"/>
 				<menuitem id="menu_action_baocao_thitruong_kyve"
 					action="action_baocao_thitruong_kyve"
-					name="Báo cáo thị trường theo kỳ vé"
+					name="Thị trường theo kỳ vé"
 					parent="menu_baocao" sequence="5"/>
 				<menuitem id="menu_action_baocao_thuhoi_ve"
 					action="action_baocao_thuhoi_ve"
-					name="Báo cáo thu hồi vé ế theo khu vực"
+					name="Thu hồi vé ế theo khu vực"
 					parent="menu_baocao" sequence="6"/>
 				<menuitem id="menu_action_baocao_tonghop_tieuthu"
 					action="action_baocao_tonghop_tieuthu"
-					name="Báo cáo tổng hợp kết quả tiêu thụ vé"
+					name="Tổng hợp kết quả tiêu thụ vé"
 					parent="menu_baocao" sequence="8"/>
+				<menuitem id="menu_action_baocao_kehoach_doanhthu"
+					action="action_baocao_kehoach_doanhthu"
+					name="Tổng hợp kế hoạch doanh thu"
+					parent="menu_baocao" sequence="9"/>
+				<menuitem id="menu_action_tonghop_nhapxuat_ton"
+					action="action_tonghop_nhapxuat_ton"
+					name="Tổng hợp nhập - xuất - tồn kho vé số tự chọn"
+					parent="menu_baocao" sequence="10"/>
 				<menuitem id="menu_action_rp_google_map"
 					action="web_google_map.action_rp_google_map"
 					name="Hiển thị các Đại lý trên bản đồ"
-					parent="menu_baocao" sequence="9"/>
+					parent="menu_baocao" sequence="11"/>
 				<menuitem id="menu_action_doanhthu_veso"
 					action="action_doanhthu_veso"
 					name="Báo cáo doanh thu vé số Bình Phước"
-					parent="menu_baocao" sequence="10"/>
+					parent="menu_baocao" sequence="12"/>
 				<menuitem id="menu_action_dthu_phanh_veso"
 					action="action_dthu_phanh_veso"
 					name="Báo cáo doanh thu / phát hành vé số Bình Phước"
-					parent="menu_baocao" sequence="11"/>
+					parent="menu_baocao" sequence="13"/>
     </data>	
 </openerp>

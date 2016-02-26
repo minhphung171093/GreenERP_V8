@@ -23,16 +23,16 @@
 	            <form string="Phân phối vé truyền thống" version="7.0">
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="ky_ve_id" options="{'create': false, 'create_edit': false}" context="{'search_ky_ve':1}" on_change="onchange_previous_phanphoi(ky_ve_id,loai_ve_id)"/>
-		                    <field name="loai_ve_id" options="{'create': false, 'create_edit': false}" on_change="onchange_previous_phanphoi(ky_ve_id,loai_ve_id)"/>
+	                		<field name="ky_ve_id" options="{'no_create':True}" context="{'search_ky_ve':1}" on_change="onchange_previous_phanphoi(ky_ve_id,loai_ve_id)"/>
+		                    <field name="loai_ve_id" options="{'no_create':True}" on_change="onchange_previous_phanphoi(ky_ve_id,loai_ve_id)"/>
 		                    <field name="ngay_ph" />
 			            </group>
 			            <notebook>
 							<page string = "Chi tiết phân phối">
 								<field name="phanphoi_tt_line" nolabel='1'>
 									<tree editable='bottom'>
-										<field name="daily_id" options="{'create': false, 'create_edit': false}" on_change="onchange_daily_id(daily_id)"/>
-										<field name="ten_daily" />
+										<field name="daily_id" options="{'no_create':True}" on_change="onchange_daily_id(daily_id)"/>
+										<field name="ten_daily" invisible='1'/>
 										<field name="socay_kytruoc" />
 										<field name="sove_kytruoc" /> 
 										<field name="socay_kynay" /> 
@@ -81,8 +81,8 @@
 	            	</header>  
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="ky_ve_id" options="{'create': false, 'create_edit': false}" on_change="onchange_ky_ve(ky_ve_id)" context="{'search_ky_ve_dieuchinh':1}"/>
-		                    <field name="loai_ve_id" options="{'create': false, 'create_edit': false}" />
+	                		<field name="ky_ve_id" options="{'no_create':True}" on_change="onchange_ky_ve(ky_ve_id)" context="{'search_ky_ve_dieuchinh':1}"/>
+		                    <field name="loai_ve_id" options="{'no_create':True}" />
 		                    <field name="ngay_ph" />
 		                    <field name="ngay_dc" />
 			            </group>
@@ -90,8 +90,8 @@
 							<page string = "Chi tiết điều chỉnh">
 								<field name="dieuchinh_line" nolabel='1'>
 									<tree editable='bottom'>
-										<field name="daily_id" options="{'create': false, 'create_edit': false}" context="{'search_dai_ly':1,'ky_ve_id':parent.ky_ve_id,'loai_ve_id':parent.loai_ve_id,'ngay_ph':parent.ngay_ph}" on_change="onchange_daily_dc_id(daily_id,parent.ky_ve_id)"/>
-										<field name="ten_daily" />
+										<field name="daily_id" options="{'no_create':True}" context="{'search_dai_ly':1,'ky_ve_id':parent.ky_ve_id,'loai_ve_id':parent.loai_ve_id,'ngay_ph':parent.ngay_ph}" on_change="onchange_daily_dc_id(daily_id,parent.ky_ve_id)"/>
+										<field name="ten_daily" invisible='1'/>
 										<field name="sove_duocduyet" />
 										<field name="sove_dc" /> 
 										<field name="sove_sau_dc" /> 
@@ -140,8 +140,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Nhập vé ế theo khu vực" >
-                    <field name="ky_ve_id" options="{'create': false, 'create_edit': false}" />
-                    <field name="loai_ve_id" options="{'create': false, 'create_edit': false}" />
+                    <field name="ky_ve_id" options="{'no_create':True}" />
+                    <field name="loai_ve_id" options="{'no_create':True}" />
                     <field name="ngay_mo_thuong" />
                 </tree>
             </field>
@@ -162,9 +162,9 @@
 							<page string = "Chi tiết nhập vé ế">
 								<field name="nhap_ve_e_line" nolabel='1'>
 									<tree editable='bottom' >
-										<field name="daily_id" options="{'create': false, 'create_edit': false}" context="{'search_dai_ly':1,'ky_ve_id':parent.ky_ve_id,'loai_ve_id':parent.loai_ve_id}" on_change="onchange_daily_id(daily_id,parent.ky_ve_id)"/>
-										<field name="ten_daily" />
-										<field name="diem_tra_e_id" options="{'create': false, 'create_edit': false}" />
+										<field name="daily_id" options="{'no_create':True}" context="{'search_dai_ly':1,'ky_ve_id':parent.ky_ve_id,'loai_ve_id':parent.loai_ve_id}" on_change="onchange_daily_id(daily_id,parent.ky_ve_id)"/>
+										<field name="ten_daily" invisible='1'/>
+										<field name="diem_tra_e_id" options="{'no_create':True}" />
 										<field name="ma_khu_vuc" /> 
 										<field name="ve_e_theo_bangke" /> 
 										<field name="kiem_dem_thua" /> 
@@ -198,7 +198,7 @@
                     <field name="name" />
                     <field name="year" />
                     <field name="tong_so_dot_in" />  
-                    <field name="loai_ve_id" options="{'create': false, 'create_edit': false}" />
+                    <field name="loai_ve_id" options="{'no_create':True}" />
                     <field name="tong_so_ve_in" />
                 </tree>
             </field>
@@ -215,7 +215,7 @@
 	                		<field name="year" />
 	                        <field name="tong_so_dot_in" />
 	                        <field name="tong_so_ve_in" />
-		                    <field name="loai_ve_id" options="{'create': false, 'create_edit': false}" />
+		                    <field name="loai_ve_id" options="{'no_create':True}" />
 		                    <field name="sl_in_moi_dot" />
 		                    
 		                    <field name="kich_co" />
@@ -225,7 +225,7 @@
 								<field name="kh_in_ve_tt_line" nolabel='1'>
 									<tree editable='bottom' >
 										<field name="ngay_mo_thuong" readonly="1" />
-										<field name="ky_ve_id" options="{'create': false, 'create_edit': false}" on_change="onchange_ky_ve_id(ky_ve_id)" />
+										<field name="ky_ve_id" options="{'no_create':True}" on_change="onchange_ky_ve_id(ky_ve_id)" />
 										<field name="ngay_nhan" /> 
 										<field name="sl_ve_in" /> 
 									</tree>
@@ -243,8 +243,8 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{'readonly_by_pass': True}</field>
         </record>  
+<!--
 
-<!--Kế hoạch in vé số tự chọn-->   
         <record model="ir.ui.view" id="kh_in_ve_tu_chon_tree">
             <field name="name">kh.in.ve.tu.chon.tree</field>
             <field name="model">kh.in.ve.tu.chon</field>
@@ -275,7 +275,7 @@
 							<page string = "Chi tiết Kế hoạch in">
 								<field name="kh_in_ve_tu_chon_line" nolabel='1'>
 									<tree editable='bottom' >
-										<field name="loai_ve_id" options="{'create': false, 'create_edit': false}" />
+										<field name="loai_ve_id" options="{'no_create':True}" />
 										<field name="ky_hieu" />
 										<field name="seri" /> 
 										<field name="so_luong" /> 
@@ -293,7 +293,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{'readonly_by_pass': True}</field>
-        </record>  
+        </record>  -->
 
 <!--Kế hoạch doanh thu theo loại hình-->   
         <record model="ir.ui.view" id="doanhthu_theo_loaihinh_tree">
@@ -315,14 +315,14 @@
 	            <form string="Kế hoạch doanh thu theo loại hình" version="7.0">
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="loai_hinh_id" />
+	                		<field name="loai_hinh_id" on_change = "onchange_loai_hinh_id(loai_hinh_id)"/>
 	                		<field name="year" />
 			            </group>
 			            <notebook>
 							<page string = "Chi tiết chỉ tiêu">
 								<field name="dt_theo_loaihinh_line" nolabel='1'>
 									<tree editable='bottom' >
-										<field name="chi_tieu"  />
+										<field name="chi_tieu_id" options="{'no_create':True}" />
 										<field name="kehoach_namtruoc" />
 										<field name="thuchien_namtruoc" /> 
 										<field name="kehoach_namnay" />
@@ -344,6 +344,99 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{'readonly_by_pass': True}</field>
         </record>  
-    
+
+<!--Nhập vé-->   
+        <record model="ir.ui.view" id="nhap_ve_tree">
+            <field name="name">nhap.ve.tree</field>
+            <field name="model">nhap.ve</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="KH in vé số tự chọn" >
+                    <field name="name" />
+                    <field name="ngay_nhap" />
+                    <field name="noi_dung_khac" />
+                </tree>
+            </field>
+        </record>  
+        
+       	<record model="ir.ui.view" id="nhap_ve_form">
+	        <field name="name">nhap.ve.form</field>
+	        <field name="model">nhap.ve</field>
+	        <field name="arch" type="xml">
+	            <form string="KH in vé số tự chọn" version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+		                    <field name="name" />
+		                    <field name="ngay_nhap" />
+		                    <field name="noi_dung_khac" />
+			            </group>
+			            <notebook>
+							<page string = "Chi tiết nhập vé ">
+								<field name="nhap_ve_line" nolabel='1'>
+									<tree editable='bottom' >
+										<field name="loai_ve_id" options="{'no_create':True}" on_change = "onchange_thanh_tien(loai_ve_id,so_luong)" />
+										<field name="ky_hieu"/> 
+										<field name="seri"/> 
+										<field name="so_luong" on_change = "onchange_thanh_tien(loai_ve_id,so_luong)" sum="Total" />
+										<field name="thanh_tien" sum="Total" /> 
+									</tree>
+								</field>
+							</page>
+						</notebook>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="action_nhap_ve">
+            <field name="name">KH in vé số tự chọn</field>
+            <field name="res_model">nhap.ve</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'readonly_by_pass': True}</field>
+        </record>     
+        
+<!--Xuất vé-->   
+        <record model="ir.ui.view" id="xuat_ve_tree">
+            <field name="name">xuat.ve.tree</field>
+            <field name="model">xuat.ve</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Xuất vé" >
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>  
+        
+       	<record model="ir.ui.view" id="xuat_ve_form">
+	        <field name="name">xuat.ve.form</field>
+	        <field name="model">xuat.ve</field>
+	        <field name="arch" type="xml">
+	            <form string="Xuất vé " version="7.0">
+	            	<sheet>
+		            	<group col="4" colspan="2">
+		                    <field name="name" />
+			            </group>
+			            <notebook>
+							<page string = "Chi tiết xuất vé ">
+								<field name="xuat_ve_line" nolabel='1'>
+									<tree editable='bottom' >
+										<field name="loai_ve_id" options="{'no_create':True}" on_change = "onchange_thanh_tien(loai_ve_id,so_luong)" />
+										<field name="so_luong" on_change = "onchange_thanh_tien(loai_ve_id,so_luong)" sum="Total" />
+										<field name="thanh_tien" sum="Total" /> 
+									</tree>
+								</field>
+							</page>
+						</notebook>
+		            </sheet>		                
+	            </form>
+	        </field>
+		</record>
+        <record model="ir.actions.act_window" id="action_xuat_ve">
+            <field name="name">Xuất vé</field>
+            <field name="res_model">xuat.ve</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'readonly_by_pass': True}</field>
+        </record>   
     </data>
 </openerp>

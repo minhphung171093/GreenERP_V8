@@ -293,6 +293,7 @@ class integer(_column):
     def __init__(self, string='unknown', required=False, **args):
         super(integer, self).__init__(string=string, required=required, **args)
 
+
 class reference(_column):
     _type = 'reference'
     _classic_read = False # post-process to handle missing target

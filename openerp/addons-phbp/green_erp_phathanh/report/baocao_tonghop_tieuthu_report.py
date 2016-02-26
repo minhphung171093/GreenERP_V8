@@ -159,7 +159,7 @@ class Parser(report_sxw.rml_parse):
             self.cr.execute(sql)
             sl_ve_in = self.cr.dictfetchone()['sl_ve_in']
             sql = '''
-                select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s
+                select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s order by create_date desc limit 1
             '''%(dl.id)
             self.cr.execute(sql)
             co_dc = self.cr.fetchone()
