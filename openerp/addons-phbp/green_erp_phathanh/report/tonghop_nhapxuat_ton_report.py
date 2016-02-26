@@ -79,14 +79,13 @@ class Parser(report_sxw.rml_parse):
             return date.strftime('%d/%m/%Y')
         
     def convert_f_amount(self, amount):
-        if amount:
-            a = format(amount,',')
-            b = a.split('.')
-    #         if len(b)==2 and len(b[1])==1:
-    #             a+='0'
-            return b[0]
+        a = format(amount,',')
+        b = a.split('.')
+        if len(b)==2 and b[1]!='0':
+            so = a
         else:
-            return 0
+            so = b[0]
+        return so
         
     def get_ky_ve(self):
         wizard_data = self.localcontext['data']['form']
@@ -182,6 +181,7 @@ class Parser(report_sxw.rml_parse):
                               '50k': sl_50k,
                               'thanh_tien': thanh_tien,
                               'test': seq+1,
+                              'test1': '',
                               })
             
         mang.append({
@@ -194,6 +194,7 @@ class Parser(report_sxw.rml_parse):
                     '50k': total_sl_50k,
                     'thanh_tien': total_thanh_tien,
                     'test': '',
+                    'test1': '',
                     })
         for line in nhap_mang:
             mang.append({
@@ -206,6 +207,7 @@ class Parser(report_sxw.rml_parse):
                     '50k': line['50k'],
                     'thanh_tien': line['thanh_tien'],
                     'test': line['test'],
+                    'test1': '',
                     })
         
 #         Xuất kho
@@ -264,6 +266,7 @@ class Parser(report_sxw.rml_parse):
                               '50k': sl_xuat_50k,
                               'thanh_tien': thanh_tien_xuat,
                               'test': seq_xuat+1,
+                              'test1': '',
                               })
             
             total_sl_xuat_5k += sl_xuat_5k
@@ -282,6 +285,7 @@ class Parser(report_sxw.rml_parse):
                 '50k': total_sl_xuat_50k,
                 'thanh_tien': total_thanh_tien_xuat,
                 'test': '',
+                'test1': '',
                 })
         for line in xuat_mang:
             mang.append({
@@ -294,12 +298,13 @@ class Parser(report_sxw.rml_parse):
                     '50k': line['50k'],
                     'thanh_tien': line['thanh_tien'],
                     'test': line['test'],
+                    'test1': '',
                     })
-        ton_5k = total_sl_5k-total_sl_xuat_5k
-        ton_10k = total_sl_10k-total_sl_xuat_10k
-        ton_20k = total_sl_20k-total_sl_xuat_20k
-        ton_50k = total_sl_50k-total_sl_xuat_50k
-        ton_thanh_tien = total_thanh_tien-total_thanh_tien_xuat
+        ton_5k = total_sl_5k-total_sl_xuat_5k or 0
+        ton_10k = total_sl_10k-total_sl_xuat_10k or 0
+        ton_20k = total_sl_20k-total_sl_xuat_20k or 0
+        ton_50k = total_sl_50k-total_sl_xuat_50k or 0
+        ton_thanh_tien = total_thanh_tien-total_thanh_tien_xuat or 0
         mang.append({
                 'stt': u'III',
                 'noi_dung': u'Tồn kho cuối kỳ',
@@ -309,6 +314,42 @@ class Parser(report_sxw.rml_parse):
                 '20k': ton_20k,
                 '50k': ton_50k,
                 'thanh_tien': ton_thanh_tien,
+                'test': '',
+                'test1': '',
+                })
+        tile_tieuthu_5k = float(total_sl_5k) and float(total_sl_xuat_5k)*100/float(total_sl_5k) or 0
+        tile_tieuthu_10k = float(total_sl_10k) and float(total_sl_xuat_10k)*100/float(total_sl_10k) or 0
+        tile_tieuthu_20k = float(total_sl_20k) and float(total_sl_xuat_20k)*100/float(total_sl_20k) or 0
+        tile_tieuthu_50k = float(total_sl_50k) and float(total_sl_xuat_50k)*100/float(total_sl_50k) or 0
+        tile_tieuthu_thanhtien = float(total_thanh_tien) and float(total_thanh_tien_xuat)*100/float(total_thanh_tien) or 0
+        mang.append({
+                'stt': u'IV',
+                'noi_dung': u'Tỷ lệ tiêu thụ so vé in ấn',
+                'dvt': u'%',
+                '5k': round(tile_tieuthu_5k,1),
+                '10k': round(tile_tieuthu_10k,1),
+                '20k': round(tile_tieuthu_20k,1),
+                '50k': round(tile_tieuthu_50k,1),
+                'thanh_tien': round(tile_tieuthu_thanhtien,1),
+                'test1': u'%',
+                'test': '',
+                })
+        
+        tile_tonkho_5k = float(total_sl_5k) and float(ton_5k)*100/float(total_sl_5k) or 0
+        tile_tonkho_10k = float(total_sl_10k) and float(ton_10k)*100/float(total_sl_10k) or 0
+        tile_tonkho_20k = float(total_sl_20k) and float(ton_20k)*100/float(total_sl_20k) or 0
+        tile_tonkho_50k = float(total_sl_50k) and float(ton_50k)*100/float(total_sl_50k) or 0
+        tile_tonkho_thanhtien = float(total_thanh_tien) and float(ton_thanh_tien)*100/float(total_thanh_tien) or 0
+        mang.append({
+                'stt': u'V',
+                'noi_dung': u'Tỷ lệ tồn kho so vé in ấn',
+                'dvt': u'%',
+                '5k': round(tile_tonkho_5k,1),
+                '10k': round(tile_tonkho_10k,1),
+                '20k': round(tile_tonkho_20k,1),
+                '50k': round(tile_tonkho_50k,1),
+                'thanh_tien': round(tile_tonkho_thanhtien,1),
+                'test1': u'%',
                 'test': '',
                 })
         return mang

@@ -10,12 +10,12 @@
 				
 				<menuitem id="menu_action_phanphoi_truyenthong"
 					action="action_phanphoi_truyenthong"
-					name="Danh sách kế hoạch phân phối vé truyền thống"
+					name="DSKH phân phối vé truyền thống"
 					parent="menu_quanly_phanphoi" sequence="1"/>
 				
 				<menuitem id="menu_action_dieuchinh_phanphoi_ve"
 					action="action_dieuchinh_phanphoi_ve"
-					name="Điều chỉnh kế hoạch phân phối vé"
+					name="Điều chỉnh KH phân phối vé"
 					parent="menu_quanly_phanphoi" sequence="3"/>
 					
 				<menuitem id="menu_action_nhap_ve_e"
@@ -24,19 +24,15 @@
 					parent="menu_quanly_phanphoi" sequence="2"/>
 				<menuitem id="menu_action_kh_in_ve_tt"
 					action="action_kh_in_ve_tt"
-					name="Kế hoạch in vé số truyền thống"
+					name="KH in vé số truyền thống"
 					parent="menu_quanly_phanphoi" sequence="4"/>
-				<menuitem id="menu_action_kh_in_ve_tu_chon"
-					action="action_kh_in_ve_tu_chon"
-					name="Kế hoạch in vé số tự chọn"
-					parent="menu_quanly_phanphoi" sequence="5"/>
 				<menuitem id="menu_action_doanhthu_theo_loaihinh"
 					action="action_doanhthu_theo_loaihinh"
-					name="Kế hoạch doanh thu theo loại hình"
+					name="KH doanh thu theo loại hình"
 					parent="menu_quanly_phanphoi" sequence="7"/>
 				<menuitem id="menu_action_nhap_ve"
 					action="action_nhap_ve"
-					name="Nhập vé"
+					name="KH in vé số tự chọn"
 					parent="menu_quanly_phanphoi" sequence="8"/>
 				<menuitem id="menu_action_xuat_ve"
 					action="action_xuat_ve"
