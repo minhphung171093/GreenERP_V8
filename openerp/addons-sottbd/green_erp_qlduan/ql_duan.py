@@ -30,6 +30,10 @@ class du_an(osv.osv):
         'giai_ngan':fields.float('Ước tính giải ngân trong năm'),
         'tre_han': fields.char('Cảnh báo trễ hạn',size = 1024),
         'du_an_line':fields.one2many('du.an.line','duan_id','Du an line'),
+        'du_an_thi_cong_line':fields.one2many('du.an.thi.cong.line','duan_thicong_id','Du an line'),
+        'du_an_chon_nhathau_line':fields.one2many('du.an.chon.nhathau.line','duan_nhathau_id','Du an line'),
+        'tiendo_du_an_line':fields.one2many('tien.do.du.an','duan_tiendo_id','Du an line'),
+        'vanban_ids': fields.many2many('van.ban', 'vanban_duan_ref', 'duan_id', 'vanban_id', 'Văn bản pháp lý liên quan'),
         'state':fields.selection([('moi_tao', 'Đang lập dự án'),
                                   ('thuc_hien', 'Đang thực hiện'),
                                   ('hoan_thanh', 'Hoàn thành'),
@@ -59,5 +63,54 @@ class du_an_line(osv.osv):
     def bt_duyet(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state':'duyet'})
 du_an_line()
+
+class du_an_thi_cong_line(osv.osv):
+    _name = "du.an.thi.cong.line"
+    _columns = {
+        'name': fields.char('Tên',size = 50, required = True),
+        'duan_thicong_id': fields.many2one( 'du.an','Dự án'),
+        'van_ban_id': fields.many2one('van.ban','Văn bản'),
+        'state':fields.selection([('moi_tao', 'Mới tạo'),
+                                  ('cho_duyet', 'Chờ duyệt'),
+                                  ('duyet', 'Duyệt'),
+                                ],'Status', readonly=True),
+                }
+    _defaults={
+    'state':'moi_tao',       
+           }
+    def bt_cho_duyet(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state':'cho_duyet'})
+    def bt_duyet(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state':'duyet'})
+du_an_thi_cong_line()
+
+class du_an_chon_nhathau_line(osv.osv):
+    _name = "du.an.chon.nhathau.line"
+    _columns = {
+        'name': fields.char('Tên',size = 50, required = True),
+        'duan_nhathau_id': fields.many2one( 'du.an','Dự án'),
+        'van_ban_id': fields.many2one('van.ban','Văn bản'),
+        'state':fields.selection([('moi_tao', 'Mới tạo'),
+                                  ('cho_duyet', 'Chờ duyệt'),
+                                  ('duyet', 'Duyệt'),
+                                ],'Status', readonly=True),
+                }
+    _defaults={
+    'state':'moi_tao',       
+           }
+    def bt_cho_duyet(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state':'cho_duyet'})
+    def bt_duyet(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state':'duyet'})
+du_an_chon_nhathau_line()
+
+class tien_do_du_an(osv.osv):
+    _name = "tien.do.du.an"
+    _columns = {
+        'name': fields.date('Ngày', required = True),
+        'duan_tiendo_id': fields.many2one( 'du.an','Dự án'),
+        'tien_do': fields.char('Văn bản',size=1024),
+        }
+tien_do_du_an()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

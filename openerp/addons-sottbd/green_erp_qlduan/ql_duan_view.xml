@@ -57,6 +57,7 @@
 							<field name="giai_ngan"/>
 							<field name="tg_thuchien"/>
 							<field name="tre_han"/>
+							<field name="vanban_ids" widget="many2many_tags"/>
                 		</group>
                  		<notebook>
 							<page string = "Thẩm định">
@@ -79,6 +80,76 @@
 												<group>
 													<field name="name"/>
 													<field name="van_ban_id" />
+												</group>
+											</group>		
+										</form>		                
+						            </field>
+                				</group>
+							</page>
+							<page string = "KQ thiết kế thi công và tổng dự toán">
+								<group col="4" >
+									<field name="du_an_thi_cong_line" nolabel="1" >
+										<tree>
+						                    <field name="name" />       
+						                    <field name="van_ban_id"  />
+						                    <field name="state" />
+						                    <button name="bt_cho_duyet" string="Chờ duyệt" type="object" class="oe_highlight" icon="gtk-paste"/>
+										<button name="bt_duyet" string="Duyệt" type="object" class="oe_highlight" icon="gtk-paste-v"/>
+						                </tree>
+										<form version="7.0">
+											<header>
+							                    <button name="bt_cho_duyet" string="Chờ duyệt" type="object" class="oe_highlight"/>
+							                    <button name="bt_duyet" string="Duyệt" type="object" class="oe_highlight"/>
+							                    <field name="state" widget="statusbar" statusbar_visible="moi_tao,cho_duyet,duyet"/>
+								            </header>
+								            <group>
+												<group>
+													<field name="name"/>
+													<field name="van_ban_id" />
+												</group>
+											</group>		
+										</form>		                
+						            </field>
+                				</group>
+							</page>
+							<page string = "KQ lựa chọn nhà thầu">
+								<group col="4" >
+									<field name="du_an_chon_nhathau_line" nolabel="1" >
+										<tree>
+						                    <field name="name" />       
+						                    <field name="van_ban_id"  />
+						                    <field name="state" />
+						                    <button name="bt_cho_duyet" string="Chờ duyệt" type="object" class="oe_highlight" icon="gtk-paste"/>
+										<button name="bt_duyet" string="Duyệt" type="object" class="oe_highlight" icon="gtk-paste-v"/>
+						                </tree>
+										<form version="7.0">
+											<header>
+							                    <button name="bt_cho_duyet" string="Chờ duyệt" type="object" class="oe_highlight"/>
+							                    <button name="bt_duyet" string="Duyệt" type="object" class="oe_highlight"/>
+							                    <field name="state" widget="statusbar" statusbar_visible="moi_tao,cho_duyet,duyet"/>
+								            </header>
+								            <group>
+												<group>
+													<field name="name"/>
+													<field name="van_ban_id" />
+												</group>
+											</group>		
+										</form>		                
+						            </field>
+                				</group>
+							</page>
+							<page string = "Tiến độ dự án">
+								<group col="4" >
+									<field name="tiendo_du_an_line" nolabel="1" >
+										<tree>
+						                    <field name="name" />       
+						                    <field name="tien_do"  />
+						                </tree>
+										<form version="7.0">
+								            <group>
+												<group>
+													<field name="name"/>
+													<field name="tien_do" />
 												</group>
 											</group>		
 										</form>		                
