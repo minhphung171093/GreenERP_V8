@@ -13,46 +13,29 @@
 					name="Tỉnh/Thành phố"
 					parent="menu_danh_muc" sequence="10"/>
 
-				<menuitem id="menu_dai_ly_action"
-					action="dai_ly_action"
-					name="Đại lý"
-					parent="menu_danh_muc" sequence="12"/>
-
-				<menuitem id="menu_action_khu_vuc"
-					action="action_khu_vuc"
-					name="Điểm trả ế"
+				<menuitem id="menu_action_quan_huyen"
+					action="action_quan_huyen"
+					name="Quận/Huyện"
 					parent="menu_danh_muc" sequence="15"/>
-
-					
-  				<menuitem id="menu_action_loai_ve"
-					action="action_loai_ve"
-					name="Loại vé"
-					parent="menu_danh_muc" sequence="16"/>
-					
-				<menuitem id="menu_action_ky_ve"
-					action="action_ky_ve"
-					name="Kỳ vé"
-					parent="menu_danh_muc" sequence="20"/>
-					
-				<menuitem id="menu_action_loai_hinh"
-					action="action_loai_hinh"
-					name="Loại hình"
-					parent="menu_danh_muc" sequence="25"/>
-					
-<!--				<menuitem id="menu_action_coquan_quanly"
-					action="action_coquan_quanly"
-					name="Cơ quan quản lý"
-					parent="menu_danh_muc" sequence="30"/>
-					
-				<menuitem id="menu_action_phan_loai"
-					action="action_phan_loai"
-					name="Phân loại"
-					parent="menu_danh_muc" sequence="35"/>
-					
-				<menuitem id="menu_action_hethong_dambao_attp"
-					action="action_hethong_dambao_attp"
-					name="Hệ thống đảm bảo ATTP"
-					parent="menu_danh_muc" sequence="40"/> -->
-					
+				<menuitem id="menu_action_phuong_xa"
+					action="action_phuong_xa"
+					name="Phường/Xã"
+					parent="menu_danh_muc" sequence="20"/>				
+				<menuitem id="menu_action_khu_pho"
+					action="action_khu_pho"
+					name="Khu phố"
+					parent="menu_danh_muc" sequence="25"/>					
+				<menuitem id="menu_action_chu_dau_tu"
+					action="action_chu_dau_tu"
+					name="Chủ đầu tư"
+					parent="menu_danh_muc" sequence="5"/>	
+				<menuitem id="menu_action_van_ban"
+					action="action_van_ban"
+					name="Văn bản"
+					parent="menu_danh_muc" sequence="6"/>	
+				<menuitem id="menu_action_nguon_von"
+					action="action_nguon_von"
+					name="Nguồn vốn"
+					parent="menu_danh_muc" sequence="7"/>	
     </data>	
 </openerp>

@@ -28,6 +28,7 @@
     'website' : 'http://incomtech.com/',
     'depends': ['green_erp_base'],
     'data': [
+        'ql_duan_view.xml',
         'menu.xml',
     ],
     'installable': True,

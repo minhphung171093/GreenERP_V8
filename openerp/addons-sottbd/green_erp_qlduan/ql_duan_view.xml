@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+
+        					<!--Dự án-->   
+        					
+	    <record id="du_an_search" model="ir.ui.view">
+            <field name="name">du.an.search</field>
+            <field name="model">du.an</field>
+            <field name="arch" type="xml">
+                <search string="Dự án">
+                	<field name="name" />
+                    <field name="chu_dau_tu_id" />
+                    <field name="state" />
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                    	<filter string="Chủ đầu tư" domain="[]" context="{'group_by':'chu_dau_tu_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>					
+        					
+        <record model="ir.ui.view" id="du_an_tree">
+            <field name="name">du.an.tree</field>
+            <field name="model">du.an</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Dự án" >
+                    <field name="name" />
+                    <field name="chu_dau_tu_id" options="{'create': false, 'create_edit': false}"/>
+                    <field name="tong_dau_tu" />
+                    <field name="tong_du_toan" />
+                    <field name="giai_ngan" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>  
+        <record model="ir.ui.view" id="du_an_form">
+            <field name="name">du.an.form</field>
+            <field name="model">du.an</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Dự án" version="7.0">
+                 	<header>
+	            		<!--<button name="bt_duyet" attrs="{'invisible': [('hien_an', '!=', True)]}" string="Duyệt" type="object" class="oe_highlight" /> -->
+	            		
+	                    <field name="state" widget="statusbar" statusbar_visible="moi_tao,thuc_hien,hoan_thanh"/>
+	            	</header>  
+	                <sheet>
+                		<group col="4">
+		            		<field name="name" />
+		                    <field name="chu_dau_tu_id"/>
+							                   
+							<field name="tong_dau_tu"/>
+							<field name="tong_du_toan"/>
+							<field name="giai_ngan"/>
+							<field name="tg_thuchien"/>
+							<field name="tre_han"/>
+                		</group>
+                 		<notebook>
+							<page string = "Thẩm định">
+								<group col="4" >
+									<field name="du_an_line" nolabel="1" >
+										<tree>
+						                    <field name="name" />       
+						                    <field name="van_ban_id"  />
+						                    <field name="state" />
+						                    <button name="bt_cho_duyet" string="Chờ duyệt" type="object" class="oe_highlight" icon="gtk-paste"/>
+										<button name="bt_duyet" string="Duyệt" type="object" class="oe_highlight" icon="gtk-paste-v"/>
+						                </tree>
+										<form version="7.0">
+											<header>
+							                    <button name="bt_cho_duyet" string="Chờ duyệt" type="object" class="oe_highlight"/>
+							                    <button name="bt_duyet" string="Duyệt" type="object" class="oe_highlight"/>
+							                    <field name="state" widget="statusbar" statusbar_visible="moi_tao,cho_duyet,duyet"/>
+								            </header>
+								            <group>
+												<group>
+													<field name="name"/>
+													<field name="van_ban_id" />
+												</group>
+											</group>		
+										</form>		                
+						            </field>
+                				</group>
+							</page>
+						</notebook>  
+	                </sheet>
+                </form>
+            </field>
+        </record>
+       
+        <record model="ir.actions.act_window" id="action_du_an">
+            <field name="name">Dự án</field>
+            <field name="res_model">du.an</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="du_an_search"/>
+        </record> 
+
+        					<!--Thẩm định-->   
+        					
+	    <record id="tham_dinh_search" model="ir.ui.view">
+            <field name="name">tham.dinh.search</field>
+            <field name="model">du.an.line</field>
+            <field name="arch" type="xml">
+                <search string="Thẩm định">
+                	<field name="name" />
+                    <field name="duan_id" />
+                    <field name="state" />
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                    	<filter string="Dự án" domain="[]" context="{'group_by':'duan_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>					
+        					
+        <record model="ir.ui.view" id="tham_dinh_tree">
+            <field name="name">tham.dinh.tree</field>
+            <field name="model">du.an.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Thẩm định" >
+                    <field name="name" />
+                    <field name="duan_id"/>
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>  
+        <record model="ir.ui.view" id="tham_dinh_form">
+            <field name="name">tham.dinh.form</field>
+            <field name="model">du.an.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Thẩm định" version="7.0">
+                 	<header>
+	                    <button name="bt_cho_duyet" string="Chờ duyệt" type="object" class="oe_highlight"/>
+	                    <button name="bt_duyet" string="Duyệt" type="object" class="oe_highlight"/>
+	                    <field name="state" widget="statusbar" statusbar_visible="moi_tao,cho_duyet,duyet"/>
+		            </header>
+		            <sheet>
+			            <group>
+							<group>
+								<field name="name"/>
+								<field name="van_ban_id" />
+							</group>
+						</group>
+					</sheet>
+                </form>
+            </field>
+        </record>
+       
+        <record model="ir.actions.act_window" id="action_tham_dinh">
+            <field name="name">Thẩm định</field>
+            <field name="res_model">du.an.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','cho_duyet')]</field>
+            <field name="search_view_id" ref="tham_dinh_search"/>
+        </record> 
+
+    </data>
+</openerp>
