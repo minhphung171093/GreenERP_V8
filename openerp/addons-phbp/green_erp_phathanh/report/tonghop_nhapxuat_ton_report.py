@@ -86,7 +86,7 @@ class Parser(report_sxw.rml_parse):
     #             a+='0'
             return b[0]
         else:
-            return ''
+            return 0
         
     def get_ky_ve(self):
         wizard_data = self.localcontext['data']['form']
@@ -137,93 +137,180 @@ class Parser(report_sxw.rml_parse):
         return res
     
     def get_lines(self):
-        wizard_data = self.localcontext['data']['form']
-        loai_ve_id = wizard_data['loai_ve_id']
-        ky_ve_id = wizard_data['ky_ve_id']
+        total_sl_5k = 0
+        total_sl_10k = 0
+        total_sl_20k = 0
+        total_sl_50k = 0
+        total_thanh_tien = 0
+        nhap_mang = []
         mang = []
         sql = '''
-            SELECT id FROM phanphoi_tt_line 
-            where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
-        '''%(ky_ve_id[0],loai_ve_id[0])
+            SELECT id FROM nhap_ve order by id
+        '''
         self.cr.execute(sql)
-        dl_ids = [r[0] for r in self.cr.fetchall()]
-        total_sl_phathanh = 0
-        total_ve_e = 0
-        total_sl_tieuthu = 0
-        total_thanhtien_tieuthu = 0
-        ve = 0
-        for dl in self.pool.get('phanphoi.tt.line').browse(self.cr,self.uid,dl_ids):
-            sql = '''
-                select case when sum(sl_ve_in)!=0 then sum(sl_ve_in) else 0 end sl_ve_in from kh_in_ve_tt_line where ky_ve_id = %s 
-            '''%(ky_ve_id[0])
-            self.cr.execute(sql)
-            sl_ve_in = self.cr.dictfetchone()['sl_ve_in']
-            sql = '''
-                select sove_sau_dc from dieuchinh_line where phanphoi_line_id = %s order by create_date desc limit 1
-            '''%(dl.id)
-            self.cr.execute(sql)
-            co_dc = self.cr.fetchone()
-            if co_dc:
-                sl_phathanh = co_dc[0]
-            else:
-                sl_phathanh = dl.sove_kynay
-            sql = '''
-                select case when sum(ve_e_theo_bangke)!=0 then sum(ve_e_theo_bangke) else 0 end tong_ve_e
-                from nhap_ve_e_line where phanphoi_line_id = %s
-            '''%(dl.id)
-            self.cr.execute(sql)
-            ve_e = self.cr.dictfetchone()['tong_ve_e']
-            ve = dl.phanphoi_tt_id.loai_ve_id.gia_tri
+        nhap_ids = [r[0] for r in self.cr.fetchall()] 
+        for seq,nhap in enumerate(self.pool.get('nhap.ve').browse(self.cr,self.uid,nhap_ids)): 
+            sl_5k = 0
+            sl_10k = 0
+            sl_20k = 0
+            sl_50k = 0
+            thanh_tien = 0
+            for nhap_line in nhap.nhap_ve_line:
+                if nhap_line.loai_ve_id.gia_tri==5000:
+                    sl_5k = nhap_line.so_luong
+                if nhap_line.loai_ve_id.gia_tri==10000:
+                    sl_10k = nhap_line.so_luong
+                if nhap_line.loai_ve_id.gia_tri==20000:
+                    sl_20k = nhap_line.so_luong
+                if nhap_line.loai_ve_id.gia_tri==50000:
+                    sl_50k = nhap_line.so_luong
+            thanh_tien = (sl_5k*5000)+(sl_10k*10000)+(sl_20k*20000)+(sl_50k*50000)
+                    
+            total_sl_5k += sl_5k
+            total_sl_10k += sl_10k
+            total_sl_20k += sl_20k
+            total_sl_50k += sl_50k
+            total_thanh_tien += thanh_tien
+                
+            nhap_mang.append({
+                              'stt': seq+1,
+                              'noi_dung':nhap.name,
+                              'dvt': u'Vé',
+                              '5k': sl_5k,
+                              '10k': sl_10k,
+                              '20k': sl_20k,
+                              '50k': sl_50k,
+                              'thanh_tien': thanh_tien,
+                              'test': seq+1,
+                              })
             
-            sl_tieuthu = sl_phathanh-ve_e
-            thanhtien_tieuthu = sl_tieuthu*ve
-            thanhtien_ve_in = sl_ve_in*ve
-        
-            total_sl_phathanh += sl_phathanh
-            total_ve_e += ve_e
-            total_sl_tieuthu += sl_tieuthu
-            total_thanhtien_tieuthu += thanhtien_tieuthu
-        
-#         self.total_sl_phathanh += total_sl_phathanh
-#         self.total_ve_e += total_ve_e
-#         self.total_sl_tieuthu += total_sl_tieuthu
-#         self.total_thanhtien_tieuthu += total_thanhtien_tieuthu
-        
         mang.append({
-                        'stt': u'1',
-                        'chi_tieu': u'Số lượng vé in ấn', 
-                        'so_luong': sl_ve_in,
-                        'gia_tri': thanhtien_ve_in,
+                    'stt': u'I',
+                    'noi_dung': u'Nhập kho đầu kỳ',
+                    'dvt': u'Vé',
+                    '5k': total_sl_5k,
+                    '10k': total_sl_10k,
+                    '20k': total_sl_20k,
+                    '50k': total_sl_50k,
+                    'thanh_tien': total_thanh_tien,
+                    'test': '',
+                    })
+        for line in nhap_mang:
+            mang.append({
+                    'stt': line['stt'],
+                    'noi_dung': line['noi_dung'],
+                    'dvt': line['dvt'],
+                    '5k': line['5k'],
+                    '10k': line['10k'],
+                    '20k': line['20k'],
+                    '50k': line['50k'],
+                    'thanh_tien': line['thanh_tien'],
+                    'test': line['test'],
                     })
         
+#         Xuất kho
+        xuat_mang = []
+        total_sl_xuat_5k = 0
+        total_sl_xuat_10k = 0
+        total_sl_xuat_20k = 0
+        total_sl_xuat_50k = 0
+        total_thanh_tien_xuat = 0
+        sql = '''
+            select substr(to_char(name,'YYYY-MM-DD'), 1, 7) as month_year 
+            from xuat_ve group by substr(to_char(name,'YYYY-MM-DD'), 1, 7)
+        '''
+        self.cr.execute(sql)
+#         xuat_ids = [r[0] for r in self.cr.fetchall()] 
+        for seq_xuat,m_y in enumerate(self.cr.dictfetchall()):
+            month_year = m_y['month_year']
+            month = month_year[5:]
+            year = month_year[:4]
+            sql = '''
+                select case when sum(so_luong)!=0 then sum(so_luong) else 0 end sl_xuat_5k
+                from xuat_ve_line where loai_ve_id in (select id from loai_ve where gia_tri=5000)
+                and xuat_ve_id in (select id from xuat_ve where EXTRACT(month from name)=%s and EXTRACT(year from name)=%s)
+            '''%(month,year)
+            self.cr.execute(sql)
+            sl_xuat_5k = self.cr.dictfetchone()['sl_xuat_5k']
+            sql = '''
+                select case when sum(so_luong)!=0 then sum(so_luong) else 0 end sl_xuat_10k
+                from xuat_ve_line where loai_ve_id in (select id from loai_ve where gia_tri=10000)
+                and xuat_ve_id in (select id from xuat_ve where EXTRACT(month from name)=%s and EXTRACT(year from name)=%s)
+            '''%(month,year)
+            self.cr.execute(sql)
+            sl_xuat_10k = self.cr.dictfetchone()['sl_xuat_10k']
+            sql = '''
+                select case when sum(so_luong)!=0 then sum(so_luong) else 0 end sl_xuat_20k
+                from xuat_ve_line where loai_ve_id in (select id from loai_ve where gia_tri=20000)
+                and xuat_ve_id in (select id from xuat_ve where EXTRACT(month from name)=%s and EXTRACT(year from name)=%s)
+            '''%(month,year)
+            self.cr.execute(sql)
+            sl_xuat_20k = self.cr.dictfetchone()['sl_xuat_20k']
+            sql = '''
+                select case when sum(so_luong)!=0 then sum(so_luong) else 0 end sl_xuat_50k
+                from xuat_ve_line where loai_ve_id in (select id from loai_ve where gia_tri=50000)
+                and xuat_ve_id in (select id from xuat_ve where EXTRACT(month from name)=%s and EXTRACT(year from name)=%s)
+            '''%(month,year)
+            self.cr.execute(sql)
+            sl_xuat_50k = self.cr.dictfetchone()['sl_xuat_50k']
+            thanh_tien_xuat = (sl_xuat_5k*5000)+(sl_xuat_10k*10000)+(sl_xuat_20k*20000)+(sl_xuat_50k*50000)
+            xuat_mang.append({
+                              'stt': seq_xuat+1,
+                              'noi_dung':u'Xuất kho tháng '+str(month)+'/'+str(year),
+                              'dvt': u'Vé',
+                              '5k': sl_xuat_5k,
+                              '10k': sl_xuat_10k,
+                              '20k': sl_xuat_20k,
+                              '50k': sl_xuat_50k,
+                              'thanh_tien': thanh_tien_xuat,
+                              'test': seq_xuat+1,
+                              })
+            
+            total_sl_xuat_5k += sl_xuat_5k
+            total_sl_xuat_10k += sl_xuat_10k
+            total_sl_xuat_20k += sl_xuat_20k
+            total_sl_xuat_50k += sl_xuat_50k
+            total_thanh_tien_xuat += thanh_tien_xuat
+            
         mang.append({
-                    'stt': u'2',
-                    'chi_tieu': u'Số lượng vé chưa đưa vào lưu thông (vé tồn kho)', 
-                    'so_luong': '',
-                    'gia_tri': '',
-                         })
-        
+                'stt': u'II',
+                'noi_dung': u'Xuất kho',
+                'dvt': u'Vé',
+                '5k': total_sl_xuat_5k,
+                '10k': total_sl_xuat_10k,
+                '20k': total_sl_xuat_20k,
+                '50k': total_sl_xuat_50k,
+                'thanh_tien': total_thanh_tien_xuat,
+                'test': '',
+                })
+        for line in xuat_mang:
+            mang.append({
+                    'stt': line['stt'],
+                    'noi_dung': line['noi_dung'],
+                    'dvt': line['dvt'],
+                    '5k': line['5k'],
+                    '10k': line['10k'],
+                    '20k': line['20k'],
+                    '50k': line['50k'],
+                    'thanh_tien': line['thanh_tien'],
+                    'test': line['test'],
+                    })
+        ton_5k = total_sl_5k-total_sl_xuat_5k
+        ton_10k = total_sl_10k-total_sl_xuat_10k
+        ton_20k = total_sl_20k-total_sl_xuat_20k
+        ton_50k = total_sl_50k-total_sl_xuat_50k
+        ton_thanh_tien = total_thanh_tien-total_thanh_tien_xuat
         mang.append({
-                    'stt': u'3',
-                    'chi_tieu': u'Số lượng vé đưa vào lưu thông (vé phát hành)', 
-                    'so_luong': total_sl_phathanh,
-                    'gia_tri': total_sl_phathanh*ve,
-                             })
-        
-        mang.append({
-                    'stt': u'4',
-                    'chi_tieu': u'Số lượng vé đã phát hành không tiêu thụ hết (vé ế)', 
-                    'so_luong': total_ve_e,
-                    'gia_tri': total_ve_e*ve,
-                             })
-        
-        mang.append({
-                    'stt': u'5',
-                    'chi_tieu': u'Số lượng vé tiêu thụ', 
-                    'so_luong': total_sl_phathanh-total_ve_e,
-                    'gia_tri': (total_sl_phathanh-total_ve_e)*ve,
-                             })
-                    
+                'stt': u'III',
+                'noi_dung': u'Tồn kho cuối kỳ',
+                'dvt': u'Vé',
+                '5k': ton_5k,
+                '10k': ton_10k,
+                '20k': ton_20k,
+                '50k': ton_50k,
+                'thanh_tien': ton_thanh_tien,
+                'test': '',
+                })
         return mang
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

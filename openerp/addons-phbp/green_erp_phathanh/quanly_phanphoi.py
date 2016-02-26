@@ -593,8 +593,8 @@ class nhap_ve_line(osv.osv):
     _columns = {
         'nhap_ve_id': fields.many2one('nhap.ve','Nhập vé', ondelete='cascade'),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
-        'thanh_tien': fields.integer('Thành tiền',readonly=True),
-        'so_luong': fields.integer('Số lượng'),
+        'thanh_tien': fields.integer('Thành tiền',readonly=True,digits=(16,0)),
+        'so_luong': fields.integer('Số lượng',digits=(16,0)),
                 }
     def onchange_thanh_tien(self, cr, uid, ids, loai_ve_id=False,so_luong=False):
         vals = {}

@@ -147,3 +147,5 @@ def modifiers_tests():
     test_modifiers({}, '{}')
     test_modifiers({"invisible": True}, '{"invisible": true}')
     test_modifiers({"invisible": False}, '{}')
+    
+    
