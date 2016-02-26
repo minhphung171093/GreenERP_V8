@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+    	<record id="doanhthu_graph_report_search_form" model="ir.ui.view">
+            <field name="name">doanhthu.graph.report.search.form</field>
+            <field name="model">doanhthu.graph.report</field>
+            <field name="arch" type="xml">
+               <search string="Doanh Thu">
+                    <field name="daily_id"/>
+                    <separator/>
+	                <field name="ky_ve_id"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Dai Ly" name="dai_ly" context="{'group_by':'daily_id'}"/>
+                        <filter string="Ky Ve" name="ky_ve" context="{'group_by':'ky_ve_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+    	
+		<record id="doanhthu_graph_report_form" model="ir.ui.view">
+	         <field name="name">doanhthu.graph.report</field>
+	         <field name="model">doanhthu.graph.report</field>
+	         <field name="arch" type="xml">
+	             <graph string="Doanh thu " type="pivot">
+	                <field name="doanh_thu" type="measure"/>
+	             </graph>
+	         </field>
+	    </record>
+	    
+	    <record id="action_doanhthu_graph_report_form" model="ir.actions.act_window">
+            <field name="name">doanhthu.graph</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">doanhthu.graph.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="doanhthu_graph_report_form"/>
+            <field name="search_view_id" ref="doanhthu_graph_report_search_form"/>
+        </record>
+        
+        <!--  -->
+        <record id="dthu_phanh_graph_report_search_form" model="ir.ui.view">
+            <field name="name">dthu.phanh.graph.report.search.form</field>
+            <field name="model">dthu.phanh.graph.report</field>
+            <field name="arch" type="xml">
+               <search string="Doanh Thu / Phát Hành">
+                    <field name="daily_id"/>
+                    <separator/>
+	                <field name="ky_ve_id"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Dai Ly" name="dai_ly" context="{'group_by':'daily_id'}"/>
+                        <filter string="Ky Ve" name="ky_ve" context="{'group_by':'ky_ve_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+    	
+		<record id="dthu_phanh_graph_report_form" model="ir.ui.view">
+	         <field name="name">dthu.phanh.graph.report</field>
+	         <field name="model">dthu.phanh.graph.report</field>
+	         <field name="arch" type="xml">
+	             <graph string="Doanh thu / Phát Hành" type="pivot">
+	                <field name="doanh_thu" type="measure"/>
+	                <field name="phathanh" type="measure"/>
+	             </graph>
+	         </field>
+	    </record>
+	    
+	    <record id="action_dthu_phanh_graph_report_form" model="ir.actions.act_window">
+            <field name="name">dthu.phanh.graph</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dthu.phanh.graph.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="dthu_phanh_graph_report_form"/>
+            <field name="search_view_id" ref="dthu_phanh_graph_report_search_form"/>
+        </record>
+    </data>	
+</openerp>

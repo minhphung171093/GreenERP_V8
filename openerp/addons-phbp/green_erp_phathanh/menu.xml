@@ -57,5 +57,17 @@
 					action="action_baocao_tonghop_tieuthu"
 					name="Báo cáo tổng hợp kết quả tiêu thụ vé"
 					parent="menu_baocao" sequence="8"/>
+				<menuitem id="menu_action_rp_google_map"
+					action="web_google_map.action_rp_google_map"
+					name="Hiển thị các Đại lý trên bản đồ"
+					parent="menu_baocao" sequence="9"/>
+				<menuitem id="menu_action_doanhthu_veso"
+					action="action_doanhthu_veso"
+					name="Báo cáo doanh thu vé số Bình Phước"
+					parent="menu_baocao" sequence="10"/>
+				<menuitem id="menu_action_dthu_phanh_veso"
+					action="action_dthu_phanh_veso"
+					name="Báo cáo doanh thu / phát hành vé số Bình Phước"
+					parent="menu_baocao" sequence="11"/>
     </data>	
 </openerp>

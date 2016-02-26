@@ -32,6 +32,7 @@
         'security/ir.model.access.csv',
         'ir_ui_menu_view.xml',
         'danhmuc_view.xml',
+        'models_view.xml',
         'menu.xml',
     ],
     'installable': True,

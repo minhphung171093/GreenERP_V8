@@ -49,7 +49,7 @@
             <field name="context">{'readonly_by_pass': ['partner_ids']}</field>
         </record>
         
-        <menuitem id="rp_google_map_root"
+        <!--<menuitem id="rp_google_map_root"
 			name="Google Map" sequence="10"/>
 			
 		<menuitem id="menu_rp_google_map"
@@ -59,6 +59,6 @@
 		<menuitem id="menu_action_rp_google_map"
 			action="action_rp_google_map"
 			name="Hiển thị trên bản đồ"
-			parent="menu_rp_google_map" sequence="10"/>
+			parent="menu_rp_google_map" sequence="10"/>-->
     </data>
 </openerp>

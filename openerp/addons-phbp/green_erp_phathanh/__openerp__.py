@@ -35,6 +35,7 @@
         'wizard/baocao_thitruong_kyve_view.xml',
         'wizard/baocao_thuhoi_ve_view.xml',
         'wizard/baocao_tonghop_tieuthu_view.xml',
+        'wizard/graph_report_view.xml',
         'report/dieuchinh_kehoach_pp_ve_report_view.xml',
         'report/baocao_nhanh_ky_ve_report_view.xml',
         'report/baocao_tieuthu_ky_ve_report_view.xml',
@@ -42,6 +43,7 @@
         'report/baocao_thuhoi_ve_report_view.xml',
         'report/baocao_tonghop_tieuthu_report_view.xml',
         'quanly_phanphoi_view.xml',
+        'graph_report_view.xml',
         
         'menu.xml',
     ],

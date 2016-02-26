@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<!-- Doanh thu vé số BP-->
+        <record id="doanhthu_veso_form" model="ir.ui.view">
+            <field name="name">doanhthu.veso.form</field>
+            <field name="model">doanhthu.veso</field>
+            <field name="arch" type="xml">
+                <form string="Doanh thu vé số Bình Phước" version="7.0">
+                    <group>
+                    	<field name="ky_ve_id" options="{'create': false, 'create_edit': false}"/>
+                    	<field name="daily_id" options="{'create': false, 'create_edit': false}"/>
+                    </group>
+                    <footer>
+                        <button name="bt_show_report" string="Hiện BC" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Hủy bỏ" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_doanhthu_veso">
+	        <field name="name">Doanh thu vé số Bình Phước</field>
+	        <field name="res_model">doanhthu.veso</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="doanhthu_veso_form" />
+	        <field name="target">new</field>
+	    </record>
+	    
+	    <!-- Doanh thu / Phat hanh theo đại lý -->
+	    <record id="dthu_phanh_veso_form" model="ir.ui.view">
+            <field name="name">dthu.phanh.veso.form</field>
+            <field name="model">dthu.phanh.veso</field>
+            <field name="arch" type="xml">
+                <form string="Doanh thu / Phát hành vé số Bình Phước" version="7.0">
+                    <group>
+                    	<field name="daily_id" options="{'create': false, 'create_edit': false}"/>
+                    </group>
+                    <footer>
+                        <button name="bt_show_report" string="Hiện BC" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Hủy bỏ" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_dthu_phanh_veso">
+	        <field name="name">Doanh thu / Phát hành vé số Bình Phước</field>
+	        <field name="res_model">dthu.phanh.veso</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="dthu_phanh_veso_form" />
+	        <field name="target">new</field>
+	    </record>
+
+    </data>
+</openerp>
+
