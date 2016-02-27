@@ -9,8 +9,8 @@
             <field name="arch" type="xml">
                 <form string="Doanh thu vé số Bình Phước" version="7.0">
                     <group>
-                    	<field name="ky_ve_id" options="{'create': false, 'create_edit': false}"/>
-                    	<field name="daily_id" options="{'create': false, 'create_edit': false}"/>
+                    	<field name="date_from" required="1"/>
+                    	<field name="date_to" required="1"/>
                     </group>
                     <footer>
                         <button name="bt_show_report" string="Hiện BC" type="object" class="oe_highlight"/>
@@ -37,7 +37,9 @@
             <field name="arch" type="xml">
                 <form string="Doanh thu / Phát hành vé số Bình Phước" version="7.0">
                     <group>
-                    	<field name="daily_id" options="{'create': false, 'create_edit': false}"/>
+                    	<field name="daily_id" required="1" options="{'create': false, 'create_edit': false}"/>
+                    	<field name="date_from" required="1"/>
+                    	<field name="date_to" required="1"/>
                     </group>
                     <footer>
                         <button name="bt_show_report" string="Hiện BC" type="object" class="oe_highlight"/>
