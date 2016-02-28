@@ -70,7 +70,7 @@
 					name="Tổng hợp nhập - xuất - tồn kho vé số tự chọn"
 					parent="menu_baocao" sequence="10"/>
 				<menuitem id="menu_action_rp_google_map"
-					action="web_google_map.action_rp_google_map"
+					action="green_erp_base.action_rp_google_map"
 					name="Hiển thị các Đại lý trên bản đồ"
 					parent="menu_baocao" sequence="11"/>
 				<menuitem id="menu_action_doanhthu_veso"
@@ -81,9 +81,9 @@
 					action="action_dthu_phanh_veso"
 					name="Doanh thu / Phát hành vé số"
 					parent="menu_baocao" sequence="13"/>
-				<menuitem id="menu_action_dthu_time_graph_report_form"
-					action="action_doanhthu_veso"
-					name="Doanh thu vé số theo thời gian"
+				<menuitem id="menu_action_doanhthu_veso_time_form"
+					action="action_doanhthu_veso_time"
+					name="Doanh thu vé số tuần, tháng, quý, năm"
 					parent="menu_baocao" sequence="14"/>
     </data>	
 </openerp>

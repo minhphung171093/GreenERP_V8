@@ -7,7 +7,7 @@
             <field name="name">doanhthu.veso.form</field>
             <field name="model">doanhthu.veso</field>
             <field name="arch" type="xml">
-                <form string="Doanh thu vé số Bình Phước" version="7.0">
+                <form string="Doanh thu vé số" version="7.0">
                     <group>
                     	<field name="date_from" required="1"/>
                     	<field name="date_to" required="1"/>
@@ -51,11 +51,39 @@
         </record>
         
         <record model="ir.actions.act_window" id="action_dthu_phanh_veso">
-	        <field name="name">Doanh thu / Phát hành vé số Bình Phước</field>
+	        <field name="name">Doanh thu / Phát hành vé số</field>
 	        <field name="res_model">dthu.phanh.veso</field>
 	        <field name="view_type">form</field>
 	        <field name="view_mode">form</field>
 	        <field name="view_id" ref="dthu_phanh_veso_form" />
+	        <field name="target">new</field>
+	    </record>
+	    
+	    <!-- Doanh thu vé số tuần, tháng, quý, năm-->
+        <record id="doanhthu_veso_time_form" model="ir.ui.view">
+            <field name="name">doanhthu.veso.time.form</field>
+            <field name="model">doanhthu.veso.time</field>
+            <field name="arch" type="xml">
+                <form string="Doanh thu vé số tuần, tháng, quý, năm" version="7.0">
+                    <group>
+                    	<field name="date_from" required="1"/>
+                    	<field name="date_to" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="bt_show_report" string="Hiện BC" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Hủy bỏ" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_doanhthu_veso_time">
+	        <field name="name">Doanh thu vé số tuần, tháng, quý, năm</field>
+	        <field name="res_model">doanhthu.veso.time</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="doanhthu_veso_time_form" />
 	        <field name="target">new</field>
 	    </record>
 

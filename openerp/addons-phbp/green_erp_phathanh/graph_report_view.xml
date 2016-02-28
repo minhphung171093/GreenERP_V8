@@ -80,11 +80,12 @@
         </record>
         
         <!-- Doanh thu chung theo quý, thang , nam -->
-    	<!--<record id="dthu_time_graph_report_search_form" model="ir.ui.view">
+    	
+    	<record id="dthu_time_graph_report_search_form" model="ir.ui.view">
             <field name="name">dthu.time.graph.report.search.form</field>
             <field name="model">doanhthu.graph.report</field>
             <field name="arch" type="xml">
-               <search string="Doanh Thu theo thời gian">
+               <search string="Doanh Thu">
                     <field name="daily_id"/>
                     <separator/>
 	                <field name="ky_ve_id"/>
@@ -95,13 +96,13 @@
                     </group>
                 </search>
             </field>
-        </record>-->
-    	
+        </record>
+        
 		<record id="dthu_time_graph_report_form" model="ir.ui.view">
 	         <field name="name">dthu.time.graph.report</field>
 	         <field name="model">doanhthu.graph.report</field>
 	         <field name="arch" type="xml">
-	             <graph string="Doanh thu theo thời gian" type="pivot">
+	             <graph string="Doanh thu vé số tuần, tháng, quý, năm" type="pivot">
 	                <field name="doanh_thu" type="measure"/>
 	             </graph>
 	         </field>
@@ -114,7 +115,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">graph</field>
             <field name="view_id" ref="dthu_time_graph_report_form"/>
-            <field name="search_view_id" ref="doanhthu_graph_report_search_form"/>
+            <field name="search_view_id" ref="dthu_time_graph_report_search_form"/>
         </record>
     </data>	
 </openerp>

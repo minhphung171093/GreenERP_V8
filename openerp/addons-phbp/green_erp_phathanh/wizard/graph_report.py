@@ -64,7 +64,7 @@ class doanhthu_veso(osv.osv_memory):
             pptt_line_ids = [r[0] for r in cr.fetchall()]
             domain = [('id','in',pptt_line_ids)]
         return {
-                    'name': 'Doanh thu vé số Bình Phước',
+                    'name': 'Doanh thu vé số',
                     'view_type': 'form',
                     'view_mode': 'graph',
                     'view_id': res[1],
@@ -73,7 +73,6 @@ class doanhthu_veso(osv.osv_memory):
                     'context': { 'search_default_ky_ve': 1,
                                 },
                     'type': 'ir.actions.act_window',
-#                     'target': 'new',
                 }
     
 doanhthu_veso()
@@ -113,7 +112,7 @@ class dthu_phanh_veso(osv.osv_memory):
             line_2_ids = [r[0] for r in cr.fetchall()]
             domain = [('id','in',line_1_ids),('id','in',line_2_ids)]
         return {
-                    'name': 'Doanh thu / Phát hành vé số Bình Phước',
+                    'name': 'Doanh thu / Phát hành vé số',
                     'view_type': 'form',
                     'view_mode': 'graph',
                     'view_id': res[1],
@@ -122,10 +121,51 @@ class dthu_phanh_veso(osv.osv_memory):
                     'context': { 'search_default_ky_ve': 1,
                                 },
                     'type': 'ir.actions.act_window',
-#                     'target': 'new',
                 }
     
 dthu_phanh_veso()
+
+class doanhthu_veso_time(osv.osv_memory):
+    _name = 'doanhthu.veso.time'
+     
+    _columns = {
+        'ky_ve_id': fields.many2one('ky.ve','Ký hiệu'),
+        'daily_id': fields.many2one('dai.ly','Đại lý'),
+        'date_from': fields.date('Từ'),
+        'date_to': fields.date('Đến'),
+                }
+    _defaults = {
+        'date_from': lambda *a: time.strftime('%Y-01-01'),
+        'date_to': lambda *a: time.strftime('%Y-12-31'),
+    }
+
+    def bt_show_report(self, cr, uid, ids, context=None):
+        res = self.pool.get('ir.model.data').get_object_reference(cr, uid, 
+                                        'green_erp_phathanh', 'dthu_time_graph_report_form')
+        pptt_line_ids = []
+        domain = []
+        wiz = self.browse(cr, uid, ids[0], context=context)
+        if wiz.date_from and wiz.date_to:
+            sql = '''
+                select line.id from phanphoi_tt_line line, phanphoi_truyenthong pptt, ky_ve kv where line.phanphoi_tt_id = pptt.id 
+                    and pptt.ky_ve_id = kv.id and kv.ngay_mo_thuong between '%s' and '%s' 
+            '''%(wiz.date_from,wiz.date_to)
+            cr.execute(sql)
+            pptt_line_ids = [r[0] for r in cr.fetchall()]
+            domain = [('id','in',pptt_line_ids)]
+        return {
+                    'name': 'Doanh thu vé số tuần, tháng, quý, năm',
+                    'view_type': 'form',
+                    'view_mode': 'graph',
+                    'view_id': res[1],
+                    'res_model': 'doanhthu.graph.report',
+                    'domain': domain,
+                    'context': { 'search_default_ky_ve': 1,
+                                },
+                    'type': 'ir.actions.act_window',
+                }
+    
+doanhthu_veso_time()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
