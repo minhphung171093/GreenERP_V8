@@ -25,7 +25,7 @@
 	         <field name="model">doanhthu.graph.report</field>
 	         <field name="arch" type="xml">
 	             <graph string="Doanh thu " type="pivot">
-	                <field name="doanh_thu" type="measure"/>
+	                <field name="giatri" type="measure"/>
 	             </graph>
 	         </field>
 	    </record>
@@ -63,8 +63,9 @@
 	         <field name="model">dthu.phanh.graph.report</field>
 	         <field name="arch" type="xml">
 	             <graph string="Doanh thu / Phát Hành" type="pivot">
-	                <field name="doanh_thu" type="measure"/>
-	                <field name="phathanh" type="measure"/>
+	             	<field name="loai_giatri" type="col"/>
+	             	<field name="ky_ve_id" type="row"/>
+	                <field name="giatri" type="measure"/>
 	             </graph>
 	         </field>
 	    </record>
@@ -103,7 +104,7 @@
 	         <field name="model">doanhthu.graph.report</field>
 	         <field name="arch" type="xml">
 	             <graph string="Doanh thu vé số tuần, tháng, quý, năm" type="pivot">
-	                <field name="doanh_thu" type="measure"/>
+	                <field name="giatri" type="measure"/>
 	             </graph>
 	         </field>
 	    </record>
