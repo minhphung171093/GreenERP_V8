@@ -73,4 +73,42 @@ class nguon_von(osv.osv):
         'name': fields.char('Tên',size = 1024, required = True),
                 }
 nguon_von()
+
+class lop_hoc(osv.osv):
+    _name = "lop.hoc"
+    _columns = {
+        'name': fields.char('Tên lớp',size = 1024, required = True),
+                }
+lop_hoc()
+
+class giang_vien(osv.osv):
+    _name = "giang.vien"
+    _columns = {
+        'name': fields.char('Tên giảng viên',size = 1024, required = True),
+                }
+giang_vien()
+
+class hoso_nangluc(osv.osv):
+    _name = "hoso.nangluc"
+    _columns = {
+        'name': fields.char('Tên',size = 1024, required = True),
+                }
+hoso_nangluc()
+
+class donvi_daotao(osv.osv):
+    _name = "donvi.daotao"
+    _columns = {
+        'name': fields.char('Tên đơn vị',size = 1024, required = True),
+        'so_nha': fields.char('Số nhà',size = 50),
+#         'ngay_cap': fields.date('Thời gian cấp', required = True),
+        'tinh_tp_id': fields.many2one('tinh.tp','Tỉnh/TP'),
+        'phuong_xa_id': fields.many2one('phuong.xa','Phường (xã)'),
+        'khu_pho_id': fields.many2one('khu.pho','Khu phố (ấp)'),
+        'quan_huyen_id': fields.many2one('quan.huyen','Quận (huyện)'),
+        'dien_thoai': fields.char('Điện thoại',size = 50),
+        'fax': fields.char('Fax',size = 50),
+        'hoso_id': fields.many2one('hoso.nangluc','Hồ sơ năng lực'),
+        'giang_vien_ids': fields.many2many('giang.vien', 'giangvien_donvi_ref', 'donvi_id', 'giangvien_id', 'Giảng viên'),
+                }
+donvi_daotao()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

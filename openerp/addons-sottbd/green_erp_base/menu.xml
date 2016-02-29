@@ -6,36 +6,60 @@
 			
 			<menuitem id="menu_danh_muc"
 				name="Danh mục"
-				parent="cauhinh_root" sequence="10"/>
+				parent="cauhinh_root" sequence="1"/>
 				
 				<menuitem id="menu_action_tinh_tp"
 					action="action_tinh_tp"
 					name="Tỉnh/Thành phố"
-					parent="menu_danh_muc" sequence="10"/>
+					parent="menu_danh_muc" sequence="1"/>
 
 				<menuitem id="menu_action_quan_huyen"
 					action="action_quan_huyen"
 					name="Quận/Huyện"
-					parent="menu_danh_muc" sequence="15"/>
+					parent="menu_danh_muc" sequence="5"/>
 				<menuitem id="menu_action_phuong_xa"
 					action="action_phuong_xa"
 					name="Phường/Xã"
-					parent="menu_danh_muc" sequence="20"/>				
+					parent="menu_danh_muc" sequence="10"/>				
 				<menuitem id="menu_action_khu_pho"
 					action="action_khu_pho"
 					name="Khu phố"
-					parent="menu_danh_muc" sequence="25"/>					
+					parent="menu_danh_muc" sequence="15"/>					
 				<menuitem id="menu_action_chu_dau_tu"
 					action="action_chu_dau_tu"
 					name="Chủ đầu tư"
-					parent="menu_danh_muc" sequence="5"/>	
+					parent="menu_danh_muc" sequence="20"/>	
 				<menuitem id="menu_action_van_ban"
 					action="action_van_ban"
 					name="Văn bản"
-					parent="menu_danh_muc" sequence="6"/>	
+					parent="menu_danh_muc" sequence="25"/>	
 				<menuitem id="menu_action_nguon_von"
 					action="action_nguon_von"
 					name="Nguồn vốn"
-					parent="menu_danh_muc" sequence="7"/>	
+					parent="menu_danh_muc" sequence="30"/>	
+					
+			<menuitem id="menu_dao_tao"
+				name="Đào tạo"
+				parent="cauhinh_root" sequence="5"/>
+				
+				<menuitem id="menu_action_lop_hoc"
+					action="action_lop_hoc"
+					name="Lớp"
+					parent="menu_dao_tao" sequence="1"/>	
+				
+				<menuitem id="menu_action_giang_vien"
+					action="action_giang_vien"
+					name="Giảng viên"
+					parent="menu_dao_tao" sequence="5"/>
+					
+				<menuitem id="menu_action_hoso_nangluc"
+					action="action_hoso_nangluc"
+					name="Hồ sơ năng lực"
+					parent="menu_dao_tao" sequence="10"/>
+					
+				<menuitem id="menu_action_donvi_daotao"
+					action="action_donvi_daotao"
+					name="Đơn vị đào tạo"
+					parent="menu_dao_tao" sequence="15"/>
     </data>	
 </openerp>

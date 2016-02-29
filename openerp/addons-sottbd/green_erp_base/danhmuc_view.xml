@@ -250,5 +250,157 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>   
+        
+<!--Lớp-->
+        <record model="ir.ui.view" id="lop_hoc_tree">
+            <field name="name">lop.hoc.tree</field>
+            <field name="model">lop.hoc</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Lớp">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="lop_hoc_form">
+            <field name="name">lop.hoc.form</field>
+            <field name="model">lop.hoc</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Lớp" version="7.0">
+	                <sheet>
+                		<group>
+		            		<field name="name" />
+                		</group>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_lop_hoc">
+            <field name="name">Lớp</field>
+            <field name="res_model">lop.hoc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+        
+<!--Giảng viên-->
+        <record model="ir.ui.view" id="giang_vien_tree">
+            <field name="name">giang.vien.tree</field>
+            <field name="model">giang.vien</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Giảng viên">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="giang_vien_form">
+            <field name="name">giang.vien.form</field>
+            <field name="model">giang.vien</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Giảng viên" version="7.0">
+	                <sheet>
+                		<group>
+		            		<field name="name" />
+                		</group>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_giang_vien">
+            <field name="name">Giảng viên</field>
+            <field name="res_model">giang.vien</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+        
+<!--Hồ sơ năng lực-->
+        <record model="ir.ui.view" id="hoso_nangluc_tree">
+            <field name="name">hoso.nangluc.tree</field>
+            <field name="model">hoso.nangluc</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Hồ sơ năng lực">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="hoso_nangluc_form">
+            <field name="name">hoso.nangluc.form</field>
+            <field name="model">hoso.nangluc</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Hồ sơ năng lực" version="7.0">
+	                <sheet>
+                		<group>
+		            		<field name="name" />
+                		</group>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_hoso_nangluc">
+            <field name="name">Hồ sơ năng lực</field>
+            <field name="res_model">hoso.nangluc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record> 
+        
+<!--Đơn vị đào tạo-->
+        <record model="ir.ui.view" id="donvi_daotao_tree">
+            <field name="name">donvi.daotao.tree</field>
+            <field name="model">donvi.daotao</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Đơn vị đào tạo">
+                    <field name="name" />
+                    <field name="so_nha" />
+                    <field name="tinh_tp_id" />
+                    <field name="quan_huyen_id" />
+                    <field name="phuong_xa_id" />
+                    <field name="khu_pho_id" />
+                    <field name="dien_thoai" />
+                    <field name="fax" />
+                    <field name="hoso_id" />
+                    <field name="giang_vien_ids" />
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="donvi_daotao_form">
+            <field name="name">donvi.daotao.form</field>
+            <field name="model">donvi.daotao</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Đơn vị đào tạo" version="7.0">
+	                <sheet>
+                		<group col="4"  string="Thông tin chung">
+		            		<field name="name" />
+		                    <field name="dien_thoai"/>
+		                    <field name="fax" />
+		                    <field name="hoso_id" />
+		                    <field name="giang_vien_ids" widget="many2many_tags"/>
+                		</group>
+                		<group col="4"  string="Địa chỉ">
+                			<field name="so_nha" />
+							<field name="tinh_tp_id" options="{'create': false, 'create_edit': false}" />                   
+							<field name="quan_huyen_id" options="{'create': false, 'create_edit': false}" />
+							<field name="phuong_xa_id" options="{'create': false, 'create_edit': false}" domain="[('quan_huyen_id','=',quan_huyen_id)]" />
+							<field name="khu_pho_id" options="{'create': false, 'create_edit': false}" domain="[('phuong_xa_id','=',phuong_xa_id)]" />
+                		</group>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_donvi_daotao">
+            <field name="name">Đơn vị đào tạo</field>
+            <field name="res_model">donvi.daotao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record> 
     </data>
 </openerp>
