@@ -9,7 +9,7 @@ class doanhthu_graph_report(osv.osv):
     _columns = {
         'daily_id': fields.many2one('dai.ly','Đại lý'),
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé'),
-        'giatri': fields.integer('Doanh thu'),
+        'giatri': fields.float('Doanh thu', digits=(16,0)),
         'ngay_mo_thuong': fields.date('Ngày mở thưởng'),
     }
     def init(self, cr):
@@ -49,7 +49,7 @@ class dthu_phanh_graph_report(osv.osv):
     _columns = {
         'daily_id': fields.many2one('dai.ly','Đại lý'),
         'ky_ve_id': fields.many2one('ky.ve','Kỳ vé'),
-        'giatri': fields.integer('Giá Trị'),
+        'giatri': fields.float('Giá Trị', digits=(16,0)),
         'loai_giatri': fields.char('Loại'),
     }
     def init(self, cr):
