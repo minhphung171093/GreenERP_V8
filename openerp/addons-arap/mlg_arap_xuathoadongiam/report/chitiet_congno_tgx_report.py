@@ -96,12 +96,12 @@ class Parser(report_sxw.rml_parse):
             '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
             if not tat_toan:
                 sql +='''
-                    and (tat_toan!=True or tat_toan is null) 
-                '''
+                    and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+                '''%(period_to.date_stop)
             else:
                 sql +='''
-                    and (tat_toan=True) 
-                '''
+                    and tat_toan=True and ngay_tat_toan<='%s' 
+                '''%(period_to.date_stop)
             doi_xe_ids = wizard_data['doi_xe_ids']
             if doi_xe_ids:
                 doi_xe_ids = str(doi_xe_ids).replace('[', '(')
@@ -187,14 +187,14 @@ class Parser(report_sxw.rml_parse):
             '''%(mlg_type,partner_id,chinhanh_id[0],period_from.date_start,period_to.date_stop)
             if not tat_toan:
                 sql +='''
-                    and (tat_toan!=True or tat_toan is null) 
+                    and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
                     ) 
-                '''
+                '''%(period_to.date_stop)
             else:
                 sql +='''
-                    and (tat_toan!=True or tat_toan is null) 
+                    and tat_toan=True and ngay_tat_toan<='%s' 
                     ) 
-                '''
+            '''%(period_to.date_stop)
             if bien_so_xe_ids:
                 bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
                 bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
@@ -210,7 +210,9 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         if partner_id:
             period_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
             bien_so_xe_ids = wizard_data['bien_so_xe_ids']
@@ -222,12 +224,12 @@ class Parser(report_sxw.rml_parse):
             '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
             if not tat_toan:
                 sql +='''
-                    and (tat_toan!=True or tat_toan is null) 
-                '''
+                    and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+                '''%(period_to.date_stop)
             else:
                 sql +='''
-                    and (tat_toan=True) 
-                '''
+                    and tat_toan=True and ngay_tat_toan<='%s' 
+                '''%(period_to.date_stop)
             if bien_so_xe_ids:
                 bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
                 bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
@@ -266,12 +268,12 @@ class Parser(report_sxw.rml_parse):
             '''%(mlg_type,chinhanh_id[0],partner_ids,period_from.date_start,period_to.date_stop)
             if not tat_toan:
                 sql +='''
-                    and (tat_toan!=True or tat_toan is null) 
-                '''
+                    and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+                '''%(period_to.date_stop)
             else:
                 sql +='''
-                    and (tat_toan=True) 
-                '''
+                    and tat_toan=True and ngay_tat_toan<='%s' 
+                '''%(period_to.date_stop)
             if bien_so_xe_ids:
                 bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
                 bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
@@ -301,12 +303,12 @@ class Parser(report_sxw.rml_parse):
             '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start,period_to.date_stop)
             if not tat_toan:
                 sql +='''
-                    and (tat_toan!=True or tat_toan is null) 
-                '''
+                    and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+                '''%(period_to.date_stop)
             else:
                 sql +='''
-                    and (tat_toan=True) 
-                '''
+                    and tat_toan=True and ngay_tat_toan<='%s' 
+                '''%(period_to.date_stop)
             if bien_so_xe_ids:
                 bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
                 bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
@@ -343,12 +345,12 @@ class Parser(report_sxw.rml_parse):
         '''%(partner_id,period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type,bsx_id)
         if not tat_toan:
             sql +='''
-                and (ai.tat_toan!=True or ai.tat_toan is null) 
-            '''
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+            '''%(period_to.date_stop)
         else:
             sql +='''
-                and (ai.tat_toan=True) 
-            '''
+                and tat_toan=True and ngay_tat_toan<='%s' 
+            '''%(period_to.date_stop)
         self.cr.execute(sql)
         return self.cr.dictfetchall()
     
@@ -385,14 +387,14 @@ class Parser(report_sxw.rml_parse):
             '''%(mlg_type,chinhanh_id[0],period_from.date_start,period_to.date_stop,partner_ids)
             if not tat_toan:
                 sql +='''
-                    and (tat_toan!=True or tat_toan is null) 
+                    and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
                      )
-                '''
+                '''%(period_to.date_stop)
             else:
                 sql +='''
-                    and (tat_toan=True)
+                    and tat_toan=True and ngay_tat_toan<='%s' 
                      ) 
-                '''
+                '''%(period_to.date_stop)
             self.cr.execute(sql)
             return self.cr.fetchone()[0]
         return 0
@@ -400,7 +402,9 @@ class Parser(report_sxw.rml_parse):
     def get_sdtlkdauky(self, partner_id,bsx_id):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
         period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         mlg_type = wizard_data['mlg_type']
         tat_toan = wizard_data['tat_toan']
@@ -411,12 +415,12 @@ class Parser(report_sxw.rml_parse):
         '''%(mlg_type,chinhanh_id[0],period_from.date_start,bsx_id,partner_id)
         if not tat_toan:
             sql +='''
-                and (tat_toan!=True or tat_toan is null) 
-            '''
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+            '''%(period_to.date_stop)
         else:
             sql +='''
-                and (tat_toan=True)
-            '''
+                and tat_toan=True and ngay_tat_toan<='%s' 
+            '''%(period_to.date_stop)
         self.cr.execute(sql)
         return self.cr.fetchone()[0]
     
@@ -434,12 +438,12 @@ class Parser(report_sxw.rml_parse):
         '''%(mlg_type,chinhanh_id[0],period_to.date_stop,bsx_id,partner_id)
         if not tat_toan:
             sql +='''
-                and (tat_toan!=True or tat_toan is null) 
-            '''
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+            '''%(period_to.date_stop)
         else:
             sql +='''
-                and (tat_toan=True)
-            '''
+                and tat_toan=True and ngay_tat_toan<='%s' 
+            '''%(period_to.date_stop)
         self.cr.execute(sql)
         return self.cr.fetchone()[0]
             

@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <field name="so_hop_dong" position="after">
                 	<field name="tat_toan" readonly='1'/>
+                	<field name="ngay_tat_toan" attrs="{'invisible': [('tat_toan','=',False)]}" readonly='1'/>
                 </field>
             </field>
         </record>        

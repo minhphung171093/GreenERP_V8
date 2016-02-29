@@ -36,7 +36,19 @@ class account_invoice(osv.osv):
     
     _columns = {
         'tat_toan': fields.boolean('Đã xuất hóa đơn'),
+        'ngay_tat_toan': fields.date('Ngày xuất hóa đơn'),
     }
+    
+    def create(self, cr, uid, vals, context=None):
+        if vals.get('mlg_type', False)=='tra_gop_xe' and vals.get('bien_so_xe_id') and vals.get('chinhanh_id'):
+            sql = '''
+                select id from account_invoice where mlg_type='tra_gop_xe' and tat_toan = True and chinhanh_id=%s and bien_so_xe_id=%s limit 1
+            '''%(vals['chinhanh_id'],vals['bien_so_xe_id'])
+            cr.execute(sql)
+            invoice_ids = [r[0] for r in cr.fetchall()]
+            if invoice_ids:
+                raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo công nợ vì biển số xe được chọn đã xuất hóa đơn rồi!'))
+        return super(account_invoice, self).create(cr, uid, vals, context)
     
 account_invoice()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

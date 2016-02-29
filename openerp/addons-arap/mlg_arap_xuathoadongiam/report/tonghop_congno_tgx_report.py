@@ -116,14 +116,14 @@ class Parser(report_sxw.rml_parse):
         '''%(partner_id,chinhanh_id[0],period_to.date_stop)
         if not tat_toan:
             sql +='''
-                and (tat_toan!=True or tat_toan is null) 
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
                 ) 
-            '''
+            '''%(period_to.date_stop)
         else:
             sql +='''
-                and (tat_toan=True) 
+                and tat_toan=True and ngay_tat_toan<='%s' 
                 ) 
-            '''
+            '''%(period_to.date_stop)
         self.cr.execute(sql)
         return self.cr.dictfetchall()
     
@@ -178,14 +178,14 @@ class Parser(report_sxw.rml_parse):
         '''%(chinhanh_id[0],partner_id,period_to.date_stop)
         if not tat_toan:
             sql +='''
-                and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and bien_so_xe_id=%s ))
                     and date<'%s'
-            '''%(bsx_id,period_from.date_start)
+            '''%(period_to.date_stop,bsx_id,period_from.date_start)
         else:
             sql +='''
-                and (tat_toan=True) and bien_so_xe_id=%s ))
+                and tat_toan=True and ngay_tat_toan<='%s' and bien_so_xe_id=%s ))
                     and date<'%s'
-            '''%(bsx_id,period_from.date_start)
+            '''%(period_to.date_stop,bsx_id,period_from.date_start)
         self.cr.execute(sql)
         sdtlkdauky = self.cr.fetchone()[0]
         self.sdtlkdauky += sdtlkdauky
@@ -209,14 +209,14 @@ class Parser(report_sxw.rml_parse):
         '''%(chinhanh_id[0],partner_id,period_to.date_stop)
         if not tat_toan:
             sql +='''
-                and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and bien_so_xe_id=%s ))
                     and date between '%s' and '%s'
-            '''%(bsx_id,period_from.date_start,period_to.date_stop)
+            '''%(period_to.date_stop,bsx_id,period_from.date_start,period_to.date_stop)
         else:
             sql +='''
-                and (tat_toan=True) and bien_so_xe_id=%s ))
+                and tat_toan=True and ngay_tat_toan<='%s' and bien_so_xe_id=%s ))
                     and date between '%s' and '%s'
-            '''%(bsx_id,period_from.date_start,period_to.date_stop)
+            '''%(period_to.date_stop,bsx_id,period_from.date_start,period_to.date_stop)
         self.cr.execute(sql)
         sdttrongky = self.cr.fetchone()[0]
         self.sdttrongky += sdttrongky
@@ -240,14 +240,14 @@ class Parser(report_sxw.rml_parse):
         '''%(chinhanh_id[0],partner_id,period_to.date_stop)
         if not tat_toan:
             sql +='''
-                and (tat_toan!=True or tat_toan is null) and bien_so_xe_id=%s ))
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and bien_so_xe_id=%s ))
                     and date<='%s'
-            '''%(bsx_id,period_to.date_stop)
+            '''%(period_to.date_stop,bsx_id,period_to.date_stop)
         else:
             sql +='''
-                and (tat_toan=True) and bien_so_xe_id=%s ))
+                and tat_toan=True and ngay_tat_toan<='%s' and bien_so_xe_id=%s ))
                     and date<='%s'
-            '''%(bsx_id,period_to.date_stop)
+            '''%(period_to.date_stop,bsx_id,period_to.date_stop)
         self.cr.execute(sql)
         sdtlkcuoiky = self.cr.fetchone()[0]
         self.sdtlkcuoiky += sdtlkcuoiky

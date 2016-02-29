@@ -8,6 +8,7 @@
 	        <field name="arch" type="xml">
 	            <form string="Trả góp xe" version="7.0">
 	                <group>
+	                	<field name="ngay_tat_toan" required='1'/>
 	                	<field name="bien_so_xe_id" options="{'no_create': True}"/>
 	                </group>
 	                <footer>
@@ -37,6 +38,10 @@
 	            		<field name="show_tattoan" invisible='1'/>
 	            	</header>
 	                <group>
+	                	<h1>
+	                		<label string="Ngày xuất hóa đơn: "/>
+	                		<field name="ngay_tat_toan" class="oe_inline"/>
+	                	</h1>
 	                	<h1>
 	                		<label string="Biển số xe: "/>
 	                		<field name="bien_so_xe_id" class="oe_inline"/>

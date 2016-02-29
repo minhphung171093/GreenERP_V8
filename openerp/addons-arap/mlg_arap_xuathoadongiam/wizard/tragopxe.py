@@ -13,19 +13,26 @@ sys.setdefaultencoding('utf-8')
 
 class tragopxe_wizard(osv.osv_memory):
     _name = "tragopxe.wizard"
-    _columns = {    
+    _columns = {
+        'ngay_tat_toan': fields.date('Ngày xuất hóa đơn'),
         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe', required=True),
+    }
+    
+    _defaults = {
+        'ngay_tat_toan': lambda *a: time.strftime('%Y-%m-%d')
     }
     
     def bt_xemcongno(self, cr, uid, ids, context=None):
         this = self.browse(cr, uid, ids[0])
+        user = self.pool.get('res.users').browse(cr, uid, uid)
         sql = '''
-            select id from account_invoice where mlg_type='tra_gop_xe' and bien_so_xe_id=%s
-        '''%(this.bien_so_xe_id.id)
+            select id from account_invoice where mlg_type='tra_gop_xe' and bien_so_xe_id=%s and chinhanh_id=%s
+        '''%(this.bien_so_xe_id.id, user.chinhanh_id.id)
         cr.execute(sql)
         invoice_ids = [r[0] for r in cr.fetchall()]
         vals = {
             'bien_so_xe_id': this.bien_so_xe_id.id,
+            'ngay_tat_toan': this.ngay_tat_toan,
             'tra_gop_xe_ids': [(6,0,invoice_ids)],
         }
         tattoan_id = self.pool.get('tragopxe.tattoan').create(cr, uid, vals)
@@ -66,7 +73,8 @@ class tragopxe_tattoan(osv.osv_memory):
                 res[tattoan.id] = False
         return res
     
-    _columns = {    
+    _columns = {
+        'ngay_tat_toan': fields.date('Ngày xuất hóa đơn'),
         'bien_so_xe_id': fields.many2one('bien.so.xe','Biển số xe'),
         'show_tattoan': fields.function(_get_tattoan, type='boolean', string='Show tất toán'),
         'tra_gop_xe_ids': fields.many2many('account.invoice','tragopxetattoan_invoice_ref', 'tattoan_id', 'invoice_id','Các công nợ'),
@@ -76,7 +84,7 @@ class tragopxe_tattoan(osv.osv_memory):
         invoice_obj = self.pool.get('account.invoice')
         for tattoan in self.browse(cr, uid, ids, context=context):
             invoice_ids = [inv.id for inv in tattoan.tra_gop_xe_ids]
-            invoice_obj.write(cr, uid, invoice_ids, {'tat_toan':True})
+            invoice_obj.write(cr, uid, invoice_ids, {'tat_toan':True, 'ngay_tat_toan':tattoan.ngay_tat_toan})
         return True
     
 tragopxe_tattoan()

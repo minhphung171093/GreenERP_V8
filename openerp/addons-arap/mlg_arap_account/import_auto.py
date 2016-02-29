@@ -839,6 +839,7 @@ class import_congno_tudong(osv.osv):
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
                                         and mlg_type='no_doanh_thu' and state='open' 
+                                    order by date_invoice
                             '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
                             cr.execute(sql)
                             
@@ -1341,6 +1342,7 @@ class import_congno_tudong(osv.osv):
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
                                         and mlg_type='phat_vi_pham' and state='open' 
+                                    order by date_invoice
                             '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
                             cr.execute(sql)
                             for line in cr.dictfetchall():
@@ -2053,6 +2055,7 @@ class import_congno_tudong(osv.osv):
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
                                         and mlg_type='no_doanh_thu' and state='open' 
+                                    order by date_invoice
                             '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
                             cr.execute(sql)
                             
@@ -2211,6 +2214,7 @@ class import_congno_tudong(osv.osv):
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
                                         and mlg_type='hoan_tam_ung' and state='open' 
+                                    order by date_invoice
                             '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
                             cr.execute(sql)
                             for line in cr.dictfetchall():
