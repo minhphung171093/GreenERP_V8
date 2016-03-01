@@ -339,7 +339,7 @@
 					parent="menu_danhmuc_dungchung" sequence="25"/>
 					
 				<menuitem id="menu_action_lichsu_inphieu"
-					name="Lịch sử  in phiếu"
+					name="Lịch sử in phiếu"
 					action="action_lichsu_inphieu"
 					parent="menu_danhmuc_dungchung" sequence="26"/>
 					

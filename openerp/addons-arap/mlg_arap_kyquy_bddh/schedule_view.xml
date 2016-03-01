@@ -6,7 +6,7 @@
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
+            <field name="active" eval="False"/>
             <field name="doall" eval="True"/>
             <field name="model" eval="'cauhinh.kyquy.bddh'"/>
             <field name="function" eval="'tinh_kyquy_bddh'"/>

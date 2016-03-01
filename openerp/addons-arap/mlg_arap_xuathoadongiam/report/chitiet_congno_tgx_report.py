@@ -50,7 +50,8 @@ class Parser(report_sxw.rml_parse):
             'get_only_payment': self.get_only_payment,
             'get_only_lichsu_thutienlai': self.get_only_lichsu_thutienlai,
             'get_lai_co': self.get_lai_co,
-            'get_name_invocie': self.get_name_invocie,
+            'get_name_invoice': self.get_name_invoice,
+            'get_only_pay_sotienlai': self.get_only_pay_sotienlai,
         })
         
     def convert_date(self, date):
@@ -439,7 +440,7 @@ class Parser(report_sxw.rml_parse):
         self.nocuoiky = self.nocuoiky-co
         
         sql = '''
-            select date,fusion_id,credit,ref,loai_giaodich,note_giaodich
+            select date,fusion_id,credit,ref,loai_giaodich,note_giaodich,id
                 from account_move_line
                 where credit!=0 and move_id in (select move_id from account_voucher
                     where reference in (select name from account_invoice
@@ -457,6 +458,13 @@ class Parser(report_sxw.rml_parse):
                 and date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
         self.cr.execute(sql)
         return self.cr.dictfetchall()
+    
+    def get_only_pay_sotienlai(self, move_line_id):
+        if move_line_id:
+            move_line = self.pool.get('account.move.line').browse(self.cr, self.uid, move_line_id)
+            if move_line.sotienlai_line:
+                return True
+        return False
     
     def get_lichsu_thutienlai(self, invoice_id):
         if not invoice_id:
@@ -523,7 +531,7 @@ class Parser(report_sxw.rml_parse):
         self.cr.execute(sql)
         return self.cr.dictfetchall()
     
-    def get_name_invocie(self, invoice_id):
+    def get_name_invoice(self, invoice_id):
         if invoice_id:
             inv = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
             return inv.name

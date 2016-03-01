@@ -5,6 +5,11 @@
 			action="action_cauhinh_kyquy_bddh"
 			name="Cấu hình ký quỹ BĐĐH"
 			parent="mlg_arap_account.menu_cauhinh_arap" sequence="40"/>
+			
+		<menuitem id="menu_action_lichsu_kyquy_bddh"
+			action="action_lichsu_kyquy_bddh"
+			name="Lịch sử ký quỹ BĐĐH"
+			parent="mlg_arap_account.menu_danhmuc_dungchung" sequence="30"/>
 					
 	</data>
 </openerp>

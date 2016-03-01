@@ -6,10 +6,83 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="mlg_arap_account.view_nha_dau_tu_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='chinhanh_line']/tree/field[@name='sotien_conlai']" position="after">
-	        		<field name="bien_so_xe_ids" widget="many2many_tags"/>
+                <xpath expr="//field[@name='chinhanh_line']" position="replace">
+	        		<field name="chinhanh_line" nolabel='1'>
+	                    <tree>
+		                    <field name="chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','1')]"/>
+		                    <field name="nhom_chinhanh_id" required='1' options="{'no_create': True}" domain="['&amp;',('parent_id','=',chinhanh_id),'|',('loai_doituong','=',False),('loai_doituong','=','nhadautu')]"/>
+		                    <field name="sotien_phaithu"/>
+                        	<field name="sotien_phaithu_dinhky"/>
+                        	<field name="sotien_dathu"/>
+                        	<field name="sotien_conlai"/>
+	                    </tree>
+	                    <form>
+	                    	<group col='4' colspan='2'>
+			                    <field name="chinhanh_id" options="{'no_create': True}" domain="[('parent_id.code','=','1')]"/>
+			                    <field name="nhom_chinhanh_id" required='1' options="{'no_create': True}" domain="['&amp;',('parent_id','=',chinhanh_id),'|',('loai_doituong','=',False),('loai_doituong','=','nhadautu')]"/>
+			                    <field name="sotien_phaithu"/>
+	                        	<field name="sotien_phaithu_dinhky"/>
+	                        	<field name="sotien_dathu"/>
+	                        	<field name="sotien_conlai"/>
+	                        </group>
+	                        <group string="Danh sách biển số xe">
+	                        	<field name="kyquybddh_line" nolabel='1'>
+		                        	<tree editable='bottom'>
+					                    <field name="bien_so_xe_id" required='1' options="{'no_create': True}"/>
+					                    <field name="sotien_dathu"/>
+					                    <field name="ngaychay_cuoi" readonly='1'/>
+			                        	<field name="kich_hoat"/>
+			                        </tree>
+		                        </field>
+	                        </group>
+	                    </form>
+					</field>	  
 	        	</xpath>
             </field>
         </record>
+        
+        <!-- Lịch sử ký quỹ BĐĐH -->
+		<record id="view_lichsu_kyquy_bddh_filter" model="ir.ui.view">
+            <field name="name">lichsu.kyquy.bddh.select</field>
+            <field name="model">lichsu.kyquy.bddh</field>
+            <field name="arch" type="xml">
+                <search string="Lịch sử ký quỹ BĐĐH">
+                	<field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="chinhanh_id"/>
+                    <field name="bien_so_xe_id"/>
+                    <field name="trang_thai"/>
+                    <field name="noidung_loi"/>
+                    <group expand="0" string="Group By">
+                    	<filter name="group_by_partner_id" string="Đối tượng" context="{'group_by':'partner_id'}"/>
+                    	<filter name="group_by_chinhanh_id" string="Chi nhánh" context="{'group_by':'chinhanh_id'}"/>
+                    	<filter name="group_by_bien_so_xe_id" string="Biển số xe" context="{'group_by':'bien_so_xe_id'}"/>
+                    	<filter name="group_by_trang_thai" string="Trạng thái" context="{'group_by':'trang_thai'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+    	<record id="view_lichsu_kyquy_bddh_tree" model="ir.ui.view">
+            <field name="name">lichsu.kyquy.bddh.tree</field>
+            <field name="model">lichsu.kyquy.bddh</field>
+            <field name="arch" type="xml">
+                <tree string="Lịch sử ký quỹ BĐĐH" create='false' edit='false' delete='false'>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="chinhanh_id"/>
+                    <field name="bien_so_xe_id"/>
+                    <field name="trang_thai"/>
+                    <field name="noidung_loi"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_lichsu_kyquy_bddh" model="ir.actions.act_window">
+            <field name="name">Lịch sử ký quỹ BĐĐH</field>
+            <field name="res_model">lichsu.kyquy.bddh</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_lichsu_kyquy_bddh_tree"/>
+        </record>
+        
     </data>
 </openerp>
