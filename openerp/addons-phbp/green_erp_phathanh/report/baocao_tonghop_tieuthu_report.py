@@ -150,6 +150,7 @@ class Parser(report_sxw.rml_parse):
         total_sl_phathanh = 0
         total_ve_e = 0
         total_sl_tieuthu = 0
+        total_sl_tonkho = 0
         total_thanhtien_tieuthu = 0
         ve = 0
         for dl in self.pool.get('phanphoi.tt.line').browse(self.cr,self.uid,dl_ids):
@@ -180,6 +181,7 @@ class Parser(report_sxw.rml_parse):
             thanhtien_ve_in = sl_ve_in*ve
         
             total_sl_phathanh += sl_phathanh
+            total_sl_tonkho = sl_ve_in - total_sl_phathanh
             total_ve_e += ve_e
             total_sl_tieuthu += sl_tieuthu
             total_thanhtien_tieuthu += thanhtien_tieuthu
@@ -199,8 +201,8 @@ class Parser(report_sxw.rml_parse):
         mang.append({
                     'stt': u'2',
                     'chi_tieu': u'Số lượng vé chưa đưa vào lưu thông (vé tồn kho)', 
-                    'so_luong': '',
-                    'gia_tri': '',
+                    'so_luong': total_sl_tonkho,
+                    'gia_tri': total_sl_tonkho*ve,
                          })
         
         mang.append({

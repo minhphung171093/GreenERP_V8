@@ -58,6 +58,7 @@ class Parser(report_sxw.rml_parse):
             'convert_f_amount': self.convert_f_amount,
             'get_lines': self.get_lines,
             'get_in': self.get_in,
+            'get_ton': self.get_ton,
         })
         
     def convert_date(self, date):
@@ -256,5 +257,36 @@ class Parser(report_sxw.rml_parse):
                              })
                     
         return mang
+    
+    def get_ton(self):
+        wizard_data = self.localcontext['data']['form']
+        loai_ve_id = wizard_data['loai_ve_id']
+        ky_ve_id = wizard_data['ky_ve_id']
+        ton = 0
+        total_phathanh = 0
+        sql = '''
+            select sove_sau_dc, phanphoi_line_id
+            from dieuchinh_line where dieuchinh_id in (select id from dieuchinh_phanphoi_ve where ky_ve_id = %s and loai_ve_id = %s order by create_date desc limit 1)
+            
+        '''%(ky_ve_id[0],loai_ve_id[0])
+        self.cr.execute(sql)
+        dieuchinh_ids = self.cr.fetchall()
+        sove_sau_dc_ids = [r[0] for r in dieuchinh_ids]
+        phanphoi_ids = [r[1] for r in dieuchinh_ids]
+        if phanphoi_ids:
+            for co_dc in sove_sau_dc_ids:
+                total_phathanh += co_dc
+            phanphoi_ids = str(phanphoi_ids).replace('[', '(')
+            phanphoi_ids = str(phanphoi_ids).replace(']', ')')
+            sql = '''
+                select case when sum(sove_kynay)!=0 then sum(sove_kynay) else 0 end sove_kynay
+                from phanphoi_tt_line where phanphoi_tt_id in (select id from phanphoi_truyenthong where ky_ve_id = %s and loai_ve_id = %s)
+                and id not in %s
+            '''%(ky_ve_id[0],loai_ve_id[0],phanphoi_ids)
+            self.cr.execute(sql)
+            ko_dc = self.cr.dictfetchone()['sove_kynay']
+            total_phathanh += ko_dc
+        ton = self.get_in()-total_phathanh
+        return ton
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

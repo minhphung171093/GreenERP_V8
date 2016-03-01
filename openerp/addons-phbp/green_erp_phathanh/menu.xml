@@ -28,7 +28,7 @@
 					parent="menu_quanly_phanphoi" sequence="4"/>
 				<menuitem id="menu_action_doanhthu_theo_loaihinh"
 					action="action_doanhthu_theo_loaihinh"
-					name="KH doanh thu theo loại hình"
+					name="KH doanh thu"
 					parent="menu_quanly_phanphoi" sequence="7"/>
 				<menuitem id="menu_action_nhap_ve"
 					action="action_nhap_ve"
@@ -36,7 +36,7 @@
 					parent="menu_quanly_phanphoi" sequence="8"/>
 				<menuitem id="menu_action_xuat_ve"
 					action="action_xuat_ve"
-					name="Xuất vé"
+					name="Xuất vé số tự chọn"
 					parent="menu_quanly_phanphoi" sequence="9"/>					
 			<menuitem id="menu_baocao"
 				name="Báo cáo"
@@ -47,7 +47,7 @@
 					parent="menu_baocao" sequence="1"/>
 				<menuitem id="menu_action_baocao_tieuthu_kyve"
 					action="action_baocao_tieuthu_kyve"
-					name="Tiêu thụ kỳ vé"
+					name="Tiêu thụ theo kỳ vé"
 					parent="menu_baocao" sequence="2"/>
 				<menuitem id="menu_action_baocao_thitruong_kyve"
 					action="action_baocao_thitruong_kyve"

@@ -79,7 +79,7 @@ class phanphoi_tt_line(osv.osv):
         'socay_kynay': fields.float('Số cây kỳ này',digits=(16,0)),
         'sove_kynay': fields.float('Số vé kỳ này',digits=(16,0)),
         'phanphoi_line_kytruoc_id': fields.many2one('phanphoi.tt.line','Phan phoi line ky truoc'),
-        'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)',
+        'tang_giam':fields.function(_tang_giam, string='Tăng, giảm (cây)', digits=(16,0),
                                     type='float', store={
                                                 'phanphoi.tt.line':(lambda self, cr, uid, ids, c={}: ids, ['socay_kytruoc','socay_kynay'], 10),
                                             }),
@@ -170,24 +170,24 @@ class dieuchinh_phanphoi_ve(osv.osv):
         'ngay_ph': fields.date('Ngày phát hành',required = True),
         'ngay_dc': fields.date('Ngày điều chỉnh',required = True),
         'dieuchinh_line': fields.one2many('dieuchinh.line','dieuchinh_id','Dieu Chinh line'),
-        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng số vé được duyệt',type='float',
+        'tong_ve_pp': fields.function(amount_all, multi='sums',string='Tổng số vé được duyệt',type='float',digits=(16,0),
                                          store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
-        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng số vé điều chỉnh',type='float',
+        'tong_ve_dc': fields.function(amount_all, multi='sums',string='Tổng số vé điều chỉnh',type='float',digits=(16,0),
                                       store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
-        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='float',
+        'tong_ve_sau_dc': fields.function(amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='float',digits=(16,0),
                                         store={
                 'dieuchinh.phanphoi.ve': (lambda self, cr, uid, ids, c={}: ids, ['dieuchinh_line'], 10),
                 'dieuchinh.line': (_get_dieuchinh, ['sove_duocduyet', 'sove_dc'], 10)}),
                 
-        'total_ve_pp': fields.function(total_amount_all, multi='sums',string='Tổng số vé phân phối theo KH',type='float',
+        'total_ve_pp': fields.function(total_amount_all, multi='sums',string='Tổng số vé phân phối theo KH',type='float',digits=(16,0),
                                          store=True),
-        'total_ve_dc': fields.function(total_amount_all, multi='sums',string='Số vé điều chỉnh so với kế hoạch',type='float',
+        'total_ve_dc': fields.function(total_amount_all, multi='sums',string='Số vé điều chỉnh so với kế hoạch',type='float',digits=(16,0),
                                       store=True),
-        'total_ve_sau_dc': fields.function(total_amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='float',
+        'total_ve_sau_dc': fields.function(total_amount_all, multi='sums',string='Tổng số vé sau điều chỉnh',type='float',digits=(16,0),
                                         store=True),
                 }
     
@@ -234,7 +234,7 @@ class dieuchinh_line(osv.osv):
         'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
         'sove_duocduyet': fields.float('Số vé được duyệt', readonly=True,digits=(16,0)),
         'sove_dc': fields.float('Số vé điều chỉnh',digits=(16,0)),
-        'sove_sau_dc':fields.function(_total_ve, string='Số vé sau điều chỉnh',
+        'sove_sau_dc':fields.function(_total_ve, string='Số vé sau điều chỉnh',digits=(16,0),
                                     type='float', store={
                                                 'dieuchinh.line':(lambda self, cr, uid, ids, c={}: ids, ['sove_duocduyet','sove_dc'], 10),
                                             }),
@@ -336,11 +336,11 @@ class nhap_ve_e_line(osv.osv):
         've_e_theo_bangke': fields.float('Số vé ế theo bảng kê',digits=(16,0)),
         'thuc_kiem': fields.float('Thực kiểm',digits=(16,0)),
         'phanphoi_line_id': fields.many2one('phanphoi.tt.line','Phan Phoi Line'),
-        'kiem_dem_thieu':fields.function(_thieu_thua, string='Kiểm đếm (Thiếu)',multi='sums',
+        'kiem_dem_thieu':fields.function(_thieu_thua, string='Kiểm đếm (Thiếu)',multi='sums',digits=(16,0),
                                     type='float', store={
                                                 'nhap.ve.e.line':(lambda self, cr, uid, ids, c={}: ids, ['ve_e_theo_bangke','thuc_kiem'], 10),
                                             }),
-        'kiem_dem_thua':fields.function(_thieu_thua, string='Kiểm đếm (Thừa)',multi='sums',
+        'kiem_dem_thua':fields.function(_thieu_thua, string='Kiểm đếm (Thừa)',multi='sums',digits=(16,0),
                                     type='float', store={
                                                 'nhap.ve.e.line':(lambda self, cr, uid, ids, c={}: ids, ['ve_e_theo_bangke','thuc_kiem'], 10),
                                             }),
@@ -440,12 +440,12 @@ class kh_in_ve_tt(osv.osv):
         'year':fields.char('Năm',size = 4,required=True),
         'sl_in_moi_dot':fields.char('Số lượng vé in mỗi đợt',size = 1024),
         'loai_ve_id': fields.many2one('loai.ve','Loại vé',required = True),
-        'tong_so_ve_in':fields.function(_tinh_tong_so_ve_in, string='Tổng số vé in trong tháng',
+        'tong_so_ve_in':fields.function(_tinh_tong_so_ve_in, string='Tổng số vé in trong tháng',digits=(16,0),
                                     type='float', store={
                                                 'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
                                                 'kh.in.ve.tt.line':(_get_order, ['sl_ve_in'], 10),
                                             }),
-        'tong_so_dot_in':fields.function(_tinh_tong_so_dot_in, string='Tổng số đợt in',
+        'tong_so_dot_in':fields.function(_tinh_tong_so_dot_in, string='Tổng số đợt in',digits=(16,0),
                                     type='float', store={
                                                 'kh.in.ve.tt': (lambda self, cr, uid, ids, c={}: ids, ['kh_in_ve_tt_line'], 10),         
                                                 'kh.in.ve.tt.line':(_get_order, [], 10),

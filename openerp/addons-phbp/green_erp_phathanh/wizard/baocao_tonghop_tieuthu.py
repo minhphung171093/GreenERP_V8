@@ -48,6 +48,9 @@ class baocao_tonghop_tieuthu(osv.osv_memory):
         'ngay_mo_thuong': fields.date('Ngày mở thưởng'),
         'name':fields.char('Thuộc', size = 1024,readonly = True)
                 }
+    _defaults = {
+        'loai_ve': 'tt',
+                 }
     def onchange_ky_ve_id(self, cr, uid, ids, ky_ve_id=False,ngay_mo_thuong=False):
         vals = {}
         if ky_ve_id :
