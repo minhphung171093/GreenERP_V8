@@ -45,7 +45,7 @@
 		            	<group col="4" colspan="4">
 	                		<field name="name" colspan="1"/>
 		                    <field name="ten" colspan="1"/>
-		                    <field name="tinh_tp_id" colspan="1"/>
+		                    <field name="tinh_tp_id" colspan="1" options="{'no_create':True}"/>
 	                    	<field name="lat" colspan="1" />
 	                        <field name="lng" colspan="1" />
 	                        <field name="radius" colspan="1" invisible="1" />
@@ -94,7 +94,7 @@
             <field name="arch" type="xml">
                 <tree string="Phường/Xã" editable='top'>
                     <field name="name" />
-                    <field name="quan_huyen_id" options="{'create': false, 'create_edit': false}"/>
+                    <field name="quan_huyen_id" options="{'no_create':True}"/>
                 </tree>
             </field>
         </record>  
