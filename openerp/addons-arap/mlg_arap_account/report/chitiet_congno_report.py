@@ -33,6 +33,7 @@ class Parser(report_sxw.rml_parse):
         self.tongcong_no = 0
         self.tongcong_co = 0
         self.tongcong_congno = 0
+        self.nocuoiky = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -59,6 +60,7 @@ class Parser(report_sxw.rml_parse):
             'get_tongcong_no': self.get_tongcong_no,
             'get_tongcong_co': self.get_tongcong_co,
             'get_tongcong_congno': self.get_tongcong_congno,
+            'get_only_payment': self.get_only_payment,
         })
         
     def convert_date(self, date):
@@ -365,7 +367,9 @@ class Parser(report_sxw.rml_parse):
                             and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
                 '''%(mlg_type,chinhanh_id[0],partner_id,period_id[0],lcntu['id'])
             self.cr.execute(sql)
-            return self.cr.fetchone()[0]
+            nodauky = self.cr.fetchone()[0]
+            self.nocuoiky += nodauky
+            return nodauky
         return 0
     
     def get_tongcongno(self):
@@ -412,46 +416,52 @@ class Parser(report_sxw.rml_parse):
         return congco
     
     def get_nocuoiky(self, partner_id,lcntu):
-        wizard_data = self.localcontext['data']['form']
-        if partner_id:
-            period_from_id = wizard_data['period_from_id']
-            period_to_id = wizard_data['period_to_id']
-            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-            chinhanh_id = wizard_data['chinhanh_id']
-            mlg_type = wizard_data['mlg_type']
-            sql = '''
-                select case when sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0)) else 0 end notrongky
-                    from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
-                        and date_invoice between '%s' and '%s' and state in ('open','paid')  
-            '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start,period_to.date_stop)
-            if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
-                sql+='''
-                    and loai_nodoanhthu_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_baohiem' and lcntu['id']:
-                sql+='''
-                    and loai_baohiem_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_vipham' and lcntu['id']:
-                sql+='''
-                    and loai_vipham_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='maxuong' and lcntu['id']:
-                sql+='''
-                    and ma_xuong_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_tamung' and lcntu['id']:
-                sql+='''
-                    and loai_tamung_id = %s 
-                '''%(lcntu['id'])
-            self.cr.execute(sql)
-            notrongky = self.cr.fetchone()[0]
-            nodauky = self.get_nodauky(partner_id,lcntu)
-            nocuoiky = nodauky+notrongky
-            self.tongcongno += nocuoiky
-            return nocuoiky
-        return 0
+        nocuoiky = self.nocuoiky
+        self.nocuoiky = 0
+        self.tongcongno += nocuoiky
+        return nocuoiky
+    
+#     def get_nocuoiky(self, partner_id,lcntu):
+#         wizard_data = self.localcontext['data']['form']
+#         if partner_id:
+#             period_from_id = wizard_data['period_from_id']
+#             period_to_id = wizard_data['period_to_id']
+#             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+#             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+#             chinhanh_id = wizard_data['chinhanh_id']
+#             mlg_type = wizard_data['mlg_type']
+#             sql = '''
+#                 select case when sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0)) else 0 end notrongky
+#                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
+#                         and date_invoice between '%s' and '%s' and state in ('open','paid')  
+#             '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start,period_to.date_stop)
+#             if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+#                 sql+='''
+#                     and loai_nodoanhthu_id = %s 
+#                 '''%(lcntu['id'])
+#             if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+#                 sql+='''
+#                     and loai_baohiem_id = %s 
+#                 '''%(lcntu['id'])
+#             if lcntu['loai']=='loai_vipham' and lcntu['id']:
+#                 sql+='''
+#                     and loai_vipham_id = %s 
+#                 '''%(lcntu['id'])
+#             if lcntu['loai']=='maxuong' and lcntu['id']:
+#                 sql+='''
+#                     and ma_xuong_id = %s 
+#                 '''%(lcntu['id'])
+#             if lcntu['loai']=='loai_tamung' and lcntu['id']:
+#                 sql+='''
+#                     and loai_tamung_id = %s 
+#                 '''%(lcntu['id'])
+#             self.cr.execute(sql)
+#             notrongky = self.cr.fetchone()[0]
+#             nodauky = self.get_nodauky(partner_id,lcntu)
+#             nocuoiky = nodauky+notrongky
+#             self.tongcongno += nocuoiky
+#             return nocuoiky
+#         return 0
     
     def get_chitiet_congno(self, partner_id, lcntu):
         wizard_data = self.localcontext['data']['form']
@@ -495,22 +505,150 @@ class Parser(report_sxw.rml_parse):
             '''%(lcntu['id'])
         self.cr.execute(sql)
         lines = self.cr.dictfetchall()
-        for line in lines:
-            self.tongno += line['no']
-            self.tongco += line['co']
-            self.congno += line['no']
-            self.congco += line['co']
+        
+        sql = '''
+            select case when sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0))!=0 then sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)) else 0 end sotienno
+            
+                from account_invoice ai
+                left join res_partner rp on rp.id = ai.partner_id
+                left join bien_so_xe bsx on ai.bien_so_xe_id=bsx.id
+                
+                where ai.partner_id=%s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
+                    and ai.mlg_type='%s' 
+        '''%(partner_id,period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and ai.loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and ai.loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and ai.loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ai.ma_xuong_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and ai.loai_tamung_id = %s 
+            '''%(lcntu['id'])
+        self.cr.execute(sql)
+        congno = self.cr.fetchone()[0]
+        self.tongno += congno
+        self.congno += congno
+        self.nocuoiky += congno
+        
         return lines
     
     def get_payment(self, invoice_id):
         if not invoice_id:
             return []
+        wizard_data = self.localcontext['data']['form']
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
-        return invoice.payment_ids
-            
+        pays = []
+        for pay in invoice.payment_ids:
+            if pay.date >= period_from.date_start and pay.date<=period_to.date_stop:
+                pays.append(pay)
+                self.nocuoiky = self.nocuoiky-pay.credit
+        return pays
+    
+    def get_only_payment(self, partner_id, lcntu):
+        wizard_data = self.localcontext['data']['form']
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        chinhanh_id = wizard_data['chinhanh_id']
+        mlg_type = wizard_data['mlg_type']
+        sql = '''
+            select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                from account_move_line
+                where move_id in (select move_id from account_voucher
+                    where reference in (select name from account_invoice
+                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' 
+        '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ma_xuong_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and loai_tamung_id = %s 
+            '''%(lcntu['id'])
+        sql += ''' ))
+                and date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+        self.cr.execute(sql)
+        co = self.cr.fetchone()[0]
+        self.tongco += co
+        self.congco += co
+        self.nocuoiky = self.nocuoiky-co
+        
+        sql = '''
+            select date,fusion_id,credit,ref,loai_giaodich,note_giaodich
+                from account_move_line
+                where credit!=0 and move_id in (select move_id from account_voucher
+                    where reference in (select name from account_invoice
+                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' 
+        '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ma_xuong_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and loai_tamung_id = %s 
+            '''%(lcntu['id'])
+        sql += ''' ))
+                and date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+        self.cr.execute(sql)
+        return self.cr.dictfetchall()
+    
     def get_lichsu_thutienlai(self, invoice_id):
         if not invoice_id:
             return []
+        wizard_data = self.localcontext['data']['form']
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
-        return invoice.lichsu_thutienlai_line
+        invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
+        pays = []
+        for pay in invoice.lichsu_thutienlai_line:
+            if pay.ngay >= period_from.date_start and pay.ngay<=period_to.date_stop:
+                pays.append(pay)
+                self.nocuoiky = self.nocuoiky-pay.so_tien
+        return pays
     
