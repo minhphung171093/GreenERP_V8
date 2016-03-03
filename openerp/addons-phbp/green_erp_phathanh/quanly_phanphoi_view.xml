@@ -154,8 +154,8 @@
 	            <form string="Nhập vé ế theo khu vực" version="7.0">
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="ky_ve_id" on_change="onchange_ky_ve_id(ky_ve_id)" context="{'search_ky_ve_e':1}"/>
-		                    <field name="loai_ve_id" />
+	                		<field name="ky_ve_id" options="{'no_create':True}" on_change="onchange_ky_ve_id(ky_ve_id)" context="{'search_ky_ve_e':1}"/>
+		                    <field name="loai_ve_id" options="{'no_create':True}"/>
 		                    <field name="ngay_mo_thuong" readonly="1" />
 			            </group>
 			            <notebook>
@@ -315,7 +315,7 @@
 	            <form string="Kế hoạch doanh thu theo loại hình" version="7.0">
 	            	<sheet>
 		            	<group col="4" colspan="2">
-	                		<field name="loai_hinh_id" on_change = "onchange_loai_hinh_id(loai_hinh_id)"/>
+	                		<field name="loai_hinh_id" options="{'no_create':True}" on_change = "onchange_loai_hinh_id(loai_hinh_id)"/>
 	                		<field name="year" />
 			            </group>
 			            <notebook>
