@@ -97,11 +97,12 @@ class phanphoi_tt_line(osv.osv):
         for dl in self.browse(cr, uid, ids, context=context):
             dl_ids = self.search(cr,uid,[('id','!=',dl.id),('daily_id','=',dl.daily_id.id),('phanphoi_tt_id','=',dl.phanphoi_tt_id.id)])
             if dl_ids:
-                raise osv.except_osv(_('Warning!'),_('Bạn không được chọn trùng đại lý trong cùng một kỳ vé!'))
+                return False
+#                 raise osv.except_osv(_('Warning!'),_('Bạn không được chọn trùng đại lý trong cùng một kỳ vé!'))
         return True
          
     _constraints = [
-        (_check_daily_id, '', ['daily_id']),
+        (_check_daily_id, 'Bạn không được chọn trùng đại lý trong cùng một kỳ vé!', ['daily_id']),
     ]
     
 phanphoi_tt_line()
@@ -244,11 +245,12 @@ class dieuchinh_line(osv.osv):
         for dl in self.browse(cr, uid, ids, context=context):
             dl_ids = self.search(cr,uid,[('id','!=',dl.id),('daily_id','=',dl.daily_id.id),('dieuchinh_id','=',dl.dieuchinh_id.id)])
             if dl_ids:
-                raise osv.except_osv(_('Warning!'),_('Bạn không được chọn trùng đại lý trong cùng một kỳ vé!'))
+                return False
+#                 raise osv.except_osv(_('Warning!'),_('Bạn không được chọn trùng đại lý trong cùng một kỳ vé!'))
         return True
          
     _constraints = [
-        (_check_daily_id, '', ['daily_id']),
+        (_check_daily_id, 'Bạn không được chọn trùng đại lý trong cùng một kỳ vé!', ['daily_id']),
     ]
     
     def onchange_daily_dc_id(self, cr, uid, ids, daily_id=False, ky_ve_id=False):
