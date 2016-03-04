@@ -38,28 +38,5 @@
 					name="Nguồn vốn"
 					parent="menu_danh_muc" sequence="30"/>	
 					
-			<menuitem id="menu_dao_tao"
-				name="Đào tạo"
-				parent="cauhinh_root" sequence="5"/>
-				
-				<menuitem id="menu_action_lop_hoc"
-					action="action_lop_hoc"
-					name="Lớp"
-					parent="menu_dao_tao" sequence="1"/>	
-				
-				<menuitem id="menu_action_giang_vien"
-					action="action_giang_vien"
-					name="Giảng viên"
-					parent="menu_dao_tao" sequence="5"/>
-					
-				<menuitem id="menu_action_hoso_nangluc"
-					action="action_hoso_nangluc"
-					name="Hồ sơ năng lực"
-					parent="menu_dao_tao" sequence="10"/>
-					
-				<menuitem id="menu_action_donvi_daotao"
-					action="action_donvi_daotao"
-					name="Đơn vị đào tạo"
-					parent="menu_dao_tao" sequence="15"/>
     </data>	
 </openerp>

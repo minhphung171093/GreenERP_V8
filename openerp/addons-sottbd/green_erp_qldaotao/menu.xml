@@ -1,5 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+    	<menuitem id="daotao_root"
+			name="Đào Tạo" sequence="174"/>
+			
+		<menuitem id="menu_ke_hoach_dt"
+			name="Quản lý Kế hoạch đào tạo"
+			parent="daotao_root" sequence="1"/>
+			
+			<menuitem id="menu_action_ke_hoach_dt"
+				action="action_ke_hoach_dt"
+				name="Kế hoạch đào tạo"
+				parent="menu_ke_hoach_dt" sequence="1"/>
+			
+		<menuitem id="menu_dv_dt"
+			name="Quản lý Đơn vị đào tạo"
+			parent="daotao_root" sequence="3"/>
+		
+			<menuitem id="menu_action_doi_tac_dvdt"
+				action="action_doi_tac_dvdt"
+				name="Đơn vị đào tạo"
+				parent="menu_dv_dt" sequence="1"/>
+			
+			<menuitem id="menu_action_hoso_nangluc"
+				action="action_hoso_nangluc"
+				name="Hồ sơ năng lực"
+				parent="menu_dv_dt" sequence="3"/>
+			
+		<menuitem id="menu_khoa_dt"
+			name="Quản lý Khóa đào tạo"
+			parent="daotao_root" sequence="5"/>
+			
+			<menuitem id="menu_action_giang_vien"
+				action="action_giang_vien"
+				name="Giảng viên"
+				parent="menu_khoa_dt" sequence="1"/>
+				
+			<menuitem id="menu_action_hoc_vien"
+				action="action_hoc_vien"
+				name="Học viên"
+				parent="menu_khoa_dt" sequence="3"/>
+				
+			<menuitem id="menu_action_lop_hoc"
+				action="action_lop_hoc"
+				name="Lớp học"
+				parent="menu_khoa_dt" sequence="5"/>	
+				
+			<menuitem id="menu_action_lop_hoc_line_form"
+				action="action_lop_hoc_line_form"
+				name="Quản lý lớp học"
+				parent="menu_khoa_dt" sequence="7"/>	
+				
+			<menuitem id="menu_action_tkb_calendar"
+				action="action_tkb_calendar"
+				name="Thời Khóa Biểu"
+				parent="menu_khoa_dt" sequence="9"/>
+				
+			<menuitem id="menu_action_lich_gv_calendar"
+				action="action_lich_gv_calendar"
+				name="Lịch Giảng Viên"
+				parent="menu_khoa_dt" sequence="11"/>
+			
+		
     </data>	
 </openerp>

@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+    	<menuitem id="doanh_nghiep_root"
+			name="Doanh Nghiệp" sequence="173"/>
+			
+		<menuitem id="menu_doanh_nghiep"
+			name="Quản lý Doanh nghiệp"
+			parent="doanh_nghiep_root" sequence="1"/>
+			
+			<menuitem id="menu_action_doi_tac_dnghiep"
+				action="action_doi_tac_dnghiep"
+				name="Thông tin Doanh Nghiệp"
+				parent="menu_doanh_nghiep" sequence="1"/>
     </data>	
 </openerp>

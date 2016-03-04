@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        					
+        
+<!-- Doanh nghiệp -->
+        <record model="ir.ui.view" id="doi_tac_dnghiep_tree">
+            <field name="name">doi.tac.dnghiep.tree</field>
+            <field name="model">doi.tac</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Doanh nghiệp">
+                    <field name="name" />
+                    <!--<field name="so_nha" />
+                    <field name="tinh_tp_id" />
+                    <field name="quan_huyen_id" />
+                    <field name="phuong_xa_id" />
+                    <field name="khu_pho_id" />-->
+                    <field name="dien_thoai" />
+                    <field name="fax" />
+                    <field name="hoso_id" />
+                    <field name="doanh_nghiep" invisible="1"/>
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="doi_tac_dnghiep_form">
+            <field name="name">doi.tac.dnghiep.form</field>
+            <field name="model">doi.tac</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Doanh nghiệp" version="7.0">
+	                <sheet>
+                		<group col="4"  colspan="2" string="Thông tin chung">
+		            		<field name="name" />
+		            		<field name="dia_chi"/>
+		                    <field name="dien_thoai"/>
+		                    <field name="fax"/>
+		                    <field name="hoso_id" options="{'no_create': true}"/>
+		                    <field name="tt_dk" />
+		            		<field name="nganh_lq"/>
+		                    <field name="du_an"/>
+		                    <field name="mo_hinh"/>
+		                    <field name="kn_tr_khai" />
+		            		<field name="dtac_khang"/>
+		                    <field name="san_pham"/>
+		                    <field name="cdo_csach"/>
+		                    <field name="doanh_nghiep" invisible="1"/>
+                		</group>
+                		<notebook>
+                			<page>
+                				<group col="4"  colspan="2" string="Vị trí">
+				            		<field name="lat"/>
+				            		<field name="lng"/>
+				            		<field name="radius" invisible="1"/>
+				                    <field name="map" widget="gmap" colspan="4" nolabel="1"/>
+		                		</group>
+                			</page>
+                		</notebook>
+                		<!--<group col="4"  string="Địa chỉ">
+                			<field name="so_nha" />
+							<field name="tinh_tp_id" options="{'no_create': true}"/>                   
+							<field name="quan_huyen_id" options="{'no_create': true}"/>
+							<field name="phuong_xa_id" options="{'no_create': true}" domain="[('quan_huyen_id','=',quan_huyen_id)]" />
+							<field name="khu_pho_id" options="{'no_create': true}" domain="[('phuong_xa_id','=',phuong_xa_id)]" />
+                		</group>-->
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_doi_tac_dnghiep">
+            <field name="name">Doanh nghiệp</field>
+            <field name="res_model">doi.tac</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_doanh_nghiep': 1}</field>
+            <field name="domain">[('doanh_nghiep','=',True)]</field>
+        </record>
+        
+        <record id="action_doi_tac_dnghiep1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="doi_tac_dnghiep_tree"/>
+            <field name="act_window_id" ref="action_doi_tac_dnghiep"/>
+        </record>
+        
+        <record id="action_doi_tac_dvdt2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="doi_tac_dnghiep_form"/>
+            <field name="act_window_id" ref="action_doi_tac_dnghiep"/>
+        </record>
+        
+    </data>	
+</openerp>

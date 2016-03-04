@@ -51,7 +51,6 @@ you need to do is just put the next string to the view.
     'data': [
         'views/template.xml',
         'views/gmap_view.xml',
-        'models_view.xml',
     ],
     'update_xml': [],
     'active': True,

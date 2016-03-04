@@ -74,33 +74,11 @@ class nguon_von(osv.osv):
                 }
 nguon_von()
 
-class lop_hoc(osv.osv):
-    _name = "lop.hoc"
-    _columns = {
-        'name': fields.char('Tên lớp',size = 1024, required = True),
-                }
-lop_hoc()
-
-class giang_vien(osv.osv):
-    _name = "giang.vien"
-    _columns = {
-        'name': fields.char('Tên giảng viên',size = 1024, required = True),
-                }
-giang_vien()
-
-class hoso_nangluc(osv.osv):
-    _name = "hoso.nangluc"
+class doi_tac(osv.osv):
+    _name = "doi.tac"
     _columns = {
         'name': fields.char('Tên',size = 1024, required = True),
-                }
-hoso_nangluc()
-
-class donvi_daotao(osv.osv):
-    _name = "donvi.daotao"
-    _columns = {
-        'name': fields.char('Tên đơn vị',size = 1024, required = True),
         'so_nha': fields.char('Số nhà',size = 50),
-#         'ngay_cap': fields.date('Thời gian cấp', required = True),
         'tinh_tp_id': fields.many2one('tinh.tp','Tỉnh/TP'),
         'phuong_xa_id': fields.many2one('phuong.xa','Phường (xã)'),
         'khu_pho_id': fields.many2one('khu.pho','Khu phố (ấp)'),
@@ -108,7 +86,23 @@ class donvi_daotao(osv.osv):
         'dien_thoai': fields.char('Điện thoại',size = 50),
         'fax': fields.char('Fax',size = 50),
         'hoso_id': fields.many2one('hoso.nangluc','Hồ sơ năng lực'),
-        'giang_vien_ids': fields.many2many('giang.vien', 'giangvien_donvi_ref', 'donvi_id', 'giangvien_id', 'Giảng viên'),
+        'giang_vien_ids': fields.many2many('gv.hv', 'giangvien_donvi_ref', 'donvi_id', 'giangvien_id', 'Giảng viên'),
+        'doanh_nghiep': fields.boolean('Doanh Nghiệp'),
+        'dv_dtao': fields.boolean('Đơn vị đào tạo'),
+        'dia_chi': fields.char('Địa chỉ',size = 1024),
+        'tt_dk': fields.char('Thông tin đăng ký',size = 1024),
+        'nganh_lq': fields.char('Ngành nghề liên quan',size = 1024),
+        'du_an': fields.char('Các dự án, mua sắm thường xuyên',size = 1024),
+        'mo_hinh': fields.char('Mô hình tổ chức',size = 1024),
+        'kn_tr_khai': fields.char('Kinh nghiệm triển khai',size = 1024),
+        'dtac_khang': fields.char('Danh sách đối tác, khách hàng lớn',size = 1024),
+        'san_pham': fields.char('Danh mục các sản phẩm cung cấp, phân phối chính',size = 1024),
+        'cdo_csach': fields.char('Chế độ, chính sách của doanh nghiệp',size = 1024),
+        'lat': fields.float(u'Vĩ độ', digits=(9, 6)),
+        'lng': fields.float(u'Kinh độ', digits=(9, 6)),
+        'radius': fields.float(u'Radius', digits=(9, 16)),
+        'map': fields.dummy(),
                 }
-donvi_daotao()
+doi_tac()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
