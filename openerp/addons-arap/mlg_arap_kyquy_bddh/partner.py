@@ -47,6 +47,8 @@ class chinhanhline_biensoxe_kyquybddh(osv.osv):
         for kq in self.browse(cr, uid, ids, context=context):
             res[kq.id] = {
                 'sotien_dathu': 0,
+                'sotien_dagiam': 0,
+                'sotien_conlai': 0,
             }
             sql = '''
                 select case when sum(sotien_conlai)!=0 then sum(sotien_conlai) else 0 end sotien
@@ -54,7 +56,17 @@ class chinhanhline_biensoxe_kyquybddh(osv.osv):
                     where partner_id=%s and chinhanh_id=%s and state='paid' and bien_so_xe_id=%s
             '''%(kq.chinhanhline_id.partner_id.id,kq.chinhanhline_id.chinhanh_id.id,kq.bien_so_xe_id.id)
             cr.execute(sql)
+            res[kq.id]['sotien_conlai'] = cr.fetchone()[0]
+            
+            sql = '''
+                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+                    from thu_ky_quy
+                    where partner_id=%s and chinhanh_id=%s and state='paid' and bien_so_xe_id=%s
+            '''%(kq.chinhanhline_id.partner_id.id,kq.chinhanhline_id.chinhanh_id.id,kq.bien_so_xe_id.id)
+            cr.execute(sql)
             res[kq.id]['sotien_dathu'] = cr.fetchone()[0]
+            
+            res[kq.id]['sotien_dagiam'] = res[kq.id]['sotien_dathu'] - res[kq.id]['sotien_conlai']
         return res
     
     def _get_chi_nhanh_line(self, cr, uid, ids, context=None):
@@ -85,6 +97,19 @@ class chinhanhline_biensoxe_kyquybddh(osv.osv):
                 'chi.nhanh.line': (_get_chi_nhanh_line, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
                 'thu.ky.quy': (_get_thu_kyquy, ['state', 'so_tien', 'partner_id','chinhanh_id','sotien_conlai'], 10),
             },type='float',digits=(16,0)),
+        'sotien_dagiam': fields.function(_get_sotien, string='Số tiền đã giảm', multi='sotien',
+            store={
+                'chinhanhline.biensoxe.kyquybddh': (lambda self, cr, uid, ids, c={}: ids, ['bien_so_xe_id','ngaychay_cuoi','kich_hoat'], 10),
+                'chi.nhanh.line': (_get_chi_nhanh_line, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
+                'thu.ky.quy': (_get_thu_kyquy, ['state', 'so_tien', 'partner_id','chinhanh_id','sotien_conlai'], 10),
+            },type='float',digits=(16,0)),
+        'sotien_conlai': fields.function(_get_sotien, string='Số tiền còn lại', multi='sotien',
+            store={
+                'chinhanhline.biensoxe.kyquybddh': (lambda self, cr, uid, ids, c={}: ids, ['bien_so_xe_id','ngaychay_cuoi','kich_hoat'], 10),
+                'chi.nhanh.line': (_get_chi_nhanh_line, ['sotien_phaithu','sotien_phaithu_dinhky'], 10),
+                'thu.ky.quy': (_get_thu_kyquy, ['state', 'so_tien', 'partner_id','chinhanh_id','sotien_conlai'], 10),
+            },type='float',digits=(16,0)),
+        'account_move_ids': fields.many2many('account.move', 'cnlbsxkqbddh_accountmove_ref', 'cnlbsxkqbddh_id', 'accountmove_id', 'Account Moves'),
     }
     
     _defaults = {

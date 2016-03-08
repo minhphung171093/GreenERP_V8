@@ -30,6 +30,8 @@
 		                        	<tree editable='bottom'>
 					                    <field name="bien_so_xe_id" required='1' options="{'no_create': True}"/>
 					                    <field name="sotien_dathu"/>
+					                    <field name="sotien_dagiam"/>
+					                    <field name="sotien_conlai"/>
 					                    <field name="ngaychay_cuoi" readonly='1'/>
 			                        	<field name="kich_hoat"/>
 			                        </tree>

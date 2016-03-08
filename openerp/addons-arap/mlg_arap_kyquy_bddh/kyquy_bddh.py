@@ -27,6 +27,7 @@ from openerp.exceptions import except_orm, Warning, RedirectWarning
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from openerp import netsvc
+from openerp import SUPERUSER_ID
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -79,6 +80,7 @@ class cauhinh_kyquy_bddh(osv.osv):
         try:
             kq_obj = self.pool.get('chinhanhline.biensoxe.kyquybddh')
             kyquy_obj = self.pool.get('thu.ky.quy')
+            account_move_obj = self.pool.get('account.move')
             sql = '''
                 select id from loai_ky_quy where upper(code)='KY_QUY_DH_BD' limit 1
             '''
@@ -97,8 +99,8 @@ class cauhinh_kyquy_bddh(osv.osv):
                 cr.execute(sql)
                 kq_ids = [r[0] for r in cr.fetchall()]
                 for kq in kq_obj.browse(cr, uid, kq_ids):
-                    sotien_dathu = kq.sotien_dathu
-                    if sotien_dathu>=line['so_tien']:
+                    sotien_conlai = kq.sotien_conlai
+                    if sotien_conlai>=line['so_tien']:
 #                         vals={
 #                             'chinhanh_id': kq.chinhanhline_id.chinhanh_id.id,
 #                             'loai_doituong': 'nhadautu',
@@ -109,6 +111,47 @@ class cauhinh_kyquy_bddh(osv.osv):
 #                             'bien_so_xe_id': kq.bien_so_xe_id.id,
 #                         }
 #                         kyquy_obj.create(cr, uid, vals) #Chờ xác nhận thông tin sẽ tạo cái gì?
+                        journal_ids = self.pool.get('account.journal').search(cr, uid, [('type','=','cash'),('chinhanh_id','=',kq.chinhanhline_id.chinhanh_id.id)])
+                        sql = '''
+                            select id from account_period where special=False and '%s' between date_start and date_stop
+                        '''%(date_now)
+                        cr.execute(sql)
+                        period_ids = [r[0] for r in cr.fetchall()]
+                        sql = '''
+                            select id from account_account where code='TG_PC'
+                        '''
+                        cr.execute(sql)
+                        account_debit_ids = [r[0] for r in cr.fetchall()]
+                        sql = '''
+                            select id from account_account where id in (select default_credit_account_id from account_journal where id=%s)
+                        '''%(journal_ids[0])
+                        cr.execute(sql)
+                        account_credit_ids = [r[0] for r in cr.fetchall()]
+                        move_line = [
+                            (0, 0, {
+                                'name': '/',
+                                'partner_id': kq.chinhanhline_id.partner_id.id,
+                                'account_id': account_debit_ids[0],
+                                'debit': line['so_tien'],
+                                'credit': 0,
+                            }),
+                            (0, 0, {
+                                'name': '/',
+                                'partner_id': kq.chinhanhline_id.partner_id.id,
+                                'account_id': account_credit_ids[0],
+                                'debit': 0,
+                                'credit': line['so_tien'],
+                            })             
+                        ]
+                        move_vals = {
+                            'name': time.strftime('%Y%m%d%H%M%S'),
+                            'journal_id': journal_ids[0],
+                            'period_id': period_ids[0],
+                            'date': date_now,
+                            'line_id': move_line,
+                        }
+                        account_move_id = account_move_obj.create(cr, uid, move_vals)
+                        kq_obj.write(cr, uid, [kq.id], {'account_move_ids':[(4, account_move_id)]})
 
                         sotien_cantru = line['so_tien']
                         sql = '''
@@ -138,15 +181,23 @@ class cauhinh_kyquy_bddh(osv.osv):
                             'trang_thai': 'Thành công',
                             'noidung_loi': '',
                         })
-                        sotien_dathu=sotien_dathu-line['so_tien']
+                        sotien_conlai=sotien_conlai-line['so_tien']
                         kq_obj.write(cr, uid, [kq.id], {'ngaychay_cuoi':date_now})
-                        if not sotien_dathu:
-                            sotien_dathu = 0
+                        if not sotien_conlai:
+                            sotien_conlai = 0
 #                             kq_obj.write(cr, uid, [kq.id], {'kich_hoat':False}) #nếu cấn trừ hết thì có inactive biển số xe đó k?
                             
                     else:
-                        noidung_loi = 'Số tiền đã thu của biển số xe "%s" không đủ'%(kq.bien_so_xe_id.name)
-                        raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu của biển số xe "%s" không đủ'%(kq.bien_so_xe_id.name))
+                        noidung_loi = 'Số tiền còn lại của biển số xe "%s" không đủ'%(kq.bien_so_xe_id.name)
+                        lichsu_obj.create(cr, uid, {
+                            'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+                            'partner_id': kq.chinhanhline_id.partner_id.id,
+                            'chinhanh_id': kq.chinhanhline_id.chinhanh_id.id,
+                            'bien_so_xe_id': kq.bien_so_xe_id.id,
+                            'trang_thai': 'Lỗi',
+                            'noidung_loi': noidung_loi,
+                        })
+#                         raise osv.except_osv(_('Cảnh báo!'), 'Số tiền còn lại của biển số xe "%s" không đủ'%(kq.bien_so_xe_id.name))
         except Exception, e:
             cr.rollback()
             if not noidung_loi:
