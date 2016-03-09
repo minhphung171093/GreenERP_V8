@@ -54,6 +54,7 @@
                     <field name="noi_ct"/>
             		<field name="dthoai"/>
             		<field name="email"/>
+            		<field name="can_bo"/>
             		<field name="giang_vien" invisible="1"/>
                 </tree>
             </field>
@@ -71,7 +72,9 @@
 		            		<field name="noi_ct"/>
 		            		<field name="dthoai"/>
 		            		<field name="email"/>
+		            		<field name="can_bo"/>
 		            		<field name="giang_vien" invisible="1"/>
+		            		<field name="user_account_id" options="{'no_create': true}" attrs="{'invisible': [('can_bo','=',False)]}"/>
                 		</group>
 	                </sheet>
                 </form>
@@ -101,6 +104,7 @@
             <field name="act_window_id" ref="action_giang_vien"/>
         </record>
         
+        <!-- Tree, form, action thứ 2 cho Giang vien không nhớ rõ muc đích -->
         <record model="ir.ui.view" id="gv_lop_tree">
             <field name="name">gv.lop.tree</field>
             <field name="model">gv.hv</field>
@@ -111,6 +115,7 @@
                     <field name="noi_ct"/>
             		<field name="dthoai"/>
             		<field name="email"/>
+            		<field name="can_bo"/>
             		<field name="giang_vien" invisible="1"/>
                 </tree>
             </field>
@@ -128,7 +133,9 @@
 		            		<field name="noi_ct"/>
 		            		<field name="dthoai"/>
 		            		<field name="email"/>
+		            		<field name="can_bo"/>
 		            		<field name="giang_vien" invisible="1"/>
+		            		<field name="user_account_id" options="{'no_create': true}" attrs="{'invisible': [('can_bo','=',False)]}"/>
                 		</group>
 	                </sheet>
                 </form>
@@ -169,6 +176,7 @@
                     <field name="noi_ct"/>
             		<field name="dthoai"/>
             		<field name="email"/>
+            		<field name="can_bo"/>
             		<field name="hoc_vien" invisible="1"/>
                 </tree>
             </field>
@@ -186,7 +194,9 @@
 		            		<field name="noi_ct"/>
 		            		<field name="dthoai"/>
 		            		<field name="email"/>
+		            		<field name="can_bo"/>
 		            		<field name="hoc_vien" invisible="1"/>
+		            		<field name="user_account_id" options="{'no_create': true}" attrs="{'invisible': [('can_bo','=',False)]}"/>
                 		</group>
 	                </sheet>
                 </form>
@@ -254,7 +264,7 @@
 					            			<group col="4" colspan="2">
 							            		<field name="ten_lop"/>
 							            		<field name="name" required="1"/>
-							            		<field name="giang_vien_id" options="{'no_create': true}" domain="[('giang_vien','=',True)]"/>
+							            		<field name="giang_vien_id" options="{'no_create': true}" domain="[('giang_vien','=',True)]" required="1"/>
 							            	</group>
 							            	<notebook>
 							            		<page string="Danh sách học viên">
@@ -383,13 +393,13 @@
             <field name="view_mode">tree,form</field>
         </record> 
         
-<!-- Quản lí lớp học -->
+<!-- Quản lí lớp học wizard-->
         <record model="ir.ui.view" id="lop_hoc_line_form">
             <field name="name">lop.hoc.line.form</field>
             <field name="model">lop.hoc.line</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Quản lý lớp học" version="7.0">
+                <form string="Thêm học viên" version="7.0">
 	                <sheet>
             			<group col="4" colspan="2">
 		            		<field name="lop_id" options="{'no_create': true}" required="1"/>
@@ -411,7 +421,7 @@
             </field>
         </record>
         <record model="ir.actions.act_window" id="action_lop_hoc_line_form">
-            <field name="name">Quản lý lớp học</field>
+            <field name="name">Thêm học viên</field>
             <field name="res_model">lop.hoc.line</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>

@@ -26,8 +26,9 @@
     'sequence': 1,
     'author': 'nguyentoanit@gmail.com',
     'website' : 'http://incomtech.com/',
-    'depends': ['green_erp_base'],
+    'depends': ['green_erp_qldaotao'],
     'data': [
+        'doi_ngu_view.xml',
         'menu.xml',
     ],
     'installable': True,

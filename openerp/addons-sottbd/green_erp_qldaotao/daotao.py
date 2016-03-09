@@ -48,7 +48,7 @@ class lop_hoc_line(osv.osv):
         'name': fields.date('Ngày'),
         'ten_lop': fields.related('lop_id','name', type='char',string='Tên lớp',readonly=True),
         'lop_id': fields.many2one('lop.hoc','Lớp học',ondelete='cascade'),
-        'hocvien_ids': fields.many2many('gv.hv', 'hocvien_lophoc_ref', 'lop_hoc_id', 'hocvien_id', 'Học viên'),
+        'hocvien_ids': fields.many2many('gv.hv', 'hocvien_lophoc_line_ref', 'line_id', 'hocvien_id', 'Học viên'),
         'giang_vien_id': fields.many2one('gv.hv','Giảng viên'),
                 }
     
@@ -65,6 +65,7 @@ hoso_nangluc()
 
 class gv_hv(osv.osv):
     _name = "gv.hv"
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
     _columns = {
         'name': fields.char('Họ Tên',size = 1024, required = True),
         'noi_ct': fields.char('Nơi công tác',size = 1024),
@@ -72,6 +73,16 @@ class gv_hv(osv.osv):
         'email': fields.char('Email',size = 1024),
         'giang_vien': fields.boolean('Giảng viên'),
         'hoc_vien': fields.boolean('Học viên'),
+        'can_bo': fields.boolean('Cán bộ'),
+        'co_quan': fields.char('Cơ quan',size = 1024, track_visibility='onchange'),
+        'chuc_vu': fields.char('Chức vụ',size = 1024, track_visibility='onchange'),
+        'td_cntt': fields.char('Trình độ CNTT',size = 1024, track_visibility='onchange'),
+        'td_av': fields.char('Trình độ anh văn',size = 1024, track_visibility='onchange'),
+        'cc_cntt': fields.char('Chứng chỉ CNTT',size = 1024),
+        'qt_thamgia': fields.char('Quá trình tham gia các lớp CNTT',size = 1024, track_visibility='onchange'),
+        'hoi_thao': fields.char('Quá trình tham gia hội thảo',size = 1024, track_visibility='onchange'),
+        'ghi_nhan': fields.char('Ghi nhận',size = 1024, track_visibility='onchange'),
+        'user_account_id': fields.many2one('res.users', 'Tài khoản', track_visibility='onchange'),
                 }
 gv_hv()
 

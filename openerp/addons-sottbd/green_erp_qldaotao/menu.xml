@@ -48,7 +48,7 @@
 				
 			<menuitem id="menu_action_lop_hoc_line_form"
 				action="action_lop_hoc_line_form"
-				name="Quản lý lớp học"
+				name="Thêm học viên"
 				parent="menu_khoa_dt" sequence="7"/>	
 				
 			<menuitem id="menu_action_tkb_calendar"

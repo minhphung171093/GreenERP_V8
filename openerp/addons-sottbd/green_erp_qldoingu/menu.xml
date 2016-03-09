@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+    	<menuitem id="doi_ngu_root"
+			name="Đội ngũ" sequence="172"/>
+			
+		<menuitem id="menu_doi_ngu"
+			name="Quản lý Đội ngũ"
+			parent="doi_ngu_root" sequence="1"/>
+			
+			<menuitem id="menu_action_can_bo"
+				action="action_can_bo"
+				name="Thông tin Cán bộ"
+				parent="menu_doi_ngu" sequence="1"/>
+				
+		<menuitem id="menu_ls_dt"
+			name="Quản lý Lịch Sử Đào Tạo"
+			parent="doi_ngu_root" sequence="2"/>
+			
+			<menuitem id="menu_action_ls_daotao"
+				action="action_ls_daotao"
+				name="Lịch Sử Đào Tạo"
+				parent="menu_ls_dt" sequence="1"/>
+				
+		<menuitem id="menu_kthuong_kluat"
+			name="Quản lý Khen Thưởng, Kỉ Luật"
+			parent="doi_ngu_root" sequence="3"/>
+			
+			<menuitem id="menu_action_kthuong_kluat"
+				action="action_kthuong_kluat"
+				name="Khen Thưởng - Kỉ Luật"
+				parent="menu_kthuong_kluat" sequence="1"/>
+				
+		<menuitem id="menu_phu_cap"
+			name="Quản lý Phụ Cấp"
+			parent="doi_ngu_root" sequence="4"/>
+			
+			<menuitem id="menu_action_phu_cap"
+				action="action_phu_cap"
+				name="Phụ Cấp"
+				parent="menu_phu_cap" sequence="1"/>
     </data>	
 </openerp>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        					
+        
+<!-- Cán bộ CNTT -->
+        <record model="ir.ui.view" id="can_bo_tree">
+            <field name="name">can.bo.tree</field>
+            <field name="model">gv.hv</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Cán Bộ CNTT">
+                    <field name="name" />
+                    <field name="co_quan" />
+                    <field name="chuc_vu" />
+                    <field name="td_cntt" />
+                    <field name="td_av" />
+                    <field name="cc_cntt" />
+                    <field name="qt_thamgia" />
+                    <field name="hoi_thao" />
+                    <field name="ghi_nhan" />
+                    <field name="user_account_id" />
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="can_bo_form">
+            <field name="name">can.bo.form</field>
+            <field name="model">gv.hv</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Cán Bộ CNTT" version="7.0">
+	                <sheet>
+                		<group col="4"  colspan="2" string="Thông tin chung">
+		            		<field name="name" />
+		                    <field name="co_quan" />
+		                    <field name="chuc_vu" />
+		                    <field name="td_cntt" />
+		                    <field name="td_av" />
+		                    <field name="cc_cntt" />
+		                    <field name="qt_thamgia" />
+		                    <field name="hoi_thao" />
+		                    <field name="ghi_nhan" />
+		                    <field name="can_bo" invisible="1"/>
+		                    <field name="giang_vien" />
+		                    <field name="hoc_vien" />
+		                    <field name="user_account_id" options="{'no_create': true}"/>
+                		</group>
+	                </sheet>
+	                <div class="oe_chatter">
+	                    <!--<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>-->
+	                    <field name="message_ids" widget="mail_thread"/>
+	                </div>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_can_bo">
+            <field name="name">Cán Bộ CNTT</field>
+            <field name="res_model">gv.hv</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_can_bo': 1}</field>
+            <field name="domain">[('can_bo','=',True)]</field>
+        </record>
+        
+        <record id="action_can_bop1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="can_bo_tree"/>
+            <field name="act_window_id" ref="action_can_bo"/>
+        </record>
+        
+        <record id="action_can_bo2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="can_bo_form"/>
+            <field name="act_window_id" ref="action_can_bo"/>
+        </record>
+        
+        <!-- Lịch sử đào tạo -->
+        <record model="ir.ui.view" id="ls_daotao_tree">
+            <field name="name">ls.daotao.tree</field>
+            <field name="model">ls.daotao</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Lịch Sử Đào Tạo">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="ls_daotao_form">
+            <field name="name">ls.daotao.form</field>
+            <field name="model">ls.daotao</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Lịch Sử Đào Tạo" version="7.0">
+	                <sheet>
+                		<group>
+		            		<field name="name" domain="[('can_bo','=',True),('hoc_vien','=',True)]" options="{'no_create': true}" on_change="onchange_line(name)"/>
+		            	</group>
+		            		<notebook>
+		            			<page string="Danh sách lớp tham gia">
+				                    <field name="ls_dt_line">
+				                    	<tree>
+				                    		<field name="lop_id" options="{'no_create': true}"/>
+				                    		<field name="ngay"/>
+				                    	</tree>
+				                    	<form>
+				                    		<field name="lop_id" options="{'no_create': true}"/>
+				                    		<field name="ngay"/>
+				                    	</form>
+				                    </field>
+				                </page>
+				            </notebook>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_ls_daotao">
+            <field name="name">Lịch Sử Đào Tạo</field>
+            <field name="res_model">ls.daotao</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <record id="action_can_bop1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ls_daotao_tree"/>
+            <field name="act_window_id" ref="action_ls_daotao"/>
+        </record>
+        
+        <record id="action_can_bo2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ls_daotao_form"/>
+            <field name="act_window_id" ref="action_ls_daotao"/>
+        </record>
+        
+        <!-- Khen Thưởng Kỉ Luật -->
+        <record model="ir.ui.view" id="kthuong_kluat_tree">
+            <field name="name">kthuong.kluat.tree</field>
+            <field name="model">kthuong.kluat</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Khen Thưởng - Kỉ Luật">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="kthuong_kluat_form">
+            <field name="name">kthuong.kluat.form</field>
+            <field name="model">kthuong.kluat</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Khen Thưởng - Kỉ Luật" version="7.0">
+	                <sheet>
+                		<group>
+		            		<field name="name"/>
+		            	</group>
+		            		<notebook>
+		            			<page string="Danh sách Cán bộ">
+				                    <field name="kt_kluat_line">
+				                    	<tree>
+				                    		<field name="cb_id" domain="[('can_bo','=',True)]" options="{'no_create': true}"/>
+				                    	</tree>
+				                    	<form>
+				                    		<field name="cb_id" domain="[('can_bo','=',True)]" options="{'no_create': true}"/>
+				                    	</form>
+				                    </field>
+				                </page>
+				            </notebook>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_kthuong_kluat">
+            <field name="name">Khen Thưởng - Kỉ Luật</field>
+            <field name="res_model">kthuong.kluat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <record id="action_kthuong_kluat1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="kthuong_kluat_tree"/>
+            <field name="act_window_id" ref="action_kthuong_kluat"/>
+        </record>
+        
+        <record id="action_kthuong_kluat2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="kthuong_kluat_form"/>
+            <field name="act_window_id" ref="action_kthuong_kluat"/>
+        </record>
+        
+        <!-- Phụ cấp -->
+        <record model="ir.ui.view" id="phu_cap_tree">
+            <field name="name">phu.cap.tree</field>
+            <field name="model">phu.cap</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Phụ cấp">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>  
+        
+        <record model="ir.ui.view" id="phu_cap_form">
+            <field name="name">phu.cap.form</field>
+            <field name="model">phu.cap</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Phụ cấp" version="7.0">
+	                <sheet>
+                		<group>
+		            		<field name="name"/>
+		            	</group>
+		            		<notebook>
+		            			<page string="Danh sách Cán bộ">
+				                    <field name="phucap_line">
+				                    	<tree>
+				                    		<field name="cb_id" domain="[('can_bo','=',True)]" options="{'no_create': true}"/>
+				                    	</tree>
+				                    	<form>
+				                    		<field name="cb_id" domain="[('can_bo','=',True)]" options="{'no_create': true}"/>
+				                    	</form>
+				                    </field>
+				                </page>
+				            </notebook>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_phu_cap">
+            <field name="name">Phụ cấp</field>
+            <field name="res_model">phu.cap</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <record id="action_phu_cap1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="phu_cap_tree"/>
+            <field name="act_window_id" ref="action_phu_cap"/>
+        </record>
+        
+        <record id="action_phu_cap2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="phu_cap_form"/>
+            <field name="act_window_id" ref="action_phu_cap"/>
+        </record>
+    </data>	
+</openerp>

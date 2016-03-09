@@ -17,7 +17,9 @@ import os
 from openerp import modules
 
 from math import radians, cos, sin, asin, sqrt
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 class tinh_tp(osv.osv):
     _name = "tinh.tp"
     _columns = {
@@ -102,7 +104,29 @@ class doi_tac(osv.osv):
         'lng': fields.float(u'Kinh độ', digits=(9, 6)),
         'radius': fields.float(u'Radius', digits=(9, 16)),
         'map': fields.dummy(),
+        'points': fields.text('Points'), 
+        'mo_ta': fields.text('Mo ta'),
                 }
 doi_tac()
+
+# class can_bo(osv.osv):
+#     _name = "can.bo"
+#     _inherit = ['mail.thread', 'ir.needaction_mixin']
+#     _description = "Can Bo"
+#     _columns = {
+#         'name': fields.char('Họ và Tên',size = 1024, required = True, track_visibility='onchange'),
+#         'co_quan': fields.char('Cơ quan',size = 1024, track_visibility='onchange'),
+#         'chuc_vu': fields.char('Chức vụ',size = 1024, track_visibility='onchange'),
+#         'td_cntt': fields.char('Trình độ CNTT',size = 1024, track_visibility='onchange'),
+#         'td_av': fields.char('Trình độ anh văn',size = 1024, track_visibility='onchange'),
+#         'cc_cntt': fields.char('Chứng chỉ CNTT',size = 1024),
+#         'qt_thamgia': fields.char('Quá trình tham gia các lớp CNTT',size = 1024, track_visibility='onchange'),
+#         'hoi_thao': fields.char('Quá trình tham gia hội thảo',size = 1024, track_visibility='onchange'),
+#         'ghi_nhan': fields.char('Ghi nhận',size = 1024, track_visibility='onchange'),
+#         'user_account_id': fields.many2one('res.users', 'Tài khoản', track_visibility='onchange'),
+#         'history_line': fields.one2many('can.bo','history_id','Lịch sử',readonly = True),
+#         'history_id': fields.many2one('can.bo','Chi tiết lịch sử', ondelete='cascade'),
+#                 }
+# can_bo()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
