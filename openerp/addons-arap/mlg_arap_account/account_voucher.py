@@ -669,6 +669,19 @@ class account_voucher(osv.osv):
             res['value'].update({'amount': sotientra})
         return res
     
+    def onchange_amount(self, cr, uid, ids, amount, rate, partner_id, journal_id, currency_id, ttype, date, payment_rate_currency_id, company_id, context=None):
+        res = super(account_voucher, self).onchange_amount(cr, uid, ids, amount, rate, partner_id, journal_id, currency_id, ttype, date, payment_rate_currency_id, company_id, context)
+        if context.get('invoice_id', False):
+            invoice = self.pool.get('account.invoice').browse(cr, uid, context['invoice_id'])
+            if amount>invoice.residual:
+                res['value'].update({'amount': invoice.residual})
+                warning = {
+                    'title': _('Cảnh báo!'),
+                    'message': _('Không thể thanh toán với số tiền lớn hơn số tiền nợ!'),
+                }
+                res['warning'] = warning
+        return res
+    
 account_voucher()
 
 class account_voucher_line(osv.osv):
