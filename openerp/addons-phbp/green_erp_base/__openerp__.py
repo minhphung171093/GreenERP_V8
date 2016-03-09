@@ -30,6 +30,7 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'wizard/alert_form_view.xml',
         'ir_ui_menu_view.xml',
         'danhmuc_view.xml',
         'models_view.xml',
