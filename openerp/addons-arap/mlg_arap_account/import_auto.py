@@ -2406,11 +2406,18 @@ class import_congno_tudong(osv.osv):
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
                             
                             sql = '''
-                                select id from thu_ky_quy where partner_id in (select id from res_partner where ma_doi_tuong='%s')
-                                    and chinhanh_id=%s and state='draft' and loai_kyquy_id=%s 
-                            '''%(data['ma_doi_tuong'],chinhanh_ids[0],loai_kq_ids[0])
+                                select id,state from thu_ky_quy where partner_id in (select id from res_partner where ma_doi_tuong='%s')
+                                    and chinhanh_id=%s and loai_kyquy_id=%s and name='%s'
+                            '''%(data['ma_doi_tuong'],chinhanh_ids[0],loai_kq_ids[0],data['ma_phieu_de_xuat'])
                             cr.execute(sql)
-                            for kyquy in cr.dictfetchall():
+                            kyquys = cr.dictfetchall()
+                            if not kyquys:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy công nợ Phải thu ký quỹ'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
+                            for kyquy in kyquys:
+                                if kyquy['state']!='draft':
+                                    noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Ký quỹ "%s" đã thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'],data['ma_phieu_de_xuat'])
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
                                 if bsx_ids:
                                     cr.execute('update thu_ky_quy set so_tien=%s,sotien_conlai=%s,bien_so_xe_id=%s where id=%s',(data['so_tien_da_thu'],data['so_tien_da_thu'],bsx_ids[0],kyquy['id'],))
                                 else:
@@ -2822,10 +2829,17 @@ class import_congno_tudong(osv.osv):
 
                             sql = '''
                                 select id from thu_ky_quy where partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s')
-                                    and chinhanh_id=%s and state='draft'
-                            '''%(data['ma_doi_tuong'].upper(),chinhanh_ids[0])
+                                    and chinhanh_id=%s and name='%s'
+                            '''%(data['ma_doi_tuong'].upper(),chinhanh_ids[0],data['ma_phieu_de_xuat'])
                             cr.execute(sql)
-                            for kyquy in cr.dictfetchall():
+                            kyquys = cr.dictfetchall()
+                            if not kyquys:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy công nợ Phải thu ký quỹ'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
+                            for kyquy in kyquys:
+                                if kyquy['state']!='draft':
+                                    noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Ký quỹ "%s" đã thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'],data['ma_phieu_de_xuat'])
+                                    raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
                                 cr.execute('update thu_ky_quy set so_tien=%s,sotien_conlai=%s where id=%s',(data['so_tien_da_thu'],data['so_tien_da_thu'],kyquy['id'],))
                                 kyquy_obj.bt_thu(cr, uid, kyquy['id'])
                         csvUti._moveFiles([f_path],done_path)

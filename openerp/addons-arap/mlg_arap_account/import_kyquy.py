@@ -49,6 +49,7 @@ class arap_import_kyquy_congviec(osv.osv):
 
     _columns = {
         'name': fields.datetime('Date Import', required=True,states={'done': [('readonly', True)]}),
+        'ngay_thu': fields.date('Ngày thu', required=True,states={'done': [('readonly', True)]}),
         'datas_fname': fields.char('File Name',size=256),
         'datas': fields.function(_data_get, fnct_inv=_data_set, string='GL Account', type="binary", nodrop=True,states={'done': [('readonly', True)]}),
         'store_fname': fields.char('Stored Filename', size=256),
@@ -59,7 +60,8 @@ class arap_import_kyquy_congviec(osv.osv):
     
     _defaults = {
         'state':'draft',
-        'name': time.strftime('%Y-%m-%d %H:%M:%S'),
+        'name': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'ngay_thu': lambda *a: time.strftime('%Y-%m-%d'),
         
     }
     
@@ -96,9 +98,9 @@ class arap_import_kyquy_congviec(osv.osv):
                     noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền đã thu không đúng định dạng'%(seq+2,ma_doi_tuong,chinhanh)
                     raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã thu không đúng định dạng')
                  
-                if sotien_phaithu<sotien_dathu:
-                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền phải thu không được bé hơn số tiền đã thu'%(seq+2,ma_doi_tuong,chinhanh)
-                    raise osv.except_osv(_('Cảnh báo!'), 'Số tiền phải thu không được bé hơn số tiền đã thu')
+#                 if sotien_phaithu<sotien_dathu:
+#                     noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền phải thu không được bé hơn số tiền đã thu'%(seq+2,ma_doi_tuong,chinhanh)
+#                     raise osv.except_osv(_('Cảnh báo!'), 'Số tiền phải thu không được bé hơn số tiền đã thu')
                  
                 sql = '''
                     select id from account_account where upper(code)='%s' limit 1
@@ -128,14 +130,14 @@ class arap_import_kyquy_congviec(osv.osv):
                 if chinhanh_ids[0]!=partner['chinhanh_id']:
                     noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,ma_doi_tuong,chinhanh)
                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
-                if partner['sotien_phaithu']>0:
-                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Đã có số tiền phải thu'%(seq+2,ma_doi_tuong,chinhanh)
-                    raise osv.except_osv(_('Cảnh báo!'), 'Đã có số tiền phải thu')
+#                 if partner['sotien_phaithu']>0:
+#                     noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Đã có số tiền phải thu'%(seq+2,ma_doi_tuong,chinhanh)
+#                     raise osv.except_osv(_('Cảnh báo!'), 'Đã có số tiền phải thu')
                 if partner['sotien_dathu']>0:
                     noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Đã có số tiền đã thu'%(seq+2,ma_doi_tuong,chinhanh)
                     raise osv.except_osv(_('Cảnh báo!'), 'Đã có số tiền đã thu')
                  
-                partner_obj.write(cr, uid, [partner['id']], {'sotien_phaithu':sotien_phaithu})
+#                 partner_obj.write(cr, uid, [partner['id']], {'sotien_phaithu':sotien_phaithu})
                 sql = '''
                     select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC' limit 1
                 '''
@@ -149,7 +151,7 @@ class arap_import_kyquy_congviec(osv.osv):
                     'loai_doituong': loai_doituong,
                     'partner_id': partner['id'],
                     'so_tien': sotien_dathu,
-                    'ngay_thu': '2015-12-31',
+                    'ngay_thu': this.ngay_thu,
                     'loai_kyquy_id': loai_kq_ids[0],
                 }
                 kyquy_id = kyquy_obj.create(cr, uid, kyquy_vals)

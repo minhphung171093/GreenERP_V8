@@ -1631,7 +1631,7 @@ class output_congno_tudong(osv.osv):
             kyquy_obj = self.pool.get('thu.ky.quy')
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai','loai_ky_quy','bien_so_xe']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ma_phieu_de_xuat','so_tien','dien_giai','loai_ky_quy','bien_so_xe']
                 contents = []
                 
                 sql = '''
@@ -1648,34 +1648,38 @@ class output_congno_tudong(osv.osv):
                         sotien=partner['sotien_phaithu_dinhky']
                     else:
                         sotien=partner['sotien_conlai']
-                    loai_doituong=''
-                    if partner['taixe']==True:
-                        loai_doituong='taixe'
-                        sql = '''
-                            select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC' limit 1
-                        '''
-                        cr.execute(sql)
-                        loai_kq_ids = [r[0] for r in cr.fetchall()]
-                        contents.append({
-                            'chi_nhanh': partner['ten_chi_nhanh'],
-                            'ma_chi_nhanh': partner['ma_chi_nhanh'],
-                            'loai_doi_tuong': 'Lái xe',
-                            'ma_doi_tuong': partner['ma_doi_tuong'],
-                            'ten_doi_tuong': partner['name'],
-                            'so_tien': sotien,
-                            'dien_giai': '',
-                            'loai_ky_quy': 'KY_QUY_CONG_VIEC',
-                            'bien_so_xe': '',
-                        })
-                        vals = {
-                            'chinhanh_id': partner['chinhanh_id'],
-                            'loai_doituong': loai_doituong,
-                            'partner_id': partner['id'],
-                            'so_tien': sotien,
-                            'ngay_thu': time.strftime('%Y-%m-%d'),
-                            'loai_kyquy_id': loai_kq_ids[0],
-                        }
-                        kyquy_obj.create(cr, uid, vals)
+                    if sotien:
+                        loai_doituong=''
+                        if partner['taixe']==True:
+                            loai_doituong='taixe'
+                            sql = '''
+                                select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC' limit 1
+                            '''
+                            cr.execute(sql)
+                            loai_kq_ids = [r[0] for r in cr.fetchall()]
+                            vals = {
+                                'chinhanh_id': partner['chinhanh_id'],
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner['id'],
+                                'so_tien': sotien,
+                                'ngay_thu': time.strftime('%Y-%m-%d'),
+                                'loai_kyquy_id': loai_kq_ids[0],
+                            }
+                            kyquy_id = kyquy_obj.create(cr, uid, vals)
+                            kyquy = kyquy_obj.read(cr, uid, kyquy_id, ['name'])
+                            contents.append({
+                                'chi_nhanh': partner['ten_chi_nhanh'],
+                                'ma_chi_nhanh': partner['ma_chi_nhanh'],
+                                'loai_doi_tuong': 'Lái xe',
+                                'ma_doi_tuong': partner['ma_doi_tuong'],
+                                'ten_doi_tuong': partner['name'],
+                                'so_tien': sotien,
+                                'dien_giai': '',
+                                'loai_ky_quy': 'KY_QUY_CONG_VIEC',
+                                'bien_so_xe': '',
+                                'ma_phieu_de_xuat': kyquy['name'],
+                            })
+                        
                 sql = '''
                     select rp.id as id,rp.ma_doi_tuong as ma_doi_tuong,rp.name as name,cnl.chinhanh_id as chinhanh_id, cn.code as ma_chi_nhanh,
                         cn.name as ten_chi_nhanh,cnl.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cnl.sotien_conlai as sotien_conlai
@@ -1697,28 +1701,31 @@ class output_congno_tudong(osv.osv):
                         sotien=ndt['sotien_phaithu_dinhky']
                     else:
                         sotien=ndt['sotien_conlai']
-                    loai_doituong='nhadautu'
-                    contents.append({
-                        'chi_nhanh': ndt['ten_chi_nhanh'],
-                        'ma_chi_nhanh': ndt['ma_chi_nhanh'],
-                        'loai_doi_tuong': 'Nhà đầu tư',
-                        'ma_doi_tuong': ndt['ma_doi_tuong'],
-                        'ten_doi_tuong': ndt['name'],
-                        'so_tien': sotien,
-                        'dien_giai': '',
-                        'loai_ky_quy': 'KY_QUY_DH_BD',
-                        'bien_so_xe': '',
-                    })
-                    vals = {
-                        'chinhanh_id': ndt['chinhanh_id'],
-                        'loai_doituong': loai_doituong,
-                        'partner_id': ndt['id'],
-                        'so_tien': sotien,
-                        'ngay_thu': time.strftime('%Y-%m-%d'),
-                        'loai_kyquy_id': loai_kq_ids[0],
-                    }
-                    kyquy_obj.create(cr, uid, vals)
-                        
+                    if sotien:
+                        loai_doituong='nhadautu'
+                        vals = {
+                            'chinhanh_id': ndt['chinhanh_id'],
+                            'loai_doituong': loai_doituong,
+                            'partner_id': ndt['id'],
+                            'so_tien': sotien,
+                            'ngay_thu': time.strftime('%Y-%m-%d'),
+                            'loai_kyquy_id': loai_kq_ids[0],
+                        }
+                        kyquy_id = kyquy_obj.create(cr, uid, vals)
+                        kyquy = kyquy_obj.read(cr, uid, kyquy_id, ['name'])
+                        contents.append({
+                            'chi_nhanh': ndt['ten_chi_nhanh'],
+                            'ma_chi_nhanh': ndt['ma_chi_nhanh'],
+                            'loai_doi_tuong': 'Nhà đầu tư',
+                            'ma_doi_tuong': ndt['ma_doi_tuong'],
+                            'ten_doi_tuong': ndt['name'],
+                            'so_tien': sotien,
+                            'dien_giai': '',
+                            'loai_ky_quy': 'KY_QUY_DH_BD',
+                            'bien_so_xe': '',
+                            'ma_phieu_de_xuat': kyquy['name'],
+                        })
+                            
                 if contents:
                     for path in output_obj.browse(cr, uid, output_ids):
                         path_file_name = path.name+'/'+'ky_quy_shift_'+time.strftime('%Y%m%d%H%M%S')+'.csv'
@@ -2099,7 +2106,7 @@ class output_congno_tudong(osv.osv):
             kyquy_obj = self.pool.get('thu.ky.quy')
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai','loai_ky_quy']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','ma_phieu_de_xuat','so_tien','dien_giai','loai_ky_quy']
                 contents = []
                 
                 sql = '''
@@ -2116,33 +2123,37 @@ class output_congno_tudong(osv.osv):
                         sotien=partner['sotien_phaithu_dinhky']
                     else:
                         sotien=partner['sotien_conlai']
-                    loai_doituong=''
-                    if partner['nhanvienvanphong']==True:
-                        loai_doituong='nhanvienvanphong'
-                        sql = '''
-                            select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC' limit 1
-                        '''
-                        cr.execute(sql)
-                        loai_kq_ids = [r[0] for r in cr.fetchall()]
-                        contents.append({
-                            'chi_nhanh': partner['ten_chi_nhanh'],
-                            'ma_chi_nhanh': partner['ma_chi_nhanh'],
-                            'loai_doi_tuong': 'Nhân viên văn phòng',
-                            'ma_doi_tuong': partner['ma_doi_tuong'],
-                            'ten_doi_tuong': partner['name'],
-                            'so_tien': sotien,
-                            'dien_giai': '',
-                            'loai_ky_quy': 'KY_QUY_CONG_VIEC',
-                        })
-                        vals = {
-                            'chinhanh_id': partner['chinhanh_id'],
-                            'loai_doituong': loai_doituong,
-                            'partner_id': partner['id'],
-                            'so_tien': sotien,
-                            'ngay_thu': time.strftime('%Y-%m-%d'),
-                            'loai_kyquy_id': loai_kq_ids[0],
-                        }
-                        kyquy_obj.create(cr, uid, vals)
+                    if sotien:
+                        loai_doituong=''
+                        if partner['nhanvienvanphong']==True:
+                            loai_doituong='nhanvienvanphong'
+                            sql = '''
+                                select id from loai_ky_quy where upper(code)='KY_QUY_CONG_VIEC' limit 1
+                            '''
+                            cr.execute(sql)
+                            loai_kq_ids = [r[0] for r in cr.fetchall()]
+                            vals = {
+                                'chinhanh_id': partner['chinhanh_id'],
+                                'loai_doituong': loai_doituong,
+                                'partner_id': partner['id'],
+                                'so_tien': sotien,
+                                'ngay_thu': time.strftime('%Y-%m-%d'),
+                                'loai_kyquy_id': loai_kq_ids[0],
+                            }
+                            kyquy_id = kyquy_obj.create(cr, uid, vals)
+                            kyquy = kyquy_obj.read(cr, uid, kyquy_id, ['name'])
+                            contents.append({
+                                'chi_nhanh': partner['ten_chi_nhanh'],
+                                'ma_chi_nhanh': partner['ma_chi_nhanh'],
+                                'loai_doi_tuong': 'Nhân viên văn phòng',
+                                'ma_doi_tuong': partner['ma_doi_tuong'],
+                                'ten_doi_tuong': partner['name'],
+                                'so_tien': sotien,
+                                'dien_giai': '',
+                                'loai_ky_quy': 'KY_QUY_CONG_VIEC',
+                                'ma_phieu_de_xuat': kyquy['name'],
+                            })
+                        
 #                 sql = '''
 #                     select rp.id as id,rp.ma_doi_tuong as ma_doi_tuong,rp.name as name,cnl.chinhanh_id as chinhanh_id, cn.code as ma_chi_nhanh,
 #                         cn.name as ten_chi_nhanh,cnl.sotien_phaithu_dinhky as sotien_phaithu_dinhky,cnl.sotien_conlai as sotien_conlai
