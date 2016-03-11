@@ -86,11 +86,6 @@ class arap_import_kyquy_congviec(osv.osv):
                 ma_doi_tuong = str(row['ma_doi_tuong']).strip()
                  
                 chinhanh = str(row['ma_chi_nhanh']).strip()
-                try:
-                    sotien_phaithu = int(row['ky_quy_phai_thu'])
-                except Exception, e:
-                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền phải thu không đúng định dạng'%(seq+2,ma_doi_tuong,chinhanh)
-                    raise osv.except_osv(_('Cảnh báo!'), 'Số tiền phải thu không đúng định dạng')
                  
                 try:
                     sotien_dathu = int(row['ky_quy_da_thu'])
@@ -130,12 +125,12 @@ class arap_import_kyquy_congviec(osv.osv):
                 if chinhanh_ids[0]!=partner['chinhanh_id']:
                     noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Chi nhánh không trùng với chi nhánh của đối tượng'%(seq+2,ma_doi_tuong,chinhanh)
                     raise osv.except_osv(_('Cảnh báo!'), 'Chi nhánh không trùng với chi nhánh của đối tượng')
-#                 if partner['sotien_phaithu']>0:
-#                     noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Đã có số tiền phải thu'%(seq+2,ma_doi_tuong,chinhanh)
-#                     raise osv.except_osv(_('Cảnh báo!'), 'Đã có số tiền phải thu')
-                if partner['sotien_dathu']>0:
-                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Đã có số tiền đã thu'%(seq+2,ma_doi_tuong,chinhanh)
-                    raise osv.except_osv(_('Cảnh báo!'), 'Đã có số tiền đã thu')
+                if partner['sotien_phaithu']<00:
+                    noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền phải thu phải lớn hơn 0'%(seq+2,ma_doi_tuong,chinhanh)
+                    raise osv.except_osv(_('Cảnh báo!'), 'Đã có số tiền phải thu')
+#                 if partner['sotien_dathu']>0:
+#                     noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Đã có số tiền đã thu'%(seq+2,ma_doi_tuong,chinhanh)
+#                     raise osv.except_osv(_('Cảnh báo!'), 'Đã có số tiền đã thu')
                  
 #                 partner_obj.write(cr, uid, [partner['id']], {'sotien_phaithu':sotien_phaithu})
                 sql = '''

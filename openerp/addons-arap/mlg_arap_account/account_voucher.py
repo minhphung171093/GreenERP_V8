@@ -645,11 +645,15 @@ class account_voucher(osv.osv):
                         vals_onchange_partner = self.onchange_partner_id(cr, uid, [],chiho.partner_id.id,journal_ids[0],voucher.amount,chiho.currency_id.id,'payment',voucher.date,context)['value']
                         vals.update(vals_onchange_partner)
                         vals.update(
-                            self.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_dr_ids'],False,chiho.partner_id.id,voucher.date,voucher.amount,'payment',chiho.company_id.id,context)['value']
+                            self.onchange_journal(cr, uid, [],journal_ids[0],vals_onchange_partner['line_cr_ids'],False,chiho.partner_id.id,voucher.date,voucher.amount,'payment',chiho.company_id.id,context)['value']
                         )
+                        line_cr_ids = []
+                        for l in vals['line_cr_ids']:
+                            line_cr_ids.append((0,0,l))
+                        vals.update({'line_cr_ids':line_cr_ids})
                         line_dr_ids = []
                         for l in vals['line_dr_ids']:
-                            line_dr_ids.append((0,0,l))
+                            line_cr_ids.append((0,0,l))
                         vals.update({'line_dr_ids':line_dr_ids})
                         voucher_id = self.create(cr, uid, vals,context)
                         self.button_proforma_voucher(cr, uid, [voucher_id],context)
