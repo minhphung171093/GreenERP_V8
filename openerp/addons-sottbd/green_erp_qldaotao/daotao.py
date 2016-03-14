@@ -53,7 +53,22 @@ class lop_hoc_line(osv.osv):
                 }
     
     def btn_save(self, cr, uid, ids, context=None):
-        return True
+        line_id = self.browse(cr, uid, ids[0],context=context)
+        line_ids = self.search(cr, uid, [('id','!=',line_id.id),('name', '=', line_id.name),('lop_id','=',line_id.lop_id.id)]) or []
+        ds_ids = [l.id for l in line_id.hocvien_ids] or []
+        
+        if line_ids:
+            ds_ids += [m.id for m in self.browse(cr, uid,line_ids[0],context=context).hocvien_ids] or []
+            self.unlink(cr, uid, ids[0], context=context)
+            return self.write(cr,uid,line_ids[0],{'hocvien_ids':[(6,0,ds_ids)]})
+        else:
+            return True
+        
+    def onchange_hv(self, cr, uid, ids, context=None):
+        res = {'value':{'hocvien_ids': [],}}
+
+        return res
+        
 lop_hoc_line()
 
 class hoso_nangluc(osv.osv):
@@ -84,6 +99,23 @@ class gv_hv(osv.osv):
         'ghi_nhan': fields.char('Ghi nhận',size = 1024, track_visibility='onchange'),
         'user_account_id': fields.many2one('res.users', 'Tài khoản', track_visibility='onchange'),
                 }
+    
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        if context.get('ds_hv') and context.get('name') and context.get('lop_id'):
+            sql = '''
+                select id from gv_hv where hoc_vien is True and id not in 
+                    (select hocvien_id from hocvien_lophoc_line_ref where line_id 
+                        in (select id from lop_hoc_line where name='%s' and lop_id=%s))
+            '''%(context.get('name'),context.get('lop_id'))
+            cr.execute(sql)
+            hoc_vien_ids = [row[0] for row in cr.fetchall()]
+            hv_ids = self.search(cr, uid, [('id','in',hoc_vien_ids)])
+            args += [('id','in',hv_ids)]
+        if context.get('ds_hv') and (not context.get('name') or not context.get('lop_id')):
+            return []
+        return super(gv_hv, self).search(cr, uid, args, offset, limit, order, context, count)
 gv_hv()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

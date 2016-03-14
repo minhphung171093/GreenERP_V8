@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <!-- Danh Mục Thiết Bị -->
+        
+        <record id="danh_muc_form_view" model="ir.ui.view">
+            <field name="name">danh.muc.form</field>
+            <field name="model">product.category</field>
+            <field name="arch" type="xml">
+                <form string="Danh Mục Thiết Bị">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" string="Tên Danh Mục" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="parent" col="4">
+                                <field name="parent_id" string="Danh Mục cha" options="{'no_create': true}"/>
+                                <field name="type" string="Loại" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="danh_muc_tree_view" model="ir.ui.view">
+            <field name="name">danh.muc.tree</field>
+            <field name="model">product.category</field>
+            <field name="field_parent">child_id</field>
+            <field name="arch" type="xml">
+                <tree toolbar="True" string="Danh Mục Thiết Bị">
+                    <field name="name" string="Tên Danh Mục"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_danh_muc">
+            <field name="name">Danh Mục Thiết Bị</field>
+            <field name="res_model">product.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+        
+        <record id="action_danh_muc1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="danh_muc_tree_view"/>
+            <field name="act_window_id" ref="action_danh_muc"/>
+        </record>
+        
+        <record id="action_danh_muc2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="danh_muc_form_view"/>
+            <field name="act_window_id" ref="action_danh_muc"/>
+        </record>
+        
+        <!-- Thiết Bị -->
+        <record model="ir.ui.view" id="thiet_bi_form">
+            <field name="name">thiet.bi</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+            	<form string="Thiết Bị">
+            		<sheet>
+            			<div class="oe_title">
+                            <label for="name" string="Tên Thiết Bị" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                            <label for="categ_id" string="Danh Mục" class="oe_edit_only"/>
+                            <h2>
+                            	<field name="categ_id" options="{'no_create': true}"/>
+                            </h2>
+                        </div>
+                        <notebook>
+	                        <page string="Thông tin chi tiết">
+		                        <group col='4' colspan='2'>
+		                        	<field name="nguon_goc"/>
+		                        	<field name="tt_ct"/>
+		                        	<field name="nha_cc_id" options="{'no_create': true}"/>
+		                        	<field name="xuat_xu"/>
+		                        	<field name="muc_dich"/>
+		                        	<field name="tg_bhanh"/>
+		                        	<field name="tg_khauhao"/>
+		                        	<field name="tg_tly"/>
+		                        	<field name="uu_tien"/>
+		                        	<group colspan='4'>
+		                        		<label for='vong_doi' string="Thông tin vòng đời sản phẩm" colspan='4'/>
+		                        		<field name="vong_doi" nolabel='1' colspan='4'/>
+		                        	</group>
+		                        </group>
+	                        </page>
+                        </notebook>
+            		</sheet>
+            	</form>
+            </field>
+        </record>
+        
+        <record id="thiet_bi_tree" model="ir.ui.view">
+            <field name="name">thiet.bi.tree</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <tree toolbar="True" string="Danh Mục Thiết Bị">
+                    <field name="name" string="Thiết Bị"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_thiet_bi">
+            <field name="name">Thiết Bị</field>
+            <field name="res_model">product.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+        
+        <record id="action_thiet_bi1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="thiet_bi_tree"/>
+            <field name="act_window_id" ref="action_thiet_bi"/>
+        </record>
+        
+        <record id="action_thiet_bi2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="thiet_bi_form"/>
+            <field name="act_window_id" ref="action_thiet_bi"/>
+        </record>
+        
+        <!-- Nhà cung cấp -->
+        <record id="nha_cc_form_view" model="ir.ui.view">
+            <field name="name">nha.cc.form</field>
+            <field name="model">nha.cc</field>
+            <field name="arch" type="xml">
+                <form string="Nhà Cung Cấp">
+                    <sheet>
+                        <group>
+                            <group col="4" colspan="2">
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="nha_cc_tree_view" model="ir.ui.view">
+            <field name="name">nha.cc.tree</field>
+            <field name="model">nha.cc</field>
+            <field name="arch" type="xml">
+                <tree toolbar="True" string="Nhà Cung Cấp">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_nha_cc">
+            <field name="name">Nhà Cung Cấp</field>
+            <field name="res_model">nha.cc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+        
+        <record id="action_nha_cc1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="nha_cc_tree_view"/>
+            <field name="act_window_id" ref="action_nha_cc"/>
+        </record>
+        
+        <record id="action_nha_cc2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="nha_cc_form_view"/>
+            <field name="act_window_id" ref="action_nha_cc"/>
+        </record>
+        
+        <!-- Quản lý kho -->
+        <record id="kho_form" model="ir.ui.view">
+            <field name="name">kho.form</field>
+            <field name="model">stock.location</field>
+            <field name="arch" type="xml">
+                <form string="Kho">
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name"/></h1>
+                    <label for="location_id" class="oe_edit_only"/>
+                    <h2><field name="location_id"/></h2>
+
+                    <group>
+                    	<field name="usage" invisible="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="kho_tree" model="ir.ui.view">
+            <field name="name">kho.tree</field>
+            <field name="model">stock.location</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <tree string="Kho" colors="blue:usage=='view';darkred:usage=='internal'">
+                    <field name="complete_name"/>
+                    <field name="usage" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_kho">
+            <field name="name">Kho</field>
+            <field name="res_model">stock.location</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+        
+        <record id="action_kho1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="kho_tree"/>
+            <field name="act_window_id" ref="action_kho"/>
+        </record>
+        
+        <record id="action_kho2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="kho_form"/>
+            <field name="act_window_id" ref="action_kho"/>
+        </record>
+        
+        <!-- Quản lý nhập, xuất và luân chuyển thiết bị, lấy từ view_picking_form / vpicktree -->
+        <record id="luan_chuyen_form" model="ir.ui.view">
+            <field name="name">luan.chuyen.form</field>
+            <field name="model">stock.picking</field>
+            <field eval="12" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Luân Chuyển">
+                <header>
+                    <button name="action_confirm" states="draft" string="Mark as Todo" type="object" class="oe_highlight" groups="base.group_user"/>
+                    <button name="action_assign" states="confirmed" string="Check Availability" type="object" class="oe_highlight" groups="base.group_user"/>
+                    <button name="rereserve_pick" states="waiting,partially_available" string="Recheck Availability" type="object" class="oe_highlight" groups="base.group_user"/>
+                    <button name="force_assign" states="confirmed,waiting,partially_available" string="Force Availability" type="object" groups="base.group_user"/>
+                    <button name="do_enter_transfer_details" states="assigned,partially_available" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
+                    <button name="do_print_picking" string="Print Picking List" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|', ('picking_type_code', '=', 'outgoing'), ('state', '!=', 'assigned')]}"/>
+                    <button name="%(stock.act_stock_return_picking)d" string="Reverse Transfer" states="done" type="action" groups="base.group_user"/>
+                    <button name="action_cancel" states="assigned,confirmed,partially_available,draft,waiting" string="Cancel Transfer" groups="base.group_user" type="object"/>
+                    <button name="do_unreserve" string="Unreserve" groups="base.group_user" type="object" attrs="{'invisible': [('quant_reserved_exist', '=', False)]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,done" statusbar_colors='{"shipping_except":"red","invoice_except":"red","waiting_date":"blue"}' invisible="1"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name" class="oe_inline" attrs="{'invisible': [('name','=','/')]}" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="partner_id" invisible="1"/>                            
+                            <field name="backorder_id" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
+                        </group>
+                        <group>
+                            <field name="date" string="Ngày tạo"/>
+                            <field name="min_date" string="Ngày luân chuyển"/>
+                            <field name="origin" placeholder="e.g. PO0032" class="oe_inline" invisible="1"/>
+                            <label for="owner_id" groups="stock.group_tracking_owner" invisible="1"/>
+                            <!--<div groups="stock.group_tracking_owner" invisible="1">
+                                <field name="owner_id"/>
+                                <button name="action_assign_owner" string="Assign Owner" type="object" attrs="{'invisible': ['|',('pack_operation_exist', '=', False),('state', 'not in', ('draft','assigned','confirmed'))]}"
+                                    class="oe_link oe_edit_only"/>
+                            </div>-->
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết">
+                            <separator string="Stock Moves" attrs="{'invisible': [('pack_operation_exist', '=', False)]}"/>
+                            <field name="move_lines" context="{'address_in_id': partner_id, 'form_view_ref':'stock.view_move_picking_form', 'tree_view_ref':'stock.view_move_picking_tree', 'default_picking_type_id': picking_type_id,'default_picking_id': active_id}">
+                            	
+                            </field>
+                            <field name="pack_operation_exist" invisible="1"/>
+                            <field name="note" placeholder="Ghi chú" class="oe_inline"/>
+                        </page>
+                        <!--<page string="Operations" attrs="{'invisible': ['|', ('state','!=','done'), ('pack_operation_ids','=',[])]}" invisible="1">
+                            <field name="pack_operation_ids" context="{'default_picking_id': active_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
+                                <tree editable="top">
+                                    <field name="package_id" groups="stock.group_tracking_lot"/>
+                                    <field name="product_id" on_change="product_id_change(product_id, product_uom_id, product_qty)"/>
+                                    <field name="product_uom_id" groups="product.group_uom"/>
+                                    <field name="lot_id" domain="[('product_id','=?', product_id)]" context="{'product_id': product_id}" groups="stock.group_production_lot"/>
+                                    <field name="picking_id" invisible="1"/>
+                                    <field name="owner_id" groups="stock.group_tracking_owner"/>
+                                    <field name="product_qty" attrs="{'required': [('product_id', '!=', False)]}"/>
+                                    <field name="location_id" domain="[('id', 'child_of', parent.location_id)]"/>
+                                    <field name="location_dest_id" domain="[('id', 'child_of', parent.location_dest_id)]"/>
+                                    <field name="result_package_id" groups="stock.group_tracking_lot" context="{'location_id': location_dest_id}"/>
+                                </tree>
+                            </field>
+                            <p class="oe_grey" groups="stock.group_tracking_lot">
+                            If there is no product but a source package, this means the source package was moved entirely.  If there is a product and a source package, the product was taken from the source package.  
+                            </p>
+                        </page>-->
+                        <page string="Additional Info" invisible="1">
+                            <group string="General Informations">
+                                <group>
+                                    <field name="move_type"/>
+                                    <field name="picking_type_id"/>
+                                    <field name="picking_type_code" invisible="1"/>
+                                    <field name="quant_reserved_exist" invisible="1"/>                                    
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="location_dest_id" invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                                    <field name="date_done" groups="base.group_no_one"/>
+                                    <field name="group_id"/>
+                                    <field name="priority"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter" invisible="1">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="luan_chuyen_tree" model="ir.ui.view">
+            <field name="name">luan.chuyen.tree</field>
+            <field name="model">stock.picking</field>
+            <field name="arch" type="xml">
+                <tree colors="blue:state == 'draft';grey:state == 'cancel';red:state not in ('cancel', 'done') and min_date &lt; current_date" string="Các phiếu luân chuyển">
+                    <field name="name" string="Tên phiếu"/>
+                    <field name="location_dest_id"/>
+                    <field name="partner_id"/>
+                    <field name="date" string="Ngày tạo"/>
+                    <field name="min_date" invisible="1"/>
+                    <field name="origin" invisible="1"/>
+                    <field name="group_id" invisible="1"/>
+                    <field name="backorder_id" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="priority" invisible="1"/>
+                    <field name="picking_type_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_luan_chuyen">
+            <field name="name">Luân Chuyển</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>  
+        
+        <record id="action_luan_chuyen1" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="luan_chuyen_tree"/>
+            <field name="act_window_id" ref="action_luan_chuyen"/>
+        </record>
+        
+        <record id="action_luan_chuyen2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="luan_chuyen_form"/>
+            <field name="act_window_id" ref="action_luan_chuyen"/>
+        </record>
+        
+    </data>	
+</openerp>

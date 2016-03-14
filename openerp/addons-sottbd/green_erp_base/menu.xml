@@ -38,5 +38,9 @@
 					name="Nguồn vốn"
 					parent="menu_danh_muc" sequence="30"/>	
 					
+				<record model="ir.ui.menu" id="mail.mail_feeds_main">
+					<field name="active" eval="False"/>
+				</record>
+					
     </data>	
 </openerp>

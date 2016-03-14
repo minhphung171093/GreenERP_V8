@@ -256,10 +256,10 @@
 		            	<notebook>
 		            		<page string="Danh sách theo ngày">
 			            		<field name="lop_line" context="{'default_ten_lop':name}" options="{'no_create': true}">
-			            			<tree>
+			            			<tree create="false">
 			            				<field name="name"/>
 			            			</tree>
-			            			<form>
+			            			<form create="false">
 				            			<sheet>
 					            			<group col="4" colspan="2">
 							            		<field name="ten_lop"/>
@@ -393,7 +393,7 @@
             <field name="view_mode">tree,form</field>
         </record> 
         
-<!-- Quản lí lớp học wizard-->
+<!-- Thêm học viên wizard-->
         <record model="ir.ui.view" id="lop_hoc_line_form">
             <field name="name">lop.hoc.line.form</field>
             <field name="model">lop.hoc.line</field>
@@ -402,13 +402,13 @@
                 <form string="Thêm học viên" version="7.0">
 	                <sheet>
             			<group col="4" colspan="2">
-		            		<field name="lop_id" options="{'no_create': true}" required="1"/>
-		            		<field name="name" required="1"/>
-		            		<field name="giang_vien_id" options="{'no_create': true}" domain="[('giang_vien','=',True)]" required="1"/>
+		            		<field name="lop_id" options="{'no_create': true}" required="1" on_change='onchange_hv()'/>
+		            		<field name="name" required="1" on_change='onchange_hv()'/>
 		            	</group>
 		            	<notebook>
 		            		<page string="Danh sách học viên">
-		            			<field name="hocvien_ids" nolable="1" options="{'no_create': true}" domain="[('hoc_vien','=',True)]"/>
+		            			<field name="hocvien_ids" nolable="1" options="{'no_create': true}" domain="[('hoc_vien','=',True)]"
+		            				context="{'ds_hv':1, 'lop_id': lop_id, 'name':name}"/>
 		            		</page>
 	            		</notebook>
             		</sheet>

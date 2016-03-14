@@ -1,5 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+    
+    <record model="ir.ui.menu" id="stock.menu_stock_root">
+		<field name="active" eval="True"/>
+	</record> 
+	
+	<record model="ir.ui.menu" id="base.menu_reporting">
+		<field name="active" eval="False"/>
+	</record>
+
+    <menuitem id="thiet_bi_root"
+			name="Thiết Bị" sequence="171"/>
+			
+		<menuitem id="menu_danh_muc"
+			name="Quản lý danh mục"
+			parent="thiet_bi_root" sequence="1"/>
+			
+			<menuitem id="menu_action_danh_muc"
+				action="action_danh_muc"
+				name="Danh mục"
+				parent="menu_danh_muc" sequence="1"/>
+				
+		<menuitem id="menu_trang_thiet_bi"
+			name="Quản lý thiết bị"
+			parent="thiet_bi_root" sequence="2"/>
+			
+			<menuitem id="menu_action_thiet_bi"
+				action="action_thiet_bi"
+				name="Thiết Bị"
+				parent="menu_trang_thiet_bi" sequence="1"/>
+				
+		<menuitem id="menu_nha_cc"
+			name="Cấu hình chung"
+			parent="thiet_bi_root" sequence="5"/>
+			
+			<menuitem id="menu_action_nha_cc"
+				action="action_nha_cc"
+				name="Nhà Cung Cấp"
+				parent="menu_nha_cc" sequence="3"/>
+			<menuitem id="menu_action_kho"
+				action="action_kho"
+				name="Kho"
+				parent="menu_nha_cc" sequence="1"/>
+				
+		<menuitem id="menu_ql_xuat_nhap_chuyen"
+			name="Quản lý nhập, xuất, luân chuyển"
+			parent="thiet_bi_root" sequence="3"/>
+			
+			<menuitem id="menu_action_luan_chuyen"
+				action="action_luan_chuyen"
+				name="Luân Chuyển"
+				parent="menu_ql_xuat_nhap_chuyen" sequence="3"/>
+				
     </data>	
 </openerp>
