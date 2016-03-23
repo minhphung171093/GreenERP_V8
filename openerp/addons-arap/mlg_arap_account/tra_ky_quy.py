@@ -62,7 +62,10 @@ class tra_ky_quy(osv.osv):
             context = {}
         if vals.get('name', '/') == '/' or 'name' not in vals:
             vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'phai_tra_ky_quy', context=context) or '/'
-            
+        
+        if not vals.get('so_tien',False) or (vals.get('so_tien') and vals['so_tien']<=0):
+            raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo với số tiền nhỏ hơn hoặc bằng "0"!'))
+        
         if vals['loai_doituong'] in ['taixe','nhanvienvanphong']:
             sql = '''
                 select case when sotien_dathu!=0 then sotien_dathu else 0 end sotien_dathu from res_partner where id=%s
@@ -87,8 +90,6 @@ class tra_ky_quy(osv.osv):
     def write(self, cr, uid, ids, vals, context=None):
         if vals.get('so_tien', False):
             for line in self.browse(cr, uid, ids):
-                if line.so_tien<=0:
-                    raise osv.except_osv(_('Cảnh báo!'), _('Không thể sửa với số tiền nhỏ hơn hoặc bằng "0"!'))
                 
                 if line.loai_doituong in ['taixe','nhanvienvanphong']:
                     sql = '''
@@ -109,8 +110,12 @@ class tra_ky_quy(osv.osv):
                     sotien_dathu = cr.fetchone()[0]
                     if sotien_dathu<vals['so_tien']:
                         raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
-                    
-        return super(tra_ky_quy, self).write(cr, uid, ids, vals, context)
+        
+        new_write = super(tra_ky_quy, self).write(cr, uid, ids, vals, context)
+        for line in self.browse(cr, uid, ids):
+            if line.so_tien<=0:
+                raise osv.except_osv(_('Cảnh báo!'), _('Không thể sửa với số tiền nhỏ hơn hoặc bằng "0"!'))
+        return new_write
     
     def _get_chinhanh(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid)

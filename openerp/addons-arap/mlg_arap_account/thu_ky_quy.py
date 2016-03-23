@@ -66,6 +66,8 @@ class thu_ky_quy(osv.osv):
             vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'thu_ky_quy', context=context) or '/'
 #         user = self.pool.get('res.users').browse(cr, uid, uid)
 #         vals.update({'chinhanh_id':user.chinhanh_id and user.chinhanh_id.id or False})
+        if not vals.get('so_tien',False) or (vals.get('so_tien') and vals['so_tien']<=0):
+            raise osv.except_osv(_('Cảnh báo!'), _('Không thể tạo với số tiền nhỏ hơn hoặc bằng "0"!'))
         if vals.get('so_tien',False):
             vals.update({'sotien_conlai': vals['so_tien']})
             
@@ -94,8 +96,6 @@ class thu_ky_quy(osv.osv):
         if vals.get('so_tien',False):
             vals.update({'sotien_conlai': vals['so_tien']})
             for line in self.browse(cr, uid, ids):
-                if line.so_tien<=0:
-                    raise osv.except_osv(_('Cảnh báo!'), _('Không thể sửa với số tiền nhỏ hơn hoặc bằng "0"!'))
                 
                 if line.loai_doituong in ['taixe','nhanvienvanphong']:
                     sql = '''
@@ -116,8 +116,12 @@ class thu_ky_quy(osv.osv):
                     sotien_conlai = cr.fetchone()[0]
                     if sotien_conlai<vals['so_tien']:
                         raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ phải thu còn lại!'))
-                    
-        return super(thu_ky_quy, self).write(cr, uid, ids, vals, context)
+        
+        new_write = super(thu_ky_quy, self).write(cr, uid, ids, vals, context)
+        for line in self.browse(cr, uid, ids):
+            if line.so_tien<=0:
+                raise osv.except_osv(_('Cảnh báo!'), _('Không thể sửa với số tiền nhỏ hơn hoặc bằng "0"!'))
+        return new_write
     
     def _get_chinhanh(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid)

@@ -9,11 +9,11 @@
             <field name="arch" type="xml">
                 <form string="Chi tiết công nợ ký quỹ" version="7.0">
                 	<group col='4' colspan='2'>
-                		<field name='period_from_id' required='1' domain="[('special','!=',True)]"/>
-                    	<field name='period_to_id' required='1' domain="[('special','!=',True)]"/>
+                		<field name='period_from_id' options="{'no_create': True}" required='1' domain="[('special','!=',True)]"/>
+                    	<field name='period_to_id' options="{'no_create': True}" required='1' domain="[('special','!=',True)]"/>
                     	<field name='loai_doituong'/>
                     	<field name='chinhanh_id' readonly='1'/>
-                    	<field name='partner_ids' context="{'baocao_partner_with_loaidoituong':1,'loai_doituong': loai_doituong}" widget="many2many_tags" domain="[('customer','=',True)]"/>
+                    	<field name='partner_ids' options="{'no_create': True}" context="{'baocao_partner_with_loaidoituong':1,'loai_doituong': loai_doituong}" widget="many2many_tags" domain="[('customer','=',True)]"/>
                     </group>
                     <footer>
                         <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'chitiet_congno_kyquy_report'}"/>
