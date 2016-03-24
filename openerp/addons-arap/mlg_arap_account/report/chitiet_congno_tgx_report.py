@@ -202,8 +202,27 @@ class Parser(report_sxw.rml_parse):
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
             bien_so_xe_ids = wizard_data['bien_so_xe_ids']
+
             sql = '''
-                select case when sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0)) else 0 end nodauky
+                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                    from account_move_line
+                    where move_id in (select move_id from account_voucher
+                        where reference in (select name from account_invoice
+                            where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id = %s and date_invoice<'%s' 
+            '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
+            if bien_so_xe_ids:
+                bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                sql+='''
+                    and bien_so_xe_id in %s 
+                '''%(bien_so_xe_ids)
+            sql += ''' ))
+                    and date < '%s' '''%(period_from.date_start)
+            self.cr.execute(sql)
+            thutrongky = self.cr.fetchone()[0]
+            
+            sql = '''
+                select case when sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0))!=0 then sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0)) else 0 end nodauky
                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
                         and date_invoice <'%s' and state in ('open','paid') 
             '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
@@ -214,7 +233,26 @@ class Parser(report_sxw.rml_parse):
                     and bien_so_xe_id in %s 
                 '''%(bien_so_xe_ids)
             self.cr.execute(sql)
-            nodauky = self.cr.fetchone()[0]
+            ndk = self.cr.fetchone()[0]
+            
+            sql = '''
+                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+                    from so_tien_lai
+                    where invoice_id in (select id from account_invoice
+                            where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s'  
+            '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
+            if bien_so_xe_ids:
+                bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                sql+='''
+                    and bien_so_xe_id in %s 
+                '''%(bien_so_xe_ids)
+            sql += ''' )
+                    and ngay < '%s' '''%(period_from.date_start)
+            self.cr.execute(sql)
+            thulaidauky = self.cr.fetchone()[0]
+            
+            nodauky = ndk-thutrongky-thulaidauky
             self.nocuoiky += nodauky
             return nodauky
         return 0
