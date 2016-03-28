@@ -410,6 +410,11 @@
 					name="Tổng hợp công nợ một đối tượng"
 					action="action_tonghop_congno_mot_doituong"
 					parent="menu_chitiet_congno" sequence="7"/>
+					
+				<menuitem id="menu_action_tonghop_congno_kyquy"
+					name="Tổng hợp công nợ ký quỹ"
+					action="action_tonghop_congno_kyquy"
+					parent="menu_chitiet_congno" sequence="9"/>
 				
 				<menuitem id="menu_action_chitiet_congno"
 					name="Chi tiết công nợ"

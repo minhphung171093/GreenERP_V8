@@ -13,6 +13,11 @@
 					name="Trả góp xe"
 					parent="menu_xuathoadongiam" sequence="10"/>
 					
+				<menuitem id="menu_action_phuchoi_tragopxe_wizard"
+					action="action_phuchoi_tragopxe_wizard"
+					name="Phục hồi trả góp xe"
+					parent="menu_xuathoadongiam" sequence="20"/>
+					
 			<menuitem id="menu_baocao_doichieu"
 				name="Báo cáo - đối chiếu"
 				parent="menu_xuat_hoa_don" sequence="20"/>

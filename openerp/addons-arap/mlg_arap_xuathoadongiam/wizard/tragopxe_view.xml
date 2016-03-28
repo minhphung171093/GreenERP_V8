@@ -53,6 +53,54 @@
 	            </form>
 	        </field>
     	</record>
+    	
+    	<record id="phuchoi_tragopxe_wizard_form_view" model="ir.ui.view">
+	        <field name="name">phuchoi.tragopxe.wizard.form</field>
+	        <field name="model">tragopxe.wizard</field>
+	        <field eval="20" name="priority"/>
+	        <field name="arch" type="xml">
+	            <form string="Phục hồi trả góp xe" version="7.0">
+	                <group>
+	                	<field name="bien_so_xe_id" options="{'no_create': True}"/>
+	                </group>
+	                <footer>
+	                    <button name="bt_phuchoi_xemcongno" string="Xem công nợ" type='object' class="oe_highlight"/>
+	                </footer>
+	            </form>
+	        </field>
+    	</record>
+
+	    <record model="ir.actions.act_window" id="action_phuchoi_tragopxe_wizard">
+	        <field name="name">Phục hồi trả góp xe</field>
+	        <field name="res_model">tragopxe.wizard</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">form</field>
+	        <field name="view_id" ref="phuchoi_tragopxe_wizard_form_view" />
+	        <field name="target">new</field>
+	    </record>
+	    
+	    <record id="view_phuchoi_tragopxe_tattoan_form" model="ir.ui.view">
+	        <field name="name">phuchoi.tragopxe.tattoan.form</field>
+	        <field name="model">tragopxe.tattoan</field>
+	        <field eval="20" name="priority"/>
+	        <field name="arch" type="xml">
+	            <form string="Phục hồi trả góp xe" version="7.0" create='false' edit='false' delete='false'>
+	            	<header>
+	            		<button name="bt_phuchoi_tattoan" confirm="Bạn thật sự muốn phục hồi trả góp xe danh sách công nợ bên dưới?" string="Phục hồi trả góp xe" attrs="{'invisible':[('show_phuchoi_tattoan','=',False)]}" type='object' class="oe_highlight"/>
+	            		<field name="show_phuchoi_tattoan" invisible='1'/>
+	            	</header>
+	                <group>
+	                	<h1>
+	                		<label string="Biển số xe: "/>
+	                		<field name="bien_so_xe_id" class="oe_inline"/>
+	                	</h1>
+	                </group>
+	                <group string="Các công nợ">
+	                	<field name="tra_gop_xe_ids" nolabel='1' context="{'tree_view_ref': 'mlg_arap_account.view_tra_gop_xe_tree','form_view_ref': 'mlg_arap_account.view_tra_gop_xe_form'}"/>
+	                </group>
+	            </form>
+	        </field>
+    	</record>
 	    
     </data>
 </openerp>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>   
+    
+<!-- Tổng hợp công nợ ký quỹ -->
+        <record id="view_tonghop_congno_kyquy_report" model="ir.ui.view">
+            <field name="name">tonghop.congno.kyquy.form</field>
+            <field name="model">tonghop.congno.kyquy</field>
+            <field name="arch" type="xml">
+                <form string="Tổng hợp công nợ ký quỹ" version="7.0">
+                	<group col='4' colspan='2'>
+                		<field name='period_from_id' options="{'no_create': True}" required='1' domain="[('special','!=',True)]"/>
+                    	<field name='period_to_id' options="{'no_create': True}" required='1' domain="[('special','!=',True)]"/>
+                    	<field name='loai_doituong'/>
+                    	<field name='chinhanh_id' readonly='1'/>
+                    	<field name='partner_ids' options="{'no_create': True}" context="{'baocao_partner_with_loaidoituong':1,'loai_doituong': loai_doituong}" widget="many2many_tags" domain="[('customer','=',True)]"/>
+                    </group>
+                    <footer>
+                        <button name="print_report" string="In" type="object" class="oe_highlight" context="{'name_report':'tonghop_congno_kyquy_report'}"/>
+                        hoặc
+                        <button string="Hủy bỏ" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>        
+        <record id="action_tonghop_congno_kyquy" model="ir.actions.act_window">
+            <field name="name">Tổng hợp công nợ ký quỹ</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tonghop.congno.kyquy</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_tonghop_congno_kyquy_report"/>
+            <field name="target">new</field>
+        </record>
+	        
+    </data>
+</openerp>
+

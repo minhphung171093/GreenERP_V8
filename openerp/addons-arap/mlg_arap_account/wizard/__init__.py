@@ -19,3 +19,4 @@ import congno_dangchothu
 import chitiet_congno_tgx
 import chitiet_congno_thuho
 import chitiet_congno_kyquy
+import tonghop_congno_kyquy
