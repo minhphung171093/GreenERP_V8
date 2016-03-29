@@ -834,13 +834,28 @@ class import_congno_tudong(osv.osv):
                             if sotiendathu <= 0:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            
+                            loai_dt_bh_al = data['loai_dt_bh_al']
+                            if not loai_dt_bh_al:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại DT-BH-AL trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL trên template')
+                            if loai_doituong=='nhanvienvanphong' and loai_dt_bh_al.upper()=='NO_DOANH_THU':
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại DT-BH-AL "Nợ doanh thu" chỉ dành cho đối tượng lái xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Loại DT-BH-AL "Nợ doanh thu" chỉ dành cho đối tượng lái xe')
+                            sql = ''' select id from loai_no_doanh_thu where upper(code)='%s' '''%(loai_dt_bh_al.upper())
+                            cr.execute(sql)
+                            loai_dt_bh_al_ids = cr.fetchone()
+                            if loai_dt_bh_al and not loai_dt_bh_al_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại DT-BH-AL'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL')
+                            
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
-                                        and mlg_type='no_doanh_thu' and state='open' 
+                                        and mlg_type='no_doanh_thu' and state='open' and loai_nodoanhthu_id=%s 
                                     order by date_invoice
-                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
+                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper(),loai_dt_bh_al_ids[0])
                             cr.execute(sql)
                             
                             for line in cr.dictfetchall():
@@ -896,6 +911,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
@@ -1064,6 +1083,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
@@ -1240,6 +1263,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
@@ -1398,6 +1425,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
@@ -1590,6 +1621,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
@@ -1766,6 +1801,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
@@ -1955,6 +1994,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals,context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
                             if sotiendathu>0:
@@ -2050,13 +2093,28 @@ class import_congno_tudong(osv.osv):
                             if sotiendathu <= 0:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            
+                            loai_dt_bh_al = data['loai_dt_bh_al']
+                            if not loai_dt_bh_al:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại DT-BH-AL trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL trên template')
+                            if loai_doituong=='nhanvienvanphong' and loai_dt_bh_al.upper()=='NO_DOANH_THU':
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Loại DT-BH-AL "Nợ doanh thu" chỉ dành cho đối tượng lái xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Loại DT-BH-AL "Nợ doanh thu" chỉ dành cho đối tượng lái xe')
+                            sql = ''' select id from loai_no_doanh_thu where upper(code)='%s' '''%(loai_dt_bh_al.upper())
+                            cr.execute(sql)
+                            loai_dt_bh_al_ids = cr.fetchone()
+                            if loai_dt_bh_al and not loai_dt_bh_al_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại DT-BH-AL'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại DT-BH-AL')
+                            
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
-                                        and mlg_type='no_doanh_thu' and state='open' 
+                                        and mlg_type='no_doanh_thu' and state='open' and loai_nodoanhthu_id=%s 
                                     order by date_invoice
-                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
+                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper(),loai_dt_bh_al_ids[0])
                             cr.execute(sql)
                             
                             for line in cr.dictfetchall():
@@ -2112,6 +2170,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
@@ -2270,6 +2332,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 
@@ -2575,6 +2641,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                             if sotiendathu>0:
@@ -2731,6 +2801,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                             if sotiendathu>0:
@@ -3143,6 +3217,10 @@ class import_congno_tudong(osv.osv):
                                     for l in vals['line_cr_ids']:
                                         line_cr_ids.append((0,0,l))
                                     vals.update({'line_cr_ids':line_cr_ids})
+                                    line_dr_ids = []
+                                    for l in vals['line_dr_ids']:
+                                        line_dr_ids.append((0,0,l))
+                                    vals.update({'line_dr_ids':line_dr_ids})
                                     voucher_id = voucher_obj.create(cr, uid, vals,context)
                                     voucher_obj.button_proforma_voucher(cr, uid, [voucher_id],context)
                                     
@@ -3343,6 +3421,10 @@ class import_congno_tudong(osv.osv):
                                 for l in vals['line_cr_ids']:
                                     line_cr_ids.append((0,0,l))
                                 vals.update({'line_cr_ids':line_cr_ids})
+                                line_dr_ids = []
+                                for l in vals['line_dr_ids']:
+                                    line_dr_ids.append((0,0,l))
+                                vals.update({'line_dr_ids':line_dr_ids})
                                 voucher_id = voucher_obj.create(cr, uid, vals, context)
                                 voucher_obj.button_proforma_voucher(cr, uid, [voucher_id], context)
                                 sotiendathu = sotiendathu - amount

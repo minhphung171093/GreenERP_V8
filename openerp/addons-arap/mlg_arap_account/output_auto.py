@@ -1207,19 +1207,20 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','no_doanh_thu_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','loai_dt_bh_al','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
                 contents = []
                 sql = '''
-                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,lndt.code as loai_dt_bh_al,
                         sum(ai.residual) as so_tien
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
+                        left join loai_no_doanh_thu lndt on lndt.id=ai.loai_nodoanhthu_id
                         
                         where ai.mlg_type='no_doanh_thu' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
-                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,lndt.code
                 '''
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -1237,6 +1238,7 @@ class output_congno_tudong(osv.osv):
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
                         'so_tien': line['so_tien'],
+                        'loai_dt_bh_al': line['loai_dt_bh_al'],
                         'dien_giai': '',
                     })
                 if contents:
@@ -1833,19 +1835,20 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','no_doanh_thu_histaff')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','loai_dt_bh_al','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
                 contents = []
                 sql = '''
-                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
+                    select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,lndt.code as loai_dt_bh_al,
                         sum(ai.residual) as so_tien
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
+                        left join loai_no_doanh_thu lndt on lndt.id=ai.loai_nodoanhthu_id
                         
                         where ai.mlg_type='no_doanh_thu' and state='open' and dt.nhanvienvanphong = True and (dt.da_nghi!=True or dt.da_nghi is null)
                         
-                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,lndt.code
                 '''
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -1863,6 +1866,7 @@ class output_congno_tudong(osv.osv):
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
                         'so_tien': line['so_tien'],
+                        'loai_dt_bh_al': line['loai_dt_bh_al'],
                         'dien_giai': '',
                     })
                 if contents:

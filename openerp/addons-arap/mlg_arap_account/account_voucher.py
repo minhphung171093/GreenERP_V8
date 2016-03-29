@@ -653,7 +653,7 @@ class account_voucher(osv.osv):
                         vals.update({'line_cr_ids':line_cr_ids})
                         line_dr_ids = []
                         for l in vals['line_dr_ids']:
-                            line_cr_ids.append((0,0,l))
+                            line_dr_ids.append((0,0,l))
                         vals.update({'line_dr_ids':line_dr_ids})
                         voucher_id = self.create(cr, uid, vals,context)
                         self.button_proforma_voucher(cr, uid, [voucher_id],context)

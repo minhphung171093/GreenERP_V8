@@ -346,7 +346,13 @@ class account_invoice(osv.osv):
                 sotien_dathu = cr.fetchone()[0]
                 if sotien_dathu<vals['so_tien']:
                     raise osv.except_osv(_('Cảnh báo!'), _('Không được phép tạo với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
-        return super(account_invoice, self).create(cr, uid, vals, context)
+        new_id = super(account_invoice, self).create(cr, uid, vals, context)
+        new = self.browse(cr, uid, new_id)
+        if not new.invoice_line:
+            value = self.onchange_dien_giai_st(cr, uid, [new_id], new.dien_giai, new.so_tien, new.journal_id.id)['value']
+            if value.get('invoice_line', False):
+                self.write(cr, uid, [new_id], {'invoice_line': value['invoice_line']})
+        return new_id
     
     def write(self, cr, uid, ids, vals, context=None):
         wf_service = netsvc.LocalService("workflow")
@@ -746,6 +752,10 @@ class account_invoice(osv.osv):
                                 'partner_id': line.partner_id.id,
                                 'congno_dauky_line': congno_dauky_line,               
                             })
+            if not line.invoice_line:
+                value = self.onchange_dien_giai_st(cr, uid, [line.id], line.dien_giai, line.so_tien, line.journal_id.id)['value']
+                if value.get('invoice_line', False):
+                    self.write(cr, uid, [line.id], {'invoice_line': value['invoice_line']})
         return new_write
     
     def in_phieu(self, cr, uid, ids, context=None):
