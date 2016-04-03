@@ -1191,7 +1191,18 @@ class import_congno_tudong(osv.osv):
                             if bsx and not bien_so_xe_ids:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy biển số xe'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe')
-                                
+                            
+                            loai_bao_hiem = data['loai_bao_hiem']
+                            if not loai_bao_hiem:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại bảo hiểm trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại bảo hiểm trên template')
+                            sql = ''' select id from loai_bao_hiem where upper(code)='%s' '''%(loai_bao_hiem.upper())
+                            cr.execute(sql)
+                            loai_bao_hiem_ids = cr.fetchone()
+                            if loai_bao_hiem and not loai_bao_hiem_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại bảo hiểm'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại bảo hiểm')
+                            
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
@@ -1206,6 +1217,10 @@ class import_congno_tudong(osv.osv):
                                 sql += '''
                                     and bien_so_xe_id=%s 
                                 '''%(bien_so_xe_ids[0])
+                            if loai_bao_hiem_ids:
+                                sql += '''
+                                    and loai_baohiem_id=%s 
+                                '''%(loai_bao_hiem_ids[0])
                             sql += '''
                                 order by date_invoice
                             '''
@@ -1364,13 +1379,25 @@ class import_congno_tudong(osv.osv):
                             if sotiendathu <= 0:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            
+                            loai_vi_pham = data['loai_vi_pham']
+                            if not loai_vi_pham:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại vi phạm trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại vi phạm trên template')
+                            sql = ''' select id from loai_vi_pham where upper(code)='%s' '''%(loai_vi_pham.upper())
+                            cr.execute(sql)
+                            loai_vi_pham_ids = cr.fetchone()
+                            if loai_vi_pham and not loai_vi_pham_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại vi phạm'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại vi phạm')
+                            
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
-                                        and mlg_type='phat_vi_pham' and state='open' 
+                                        and mlg_type='phat_vi_pham' and state='open' and loai_vipham_id=%s 
                                     order by date_invoice
-                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
+                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper(), loai_vi_pham_ids[0])
                             cr.execute(sql)
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
@@ -2271,13 +2298,25 @@ class import_congno_tudong(osv.osv):
                             if sotiendathu <= 0:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            
+                            loai_tam_ung = data['loai_tam_ung']
+                            if not loai_tam_ung:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại tạm ứng trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại tạm ứng trên template')
+                            sql = ''' select id from loai_tam_ung where upper(code)='%s' '''%(loai_tam_ung.upper())
+                            cr.execute(sql)
+                            loai_tam_ung_ids = cr.fetchone()
+                            if loai_tam_ung and not loai_tam_ung_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại tạm ứng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại tạm ứng')
+                            
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
-                                        and mlg_type='hoan_tam_ung' and state='open' 
+                                        and mlg_type='hoan_tam_ung' and state='open' and loai_tamung_id=%s
                                     order by date_invoice
-                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
+                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper(),loai_tam_ung_ids[0])
                             cr.execute(sql)
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:
@@ -2579,13 +2618,25 @@ class import_congno_tudong(osv.osv):
                             if sotiendathu <= 0:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            
+                            loai_vi_pham = data['loai_vi_pham']
+                            if not loai_vi_pham:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại vi phạm trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại vi phạm trên template')
+                            sql = ''' select id from loai_vi_pham where upper(code)='%s' '''%(loai_vi_pham.upper())
+                            cr.execute(sql)
+                            loai_vi_pham_ids = cr.fetchone()
+                            if loai_vi_pham and not loai_vi_pham_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại vi phạm'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại vi phạm')
+                            
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
-                                        and mlg_type='phat_vi_pham' and state='open'
+                                        and mlg_type='phat_vi_pham' and state='open' and loai_vipham_id=%s 
                                     order by date_invoice
-                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
+                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper(), loai_vi_pham_ids[0])
                             cr.execute(sql)
                             
                             for line in cr.dictfetchall():
@@ -2740,13 +2791,25 @@ class import_congno_tudong(osv.osv):
                             if sotiendathu <= 0:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
+                            
+                            loai_tam_ung = data['loai_tam_ung']
+                            if not loai_tam_ung:
+                                noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại tạm ứng trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại tạm ứng trên template')
+                            sql = ''' select id from loai_tam_ung where upper(code)='%s' '''%(loai_tam_ung.upper())
+                            cr.execute(sql)
+                            loai_tam_ung_ids = cr.fetchone()
+                            if loai_tam_ung and not loai_tam_ung_ids:
+                                noidung_loi = 'Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại tạm ứng'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
+                                raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy loại tạm ứng')
+                            
                             sql = '''
                                 select id,partner_id,residual,name,bai_giaoca_id,mlg_type,type,chinhanh_id,currency_id,company_id
                                     from account_invoice where chinhanh_id in (select id from account_account where upper(code)='%s')
                                         and partner_id in (select id from res_partner where upper(ma_doi_tuong)='%s') and type='out_invoice'
-                                        and mlg_type='hoan_tam_ung' and state='open'
+                                        and mlg_type='hoan_tam_ung' and state='open' and loai_tamung_id=%s
                                     order by date_invoice
-                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper())
+                            '''%(data['ma_chi_nhanh'].upper(),data['ma_doi_tuong'].upper(),loai_tam_ung_ids[0])
                             cr.execute(sql)
                             for line in cr.dictfetchall():
                                 if line['residual']>sotiendathu:

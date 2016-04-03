@@ -69,6 +69,7 @@
                 	<sheet>  
                 		<group>
                 		<field name ="name"/>
+                		<field name ="ngay_thu"/>
 						<label for="datas" string="Data Upload Field"/>
 							<div>
 								<field name="datas" filename="datas_fname"/>

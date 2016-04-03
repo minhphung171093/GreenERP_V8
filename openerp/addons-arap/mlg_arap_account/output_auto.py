@@ -1347,20 +1347,21 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','phai_thu_bao_hiem_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','bien_so_xe','so_tien','so_hoa_don','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','bien_so_xe', 'loai_bao_hiem','so_tien','so_hoa_don','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
-                        bsx.name as bien_so_xe,sum(ai.residual) as so_tien, ai.so_hoa_don as so_hoa_don
+                        lbh.code as loai_bao_hiem,bsx.name as bien_so_xe,sum(ai.residual) as so_tien, ai.so_hoa_don as so_hoa_don
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
                         left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
+                        left join loai_bao_hiem lbh on lbh.id=ai.loai_baohiem_id
                         
                         where ai.mlg_type='phai_thu_bao_hiem' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
-                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hoa_don
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name,bsx.name, ai.so_hoa_don,lbh.code
                 '''
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -1378,6 +1379,7 @@ class output_congno_tudong(osv.osv):
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
                         'bien_so_xe': line['bien_so_xe'],
+                        'loai_baohiem_id': line['loai_baohiem_id'],
                         'so_tien': line['so_tien'],
                         'so_hoa_don': line['so_hoa_don'],
                         'dien_giai': '',
@@ -1418,19 +1420,20 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','loai_vi_pham','so_tien','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
-                        sum(ai.residual) as so_tien
+                        lvp.code as loai_vi_pham,sum(ai.residual) as so_tien
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
+                        left join loai_vi_pham lvp on lvp.id=ai.loai_vipham_id
                         
                         where ai.mlg_type='phat_vi_pham' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
-                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name, lvp.code
                 '''
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -1447,6 +1450,7 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
+                        'loai_vi_pham': line['loai_vi_pham'],
                         'so_tien': line['so_tien'],
                         'dien_giai': '',
                     })
@@ -1905,19 +1909,20 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','phat_vi_pham')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','loai_vi_pham','so_tien','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
-                        sum(ai.residual) as so_tien
+                        lvp.code as loai_vi_pham,sum(ai.residual) as so_tien
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
+                        left join loai_vi_pham lvp on lvp.id=ai.loai_vipham_id
                         
                         where ai.mlg_type='phat_vi_pham' and state='open' and ai.loai_doituong='nhanvienvanphong' and (dt.da_nghi!=True or dt.da_nghi is null)
                         
-                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name, lvp.code
                 '''
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -1935,6 +1940,7 @@ class output_congno_tudong(osv.osv):
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
                         'so_tien': line['so_tien'],
+                        'loai_vi_pham': line['loai_vi_pham'],
                         'dien_giai': '',
                     })
                 if contents:
@@ -1973,19 +1979,20 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','loai_tam_ung','so_tien','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
-                        sum(ai.residual) as so_tien
+                        ltu.code as loai_tam_ung,sum(ai.residual) as so_tien
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
+                        left join loai_tam_ung ltu on ltu.id=ai.loai_tamung_id
                         
                         where ai.mlg_type='hoan_tam_ung' and state='open' and ai.loai_doituong='nhanvienvanphong' and (dt.da_nghi!=True or dt.da_nghi is null)
                         
-                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name, ltu.code
                 '''
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -2002,6 +2009,7 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
+                        'loai_tam_ung': line['loai_tam_ung'],
                         'so_tien': line['so_tien'],
                         'dien_giai': '',
                     })
@@ -2041,19 +2049,20 @@ class output_congno_tudong(osv.osv):
             output_ids = output_obj.search(cr, uid, [('mlg_type','=','hoan_tam_ung_shift')])
             if output_ids:
                 csvUti = lib_csv.csv_ultilities()
-                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','so_tien','dien_giai']
+                headers = ['chi_nhanh','ma_chi_nhanh','loai_doi_tuong','ma_doi_tuong','ten_doi_tuong','loai_tam_ung','so_tien','dien_giai']
                 contents = []
                 sql = '''
                     select cn.name as chi_nhanh, cn.code as ma_chi_nhanh,ai.loai_doituong,dt.ma_doi_tuong as ma_doi_tuong, dt.name as ten_doi_tuong,
-                        sum(ai.residual) as so_tien
+                        ltu.code as loai_tam_ung,sum(ai.residual) as so_tien
                         
                         from account_invoice ai 
                         left join account_account cn on cn.id=ai.chinhanh_id
                         left join res_partner dt on dt.id=ai.partner_id
+                        left join loai_tam_ung ltu on ltu.id=ai.loai_tamung_id
                         
                         where ai.mlg_type='hoan_tam_ung' and state='open' and (dt.taixe = True or dt.nhadautu = True) and (dt.da_nghi!=True or dt.da_nghi is null)
                         
-                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name
+                        group by cn.name, cn.code,ai.loai_doituong,dt.ma_doi_tuong, dt.name, ltu.code
                 '''
                 cr. execute(sql)
                 for line in cr.dictfetchall():
@@ -2070,6 +2079,7 @@ class output_congno_tudong(osv.osv):
                         'loai_doi_tuong': loai_doituong,
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
+                        'loai_tam_ung': line['loai_tam_ung'],
                         'so_tien': line['so_tien'],
                         'dien_giai': '',
                     })

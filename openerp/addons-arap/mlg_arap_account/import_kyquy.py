@@ -200,6 +200,7 @@ class arap_import_kyquy_dhbd(osv.osv):
 
     _columns = {
         'name': fields.datetime('Date Import', required=True,states={'done': [('readonly', True)]}),
+        'ngay_thu': fields.date('Ngày thu', required=True,states={'done': [('readonly', True)]}),
         'datas_fname': fields.char('File Name',size=256),
         'datas': fields.function(_data_get, fnct_inv=_data_set, string='GL Account', type="binary", nodrop=True,states={'done': [('readonly', True)]}),
         'store_fname': fields.char('Stored Filename', size=256),
@@ -211,7 +212,7 @@ class arap_import_kyquy_dhbd(osv.osv):
     _defaults = {
         'state':'draft',
         'name': time.strftime('%Y-%m-%d %H:%M:%S'),
-        
+        'ngay_thu': lambda *a: time.strftime('%Y-%m-%d'),        
     }
     
     def import_account(self, cr, uid, ids, context=None):
@@ -321,7 +322,7 @@ class arap_import_kyquy_dhbd(osv.osv):
                     'loai_doituong': loai_doituong,
                     'partner_id': partner['id'],
                     'so_tien': sotien_dathu,
-                    'ngay_thu': '2015-12-31',
+                    'ngay_thu': this.ngay_thu,
                     'loai_kyquy_id': loai_kq_ids[0],
                     'bien_so_xe_id': bien_so_xe_ids and bien_so_xe_ids[0] or False,
                 }
