@@ -28,9 +28,11 @@ class Parser(report_sxw.rml_parse):
         self.tongcongnothu = 0
         self.tongcongnocantru = 0
         self.tongcongnochi = 0
+        self.tongcongnoconlai = 0
         self.tongcong_thu = 0
         self.tongcong_cantru = 0
         self.tongcong_chi = 0
+        self.tongcong_conlai = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -51,6 +53,8 @@ class Parser(report_sxw.rml_parse):
             'get_tongcong_thu': self.get_tongcong_thu,
             'get_tongcong_cantru': self.get_tongcong_cantru,
             'get_tongcong_chi': self.get_tongcong_chi,
+            'get_tongcongnoconlai': self.get_tongcongnoconlai,
+            'get_tongcong_conlai': self.get_tongcong_conlai,
         })
         
     def convert_date(self, date):
@@ -299,7 +303,9 @@ class Parser(report_sxw.rml_parse):
         for line in self.cr.dictfetchall():
             chi += line['so_tien']
             self.tongcongnochi += line['so_tien']
-        res = [{'thu': thu,'cantru': cantru,'chi': chi}]
+        conlai = thu - cantru - chi
+        self.tongcongnoconlai += conlai
+        res = [{'thu': thu,'cantru': cantru,'chi': chi, 'conlai': conlai}]
         return res
     
     def get_tongcongnothu(self):
@@ -320,6 +326,12 @@ class Parser(report_sxw.rml_parse):
         self.tongcongnochi = 0
         return tongcongnochi
     
+    def get_tongcongnoconlai(self):
+        tongcongnoconlai = self.tongcongnoconlai
+        self.tongcong_conlai += tongcongnoconlai
+        self.tongcongnoconlai = 0
+        return tongcongnoconlai
+    
     def get_tongcong_thu(self):
         tongcong_thu = self.tongcong_thu
         self.tongcong_thu = 0
@@ -334,6 +346,11 @@ class Parser(report_sxw.rml_parse):
         tongcong_chi = self.tongcong_chi
         self.tongcong_chi = 0
         return tongcong_chi
+    
+    def get_tongcong_conlai(self):
+        tongcong_conlai = self.tongcong_conlai
+        self.tongcong_conlai = 0
+        return tongcong_conlai
     
     def get_soducuoi(self):
         return 0

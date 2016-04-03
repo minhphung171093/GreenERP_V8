@@ -205,6 +205,15 @@ class Parser(report_sxw.rml_parse):
     def get_payment(self, invoice_id):
         if not invoice_id:
             return []
+        wizard_data = self.localcontext['data']['form']
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
         invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
-        return invoice.payment_ids
+        pays = []
+        for pay in invoice.payment_ids:
+            if pay.date >= period_from.date_start and pay.date<=period_to.date_stop:
+                pays.append(pay)
+        return pays
     

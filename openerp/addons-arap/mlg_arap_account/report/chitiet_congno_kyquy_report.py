@@ -261,7 +261,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         res = []
         sql = '''
-            select ngay_thu,name,so_tien from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
+            select ngay_thu,name,dien_giai,fusion_id,so_tien from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
                     and state in ('paid') and partner_id=%s 
         '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],partner_id)
         self.cr.execute(sql)
@@ -269,16 +269,19 @@ class Parser(report_sxw.rml_parse):
             res.append({
                 'ngay': line['ngay_thu'],
                 'maphieu': line['name'],
-                'diengiai': '',
+                'diengiai': line['dien_giai'],
+                'fusion_id': line['fusion_id'],
+                'giaodich': '',
                 'thu': line['so_tien'],
                 'cantru': 0,
                 'chi': 0,
             })
             self.tongcongnothu += line['so_tien']
         sql = '''
-            select aml.date as date,aml.loai_giaodich as loai_giaodich,aml.credit as credit, am.ref as ref
+            select aml.date as date,aml.loai_giaodich as loai_giaodich,aml.credit as credit, am.ref as ref,aml.fusion_id as fusion_id,ai.dien_giai as dien_giai
                 from account_move_line aml
                 left join account_move am on am.id = aml.move_id
+                left join account_invoice ai on ai.name = aml.ref
                 
                 where aml.date between '%s' and '%s'
                     and aml.account_id in (select id from account_account where parent_id=%s)
@@ -290,14 +293,16 @@ class Parser(report_sxw.rml_parse):
             res.append({
                 'ngay': line['date'],
                 'maphieu': line['ref'],
-                'diengiai': line['loai_giaodich'],
+                'diengiai': line['dien_giai'],
+                'fusion_id': line['fusion_id'],
+                'giaodich': line['loai_giaodich'],
                 'thu': 0,
                 'cantru': line['credit'],
                 'chi': 0,
             })
             self.tongcongnocantru += line['credit']
         sql = '''
-            select ngay_tra,name,so_tien from tra_ky_quy where ngay_tra between '%s' and '%s' and chinhanh_id=%s
+            select ngay_tra,name,dien_giai,fusion_id,so_tien from tra_ky_quy where ngay_tra between '%s' and '%s' and chinhanh_id=%s
                     and state in ('paid') and partner_id=%s 
         '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],partner_id)
         self.cr.execute(sql)
@@ -305,7 +310,9 @@ class Parser(report_sxw.rml_parse):
             res.append({
                 'ngay': line['ngay_tra'],
                 'maphieu': line['name'],
-                'diengiai': '',
+                'diengiai': line['dien_giai'],
+                'fusion_id': line['fusion_id'],
+                'giaodich': '',
                 'thu': 0,
                 'cantru': 0,
                 'chi': line['so_tien'],

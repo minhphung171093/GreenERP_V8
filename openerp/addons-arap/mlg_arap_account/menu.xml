@@ -426,10 +426,10 @@
 					action="action_chitiet_congno_mot_doituong"
 					parent="menu_chitiet_congno" sequence="12"/>
 					
-				<menuitem id="menu_action_chitiet_congno_tgx"
+				<!--<menuitem id="menu_action_chitiet_congno_tgx"
 					name="Chi tiết trả góp xe"
 					action="action_chitiet_congno_tgx"
-					parent="menu_chitiet_congno" sequence="13"/>
+					parent="menu_chitiet_congno" sequence="13"/>-->
 					
 				<menuitem id="menu_action_chitiet_congno_thuho"
 					name="Chi tiết công nợ thu hộ"
@@ -480,7 +480,7 @@
 					name="Theo bảng chiết tính"
 					parent="menu_baocao_cong_no_thu" sequence="20"/>
 					
-			<menuitem id="menu_baocao_theo_danhmuc"
+			<!--<menuitem id="menu_baocao_theo_danhmuc"
 				name="Báo cáo theo danh mục"
 				parent="menu_root_baocao" sequence="13"/>
 					
@@ -508,7 +508,7 @@
 					action="action_congno_theo_loaikyquy"
 					name="Theo loại ký quỹ"
 					parent="menu_baocao_theo_danhmuc" sequence="20"/>
-					
+					-->
 			<menuitem id="menu_baocao_doanhso"
 				name="Báo cáo doanh số"
 				parent="menu_root_baocao" sequence="15"/>
