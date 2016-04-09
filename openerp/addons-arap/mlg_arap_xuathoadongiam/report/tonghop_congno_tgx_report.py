@@ -112,18 +112,18 @@ class Parser(report_sxw.rml_parse):
         sql = '''
             select id, name from bien_so_xe where id in (
                     select bien_so_xe_id from account_invoice where mlg_type='tra_gop_xe' and thu_cho_doituong_id=%s and state in ('open','paid')
-                        and chinhanh_id=%s and date_invoice<='%s' and so_tien!=residual 
-        '''%(partner_id,chinhanh_id[0],period_to.date_stop)
+                        and chinhanh_id=%s 
+        '''%(partner_id,chinhanh_id[0])
         if not tat_toan:
             sql +='''
-                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and date_invoice between '%s' and '%s'  
                 ) 
-            '''%(period_to.date_stop)
+            '''%(period_to.date_stop,period_from.date_start,period_to.date_stop)
         else:
             sql +='''
-                and tat_toan=True and ngay_tat_toan<='%s' 
+                and tat_toan=True and ngay_tat_toan between '%s' and '%s' 
                 ) 
-            '''%(period_to.date_stop)
+            '''%(period_from.date_start,period_to.date_stop)
         self.cr.execute(sql)
         return self.cr.dictfetchall()
     
@@ -173,19 +173,19 @@ class Parser(report_sxw.rml_parse):
                 from account_move_line
                 where move_id in (select move_id from account_voucher
                     where reference in (select name from account_invoice
-                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
+                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s 
                            
-        '''%(chinhanh_id[0],partner_id,period_to.date_stop)
+        '''%(chinhanh_id[0],partner_id)
         if not tat_toan:
             sql +='''
-                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and bien_so_xe_id=%s ))
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and date_invoice<'%s' and bien_so_xe_id=%s ))
                     and date<'%s'
-            '''%(period_to.date_stop,bsx_id,period_from.date_start)
+            '''%(period_to.date_stop,period_from.date_start,bsx_id,period_from.date_start)
         else:
             sql +='''
-                and tat_toan=True and ngay_tat_toan<='%s' and bien_so_xe_id=%s ))
+                and tat_toan=True and ngay_tat_toan between '%s' and '%s' and bien_so_xe_id=%s ))
                     and date<'%s'
-            '''%(period_to.date_stop,bsx_id,period_from.date_start)
+            '''%(period_from.date_start,period_to.date_stop,bsx_id,period_from.date_start)
         self.cr.execute(sql)
         sdtlkdauky = self.cr.fetchone()[0]
         self.sdtlkdauky += sdtlkdauky
@@ -204,19 +204,19 @@ class Parser(report_sxw.rml_parse):
                 from account_move_line
                 where move_id in (select move_id from account_voucher
                     where reference in (select name from account_invoice
-                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
+                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s 
                            
-        '''%(chinhanh_id[0],partner_id,period_to.date_stop)
+        '''%(chinhanh_id[0],partner_id)
         if not tat_toan:
             sql +='''
-                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and bien_so_xe_id=%s ))
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and date_invoice<='%s' and bien_so_xe_id=%s ))
                     and date between '%s' and '%s'
-            '''%(period_to.date_stop,bsx_id,period_from.date_start,period_to.date_stop)
+            '''%(period_to.date_stop,period_to.date_stop,bsx_id,period_from.date_start,period_to.date_stop)
         else:
             sql +='''
-                and tat_toan=True and ngay_tat_toan<='%s' and bien_so_xe_id=%s ))
+                and tat_toan=True and ngay_tat_toan between '%s' and '%s' and bien_so_xe_id=%s ))
                     and date between '%s' and '%s'
-            '''%(period_to.date_stop,bsx_id,period_from.date_start,period_to.date_stop)
+            '''%(period_from.date_start,period_to.date_stop,bsx_id,period_from.date_start,period_to.date_stop)
         self.cr.execute(sql)
         sdttrongky = self.cr.fetchone()[0]
         self.sdttrongky += sdttrongky
@@ -235,19 +235,19 @@ class Parser(report_sxw.rml_parse):
                 from account_move_line
                 where move_id in (select move_id from account_voucher
                     where reference in (select name from account_invoice
-                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s and date_invoice<='%s'
+                        where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s 
                            
-        '''%(chinhanh_id[0],partner_id,period_to.date_stop)
+        '''%(chinhanh_id[0],partner_id)
         if not tat_toan:
             sql +='''
-                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and bien_so_xe_id=%s ))
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and date_invoice<='%s' and bien_so_xe_id=%s ))
                     and date<='%s'
-            '''%(period_to.date_stop,bsx_id,period_to.date_stop)
+            '''%(period_to.date_stop,period_to.date_stop,bsx_id,period_to.date_stop)
         else:
             sql +='''
-                and tat_toan=True and ngay_tat_toan<='%s' and bien_so_xe_id=%s ))
+                and tat_toan=True and ngay_tat_toan between '%s' and '%s' and bien_so_xe_id=%s ))
                     and date<='%s'
-            '''%(period_to.date_stop,bsx_id,period_to.date_stop)
+            '''%(period_from.date_start,period_to.date_stop,bsx_id,period_to.date_stop)
         self.cr.execute(sql)
         sdtlkcuoiky = self.cr.fetchone()[0]
         self.sdtlkcuoiky += sdtlkcuoiky

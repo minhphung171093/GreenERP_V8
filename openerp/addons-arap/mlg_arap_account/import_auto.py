@@ -835,6 +835,20 @@ class import_congno_tudong(osv.osv):
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Số tiền không được phép nhỏ hơn hoặc bằng 0'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Số tiền không được phép nhỏ hơn hoặc bằng 0')
                             
+                            sql = '''
+                                select id,taixe,nhadautu,nhanvienvanphong
+                                    from res_partner where upper(ma_doi_tuong)='%s' limit 1
+                            '''%(data['ma_doi_tuong'].upper())
+                            cr.execute(sql)
+                            partner = cr.dictfetchone()
+                            loai_doituong=''
+                            if partner['taixe']==True:
+                                loai_doituong='taixe'
+                            if partner['nhanvienvanphong']==True:
+                                loai_doituong='nhanvienvanphong'
+                            if partner['nhadautu']==True:
+                                loai_doituong='nhadautu'
+                            
                             loai_dt_bh_al = data['loai_dt_bh_al']
                             if not loai_dt_bh_al:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy loại DT-BH-AL trên template'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])

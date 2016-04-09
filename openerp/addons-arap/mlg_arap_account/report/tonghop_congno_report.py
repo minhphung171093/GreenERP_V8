@@ -518,7 +518,15 @@ class Parser(report_sxw.rml_parse):
             self.cr.execute(sql)
             co = self.cr.fetchone()[0]
             
-            nocuoiky = nodauky+no-co
+            sql = '''
+                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end tonglaithu
+                    from so_tien_lai where invoice_id in (select id from account_invoice where mlg_type='%s' and chinhanh_id=%s
+                        and date_invoice<='%s' and state in ('open','paid') and partner_id = %s) and ngay between '%s' and '%s'
+            '''%(mlg_type,chinhanh_id[0],period_to.date_stop,partner_id,period_from.date_start,period_to.date_stop)
+            self.cr.execute(sql)
+            thutienlai = self.cr.fetchone()[0]
+            
+            nocuoiky = nodauky+no-co-thutienlai
             self.tongcongno += nocuoiky
             return nocuoiky
         return 0

@@ -31,6 +31,7 @@ class chitiet_congno_tgx_tattoan(osv.osv_memory):
                                       ('hoan_tam_ung','Phải thu tạm ứng'),
                                       ],'Công nợ'),
         'tat_toan': fields.boolean('Đã xuất hóa đơn'),
+        'chusohuu_id': fields.many2one('res.partner', 'Chủ sở hữu'),
     }
     
     def _get_chinhanh(self, cr, uid, context=None):
