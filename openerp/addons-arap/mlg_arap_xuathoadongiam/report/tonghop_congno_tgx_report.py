@@ -114,16 +114,40 @@ class Parser(report_sxw.rml_parse):
                     select bien_so_xe_id from account_invoice where mlg_type='tra_gop_xe' and thu_cho_doituong_id=%s and state in ('open','paid')
                         and chinhanh_id=%s 
         '''%(partner_id,chinhanh_id[0])
+        
+        sql_only_pay = '''
+            select bsx.id as id, bsx.name as name
+                from bien_so_xe bsx
+                left join account_invoice ai on bsx.id=ai.bien_so_xe_id
+                left join account_voucher av on ai.name=av.reference
+                left join account_move_line aml on aml.move_id=av.move_id
+                
+                where ai.mlg_type='tra_gop_xe' and ai.thu_cho_doituong_id = %s and ai.state in ('open','paid')
+                        and ai.chinhanh_id=%s and aml.date between '%s' and '%s'
+        '''%(partner_id,chinhanh_id[0],period_from.date_start,period_to.date_stop)
+        
         if not tat_toan:
             sql +='''
                 and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and date_invoice between '%s' and '%s'  
                 ) 
             '''%(period_to.date_stop,period_from.date_start,period_to.date_stop)
+            
+            sql_only_pay +='''
+                and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and ai.date_invoice <= '%s'  
+            '''%(period_to.date_stop,period_to.date_stop)
         else:
             sql +='''
                 and tat_toan=True and ngay_tat_toan between '%s' and '%s' 
                 ) 
             '''%(period_from.date_start,period_to.date_stop)
+            
+            sql_only_pay +='''
+                and ai.tat_toan=True and ai.ngay_tat_toan between '%s' and '%s'
+            '''%(period_from.date_start,period_to.date_stop)
+        sql_only_pay += ' group by bsx.id, bsx.name '
+        sql = '''
+            select id, name from (
+        '''+sql+' union '+sql_only_pay+' )foo group by id, name '
         self.cr.execute(sql)
         return self.cr.dictfetchall()
     
@@ -176,6 +200,7 @@ class Parser(report_sxw.rml_parse):
                         where mlg_type='tra_gop_xe' and state in ('open','paid') and chinhanh_id=%s and thu_cho_doituong_id=%s 
                            
         '''%(chinhanh_id[0],partner_id)
+        
         if not tat_toan:
             sql +='''
                 and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and date_invoice<'%s' and bien_so_xe_id=%s ))
