@@ -34,6 +34,11 @@ class Parser(report_sxw.rml_parse):
         self.tongcong_co = 0
         self.tongcong_congno = 0
         self.nocuoiky = 0
+        
+        self.loaidoituong = []
+        self.loai_congno_tuongung = []
+        self.partner_dict = {}
+        
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -61,7 +66,17 @@ class Parser(report_sxw.rml_parse):
             'get_tongcong_co': self.get_tongcong_co,
             'get_tongcong_congno': self.get_tongcong_congno,
             'get_only_payment': self.get_only_payment,
+            'get_only_lichsu_thutienlai': self.get_only_lichsu_thutienlai,
+            'get_name_invoice': self.get_name_invoice,
+            
+            'get_khoitao': self.get_khoitao,
         })
+        
+    def get_khoitao(self):
+        self.get_loaidoituong_data()
+        self.get_loai_congno_tuongung_data()
+        self.get_doituong_data()
+        return True
         
     def convert_date(self, date):
         if date:
@@ -92,12 +107,16 @@ class Parser(report_sxw.rml_parse):
         return {'name':account.name,'code':account.code}
     
     def get_loaidoituong(self):
+        return self.loaidoituong
+    
+    def get_loaidoituong_data(self):
         wizard_data = self.localcontext['data']['form']
         loai_doituong = wizard_data['loai_doituong']
         if loai_doituong:
-            return [loai_doituong]
+            self.loaidoituong = [loai_doituong]
         else:
-            return ['taixe','nhadautu','nhanvienvanphong']
+            self.loaidoituong = ['taixe','nhadautu','nhanvienvanphong']
+        return True
         
     def get_name_loaidoituong(self, ldt):
         if ldt=='taixe':
@@ -106,8 +125,11 @@ class Parser(report_sxw.rml_parse):
             return 'Nhà đầu tư'
         if ldt=='nhanvienvanphong':
             return 'Nhân viên văn phòng'
-        
+    
     def get_loai_congno_tuongung(self, ldt):
+        return self.loai_congno_tuongung
+    
+    def get_loai_congno_tuongung_data(self):
         wizard_data = self.localcontext['data']['form']
         mlg_type = wizard_data['mlg_type']
         chinhanh_id = wizard_data['chinhanh_id']
@@ -218,7 +240,8 @@ class Parser(report_sxw.rml_parse):
                 'name':'',
                 'loai': 'loai_conlai'
             })
-        return lcntu_ids
+        self.loai_congno_tuongung = lcntu_ids
+        return True
         
     def get_title_lcntu(self, lcntu):
         tt = ''
@@ -233,89 +256,338 @@ class Parser(report_sxw.rml_parse):
         if lcntu['loai']=='loai_tamung':
             tt = 'Loại tạm ứng: '+lcntu['name']
         return tt
-        
+    
     def get_doituong(self, ldt, lcntu):
+        if self.partner_dict.get(ldt, False):
+            if self.partner_dict[ldt].get(lcntu['loai'], False):
+                if lcntu['loai']=='loai_conlai':
+                    return self.partner_dict[ldt][lcntu['loai']]
+                else:
+                    if self.partner_dict[ldt][lcntu['loai']].get(lcntu['id'], False):
+                        return self.partner_dict[ldt][lcntu['loai']][lcntu['id']]
+        return []
+    
+    def get_doituong_data(self):
         wizard_data = self.localcontext['data']['form']
         partner_ids = wizard_data['partner_ids']
+        
+        ldt = self.loaidoituong
+        ldt = str(ldt).replace('[', '(')
+        ldt = str(ldt).replace(']', ')')
+        
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        chinhanh_id = wizard_data['chinhanh_id']
+        mlg_type = wizard_data['mlg_type']
+        sql = '''
+            select partner_id, loai_doituong, loai_nodoanhthu_id, loai_baohiem_id, ma_xuong_id, loai_vipham_id, loai_tamung_id
+                from account_invoice where date_invoice between '%s' and '%s' and chinhanh_id=%s
+                and state in ('open','paid') and mlg_type='%s' and loai_doituong in %s 
+        '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type,ldt)
+        doi_xe_ids = wizard_data['doi_xe_ids']
+        if doi_xe_ids:
+            doi_xe_ids = str(doi_xe_ids).replace('[', '(')
+            doi_xe_ids = str(doi_xe_ids).replace(']', ')')
+            sql+='''
+                and account_id in %s 
+            '''%(doi_xe_ids)
+        bai_giaoca_ids = wizard_data['bai_giaoca_ids']
+        if bai_giaoca_ids:
+            bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
+            bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
+            sql+='''
+                and bai_giaoca_id in %s 
+            '''%(bai_giaoca_ids)
         if partner_ids:
-            p_ids = []
-            partner_obj = self.pool.get('res.partner')
-            for partner in partner_obj.browse(self.cr, self.uid, partner_ids):
-                if ldt=='taixe' and partner.taixe:
-                    p_ids.append(partner.id)
-                if ldt=='nhadautu' and partner.nhadautu:
-                    p_ids.append(partner.id)
-                if ldt=='nhanvienvanphong' and partner.nhanvienvanphong:
-                    p_ids.append(partner.id)
-            return p_ids
-        else:
-            period_from_id = wizard_data['period_from_id']
-            period_to_id = wizard_data['period_to_id']
-            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-            chinhanh_id = wizard_data['chinhanh_id']
-            mlg_type = wizard_data['mlg_type']
-            sql = '''
-                select partner_id from account_invoice where date_invoice between '%s' and '%s' and chinhanh_id=%s
-                    and state in ('open','paid') and mlg_type='%s' and loai_doituong='%s' 
-            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type,ldt)
-            doi_xe_ids = wizard_data['doi_xe_ids']
-            if doi_xe_ids:
-                doi_xe_ids = str(doi_xe_ids).replace('[', '(')
-                doi_xe_ids = str(doi_xe_ids).replace(']', ')')
-                sql+='''
-                    and account_id in %s 
-                '''%(doi_xe_ids)
-            bai_giaoca_ids = wizard_data['bai_giaoca_ids']
-            if bai_giaoca_ids:
-                bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
-                bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
-                sql+='''
-                    and bai_giaoca_id in %s 
-                '''%(bai_giaoca_ids)
-            if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
-                sql+='''
-                    and loai_nodoanhthu_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_baohiem' and lcntu['id']:
-                sql+='''
-                    and loai_baohiem_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_vipham' and lcntu['id']:
-                sql+='''
-                    and loai_vipham_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='maxuong' and lcntu['id']:
-                sql+='''
-                    and ma_xuong_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_tamung' and lcntu['id']:
-                sql+='''
-                    and loai_tamung_id = %s 
-                '''%(lcntu['id'])
-            sql += ''' group by partner_id '''
-            self.cr.execute(sql)
-            partner_ids = [r[0] for r in self.cr.fetchall()]
-            if ldt=='taixe':
-                sql = '''
-                    select partner_id from congno_dauky where period_id=%s
-                        and id in (select congno_dauky_id from congno_dauky_line where chinhanh_id=%s and mlg_type='%s') and partner_id in (select id from res_partner where taixe=True)
-                '''%(period_from_id[0],chinhanh_id[0],mlg_type)
-            elif ldt=='nhadautu':
-                sql = '''
-                    select partner_id from congno_dauky where period_id=%s
-                        and id in (select congno_dauky_id from congno_dauky_line where chinhanh_id=%s and mlg_type='%s') and partner_id in (select id from res_partner where nhadautu=True)
-                '''%(period_from_id[0],chinhanh_id[0],mlg_type)
+            partner_ids = str(partner_ids).replace('[', '(')
+            partner_ids = str(partner_ids).replace(']', ')')
+            sql+='''
+                and partner_id in %s 
+            '''%(partner_ids)
+        sql += ''' group by partner_id,loai_doituong, loai_nodoanhthu_id, loai_baohiem_id, ma_xuong_id, loai_vipham_id, loai_tamung_id '''
+        self.cr.execute(sql)
+        for dt in self.cr.dictfetchall():
+            if self.partner_dict.get(dt['loai_doituong'], False):
+                if mlg_type=='no_doanh_thu':
+                    if self.partner_dict[dt['loai_doituong']].get('loai_nodoanhthu', False):
+                        if self.partner_dict[dt['loai_doituong']]['loai_nodoanhthu'].get(dt['loai_nodoanhthu_id'], False):
+                            if dt['partner_id'] not in self.partner_dict[dt['loai_doituong']]['loai_nodoanhthu'][dt['loai_nodoanhthu_id']]:
+                                self.partner_dict[dt['loai_doituong']]['loai_nodoanhthu'][dt['loai_nodoanhthu_id']].append(dt['partner_id'])
+                        else:
+                            self.partner_dict[dt['loai_doituong']]['loai_nodoanhthu'][dt['loai_nodoanhthu_id']] = [dt['partner_id']]
+                    else:
+                        self.partner_dict[dt['loai_doituong']]['loai_nodoanhthu'] = {dt['loai_nodoanhthu_id']: [dt['partner_id']]}
+                if mlg_type=='phai_thu_bao_hiem':
+                    if self.partner_dict[dt['loai_doituong']].get('loai_baohiem', False):
+                        if self.partner_dict[dt['loai_doituong']]['loai_baohiem'].get(dt['loai_baohiem_id'], False):
+                            if dt['partner_id'] not in self.partner_dict[dt['loai_doituong']]['loai_baohiem'][dt['loai_baohiem_id']]:
+                                self.partner_dict[dt['loai_doituong']]['loai_baohiem'][dt['loai_baohiem_id']].append(dt['partner_id'])
+                        else:
+                            self.partner_dict[dt['loai_doituong']]['loai_baohiem'][dt['loai_baohiem_id']] = [dt['partner_id']]
+                    else:
+                        self.partner_dict[dt['loai_doituong']]['loai_baohiem'] = {dt['loai_baohiem_id']: [dt['partner_id']]}
+                if mlg_type=='phat_vi_pham':
+                    if self.partner_dict[dt['loai_doituong']].get('loai_vipham', False):
+                        if self.partner_dict[dt['loai_doituong']]['loai_vipham'].get(dt['loai_vipham_id'], False):
+                            if dt['partner_id'] not in self.partner_dict[dt['loai_doituong']]['loai_vipham'][dt['loai_vipham_id']]:
+                                self.partner_dict[dt['loai_doituong']]['loai_vipham'][dt['loai_vipham_id']].append(dt['partner_id'])
+                        else:
+                            self.partner_dict[dt['loai_doituong']]['loai_vipham'][dt['loai_vipham_id']] = [dt['partner_id']]
+                    else:
+                        self.partner_dict[dt['loai_doituong']]['loai_vipham'] = {dt['loai_vipham_id']: [dt['partner_id']]}
+                if mlg_type=='thu_no_xuong':
+                    if self.partner_dict[dt['loai_doituong']].get('maxuong', False):
+                        if self.partner_dict[dt['loai_doituong']]['maxuong'].get(dt['ma_xuong_id'], False):
+                            if dt['partner_id'] not in self.partner_dict[dt['loai_doituong']]['maxuong'][dt['ma_xuong_id']]:
+                                self.partner_dict[dt['loai_doituong']]['maxuong'][dt['ma_xuong_id']].append(dt['partner_id'])
+                        else:
+                            self.partner_dict[dt['loai_doituong']]['maxuong'][dt['ma_xuong_id']] = [dt['partner_id']]
+                    else:
+                        self.partner_dict[dt['loai_doituong']]['maxuong'] = {dt['ma_xuong_id']: [dt['partner_id']]}
+                if mlg_type=='hoan_tam_ung':
+                    if self.partner_dict[dt['loai_doituong']].get('loai_tamung', False):
+                        if self.partner_dict[dt['loai_doituong']]['loai_tamung'].get(dt['loai_tamung_id'], False):
+                            if dt['partner_id'] not in self.partner_dict[dt['loai_doituong']]['loai_tamung'][dt['loai_tamung_id']]:
+                                self.partner_dict[dt['loai_doituong']]['loai_tamung'][dt['loai_tamung_id']].append(dt['partner_id'])
+                        else:
+                            self.partner_dict[dt['loai_doituong']]['loai_tamung'][dt['loai_tamung_id']] = [dt['partner_id']]
+                    else:
+                        self.partner_dict[dt['loai_doituong']]['loai_tamung'] = {dt['loai_tamung_id']: [dt['partner_id']]}
+                if mlg_type not in ['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','thu_no_xuong','hoan_tam_ung']:
+                    if self.partner_dict[dt['loai_doituong']].get('loai_conlai', False):
+                        if dt['partner_id'] not in self.partner_dict[dt['loai_doituong']]['loai_conlai']:
+                            self.partner_dict[dt['loai_doituong']]['loai_conlai'].append(dt['partner_id'])
+                    else:
+                        self.partner_dict[dt['loai_doituong']]['loai_conlai'] = [dt['partner_id']]
             else:
-                sql = '''
-                    select partner_id from congno_dauky where period_id=%s
-                        and id in (select congno_dauky_id from congno_dauky_line where chinhanh_id=%s and mlg_type='%s') and partner_id in (select id from res_partner where nhanvienvanphong=True)
-                '''%(period_from_id[0],chinhanh_id[0],mlg_type)
-            self.cr.execute(sql)
-            for partner_id in self.cr.fetchall():
-                if partner_id[0] not in partner_ids:
-                    partner_ids.append(partner_id[0])
-            return partner_ids
+                if mlg_type=='no_doanh_thu' and dt['loai_nodoanhthu_id']:
+                    self.partner_dict[dt['loai_doituong']] = {'loai_nodoanhthu': {dt['loai_nodoanhthu_id']: [dt['partner_id']]}}
+                if mlg_type=='phai_thu_bao_hiem' and dt['loai_baohiem_id']:
+                    self.partner_dict[dt['loai_doituong']] = {'loai_baohiem': {dt['loai_baohiem_id']: [dt['partner_id']]}}
+                if mlg_type=='phat_vi_pham' and dt['loai_vipham_id']:
+                    self.partner_dict[dt['loai_doituong']] = {'loai_vipham': {dt['loai_vipham_id']: [dt['partner_id']]}}
+                if mlg_type=='thu_no_xuong' and dt['ma_xuong_id']:
+                    self.partner_dict[dt['loai_doituong']] = {'maxuong': {dt['ma_xuong_id']: [dt['partner_id']]}}
+                if mlg_type=='hoan_tam_ung' and dt['loai_tamung_id']:
+                    self.partner_dict[dt['loai_doituong']] = {'loai_tamung': {dt['loai_tamung_id']: [dt['partner_id']]}}
+                if mlg_type not in ['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','thu_no_xuong','hoan_tam_ung']:
+                    self.partner_dict[dt['loai_doituong']] = {'loai_conlai': [dt['partner_id']]}
+                
+        sql = '''
+            select cndk.partner_id as partner_id, rp.taixe as taixe, rp.nhanvienvanphong as nhanvienvanphong, rp.nhadautu as nhadautu, ctcndkl.loai_id as loai_id
+            
+                from congno_dauky cndk
+                left join congno_dauky_line cndkl on cndk.id = cndkl.congno_dauky_id
+                left join chitiet_congno_dauky_line ctcndkl on ctcndkl.congno_dauky_line_id = cndkl.id
+                left join res_partner rp on rp.id = cndk.partner_id
+                
+                where cndk.period_id=%s and cndkl.chinhanh_id=%s and cndkl.mlg_type='%s'
+        '''%(period_from_id[0],chinhanh_id[0],mlg_type)
+        self.cr.execute(sql)
+        for ct in self.cr.dictfetchall():
+            if ct['taixe'] and 'taixe' in self.loaidoituong:
+                if self.partner_dict.get('taixe', False):
+                    if mlg_type=='no_doanh_thu' and ct['loai_id']:
+                        if self.partner_dict['taixe'].get('loai_nodoanhthu', False):
+                            if self.partner_dict['taixe']['loai_nodoanhthu'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['taixe']['loai_nodoanhthu'][ct['loai_id']]:
+                                    self.partner_dict['taixe']['loai_nodoanhthu'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['taixe']['loai_nodoanhthu'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['taixe']['loai_nodoanhthu'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='phai_thu_bao_hiem' and ct['loai_id']:
+                        if self.partner_dict['taixe'].get('loai_baohiem', False):
+                            if self.partner_dict['taixe']['loai_baohiem'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['taixe']['loai_baohiem'][ct['loai_id']]:
+                                    self.partner_dict['taixe']['loai_baohiem'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['taixe']['loai_baohiem'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['taixe']['loai_baohiem'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='phat_vi_pham' and ct['loai_id']:
+                        if self.partner_dict['taixe'].get('loai_vipham', False):
+                            if self.partner_dict['taixe']['loai_vipham'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['taixe']['loai_vipham'][ct['loai_id']]:
+                                    self.partner_dict['taixe']['loai_vipham'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['taixe']['loai_vipham'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['taixe']['loai_vipham'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='thu_no_xuong' and ct['loai_id']:
+                        if self.partner_dict['taixe'].get('maxuong', False):
+                            if self.partner_dict['taixe']['maxuong'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['taixe']['maxuong'][ct['loai_id']]:
+                                    self.partner_dict['taixe']['maxuong'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['taixe']['maxuong'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['taixe']['maxuong'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='hoan_tam_ung' and ct['loai_id']:
+                        if self.partner_dict['taixe'].get('loai_tamung', False):
+                            if self.partner_dict['taixe']['loai_tamung'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['taixe']['loai_tamung'][ct['loai_id']]:
+                                    self.partner_dict['taixe']['loai_tamung'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['taixe']['loai_tamung'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['taixe']['loai_tamung'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type not in ['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','thu_no_xuong','hoan_tam_ung']:
+                        if self.partner_dict['taixe'].get('loai_conlai', False):
+                            if ct['partner_id'] not in self.partner_dict['taixe']['loai_conlai']:
+                                self.partner_dict['taixe']['loai_conlai'].append(ct['partner_id'])
+                        else:
+                            self.partner_dict['taixe']['loai_conlai'] = [ct['partner_id']]
+                else:
+                    if mlg_type=='no_doanh_thu' and ct['loai_id']:
+                        self.partner_dict['taixe'] = {'loai_nodoanhthu': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='phai_thu_bao_hiem' and ct['loai_id']:
+                        self.partner_dict['taixe'] = {'loai_baohiem': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='phat_vi_pham' and ct['loai_id']:
+                        self.partner_dict['taixe'] = {'loai_vipham': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='thu_no_xuong' and ct['loai_id']:
+                        self.partner_dict['taixe'] = {'maxuong': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='hoan_tam_ung' and ct['loai_id']:
+                        self.partner_dict['taixe'] = {'loai_tamung': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type not in ['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','thu_no_xuong','hoan_tam_ung']:
+                        self.partner_dict['taixe'] = {'loai_conlai': [ct['partner_id']]}
+            
+            if ct['nhadautu'] and 'nhadautu' in self.loaidoituong:
+                if self.partner_dict.get('nhadautu', False):
+                    if mlg_type=='no_doanh_thu' and ct['loai_id']:
+                        if self.partner_dict['nhadautu'].get('loai_nodoanhthu', False):
+                            if self.partner_dict['nhadautu']['loai_nodoanhthu'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhadautu']['loai_nodoanhthu'][ct['loai_id']]:
+                                    self.partner_dict['nhadautu']['loai_nodoanhthu'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhadautu']['loai_nodoanhthu'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhadautu']['loai_nodoanhthu'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='phai_thu_bao_hiem' and ct['loai_id']:
+                        if self.partner_dict['nhadautu'].get('loai_baohiem', False):
+                            if self.partner_dict['nhadautu']['loai_baohiem'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhadautu']['loai_baohiem'][ct['loai_id']]:
+                                    self.partner_dict['nhadautu']['loai_baohiem'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhadautu']['loai_baohiem'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhadautu']['loai_baohiem'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='phat_vi_pham' and ct['loai_id']:
+                        if self.partner_dict['nhadautu'].get('loai_vipham', False):
+                            if self.partner_dict['nhadautu']['loai_vipham'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhadautu']['loai_vipham'][ct['loai_id']]:
+                                    self.partner_dict['nhadautu']['loai_vipham'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhadautu']['loai_vipham'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhadautu']['loai_vipham'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='thu_no_xuong' and ct['loai_id']:
+                        if self.partner_dict['nhadautu'].get('maxuong', False):
+                            if self.partner_dict['nhadautu']['maxuong'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhadautu']['maxuong'][ct['loai_id']]:
+                                    self.partner_dict['nhadautu']['maxuong'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhadautu']['maxuong'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhadautu']['maxuong'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='hoan_tam_ung' and ct['loai_id']:
+                        if self.partner_dict['nhadautu'].get('loai_tamung', False):
+                            if self.partner_dict['nhadautu']['loai_tamung'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhadautu']['loai_tamung'][ct['loai_id']]:
+                                    self.partner_dict['nhadautu']['loai_tamung'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhadautu']['loai_tamung'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhadautu']['loai_tamung'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type not in ['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','thu_no_xuong','hoan_tam_ung']:
+                        if self.partner_dict['nhadautu'].get('loai_conlai', False):
+                            if ct['partner_id'] not in self.partner_dict['nhadautu']['loai_conlai']:
+                                self.partner_dict['nhadautu']['loai_conlai'].append(ct['partner_id'])
+                        else:
+                            self.partner_dict['nhadautu']['loai_conlai'] = [ct['partner_id']]
+                else:
+                    if mlg_type=='no_doanh_thu' and ct['loai_id']:
+                        self.partner_dict['nhadautu'] = {'loai_nodoanhthu': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='phai_thu_bao_hiem' and ct['loai_id']:
+                        self.partner_dict['nhadautu'] = {'loai_baohiem': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='phat_vi_pham' and ct['loai_id']:
+                        self.partner_dict['nhadautu'] = {'loai_vipham': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='thu_no_xuong' and ct['loai_id']:
+                        self.partner_dict['nhadautu'] = {'maxuong': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='hoan_tam_ung' and ct['loai_id']:
+                        self.partner_dict['nhadautu'] = {'loai_tamung': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type not in ['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','thu_no_xuong','hoan_tam_ung']:
+                        self.partner_dict['nhadautu'] = {'loai_conlai': [ct['partner_id']]} 
+                        
+            if ct['nhanvienvanphong'] and 'nhanvienvanphong' in self.loaidoituong:
+                if self.partner_dict.get('nhanvienvanphong', False):
+                    if mlg_type=='no_doanh_thu' and ct['loai_id']:
+                        if self.partner_dict['nhanvienvanphong'].get('loai_nodoanhthu', False):
+                            if self.partner_dict['nhanvienvanphong']['loai_nodoanhthu'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhanvienvanphong']['loai_nodoanhthu'][ct['loai_id']]:
+                                    self.partner_dict['nhanvienvanphong']['loai_nodoanhthu'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhanvienvanphong']['loai_nodoanhthu'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhanvienvanphong']['loai_nodoanhthu'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='phai_thu_bao_hiem' and ct['loai_id']:
+                        if self.partner_dict['nhanvienvanphong'].get('loai_baohiem', False):
+                            if self.partner_dict['nhanvienvanphong']['loai_baohiem'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhanvienvanphong']['loai_baohiem'][ct['loai_id']]:
+                                    self.partner_dict['nhanvienvanphong']['loai_baohiem'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhanvienvanphong']['loai_baohiem'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhanvienvanphong']['loai_baohiem'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='phat_vi_pham' and ct['loai_id']:
+                        if self.partner_dict['nhanvienvanphong'].get('loai_vipham', False):
+                            if self.partner_dict['nhanvienvanphong']['loai_vipham'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhanvienvanphong']['loai_vipham'][ct['loai_id']]:
+                                    self.partner_dict['nhanvienvanphong']['loai_vipham'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhanvienvanphong']['loai_vipham'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhanvienvanphong']['loai_vipham'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='thu_no_xuong' and ct['loai_id']:
+                        if self.partner_dict['nhanvienvanphong'].get('maxuong', False):
+                            if self.partner_dict['nhanvienvanphong']['maxuong'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhanvienvanphong']['maxuong'][ct['loai_id']]:
+                                    self.partner_dict['nhanvienvanphong']['maxuong'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhanvienvanphong']['maxuong'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhanvienvanphong']['maxuong'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type=='hoan_tam_ung' and ct['loai_id']:
+                        if self.partner_dict['nhanvienvanphong'].get('loai_tamung', False):
+                            if self.partner_dict['nhanvienvanphong']['loai_tamung'].get(ct['loai_id'], False):
+                                if ct['partner_id'] not in self.partner_dict['nhanvienvanphong']['loai_tamung'][ct['loai_id']]:
+                                    self.partner_dict['nhanvienvanphong']['loai_tamung'][ct['loai_id']].append(ct['partner_id'])
+                            else:
+                                self.partner_dict['nhanvienvanphong']['loai_tamung'][ct['loai_id']] = [ct['partner_id']]
+                        else:
+                            self.partner_dict['nhanvienvanphong']['loai_tamung'] = {ct['loai_id']: [ct['partner_id']]}
+                    if mlg_type not in ['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','thu_no_xuong','hoan_tam_ung']:
+                        if self.partner_dict['nhanvienvanphong'].get('loai_conlai', False):
+                            if ct['partner_id'] not in self.partner_dict['nhanvienvanphong']['loai_conlai']:
+                                self.partner_dict['nhanvienvanphong']['loai_conlai'].append(ct['partner_id'])
+                        else:
+                            self.partner_dict['nhanvienvanphong']['loai_conlai'] = [ct['partner_id']]
+                else:
+                    if mlg_type=='no_doanh_thu' and ct['loai_id']:
+                        self.partner_dict['nhanvienvanphong'] = {'loai_nodoanhthu': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='phai_thu_bao_hiem' and ct['loai_id']:
+                        self.partner_dict['nhanvienvanphong'] = {'loai_baohiem': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='phat_vi_pham' and ct['loai_id']:
+                        self.partner_dict['nhanvienvanphong'] = {'loai_vipham': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='thu_no_xuong' and ct['loai_id']:
+                        self.partner_dict['nhanvienvanphong'] = {'maxuong': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type=='hoan_tam_ung' and ct['loai_id']:
+                        self.partner_dict['nhanvienvanphong'] = {'loai_tamung': {ct['loai_id']: [ct['partner_id']]}}
+                    if mlg_type not in ['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','thu_no_xuong','hoan_tam_ung']:
+                        self.partner_dict['nhanvienvanphong'] = {'loai_conlai': [ct['partner_id']]} 
+        return True
     
     def get_title(self):
         wizard_data = self.localcontext['data']['form']
@@ -421,48 +693,6 @@ class Parser(report_sxw.rml_parse):
         self.tongcongno += nocuoiky
         return nocuoiky
     
-#     def get_nocuoiky(self, partner_id,lcntu):
-#         wizard_data = self.localcontext['data']['form']
-#         if partner_id:
-#             period_from_id = wizard_data['period_from_id']
-#             period_to_id = wizard_data['period_to_id']
-#             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-#             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-#             chinhanh_id = wizard_data['chinhanh_id']
-#             mlg_type = wizard_data['mlg_type']
-#             sql = '''
-#                 select case when sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0)+COALESCE(sotien_lai_conlai,0)) else 0 end notrongky
-#                     from account_invoice where mlg_type='%s' and chinhanh_id=%s and partner_id=%s
-#                         and date_invoice between '%s' and '%s' and state in ('open','paid')  
-#             '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start,period_to.date_stop)
-#             if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
-#                 sql+='''
-#                     and loai_nodoanhthu_id = %s 
-#                 '''%(lcntu['id'])
-#             if lcntu['loai']=='loai_baohiem' and lcntu['id']:
-#                 sql+='''
-#                     and loai_baohiem_id = %s 
-#                 '''%(lcntu['id'])
-#             if lcntu['loai']=='loai_vipham' and lcntu['id']:
-#                 sql+='''
-#                     and loai_vipham_id = %s 
-#                 '''%(lcntu['id'])
-#             if lcntu['loai']=='maxuong' and lcntu['id']:
-#                 sql+='''
-#                     and ma_xuong_id = %s 
-#                 '''%(lcntu['id'])
-#             if lcntu['loai']=='loai_tamung' and lcntu['id']:
-#                 sql+='''
-#                     and loai_tamung_id = %s 
-#                 '''%(lcntu['id'])
-#             self.cr.execute(sql)
-#             notrongky = self.cr.fetchone()[0]
-#             nodauky = self.get_nodauky(partner_id,lcntu)
-#             nocuoiky = nodauky+notrongky
-#             self.tongcongno += nocuoiky
-#             return nocuoiky
-#         return 0
-    
     def get_chitiet_congno(self, partner_id, lcntu):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
@@ -558,6 +788,8 @@ class Parser(report_sxw.rml_parse):
             if pay.date >= period_from.date_start and pay.date<=period_to.date_stop:
                 pays.append(pay)
                 self.nocuoiky = self.nocuoiky-pay.credit
+                self.tongco += pay.credit
+                self.congco += pay.credit
         return pays
     
     def get_only_payment(self, partner_id, lcntu):
@@ -651,4 +883,84 @@ class Parser(report_sxw.rml_parse):
                 pays.append(pay)
                 self.nocuoiky = self.nocuoiky-pay.so_tien
         return pays
+    
+    def get_name_invoice(self, invoice_id):
+        if invoice_id:
+            inv = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
+            return inv.name
+        return ''
+    
+    def get_only_lichsu_thutienlai(self, partner_id, lcntu):
+        wizard_data = self.localcontext['data']['form']
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        chinhanh_id = wizard_data['chinhanh_id']
+        mlg_type = wizard_data['mlg_type']
+        sql = '''
+            select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+                from so_tien_lai
+                where invoice_id in (select id from account_invoice
+                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s'
+        '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ma_xuong_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and loai_tamung_id = %s 
+            '''%(lcntu['id'])
+        sql += ''' )
+                and ngay between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+        self.cr.execute(sql)
+        co = self.cr.fetchone()[0]
+        self.tongco += co
+        self.congco += co
+        self.nocuoiky = self.nocuoiky-co
+        
+        sql = '''
+            select ngay,fusion_id,so_tien,loai_giaodich,move_line_id,invoice_id
+                from so_tien_lai
+                where invoice_id in (select id from account_invoice
+                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' 
+        '''%(mlg_type,chinhanh_id[0],partner_id,period_from.date_start)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ma_xuong_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and loai_tamung_id = %s 
+            '''%(lcntu['id'])
+        sql += ''' )
+                and ngay between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+        self.cr.execute(sql)
+        onlylai = self.cr.dictfetchall()
+        return onlylai
     
