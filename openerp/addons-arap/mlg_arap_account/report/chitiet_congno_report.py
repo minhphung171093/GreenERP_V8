@@ -882,6 +882,8 @@ class Parser(report_sxw.rml_parse):
             if pay.ngay >= period_from.date_start and pay.ngay<=period_to.date_stop:
                 pays.append(pay)
                 self.nocuoiky = self.nocuoiky-pay.so_tien
+                self.tongco += pay.so_tien
+                self.congco += pay.so_tien
         return pays
     
     def get_name_invoice(self, invoice_id):

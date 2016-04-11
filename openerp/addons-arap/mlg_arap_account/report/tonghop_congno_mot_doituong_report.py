@@ -405,7 +405,39 @@ class Parser(report_sxw.rml_parse):
         '''%(period_from.date_start,period_to.date_stop)
         self.cr.execute(sql)
         co = self.cr.fetchone()[0]
-        self.tongco += co
+        
+        sql = '''
+            select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+            
+                from so_tien_lai where invoice_id in (
+                        select id from account_invoice where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<='%s' 
+        '''%(mlg_type,chinhanh_id[0],partner_id[0],period_to.date_stop)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ma_xuong_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and loai_tamung_id = %s 
+            '''%(lcntu['id'])
+        sql += ''' )
+                and ngay between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+        self.cr.execute(sql)
+        lai = self.cr.fetchone()[0]
+        
+        self.tongco += co+lai
         return co
     
     def get_nocuoiky(self, mlg_type,lcntu):

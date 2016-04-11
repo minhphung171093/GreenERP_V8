@@ -53,6 +53,7 @@ class Parser(report_sxw.rml_parse):
             'get_loai_congno_tuongung': self.get_loai_congno_tuongung,
             'get_title_lcntu': self.get_title_lcntu,
             'get_only_payment': self.get_only_payment,
+            'get_only_lichsu_thutienlai': self.get_only_lichsu_thutienlai,
         })
         
     def convert_date(self, date):
@@ -440,6 +441,8 @@ class Parser(report_sxw.rml_parse):
             if pay.date >= period_from.date_start and pay.date<=period_to.date_stop:
                 pays.append(pay)
                 self.nocuoiky = self.nocuoiky-pay.credit
+                self.tongco += pay.credit
+                self.congco += pay.credit
         return pays
     
     def get_only_payment(self, mlg_type, lcntu):
@@ -532,6 +535,82 @@ class Parser(report_sxw.rml_parse):
             if pay.ngay >= period_from.date_start and pay.ngay<=period_to.date_stop:
                 pays.append(pay)
                 self.nocuoiky = self.nocuoiky-pay.so_tien
+                self.tongco += pay.so_tien
+                self.congco += pay.so_tien
         return pays
+    
+    def get_only_lichsu_thutienlai(self, mlg_type, lcntu):
+        wizard_data = self.localcontext['data']['form']
+        period_from_id = wizard_data['period_from_id']
+        period_to_id = wizard_data['period_to_id']
+        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        chinhanh_id = wizard_data['chinhanh_id']
+        partner_id = wizard_data['partner_id']
+        sql = '''
+            select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+                from so_tien_lai
+                where invoice_id in (select id from account_invoice
+                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s'
+        '''%(mlg_type,chinhanh_id[0],partner_id[0],period_from.date_start)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ma_xuong_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and loai_tamung_id = %s 
+            '''%(lcntu['id'])
+        sql += ''' )
+                and ngay between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+        self.cr.execute(sql)
+        co = self.cr.fetchone()[0]
+        self.tongco += co
+        self.congco += co
+        self.nocuoiky = self.nocuoiky-co
+        
+        sql = '''
+            select ngay,fusion_id,so_tien,loai_giaodich,move_line_id,invoice_id
+                from so_tien_lai
+                where invoice_id in (select id from account_invoice
+                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' 
+        '''%(mlg_type,chinhanh_id[0],partner_id[0],period_from.date_start)
+        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+            sql+='''
+                and loai_nodoanhthu_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+            sql+='''
+                and loai_baohiem_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_vipham' and lcntu['id']:
+            sql+='''
+                and loai_vipham_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='maxuong' and lcntu['id']:
+            sql+='''
+                and ma_xuong_id = %s 
+            '''%(lcntu['id'])
+        if lcntu['loai']=='loai_tamung' and lcntu['id']:
+            sql+='''
+                and loai_tamung_id = %s 
+            '''%(lcntu['id'])
+        sql += ''' )
+                and ngay between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+        self.cr.execute(sql)
+        onlylai = self.cr.dictfetchall()
+        return onlylai
     
     
