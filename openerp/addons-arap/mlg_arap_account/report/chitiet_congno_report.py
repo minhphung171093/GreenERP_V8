@@ -1117,7 +1117,7 @@ class Parser(report_sxw.rml_parse):
             for lcntu in self.loai_congno_tuongung:
                 if lcntu['loai']=='loai_conlai':
                     sql = '''
-                        select stl.ngay as ngay,stl.fusion_id as fusion_id,stl.so_tien as so_tien,stl.loai_giaodich as loai_giaodich,
+                        select stl.ngay as ngay, ai.partner_id as partner_id,stl.fusion_id as fusion_id,stl.so_tien as so_tien,stl.loai_giaodich as loai_giaodich,
                             stl.move_line_id as move_line_id,stl.invoice_id as invoice_id
                             
                             from so_tien_lai stl
@@ -1138,7 +1138,7 @@ class Parser(report_sxw.rml_parse):
                     
                 if lcntu['loai']!='loai_conlai':
                     sql = '''
-                        select stl.ngay as ngay,stl.fusion_id as fusion_id,stl.so_tien as so_tien,stl.loai_giaodich as loai_giaodich,
+                        select stl.ngay as ngay, ai.partner_id as partner_id,stl.fusion_id as fusion_id,stl.so_tien as so_tien,stl.loai_giaodich as loai_giaodich,
                             stl.move_line_id as move_line_id,stl.invoice_id as invoice_id
                             
                             from so_tien_lai stl
