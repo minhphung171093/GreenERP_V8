@@ -1379,7 +1379,7 @@ class output_congno_tudong(osv.osv):
                         'ma_doi_tuong': line['ma_doi_tuong'],
                         'ten_doi_tuong': line['ten_doi_tuong'],
                         'bien_so_xe': line['bien_so_xe'],
-                        'loai_baohiem_id': line['loai_baohiem_id'],
+                        'loai_bao_hiem': line['loai_bao_hiem'],
                         'so_tien': line['so_tien'],
                         'so_hoa_don': line['so_hoa_don'],
                         'dien_giai': '',
