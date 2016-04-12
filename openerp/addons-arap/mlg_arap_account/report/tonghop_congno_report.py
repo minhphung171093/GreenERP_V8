@@ -34,10 +34,12 @@ class Parser(report_sxw.rml_parse):
         self.tongcong_no = 0
         self.tongcong_co = 0
         
+        self.partner_ids = []
         self.loaidoituong = []
         self.loai_congno_tuongung = []
         self.partner_dict = {}
         self.congno_dict = {}
+        self.nocuoiky = 0
         
         self.localcontext.update({
             'get_doituong': self.get_doituong,
@@ -184,6 +186,8 @@ class Parser(report_sxw.rml_parse):
         sql += ''' group by partner_id,loai_doituong, loai_nodoanhthu_id, loai_baohiem_id, ma_xuong_id, loai_vipham_id, loai_tamung_id '''
         self.cr.execute(sql)
         for dt in self.cr.dictfetchall():
+            if dt['partner_id'] not in self.partner_ids:
+                self.partner_ids.append(dt['partner_id'])
             if self.partner_dict.get(dt['loai_doituong'], False):
                 if mlg_type=='no_doanh_thu':
                     if self.partner_dict[dt['loai_doituong']].get('loai_nodoanhthu', False):
@@ -262,6 +266,8 @@ class Parser(report_sxw.rml_parse):
         '''%(period_from_id[0],chinhanh_id[0],mlg_type)
         self.cr.execute(sql)
         for ct in self.cr.dictfetchall():
+            if ct['partner_id'] not in self.partner_ids:
+                self.partner_ids.append(ct['partner_id'])
             if ct['taixe'] and 'taixe' in self.loaidoituong:
                 if self.partner_dict.get('taixe', False):
                     if mlg_type=='no_doanh_thu' and ct['loai_id']:
@@ -503,26 +509,23 @@ class Parser(report_sxw.rml_parse):
         return ''
     
     def get_nodauky(self, partner_id,lcntu):
-        wizard_data = self.localcontext['data']['form']
-        if partner_id:
-            period_id = wizard_data['period_from_id']
-            chinhanh_id = wizard_data['chinhanh_id']
-            mlg_type = wizard_data['mlg_type']
-            sql = '''
-                select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
-                    from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
-                        and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)
-            '''%(mlg_type,chinhanh_id[0],partner_id,period_id[0])
-            if lcntu['loai']!='loai_conlai' and lcntu['id']:
-                sql = '''
-                    select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
-                        from chitiet_congno_dauky_line where congno_dauky_line_id in (select id from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
-                            and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
-                '''%(mlg_type,chinhanh_id[0],partner_id,period_id[0],lcntu['id'])
-            self.cr.execute(sql)
-            nodauky = self.cr.fetchone()[0]
-            self.tongnodauky += nodauky
-            return nodauky
+        if lcntu['loai']=='loai_conlai':
+            if self.congno_dict.get('loai_conlai', False):
+                if self.congno_dict['loai_conlai'].get(partner_id, False):
+                    if self.congno_dict['loai_conlai'][partner_id].get('ndk', False):
+                        nodauky = self.congno_dict['loai_conlai'][partner_id]['ndk']
+                        self.tongnodauky += nodauky
+                        self.nocuoiky += nodauky
+                        return nodauky
+        if lcntu['loai']!='loai_conlai':
+            if self.congno_dict.get(lcntu['loai'], False):
+                if self.congno_dict[lcntu['loai']].get(partner_id, False):
+                    if self.congno_dict[lcntu['loai']][partner_id].get(lcntu['id'], False):
+                        if self.congno_dict[lcntu['loai']][partner_id][lcntu['id']].get('ndk', False):
+                            nodauky = self.congno_dict[lcntu['loai']][partner_id][lcntu['id']]['ndk']
+                            self.tongnodauky += nodauky
+                            self.nocuoiky += nodauky
+                            return nodauky
         return 0
     
     def get_tongcongno(self):
@@ -701,268 +704,331 @@ class Parser(report_sxw.rml_parse):
         return tt
     
     def get_nocuoiky(self, partner_id,lcntu):
-        wizard_data = self.localcontext['data']['form']
-        if partner_id:
-            period_id = wizard_data['period_from_id']
-            chinhanh_id = wizard_data['chinhanh_id']
-            mlg_type = wizard_data['mlg_type']
-            sql = '''
-                select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
-                    from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
-                        and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)
-            '''%(mlg_type,chinhanh_id[0],partner_id,period_id[0])
-            if lcntu['loai']!='loai_conlai' and lcntu['id']:
-                sql = '''
-                    select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
-                        from chitiet_congno_dauky_line where congno_dauky_line_id in (select id from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
-                            and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
-                '''%(mlg_type,chinhanh_id[0],partner_id,period_id[0],lcntu['id'])
-            self.cr.execute(sql)
-            nodauky = self.cr.fetchone()[0]
-            
+        nocuoiky = self.nocuoiky
+        self.tongcong_congno += nocuoiky
+        self.nocuoiky = 0
+        return nocuoiky
+    
+    def get_congno_data(self):
+        if self.partner_ids:
+            wizard_data = self.localcontext['data']['form']
+            p_ids = self.partner_ids
+            p_ids = str(p_ids).replace('[', '(')
+            p_ids = str(p_ids).replace(']', ')')
             period_from_id = wizard_data['period_from_id']
             period_to_id = wizard_data['period_to_id']
             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
-            sql = '''
-                select case when sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0))!=0 then sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)) else 0 end sotienno
-                
-                    from account_invoice ai
-                    left join res_partner rp on rp.id = ai.partner_id
+            loaicongnotu = ''
+            if mlg_type=='no_doanh_thu':
+                loaicongnotu = 'loai_nodoanhthu'
+            elif mlg_type=='phai_thu_bao_hiem':
+                loaicongnotu = 'loai_baohiem'
+            elif mlg_type=='phat_vi_pham':
+                loaicongnotu = 'loai_vipham'
+            elif mlg_type=='thu_no_xuong':
+                loaicongnotu = 'maxuong'
+            elif mlg_type=='hoan_tam_ung':
+                loaicongnotu = 'loai_tamung'
+
+            for lcntu in self.loai_congno_tuongung:
+                if lcntu['loai']=='loai_conlai':
+                    sql = '''
+                        select cndk.partner_id as partner_id, case when sum(cndkl.so_tien_no)!=0 then sum(cndkl.so_tien_no) else 0 end sotien
+                            from congno_dauky_line cndkl
+                                left join congno_dauky cndk on cndkl.congno_dauky_id = cndk.id
+                                where cndkl. mlg_type='%s' and cndkl.chinhanh_id=%s and 
+                                    cndk.partner_id in %s and cndk.period_id=%s
+                                group by cndk.partner_id
+                    '''%(mlg_type,chinhanh_id[0],p_ids,period_from_id[0])
+                    self.cr.execute(sql)
+                    cndks = self.cr.dictfetchall()
+                    for cndk in cndks:
+                        if self.congno_dict.get('loai_conlai', False):
+                            if self.congno_dict['loai_conlai'].get(cndk['partner_id'], False):
+                                if self.congno_dict['loai_conlai'][cndk['partner_id']].get('ndk', False):
+                                    self.congno_dict['loai_conlai'][cndk['partner_id']]['ndk'] += cndk['sotien']
+                                else:
+                                    self.congno_dict['loai_conlai'][cndk['partner_id']]['ndk'] = cndk['sotien']
+                            else:
+                                self.congno_dict['loai_conlai'][cndk['partner_id']] = {'ndk': cndk['sotien']}
+                        else:
+                            self.congno_dict['loai_conlai'] = {cndk['partner_id']: {'ndk': cndk['sotien']}}
                     
-                    where ai.partner_id=%s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
-                        and ai.mlg_type='%s' 
-            '''%(partner_id,period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
-            if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
-                sql+='''
-                    and ai.loai_nodoanhthu_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_baohiem' and lcntu['id']:
-                sql+='''
-                    and ai.loai_baohiem_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_vipham' and lcntu['id']:
-                sql+='''
-                    and ai.loai_vipham_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='maxuong' and lcntu['id']:
-                sql+='''
-                    and ai.ma_xuong_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_tamung' and lcntu['id']:
-                sql+='''
-                    and ai.loai_tamung_id = %s 
-                '''%(lcntu['id'])
-            self.cr.execute(sql)
-            no = self.cr.fetchone()[0]
-            
-            sql = '''
-                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
-                    from account_move_line
-                    where move_id in (select move_id from account_voucher
-                        where reference in (select name from account_invoice
-                            where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<='%s' 
-            '''%(mlg_type,chinhanh_id[0],partner_id,period_to.date_stop)
-            if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
-                sql+='''
-                    and loai_nodoanhthu_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_baohiem' and lcntu['id']:
-                sql+='''
-                    and loai_baohiem_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_vipham' and lcntu['id']:
-                sql+='''
-                    and loai_vipham_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='maxuong' and lcntu['id']:
-                sql+='''
-                    and ma_xuong_id = %s 
-                '''%(lcntu['id'])
-            if lcntu['loai']=='loai_tamung' and lcntu['id']:
-                sql+='''
-                    and loai_tamung_id = %s 
-                '''%(lcntu['id'])
-            sql += ''' ))
-                    and date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
-            self.cr.execute(sql)
-            co = self.cr.fetchone()[0]
-            
-            sql = '''
-                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end tonglaithu
-                    from so_tien_lai where invoice_id in (select id from account_invoice where mlg_type='%s' and chinhanh_id=%s
-                        and date_invoice<='%s' and state in ('open','paid') and partner_id = %s) and ngay between '%s' and '%s'
-            '''%(mlg_type,chinhanh_id[0],period_to.date_stop,partner_id,period_from.date_start,period_to.date_stop)
-            self.cr.execute(sql)
-            thutienlai = self.cr.fetchone()[0]
-            
-            nocuoiky = nodauky+no-co-thutienlai
-            self.tongcongno += nocuoiky
-            return nocuoiky
-        return 0
-    
-    def get_congno_data(self):
-#         if self.partner_ids:
-#             p_ids = self.partner_ids
-#             p_ids = str(p_ids).replace('[', '(')
-#             p_ids = str(p_ids).replace(']', ')')
-#             period_from_id = wizard_data['period_from_id']
-#             period_to_id = wizard_data['period_to_id']
-#             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-#             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-#             chinhanh_id = wizard_data['chinhanh_id']
-#             mlg_type = wizard_data['mlg_type']
-#             for lcntu in self.loai_congno_tuongung:
-#                 if lcntu['loai']=='loai_conlai':
-#                     sql = '''
-#                         select cndk.partner_id as partner_id, case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end sotien
-#                             from congno_dauky_line cndkl
-#                                 left join congno_dauky cndk on cndkl.congno_dauky_id = cndk.id
-#                                 where cndkl. mlg_type='%s' and cndkl.chinhanh_id=%s
-#                                     cndk.partner_id in %s and cndk.period_id=%s
-#                                 group by cndk.partner_id
-#                     '''%(mlg_type,chinhanh_id[0],p_ids,period_id[0])
-#                     self.cr.execute(sql)
-#                     cndks = self.cr.dictfetchall()
-#                     for cndk in cndks:
-#                         if self.congno_dict.get('loai_conlai', False):
-#                             if self.congno_dict['loai_conlai'].get(cndk['partner_id'], False):
-#                                 if self.congno_dict['loai_conlai'][cndk['partner_id']].get('ndk', False):
-#                                     self.congno_dict['loai_conlai'][cndk['partner_id']]['ndk'] += cndk['sotien']
-#                                 else:
-#                                     self.congno_dict['loai_conlai'][cndk['partner_id']] = {'ndk': cndk['sotien']}
-#                             else:
-#                                 self.congno_dict['loai_conlai'] = {cndk['partner_id']: {'ndk': cndk['sotien']}}
-#                         else:
-#                             self.congno_dict={'loai_conlai': {cndk['partner_id']: {'ndk': cndk['sotien']}}}
-#                 if lcntu['loai']!='loai_conlai' and lcntu['id']:
-#                     sql = '''
-#                         select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
-#                             from chitiet_congno_dauky_line where congno_dauky_line_id in (select id from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
-#                                 and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
-#                     '''%(mlg_type,chinhanh_id[0],self.partner_ids,period_id[0],lcntu['id'])
-#                 
-#                 self.cr.execute(sql)
-#                 nodauky = self.cr.fetchone()[0]
+                    #get no
+                    sql = '''
+                        select ai.partner_id as partner_id,
+                            case when sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0))!=0 then sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)) else 0 end sotien
+                        
+                            from account_invoice ai
+                            left join res_partner rp on rp.id = ai.partner_id
+                            
+                            where ai.partner_id in %s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
+                                and ai.mlg_type='%s'
+                                
+                            group by ai.partner_id 
+                    '''%(p_ids,period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
+                    self.cr.execute(sql)
+                    nos = self.cr.dictfetchall()
+                    for no in nos:
+                        if self.congno_dict.get('loai_conlai', False):
+                            if self.congno_dict['loai_conlai'].get(no['partner_id'], False):
+                                if self.congno_dict['loai_conlai'][no['partner_id']].get('no', False):
+                                    self.congno_dict['loai_conlai'][no['partner_id']]['no'] += no['sotien']
+                                else:
+                                    self.congno_dict['loai_conlai'][no['partner_id']]['no'] = no['sotien']
+                            else:
+                                self.congno_dict['loai_conlai'][no['partner_id']] = {'no': no['sotien']}
+                        else:
+                            self.congno_dict['loai_conlai'] = {no['partner_id']: {'no': no['sotien']}}
+                    
+                    #get co
+                    sql = '''
+                    select partner_id, case when sum(sotien)!=0 then sum(sotien) else 0 end sotien from (
+                        select ai.partner_id as partner_id, case when sum(aml.credit)!=0 then sum(aml.credit) else 0 end sotien
+                            from account_move_line aml
+                            left join account_voucher av on aml.move_id=av.move_id
+                            left join account_invoice ai on av.reference=ai.name
+                            where ai.mlg_type='%s' and ai.state in ('open','paid') and ai.chinhanh_id=%s and ai.partner_id in %s
+                            and ai.date_invoice<='%s' 
+                    '''%(mlg_type,chinhanh_id[0],p_ids,period_to.date_stop)
+                    sql += '''
+                            and aml.date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+                    sql += ' group by ai.partner_id '
+                    sql += ' union '
+                    sql += '''
+                        select ai.partner_id, case when sum(stl.so_tien)!=0 then sum(stl.so_tien) else 0 end sotien
+                        
+                            from so_tien_lai stl
+                            left join account_invoice ai on ai.id=stl.invoice_id
+                            where ai.mlg_type='%s' and ai.state in ('open','paid') and ai.chinhanh_id=%s and ai.partner_id in %s
+                                and ai.date_invoice<='%s'  
+                    '''%(mlg_type,chinhanh_id[0],p_ids,period_to.date_stop)
+                    sql += '''
+                            and stl.ngay between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+                    sql += ' group by ai.partner_id )foo group by partner_id '
+                    self.cr.execute(sql)
+                    self.cr.execute(sql)
+                    cos = self.cr.dictfetchall()
+                    for co in cos:
+                        if self.congno_dict.get('loai_conlai', False):
+                            if self.congno_dict['loai_conlai'].get(co['partner_id'], False):
+                                if self.congno_dict['loai_conlai'][co['partner_id']].get('co', False):
+                                    self.congno_dict['loai_conlai'][co['partner_id']]['co'] += co['sotien']
+                                else:
+                                    self.congno_dict['loai_conlai'][co['partner_id']]['co'] = co['sotien']
+                            else:
+                                self.congno_dict['loai_conlai'][co['partner_id']] = {'co': co['sotien']}
+                        else:
+                            self.congno_dict['loai_conlai'] = {co['partner_id']: {'co': co['sotien']}}
+                            
+                
+                if lcntu['loai']!='loai_conlai':
+                    sql = '''
+                        select cndk.partner_id as partner_id, ctcndkl.loai_id as loai_id,
+                                case when sum(ctcndkl.so_tien_no)!=0 then sum(ctcndkl.so_tien_no) else 0 end sotien
+                        
+                            from chitiet_congno_dauky_line ctcndkl
+                            left join congno_dauky_line cndkl on ctcndkl.congno_dauky_line_id=cndkl.id
+                            left join congno_dauky cndk on cndkl.congno_dauky_id=cndk.id
+                            
+                            where cndkl.mlg_type='%s' and cndkl.chinhanh_id=%s and
+                                cndk.partner_id in %s and cndk.period_id=%s
+                                and ctcndkl.loai_id=%s
+                                
+                            group by cndk.partner_id,ctcndkl.loai_id
+                    '''%(mlg_type,chinhanh_id[0],p_ids,period_from_id[0],lcntu['id'])
+                    self.cr.execute(sql)
+                    cndks = self.cr.dictfetchall()
+                    for cndk in cndks:
+                        if self.congno_dict.get(loaicongnotu, False):
+                            if self.congno_dict[loaicongnotu].get(cndk['partner_id'], False):
+                                if self.congno_dict[loaicongnotu][cndk['partner_id']].get(cndk['loai_id'], False):
+                                    if self.congno_dict[loaicongnotu][cndk['partner_id']][cndk['loai_id']].get('ndk', False):
+                                        self.congno_dict[loaicongnotu][cndk['partner_id']][cndk['loai_id']]['ndk'] += cndk['sotien']
+                                    else:
+                                        self.congno_dict[loaicongnotu][cndk['partner_id']][cndk['loai_id']]['ndk'] = cndk['sotien']
+                                else:
+                                    self.congno_dict[loaicongnotu][cndk['partner_id']][cndk['loai_id']] = {'ndk': cndk['sotien']}
+                            else:
+                                self.congno_dict[loaicongnotu][cndk['partner_id']] = {cndk['loai_id']: {'ndk': cndk['sotien']}}
+                        else:
+                            self.congno_dict[loaicongnotu] = {cndk['partner_id']: {cndk['loai_id']: {'ndk': cndk['sotien']}}}
+                    
+                    #get no
+                    sql = '''
+                        select ai.partner_id as partner_id,
+                            case when sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0))!=0 then sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)) else 0 end sotien
+                        
+                            from account_invoice ai
+                            left join res_partner rp on rp.id = ai.partner_id
+                            
+                            where ai.partner_id in %s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
+                                and ai.mlg_type='%s' 
+                                
+                    '''%(p_ids,period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
+                    if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_nodoanhthu_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_baohiem_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_vipham' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_vipham_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='maxuong' and lcntu['id']:
+                        sql+='''
+                            and ai.ma_xuong_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_tamung' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_tamung_id = %s 
+                        '''%(lcntu['id'])
+                    sql += ' group by ai.partner_id '
+                    self.cr.execute(sql)
+                    nos = self.cr.dictfetchall()
+                    for no in nos:
+                        if self.congno_dict.get(loaicongnotu, False):
+                            if self.congno_dict[loaicongnotu].get(no['partner_id'], False):
+                                if self.congno_dict[loaicongnotu][no['partner_id']].get(lcntu['id'], False):
+                                    if self.congno_dict[loaicongnotu][no['partner_id']][lcntu['id']].get('no', False):
+                                        self.congno_dict[loaicongnotu][no['partner_id']][lcntu['id']]['no'] += no['sotien']
+                                    else:
+                                        self.congno_dict[loaicongnotu][no['partner_id']][lcntu['id']]['no'] = no['sotien']
+                                else:
+                                    self.congno_dict[loaicongnotu][no['partner_id']][lcntu['id']] = {'no': no['sotien']}
+                            else:
+                                self.congno_dict[loaicongnotu][no['partner_id']] = {lcntu['id']: {'no': no['sotien']}}
+                        else:
+                            self.congno_dict[loaicongnotu] = {no['partner_id']: {lcntu['id']: {'no': no['sotien']}}}
+                    
+                    #get co
+                    sql = '''
+                    select partner_id, case when sum(sotien)!=0 then sum(sotien) else 0 end sotien from (
+                        select ai.partner_id as partner_id, case when sum(aml.credit)!=0 then sum(aml.credit) else 0 end sotien
+                            from account_move_line aml
+                            left join account_voucher av on aml.move_id=av.move_id
+                            left join account_invoice ai on av.reference=ai.name
+                            where ai.mlg_type='%s' and ai.state in ('open','paid') and ai.chinhanh_id=%s and ai.partner_id in %s
+                            and ai.date_invoice<='%s' 
+                    '''%(mlg_type,chinhanh_id[0],p_ids,period_to.date_stop)
+                    if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_nodoanhthu_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_baohiem_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_vipham' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_vipham_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='maxuong' and lcntu['id']:
+                        sql+='''
+                            and ai.ma_xuong_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_tamung' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_tamung_id = %s 
+                        '''%(lcntu['id'])
+                    sql += '''
+                            and aml.date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+                    sql += ' group by ai.partner_id '
+                    sql += ' union '
+                    sql += '''
+                        select ai.partner_id, case when sum(stl.so_tien)!=0 then sum(stl.so_tien) else 0 end sotien
+                        
+                            from so_tien_lai stl
+                            left join account_invoice ai on ai.id=stl.invoice_id
+                            where ai.mlg_type='%s' and ai.state in ('open','paid') and ai.chinhanh_id=%s and ai.partner_id in %s
+                                and ai.date_invoice<='%s'  
+                    '''%(mlg_type,chinhanh_id[0],p_ids,period_to.date_stop)
+                    if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_nodoanhthu_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_baohiem' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_baohiem_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_vipham' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_vipham_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='maxuong' and lcntu['id']:
+                        sql+='''
+                            and ai.ma_xuong_id = %s 
+                        '''%(lcntu['id'])
+                    if lcntu['loai']=='loai_tamung' and lcntu['id']:
+                        sql+='''
+                            and ai.loai_tamung_id = %s 
+                        '''%(lcntu['id'])
+                    sql += '''
+                            and stl.ngay between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
+                    sql += ' group by ai.partner_id )foo group by partner_id '
+                    self.cr.execute(sql)
+                    cos = self.cr.dictfetchall()
+                    for co in cos:
+                        if self.congno_dict.get(loaicongnotu, False):
+                            if self.congno_dict[loaicongnotu].get(co['partner_id'], False):
+                                if self.congno_dict[loaicongnotu][co['partner_id']].get(lcntu['id'], False):
+                                    if self.congno_dict[loaicongnotu][co['partner_id']][lcntu['id']].get('co', False):
+                                        self.congno_dict[loaicongnotu][co['partner_id']][lcntu['id']]['co'] += co['sotien']
+                                    else:
+                                        self.congno_dict[loaicongnotu][co['partner_id']][lcntu['id']]['co'] = co['sotien']
+                                else:
+                                    self.congno_dict[loaicongnotu][co['partner_id']][lcntu['id']] = {'co': co['sotien']}
+                            else:
+                                self.congno_dict[loaicongnotu][co['partner_id']] = {lcntu['id']: {'co': co['sotien']}}
+                        else:
+                            self.congno_dict[loaicongnotu] = {co['partner_id']: {lcntu['id']: {'co': co['sotien']}}}
         return True
     
     def get_no(self, partner_id,lcntu):
-        wizard_data = self.localcontext['data']['form']
-        period_from_id = wizard_data['period_from_id']
-        period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-        chinhanh_id = wizard_data['chinhanh_id']
-        mlg_type = wizard_data['mlg_type']
-        sql = '''
-            select case when sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0))!=0 then sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)) else 0 end sotienno
-            
-                from account_invoice ai
-                left join res_partner rp on rp.id = ai.partner_id
-                
-                where ai.partner_id=%s and ai.state in ('open','paid') and ai.date_invoice between '%s' and '%s' and ai.chinhanh_id=%s
-                    and ai.mlg_type='%s' 
-        '''%(partner_id,period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
-        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
-            sql+='''
-                and ai.loai_nodoanhthu_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
-            sql+='''
-                and ai.loai_baohiem_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_vipham' and lcntu['id']:
-            sql+='''
-                and ai.loai_vipham_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='maxuong' and lcntu['id']:
-            sql+='''
-                and ai.ma_xuong_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_tamung' and lcntu['id']:
-            sql+='''
-                and ai.loai_tamung_id = %s 
-            '''%(lcntu['id'])
-        self.cr.execute(sql)
-        no = self.cr.fetchone()[0]
-        self.tongno += no
-        return no
+        if lcntu['loai']=='loai_conlai':
+            if self.congno_dict.get('loai_conlai', False):
+                if self.congno_dict['loai_conlai'].get(partner_id, False):
+                    if self.congno_dict['loai_conlai'][partner_id].get('no', False):
+                        no = self.congno_dict['loai_conlai'][partner_id]['no']
+                        self.tongno += no
+                        self.nocuoiky += no
+                        return no
+        if lcntu['loai']!='loai_conlai':
+            if self.congno_dict.get(lcntu['loai'], False):
+                if self.congno_dict[lcntu['loai']].get(partner_id, False):
+                    if self.congno_dict[lcntu['loai']][partner_id].get(lcntu['id'], False):
+                        if self.congno_dict[lcntu['loai']][partner_id][lcntu['id']].get('no', False):
+                            no = self.congno_dict[lcntu['loai']][partner_id][lcntu['id']]['no']
+                            self.tongno += no
+                            self.nocuoiky += no
+                            return no
+        return 0
     
     def get_co(self, partner_id,lcntu):
-        wizard_data = self.localcontext['data']['form']
-        period_from_id = wizard_data['period_from_id']
-        period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-        chinhanh_id = wizard_data['chinhanh_id']
-        mlg_type = wizard_data['mlg_type']
-        sql = '''
-            select case when sum(credit)!=0 then sum(credit) else 0 end sotien
-                from account_move_line
-                where move_id in (select move_id from account_voucher
-                    where reference in (select name from account_invoice
-                        where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<='%s' 
-        '''%(mlg_type,chinhanh_id[0],partner_id,period_to.date_stop)
-        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
-            sql+='''
-                and loai_nodoanhthu_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
-            sql+='''
-                and loai_baohiem_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_vipham' and lcntu['id']:
-            sql+='''
-                and loai_vipham_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='maxuong' and lcntu['id']:
-            sql+='''
-                and ma_xuong_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_tamung' and lcntu['id']:
-            sql+='''
-                and loai_tamung_id = %s 
-            '''%(lcntu['id'])
-        sql += ''' ))
-                and date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
-        self.cr.execute(sql)
-        co = self.cr.fetchone()[0]
-        
-        sql = '''
-            select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
-            
-                from so_tien_lai where invoice_id in (
-                        select id from account_invoice where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<='%s' 
-        '''%(mlg_type,chinhanh_id[0],partner_id,period_to.date_stop)
-        if lcntu['loai']=='loai_nodoanhthu' and lcntu['id']:
-            sql+='''
-                and loai_nodoanhthu_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_baohiem' and lcntu['id']:
-            sql+='''
-                and loai_baohiem_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_vipham' and lcntu['id']:
-            sql+='''
-                and loai_vipham_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='maxuong' and lcntu['id']:
-            sql+='''
-                and ma_xuong_id = %s 
-            '''%(lcntu['id'])
-        if lcntu['loai']=='loai_tamung' and lcntu['id']:
-            sql+='''
-                and loai_tamung_id = %s 
-            '''%(lcntu['id'])
-        sql += ''' )
-                and ngay between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
-        self.cr.execute(sql)
-        lai = self.cr.fetchone()[0]
-        
-        self.tongco += co+lai
-        return co+lai
+        if lcntu['loai']=='loai_conlai':
+            if self.congno_dict.get('loai_conlai', False):
+                if self.congno_dict['loai_conlai'].get(partner_id, False):
+                    if self.congno_dict['loai_conlai'][partner_id].get('co', False):
+                        co = self.congno_dict['loai_conlai'][partner_id]['co']
+                        self.tongco += co
+                        self.nocuoiky += -co
+                        return co
+        if lcntu['loai']!='loai_conlai':
+            if self.congno_dict.get(lcntu['loai'], False):
+                if self.congno_dict[lcntu['loai']].get(partner_id, False):
+                    if self.congno_dict[lcntu['loai']][partner_id].get(lcntu['id'], False):
+                        if self.congno_dict[lcntu['loai']][partner_id][lcntu['id']].get('co', False):
+                            co = self.congno_dict[lcntu['loai']][partner_id][lcntu['id']]['co']
+                            self.tongco += co
+                            self.nocuoiky += -co
+                            return co
+        return 0
     
     def get_chitiet_congno(self, partner_id,lcntu):
         wizard_data = self.localcontext['data']['form']
