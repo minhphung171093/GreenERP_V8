@@ -162,6 +162,20 @@ class tra_ky_quy(osv.osv):
         return self.write(cr, uid, ids, {'state': 'paid','thu_chi_kyquy_ids': thu_chi_kyquy_ids})
     
     def bt_huybo(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            kyquy_obj = self.pool.get('thu.ky.quy')
+            sotien_cantru = line.so_tien
+            for tkq in line.thu_chi_kyquy_ids:
+                if not sotien_cantru:
+                    break
+                if sotien_cantru<tkq.so_tien-tkq.sotien_conlai:
+                    kyquy_obj.write(cr, uid, [tkq.id],{'sotien_conlai':tkq.sotien_conlai+sotien_cantru})
+                    sotien_cantru = 0
+                else:
+                    kyquy_obj.write(cr, uid, [tkq.id],{'sotien_conlai':tkq.so_tien})
+                    sotien_cantru = sotien_cantru-tkq.sotien_conlai
+            if sotien_cantru>0:
+                raise osv.except_osv(_('Cảnh báo!'), 'Số tiền đã trả lớn hơn số tiền đã thu!')
         return self.write(cr, uid, ids, {'state': 'cancel'})
     
     def onchange_doituong(self, cr, uid, ids, partner_id=False, context=None):

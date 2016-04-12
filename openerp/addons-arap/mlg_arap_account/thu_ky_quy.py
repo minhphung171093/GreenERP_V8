@@ -143,6 +143,10 @@ class thu_ky_quy(osv.osv):
         return self.write(cr, uid, ids, {'state': 'paid'})
     
     def bt_huybo(self, cr, uid, ids, context=None):
+        for line in self.browse(cr, uid, ids):
+            for tkq in line.thu_chi_kyquy_ids:
+                if tkq.state=='paid':
+                    raise osv.except_osv(_('Cảnh báo!'), _('Vui lòng hủy phiếu trả ký quỹ "%s" trước!'%(tkq.name)))
         return self.write(cr, uid, ids, {'state': 'cancel'})
     
     def onchange_doituong(self, cr, uid, ids, partner_id=False, context=None):
