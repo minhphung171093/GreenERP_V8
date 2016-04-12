@@ -804,48 +804,48 @@ class Parser(report_sxw.rml_parse):
         return 0
     
     def get_congno_data(self):
-        if self.partner_ids:
-            p_ids = self.partner_ids
-            p_ids = str(p_ids).replace('[', '(')
-            p_ids = str(p_ids).replace(']', ')')
-            period_from_id = wizard_data['period_from_id']
-            period_to_id = wizard_data['period_to_id']
-            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-            chinhanh_id = wizard_data['chinhanh_id']
-            mlg_type = wizard_data['mlg_type']
-            for lcntu in self.loai_congno_tuongung:
-                if lcntu['loai']=='loai_conlai':
-                    sql = '''
-                        select cndk.partner_id as partner_id, case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end sotien
-                            from congno_dauky_line cndkl
-                                left join congno_dauky cndk on cndkl.congno_dauky_id = cndk.id
-                                where cndkl. mlg_type='%s' and cndkl.chinhanh_id=%s
-                                    cndk.partner_id in %s and cndk.period_id=%s
-                                group by cndk.partner_id
-                    '''%(mlg_type,chinhanh_id[0],p_ids,period_id[0])
-                    self.cr.execute(sql)
-                    cndks = self.cr.dictfetchall()
-                    for cndk in cndks:
-                        if self.congno_dict.get('loai_conlai', False):
-                            if self.congno_dict['loai_conlai'].get(cndk['partner_id'], False):
-                                if self.congno_dict['loai_conlai'][cndk['partner_id']].get('ndk', False):
-                                    self.congno_dict['loai_conlai'][cndk['partner_id']]['ndk'] += cndk['sotien']
-                                else:
-                                    self.congno_dict['loai_conlai'][cndk['partner_id']] = {'ndk': cndk['sotien']}
-                            else:
-                                self.congno_dict['loai_conlai'] = {cndk['partner_id']: {'ndk': cndk['sotien']}}
-                        else:
-                            self.congno_dict={'loai_conlai': {cndk['partner_id']: {'ndk': cndk['sotien']}}}
-                if lcntu['loai']!='loai_conlai' and lcntu['id']:
-                    sql = '''
-                        select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
-                            from chitiet_congno_dauky_line where congno_dauky_line_id in (select id from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
-                                and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
-                    '''%(mlg_type,chinhanh_id[0],self.partner_ids,period_id[0],lcntu['id'])
-                
-                self.cr.execute(sql)
-                nodauky = self.cr.fetchone()[0]
+#         if self.partner_ids:
+#             p_ids = self.partner_ids
+#             p_ids = str(p_ids).replace('[', '(')
+#             p_ids = str(p_ids).replace(']', ')')
+#             period_from_id = wizard_data['period_from_id']
+#             period_to_id = wizard_data['period_to_id']
+#             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
+#             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+#             chinhanh_id = wizard_data['chinhanh_id']
+#             mlg_type = wizard_data['mlg_type']
+#             for lcntu in self.loai_congno_tuongung:
+#                 if lcntu['loai']=='loai_conlai':
+#                     sql = '''
+#                         select cndk.partner_id as partner_id, case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end sotien
+#                             from congno_dauky_line cndkl
+#                                 left join congno_dauky cndk on cndkl.congno_dauky_id = cndk.id
+#                                 where cndkl. mlg_type='%s' and cndkl.chinhanh_id=%s
+#                                     cndk.partner_id in %s and cndk.period_id=%s
+#                                 group by cndk.partner_id
+#                     '''%(mlg_type,chinhanh_id[0],p_ids,period_id[0])
+#                     self.cr.execute(sql)
+#                     cndks = self.cr.dictfetchall()
+#                     for cndk in cndks:
+#                         if self.congno_dict.get('loai_conlai', False):
+#                             if self.congno_dict['loai_conlai'].get(cndk['partner_id'], False):
+#                                 if self.congno_dict['loai_conlai'][cndk['partner_id']].get('ndk', False):
+#                                     self.congno_dict['loai_conlai'][cndk['partner_id']]['ndk'] += cndk['sotien']
+#                                 else:
+#                                     self.congno_dict['loai_conlai'][cndk['partner_id']] = {'ndk': cndk['sotien']}
+#                             else:
+#                                 self.congno_dict['loai_conlai'] = {cndk['partner_id']: {'ndk': cndk['sotien']}}
+#                         else:
+#                             self.congno_dict={'loai_conlai': {cndk['partner_id']: {'ndk': cndk['sotien']}}}
+#                 if lcntu['loai']!='loai_conlai' and lcntu['id']:
+#                     sql = '''
+#                         select case when sum(so_tien_no)!=0 then sum(so_tien_no) else 0 end nodauky
+#                             from chitiet_congno_dauky_line where congno_dauky_line_id in (select id from congno_dauky_line where mlg_type='%s' and chinhanh_id=%s
+#                                 and congno_dauky_id in (select id from congno_dauky where partner_id=%s and period_id=%s)) and loai_id=%s
+#                     '''%(mlg_type,chinhanh_id[0],self.partner_ids,period_id[0],lcntu['id'])
+#                 
+#                 self.cr.execute(sql)
+#                 nodauky = self.cr.fetchone()[0]
         return True
     
     def get_no(self, partner_id,lcntu):
