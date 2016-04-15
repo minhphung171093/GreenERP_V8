@@ -128,9 +128,9 @@ class Parser(report_sxw.rml_parse):
         
         if not tat_toan:
             sql +='''
-                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and date_invoice between '%s' and '%s'  
+                and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) and date_invoice <= '%s'  
                 ) 
-            '''%(period_to.date_stop,period_from.date_start,period_to.date_stop)
+            '''%(period_to.date_stop,period_to.date_stop)
             
             sql_only_pay +='''
                 and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and ai.date_invoice <= '%s'  

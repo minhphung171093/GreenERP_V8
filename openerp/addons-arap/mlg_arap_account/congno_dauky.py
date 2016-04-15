@@ -188,7 +188,7 @@ class congno_dauky(osv.osv):
                     cr.execute(sql)
                     for partner in cr.dictfetchall():
                         sql = '''
-                            select sum(COALESCE(so_tien,0)) as tongtien,mlg_type,chinhanh_id
+                            select sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0)) as tongtien,mlg_type,chinhanh_id
                                 from account_invoice
                                 where state in ('open','paid') and partner_id=%s and date_invoice<'%s'
                                 group by chinhanh_id,mlg_type
@@ -197,13 +197,23 @@ class congno_dauky(osv.osv):
                         congno_dauky_line = []
                         for invoice in cr.dictfetchall():
                             sql = '''
-                                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                            select case when sum(sotien)!=0 then sum(sotien) else 0 end sotien from
+                                (select case when sum(credit)!=0 then sum(credit) else 0 end sotien
                                     from account_move_line
                                     where move_id in (select move_id from account_voucher
                                         where reference in (select name from account_invoice
                                             where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' ))
                                     and date<'%s'
-                            '''%(invoice['mlg_type'],invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'])
+                                    
+                                union 
+                                
+                                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+                                    from so_tien_lai
+                                    where invoice_id in (select id from account_invoice
+                                            where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s')
+                                        and ngay<'%s'
+                                )foo
+                            '''%(invoice['mlg_type'],invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'],invoice['mlg_type'],invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'])
                             cr.execute(sql)
                             tongthu = cr.fetchone()[0]
                             if invoice['tongtien']>tongthu:

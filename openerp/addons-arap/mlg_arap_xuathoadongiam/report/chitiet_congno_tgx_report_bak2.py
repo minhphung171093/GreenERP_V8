@@ -144,10 +144,10 @@ class Parser(report_sxw.rml_parse):
                 sql_partner = 'select partner_id '
                 sql_bsx = 'select bien_so_xe_id '
                 sql = '''
-                    from account_invoice where date_invoice <= '%s' and chinhanh_id=%s
+                    from account_invoice where date_invoice between '%s' and '%s' and chinhanh_id=%s
                         and state in ('open','paid') and mlg_type='%s' 
                         and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
-                '''%(period_to.date_stop,chinhanh_id[0],mlg_type,period_to.date_stop)
+                '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type,period_to.date_stop)
                 
             else:
                 sql = '''
@@ -194,11 +194,121 @@ class Parser(report_sxw.rml_parse):
                 sql_old_partner = '''
                     select partner_id from account_invoice where date_invoice<'%s' and bien_so_xe_id in (
                 '''%(period_from.date_start)+sql_bsx+')'
-#                 self.cr.execute(sql_old_partner)
-#                 partners = self.cr.fetchall()
-#                 for partner_id in partners:
-#                     if partner_id[0] not in partner_ids:
-#                         partner_ids.append(partner_id[0])
+                self.cr.execute(sql_old_partner)
+                partners = self.cr.fetchall()
+                for partner_id in partners:
+                    if partner_id[0] not in partner_ids:
+                        partner_ids.append(partner_id[0])
+                        
+                sql_2 = '''
+                select partner_id, bien_so_xe_id,invoice_name, sum(sotien) from (
+                    select partner_id, bien_so_xe_id,name as invoice_name, 
+                        case when sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0))!=0 then sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0)) else 0 end sotien
+                        from account_invoice where date_invoice<'%s' and state in ('open','paid') and mlg_type='%s' 
+                            and (ngay_tat_toan is null or (ngay_tat_toan is not null and '%s'<ngay_tat_toan)) 
+                        '''%(period_from.date_start,mlg_type,period_to.date_stop)
+                if chusohuu_id:
+                    sql_2 += '''
+                        and thu_cho_doituong_id=%s 
+                    '''%(chusohuu_id[0])
+                    
+                doi_xe_ids = wizard_data['doi_xe_ids']
+                if doi_xe_ids:
+                    doi_xe_ids = str(doi_xe_ids).replace('[', '(')
+                    doi_xe_ids = str(doi_xe_ids).replace(']', ')')
+                    sql_2+='''
+                        and account_id in %s 
+                    '''%(doi_xe_ids)
+                bai_giaoca_ids = wizard_data['bai_giaoca_ids']
+                if bai_giaoca_ids:
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
+                    sql_2+='''
+                        and bai_giaoca_id in %s 
+                    '''%(bai_giaoca_ids)
+                if bien_so_xe_ids:
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                    sql_2+='''
+                        and bien_so_xe_id in %s 
+                    '''%(bien_so_xe_ids)
+                sql_2 += ' group by partner_id,bien_so_xe_id,name '
+                sql_2 += '''
+                    union
+                    select ai.partner_id as partner_id, ai.bien_so_xe_id as bien_so_xe_id,ai.name as invoice_name,
+                            case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
+                        from account_move_line aml
+                        left join account_voucher av on aml.move_id=aml.move_id
+                        left join account_invoice ai on av.reference=ai.name
+                        where ai.state in ('open','paid') and ai.date_invoice<'%s' and ai.mlg_type='%s' 
+                            and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and aml.date<'%s'  
+                '''%(period_from.date_start,mlg_type,period_to.date_stop,period_from.date_start)
+                if chusohuu_id:
+                    sql_2 += '''
+                        and ai.thu_cho_doituong_id=%s 
+                    '''%(chusohuu_id[0])
+                    
+                doi_xe_ids = wizard_data['doi_xe_ids']
+                if doi_xe_ids:
+                    doi_xe_ids = str(doi_xe_ids).replace('[', '(')
+                    doi_xe_ids = str(doi_xe_ids).replace(']', ')')
+                    sql_2+='''
+                        and ai.account_id in %s 
+                    '''%(doi_xe_ids)
+                bai_giaoca_ids = wizard_data['bai_giaoca_ids']
+                if bai_giaoca_ids:
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
+                    sql_2+='''
+                        and ai.bai_giaoca_id in %s 
+                    '''%(bai_giaoca_ids)
+                if bien_so_xe_ids:
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                    sql_2+='''
+                        and ai.bien_so_xe_id in %s 
+                    '''%(bien_so_xe_ids)
+                sql_2 += ' group by ai.partner_id,ai.bien_so_xe_id,ai.name '
+                sql_2 += '''
+                    union
+                    select ai.partner_id as partner_id, ai.bien_so_xe_id as bien_so_xe_id,ai.name as invoice_name,
+                            case when sum(COALESCE(stl.so_tien,0))!=0 then -1*sum(COALESCE(stl.so_tien,0)) else 0 end sotien
+                        from so_tien_lai stl
+                        left join account_invoice ai on stl.invoice_id=ai.id
+                        where ai.state in ('open','paid') and ai.date_invoice<'%s' and ai.mlg_type='%s' 
+                            and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and stl.ngay<'%s' 
+                '''%(period_from.date_start,mlg_type,period_to.date_stop,period_from.date_start)
+                if chusohuu_id:
+                    sql_2 += '''
+                        and ai.thu_cho_doituong_id=%s 
+                    '''%(chusohuu_id[0])
+                    
+                doi_xe_ids = wizard_data['doi_xe_ids']
+                if doi_xe_ids:
+                    doi_xe_ids = str(doi_xe_ids).replace('[', '(')
+                    doi_xe_ids = str(doi_xe_ids).replace(']', ')')
+                    sql_2+='''
+                        and ai.account_id in %s 
+                    '''%(doi_xe_ids)
+                bai_giaoca_ids = wizard_data['bai_giaoca_ids']
+                if bai_giaoca_ids:
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
+                    sql_2+='''
+                        and ai.bai_giaoca_id in %s 
+                    '''%(bai_giaoca_ids)
+                if bien_so_xe_ids:
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                    sql_2+='''
+                        and ai.bien_so_xe_id in %s 
+                    '''%(bien_so_xe_ids)
+                sql_2 += ' group by ai.partner_id,ai.bien_so_xe_id,ai.name )foo group by partner_id, bien_so_xe_id,invoice_name having sum(sotien)>0 '
+                self.cr.execute(sql_2)
+                partners = self.cr.dictfetchall()
+                for partner_id in partners:
+                    if partner_id['partner_id'] not in partner_ids:
+                        partner_ids.append(partner_id['partner_id'])
             
             sql += ''' group by partner_id '''
             self.cr.execute(sql)
@@ -314,8 +424,8 @@ class Parser(report_sxw.rml_parse):
                 '''%(chusohuu_id[0])
             if not tat_toan:
                 sql_bsx +='''
-                    and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and ai.date_invoice <= '%s'  
-                '''%(period_to.date_stop,period_to.date_stop)
+                    and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and ai.date_invoice between '%s' and '%s'  
+                '''%(period_to.date_stop,period_from.date_start,period_to.date_stop)
                 
                 sql_bsx_only_pay +='''
                     and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and ai.date_invoice <= '%s'  
@@ -364,41 +474,153 @@ class Parser(report_sxw.rml_parse):
             self.bsx_ids += [r['id'] for r in self.cr.dictfetchall()]
             
             sql_2 = ''
-#             if not tat_toan:
-#                 sql_2 = '''
-#                     select ai.partner_id as partner_id, bsx.id as id, bsx.name as name
-#                         from bien_so_xe bsx
-#                         left join account_invoice ai on bsx.id=ai.bien_so_xe_id
-#                         
-#                         where ai.date_invoice<'%s' 
-#                 '''%(period_from.date_start)
-#                 if chusohuu_id:
-#                     sql_2 += '''
-#                         and ai.thu_cho_doituong_id=%s 
-#                     '''%(chusohuu_id[0])
-#                 if self.bsx_ids:
-#                     b_ids = self.bsx_ids
-#                     b_ids = str(b_ids).replace('[', '(')
-#                     b_ids = str(b_ids).replace(']', ')')
-#                     sql_2+='''
-#                         and ai.bien_so_xe_id in %s 
-#                     '''%(b_ids)
-#                 if bien_so_xe_ids:
-#                     bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
-#                     bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
-#                     sql_2+='''
-#                         and bsx.id in %s 
-#                     '''%(bien_so_xe_ids)
-#                 sql_2 += '''
-#                     group by ai.partner_id, bsx.id, bsx.name
-#                 '''
+            if not tat_toan:
+                sql_2 = '''
+                    select ai.partner_id as partner_id, bsx.id as id, bsx.name as name
+                        from bien_so_xe bsx
+                        left join account_invoice ai on bsx.id=ai.bien_so_xe_id
+                        
+                        where ai.date_invoice<'%s' 
+                '''%(period_from.date_start)
+                if chusohuu_id:
+                    sql_2 += '''
+                        and ai.thu_cho_doituong_id=%s 
+                    '''%(chusohuu_id[0])
+                if self.bsx_ids:
+                    b_ids = self.bsx_ids
+                    b_ids = str(b_ids).replace('[', '(')
+                    b_ids = str(b_ids).replace(']', ')')
+                    sql_2+='''
+                        and ai.bien_so_xe_id in %s 
+                    '''%(b_ids)
+                if bien_so_xe_ids:
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                    sql_2+='''
+                        and bsx.id in %s 
+                    '''%(bien_so_xe_ids)
+                sql_2 += '''
+                    group by ai.partner_id, bsx.id, bsx.name
+                '''
+                    
+                sql_3 = '''
+                select partner_id, id, name from (
+                select partner_id, id, name, invoice_name, sum(sotien) from (
+                    select ai.partner_id as partner_id, bsx.id as id, bsx.name as name,ai.name as invoice_name,
+                        case when sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0))!=0 then sum(COALESCE(ai.so_tien,0)+COALESCE(ai.sotien_lai,0)) else 0 end sotien
+                        from account_invoice ai
+                            left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id
+                        where ai.date_invoice<'%s' and ai.state in ('open','paid') and ai.mlg_type='%s' 
+                            and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) 
+                        '''%(period_from.date_start,mlg_type,period_to.date_stop)
+                if chusohuu_id:
+                    sql_3 += '''
+                        and ai.thu_cho_doituong_id=%s 
+                    '''%(chusohuu_id[0])
+                    
+                doi_xe_ids = wizard_data['doi_xe_ids']
+                if doi_xe_ids:
+                    doi_xe_ids = str(doi_xe_ids).replace('[', '(')
+                    doi_xe_ids = str(doi_xe_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.account_id in %s 
+                    '''%(doi_xe_ids)
+                bai_giaoca_ids = wizard_data['bai_giaoca_ids']
+                if bai_giaoca_ids:
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.bai_giaoca_id in %s 
+                    '''%(bai_giaoca_ids)
+                if bien_so_xe_ids:
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.bien_so_xe_id in %s 
+                    '''%(bien_so_xe_ids)
+                sql_3 += ' group by ai.partner_id, bsx.id, bsx.name,ai.name '
+                sql_3 += '''
+                    union
+                    select ai.partner_id as partner_id, bsx.id as id, bsx.name as name,ai.name as invoice_name,
+                            case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
+                        from account_move_line aml
+                        left join account_voucher av on aml.move_id=aml.move_id
+                        left join account_invoice ai on av.reference=ai.name
+                        left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id 
+                        where ai.state in ('open','paid') and ai.date_invoice<'%s' and ai.mlg_type='%s' 
+                            and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and aml.date<'%s'  
+                '''%(period_from.date_start,mlg_type,period_to.date_stop,period_from.date_start)
+                if chusohuu_id:
+                    sql_3 += '''
+                        and ai.thu_cho_doituong_id=%s 
+                    '''%(chusohuu_id[0])
+                    
+                doi_xe_ids = wizard_data['doi_xe_ids']
+                if doi_xe_ids:
+                    doi_xe_ids = str(doi_xe_ids).replace('[', '(')
+                    doi_xe_ids = str(doi_xe_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.account_id in %s 
+                    '''%(doi_xe_ids)
+                bai_giaoca_ids = wizard_data['bai_giaoca_ids']
+                if bai_giaoca_ids:
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.bai_giaoca_id in %s 
+                    '''%(bai_giaoca_ids)
+                if bien_so_xe_ids:
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.bien_so_xe_id in %s 
+                    '''%(bien_so_xe_ids)
+                sql_3 += ' group by ai.partner_id,bsx.id, bsx.name,ai.name '
+                sql_3 += '''
+                    union
+                    select ai.partner_id as partner_id, bsx.id as id, bsx.name as name,ai.name as invoice_name,
+                            case when sum(COALESCE(stl.so_tien,0))!=0 then -1*sum(COALESCE(stl.so_tien,0)) else 0 end sotien
+                        from so_tien_lai stl
+                        left join account_invoice ai on stl.invoice_id=ai.id
+                        left join bien_so_xe bsx on bsx.id=ai.bien_so_xe_id 
+                        where ai.state in ('open','paid') and ai.date_invoice<'%s' and ai.mlg_type='%s' 
+                            and (ai.ngay_tat_toan is null or (ai.ngay_tat_toan is not null and '%s'<ai.ngay_tat_toan)) and stl.ngay<'%s' 
+                '''%(period_from.date_start,mlg_type,period_to.date_stop,period_from.date_start)
+                if chusohuu_id:
+                    sql_3 += '''
+                        and ai.thu_cho_doituong_id=%s 
+                    '''%(chusohuu_id[0])
+                    
+                doi_xe_ids = wizard_data['doi_xe_ids']
+                if doi_xe_ids:
+                    doi_xe_ids = str(doi_xe_ids).replace('[', '(')
+                    doi_xe_ids = str(doi_xe_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.account_id in %s 
+                    '''%(doi_xe_ids)
+                bai_giaoca_ids = wizard_data['bai_giaoca_ids']
+                if bai_giaoca_ids:
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace('[', '(')
+                    bai_giaoca_ids = str(bai_giaoca_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.bai_giaoca_id in %s 
+                    '''%(bai_giaoca_ids)
+                if bien_so_xe_ids:
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace('[', '(')
+                    bien_so_xe_ids = str(bien_so_xe_ids).replace(']', ')')
+                    sql_3+='''
+                        and ai.bien_so_xe_id in %s 
+                    '''%(bien_so_xe_ids)
+                sql_3 += ' group by ai.partner_id,bsx.id, bsx.name,ai.name )foo3 group by partner_id, id, name,invoice_name having sum(sotien)>0 )foo4  '
+                    
             if sql_2:
                 sql_tong_bsx = '''
                     select partner_id, id, name from (
                 '''+sql_tong_bsx+''' 
                     union 
-                '''+sql_2+ ')foo'
-            
+                '''+sql_2+' union '+sql_3+ ')foo'
+            print 'TONG',sql_tong_bsx
+            print 'SQL3',sql_3
             self.cr.execute(sql_tong_bsx)
             bsxs = self.cr.dictfetchall()
             for bsx in bsxs:

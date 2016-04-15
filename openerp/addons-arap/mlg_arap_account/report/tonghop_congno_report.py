@@ -489,7 +489,12 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         loai_doituong = wizard_data['loai_doituong']
         if loai_doituong:
-            self.loaidoituong = [loai_doituong]
+            if loai_doituong=='taixe':
+                self.loaidoituong = ['taixe']
+            if loai_doituong=='nhadautu':
+                self.loaidoituong = ['nhadautu']
+            if loai_doituong=='nhanvienvanphong':
+                self.loaidoituong = ['nhanvienvanphong']
         else:
             self.loaidoituong = ['taixe','nhadautu','nhanvienvanphong']
         return True

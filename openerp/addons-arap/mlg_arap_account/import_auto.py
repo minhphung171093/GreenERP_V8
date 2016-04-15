@@ -2533,6 +2533,9 @@ class import_congno_tudong(osv.osv):
                             if not kyquys:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy công nợ Phải thu ký quỹ'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
+                            diengiai = ''
+                            if data.get('dien_giai', False):
+                                diengiai = data['dien_giai']
                             for kyquy in kyquys:
                                 if kyquy['state']!='draft':
                                     noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Ký quỹ "%s" đã thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'],data['ma_phieu_de_xuat'])
@@ -2541,6 +2544,8 @@ class import_congno_tudong(osv.osv):
                                     cr.execute('update thu_ky_quy set so_tien=%s,sotien_conlai=%s,bien_so_xe_id=%s where id=%s',(data['so_tien_da_thu'],data['so_tien_da_thu'],bsx_ids[0],kyquy['id'],))
                                 else:
                                     cr.execute('update thu_ky_quy set so_tien=%s,sotien_conlai=%s where id=%s',(data['so_tien_da_thu'],data['so_tien_da_thu'],kyquy['id'],))
+                                if diengiai:
+                                    cr.execute('update thu_ky_quy set dien_giai=%s where id=%s',(diengiai,kyquy['id'],))
                                 kyquy_obj.bt_thu(cr, uid, kyquy['id'])
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
@@ -2987,11 +2992,16 @@ class import_congno_tudong(osv.osv):
                             if not kyquys:
                                 noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Không tìm thấy công nợ Phải thu ký quỹ'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'])
                                 raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
+                            diengiai = ''
+                            if data.get('dien_giai', False):
+                                diengiai = data['dien_giai']
                             for kyquy in kyquys:
                                 if kyquy['state']!='draft':
                                     noidung_loi='Dòng "%s"; mã đối tượng "%s"; chi nhánh "%s": Ký quỹ "%s" đã thu'%(seq+2,data['ma_doi_tuong'],data['ma_chi_nhanh'],data['ma_phieu_de_xuat'])
                                     raise osv.except_osv(_('Cảnh báo!'), 'Không tìm thấy biển số xe đối')
                                 cr.execute('update thu_ky_quy set so_tien=%s,sotien_conlai=%s where id=%s',(data['so_tien_da_thu'],data['so_tien_da_thu'],kyquy['id'],))
+                                if diengiai:
+                                    cr.execute('update thu_ky_quy set dien_giai=%s where id=%s',(diengiai,kyquy['id'],))
                                 kyquy_obj.bt_thu(cr, uid, kyquy['id'])
                         csvUti._moveFiles([f_path],done_path)
                         lichsu_obj.create(cr, uid, {
