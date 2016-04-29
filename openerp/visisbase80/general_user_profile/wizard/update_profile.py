@@ -7,11 +7,11 @@
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import time
-from osv import fields, osv
-import decimal_precision as dp
-from tools.translate import _
-import tools
-from tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, float_compare
+from openerp.osv import fields, osv
+import openerp.addons.decimal_precision as dp
+from openerp.tools.translate import _
+import openerp.tools
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 
 class update_profile(osv.osv_memory):
     _name = "update.profile"
