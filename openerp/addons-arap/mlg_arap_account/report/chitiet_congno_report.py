@@ -34,6 +34,7 @@ class Parser(report_sxw.rml_parse):
         self.tongcong_co = 0
         self.tongcong_congno = 0
         self.nocuoiky = 0
+        self.tongcong_no_lcntu = 0
         
         self.partner_ids = []
         self.loaidoituong = []
@@ -73,6 +74,7 @@ class Parser(report_sxw.rml_parse):
             'get_only_payment': self.get_only_payment,
             'get_only_lichsu_thutienlai': self.get_only_lichsu_thutienlai,
             'get_name_invoice': self.get_name_invoice,
+            'get_tongcong_no_lcntu': self.get_tongcong_no_lcntu,
             
             'get_khoitao': self.get_khoitao,
         })
@@ -771,6 +773,11 @@ class Parser(report_sxw.rml_parse):
         self.tongcong_co = 0
         return tongcong_co
     
+    def get_tongcong_no_lcntu(self):
+        tongcong_no_lcntu = self.tongcong_no_lcntu
+        self.tongcong_no_lcntu = 0
+        return tongcong_no_lcntu
+    
     def get_congno(self):
         congno = self.congno
         self.congno = 0
@@ -785,6 +792,7 @@ class Parser(report_sxw.rml_parse):
         nocuoiky = self.nocuoiky
         self.nocuoiky = 0
         self.tongcongno += nocuoiky
+        self.tongcong_no_lcntu += nocuoiky
         return nocuoiky
     
     def get_chitiet_congno(self, partner_id, lcntu):
