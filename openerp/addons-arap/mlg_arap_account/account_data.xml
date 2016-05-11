@@ -34,7 +34,7 @@
     <data noupdate="0">
     
         <record id="loai_cong_no_no_doanh_thu" model="loai.cong.no">
-            <field name="name">Nợ doanh thu</field>
+            <field name="name">Nợ DT-BH-AL</field>
             <field name="code">no_doanh_thu</field>
         </record>
         

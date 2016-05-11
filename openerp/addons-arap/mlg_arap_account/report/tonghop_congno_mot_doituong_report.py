@@ -100,7 +100,7 @@ class Parser(report_sxw.rml_parse):
     
     def get_title_congno(self, congno):
         tt = ''
-        if congno=='Nợ doanh thu':
+        if congno=='Nợ DT-BH-AL':
             tt='no_doanh_thu'
         if congno=='Phải thu chi hộ điện thoại':
             tt='chi_ho_dien_thoai'

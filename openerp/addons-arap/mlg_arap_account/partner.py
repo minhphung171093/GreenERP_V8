@@ -372,7 +372,7 @@ class res_partner(osv.osv):
                if (partner.taixe or partner.nhanvienvanphong) and partner.chinhanh_id.id!=vals['chinhanh_id']:
                    sql = '''
                        select case when sum(sotien_conlai)!=0 then sum(sotien_conlai) else 0 end sotienconlai
-                           from thu_ky_quy where chinhanh_id=%s and partner_id=%s
+                           from thu_ky_quy where chinhanh_id=%s and partner_id=%s and state in ('draft','paid')
                    '''%(partner.chinhanh_id.id,partner.id)
                    cr.execute(sql)
                    sotien_kyquy_conlai = cr.fetchone()[0]
@@ -381,7 +381,7 @@ class res_partner(osv.osv):
                    
                    sql = '''
                        select case when sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0))!=0 then sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) else 0 end sotienconlai
-                           from account_invoice where chinhanh_id=%s and partner_id=%s
+                           from account_invoice where chinhanh_id=%s and partner_id=%s and state in ('draft','open')
                    '''%(partner.chinhanh_id.id,partner.id)
                    cr.execute(sql)
                    sotien_congno_conlai = cr.fetchone()[0]
