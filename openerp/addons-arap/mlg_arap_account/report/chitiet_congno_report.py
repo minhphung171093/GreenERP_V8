@@ -857,6 +857,8 @@ class Parser(report_sxw.rml_parse):
                             group by ai.partner_id,ai.id,ai.date_invoice,ai.name,rp.ma_doi_tuong,rp.name,
                             ai.loai_giaodich,ai.dien_giai,bsx.name,
                             ai.fusion_id
+                            
+                            order by ai.date_invoice
                     '''%(p_ids,period_from.date_start,period_to.date_stop,chinhanh_id[0],mlg_type)
                     self.cr.execute(sql)
                     cncns = self.cr.dictfetchall()
@@ -906,6 +908,8 @@ class Parser(report_sxw.rml_parse):
                         group by ai.partner_id,ai.id,ai.date_invoice,ai.name,rp.ma_doi_tuong,rp.name,
                             ai.loai_giaodich,ai.dien_giai,bsx.name,
                             ai.fusion_id
+                            
+                            order by ai.date_invoice
                     '''
                     self.cr.execute(sql)
                     cncns = self.cr.dictfetchall()
@@ -939,6 +943,7 @@ class Parser(report_sxw.rml_parse):
                 self.nocuoiky = self.nocuoiky-pay.credit
                 self.tongco += pay.credit
                 self.congco += pay.credit
+        sorted(pays, key=lambda x:x.date)
         return pays
     
     def get_only_payment(self, partner_id, lcntu):
