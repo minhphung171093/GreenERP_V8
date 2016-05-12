@@ -81,12 +81,12 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         if not chinhanh_id:
             return {'name':'','code':''}
-        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        account = self.pool.get('account.account').browse(self.cr, 1, chinhanh_id[0])
         return {'name':account.name,'code':account.code}
     
     def get_title_doituong(self, partner_id):
         if partner_id:
-            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+            partner = self.pool.get('res.partner').browse(self.cr, 1, partner_id)
             return (partner.ma_doi_tuong or '')+'_'+(partner.name or '')
         return ''
     
@@ -97,8 +97,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select thu_cho_doituong_id from account_invoice where date_invoice between '%s' and '%s' and chinhanh_id=%s
@@ -165,8 +165,8 @@ class Parser(report_sxw.rml_parse):
             p_ids = str(p_ids).replace(']', ')')
             period_from_id = wizard_data['period_from_id']
             period_to_id = wizard_data['period_to_id']
-            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             bien_so_xe_ids = wizard_data['bien_so_xe_ids']
             sql = '''
@@ -219,8 +219,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select case when sum(sotien)!=0 then sum(sotien) else 0 end sotien from (
@@ -248,8 +248,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select case when sum(aml.credit)!=0 then sum(aml.credit) else 0 end sotien
@@ -276,8 +276,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select ai.id as invoice_id,ai.date_invoice as ngay,ai.name as maphieudexuat,rp.ma_doi_tuong as madoituong,rp.name as tendoituong,
@@ -298,9 +298,9 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-        invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
+        invoice = self.pool.get('account.invoice').browse(self.cr, 1, invoice_id)
         pays = []
         for pay in invoice.payment_ids:
             if pay.date >= period_from.date_start and pay.date<=period_to.date_stop:
@@ -311,8 +311,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         sql = '''
             select date,fusion_id,credit,ref,loai_giaodich,note_giaodich,id

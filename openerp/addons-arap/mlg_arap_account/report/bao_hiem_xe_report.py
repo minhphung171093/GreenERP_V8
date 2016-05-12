@@ -45,10 +45,10 @@ class Parser(report_sxw.rml_parse):
             return u'Công ty'
     
     def get_sotien_conlai(self, bh_id):
-        return bh_id and self.pool.get('ql.bao.hiem').browse(self.cr, self.uid, bh_id).sotien_conlai or 0
+        return bh_id and self.pool.get('ql.bao.hiem').browse(self.cr, 1, bh_id).sotien_conlai or 0
     
     def get_sotien_datra(self, bh_id):
-        return bh_id and self.pool.get('ql.bao.hiem').browse(self.cr, self.uid, bh_id).sotien_datra or 0
+        return bh_id and self.pool.get('ql.bao.hiem').browse(self.cr, 1, bh_id).sotien_datra or 0
     
     def get_line(self):
         wizard_data = self.localcontext['data']['form']

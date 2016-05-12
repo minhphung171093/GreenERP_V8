@@ -52,7 +52,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         if not chinhanh_id:
             return {'name':'','code':''}
-        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        account = self.pool.get('account.account').browse(self.cr, 1, chinhanh_id[0])
         return {'name':account.name,'code':account.code}
     
     def convert_date(self, date):

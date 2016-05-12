@@ -81,13 +81,13 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         if not chinhanh_id:
             return {'name':'','code':''}
-        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        account = self.pool.get('account.account').browse(self.cr, 1, chinhanh_id[0])
         return {'name':account.name,'code':account.code}
     
     def get_doituong(self):
         wizard_data = self.localcontext['data']['form']
         partner_id = wizard_data['partner_id']
-        partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id[0])
+        partner = self.pool.get('res.partner').browse(self.cr, 1, partner_id[0])
         return {'madoituong': partner.ma_doi_tuong,'tendoituong':partner.name}
     
     def get_congno(self):
@@ -95,8 +95,8 @@ class Parser(report_sxw.rml_parse):
         loai_congno_ids = wizard_data['loai_congno_ids']
         loai_congno_obj = self.pool.get('loai.cong.no')
         if not loai_congno_ids:
-            loai_congno_ids = loai_congno_obj.search(self.cr, self.uid, [])
-        return loai_congno_obj.browse(self.cr, self.uid, loai_congno_ids)
+            loai_congno_ids = loai_congno_obj.search(self.cr, 1, [])
+        return loai_congno_obj.browse(self.cr, 1, loai_congno_ids)
     
     def get_loai_congno_tuongung(self, mlg_type):
         wizard_data = self.localcontext['data']['form']
@@ -308,8 +308,8 @@ class Parser(report_sxw.rml_parse):
 #         if mlg_type:
 #             period_from_id = wizard_data['period_from_id']
 #             period_to_id = wizard_data['period_to_id']
-#             period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-#             period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+#             period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+#             period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
 #             chinhanh_id = wizard_data['chinhanh_id']
 #             partner_id = wizard_data['partner_id']
 # #             mlg_type = self.get_title_congno(congno)
@@ -350,8 +350,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         partner_id = wizard_data['partner_id']
         sql = '''
@@ -433,9 +433,9 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-        invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
+        invoice = self.pool.get('account.invoice').browse(self.cr, 1, invoice_id)
         pays = []
         for pay in invoice.payment_ids:
             if pay.date >= period_from.date_start and pay.date<=period_to.date_stop:
@@ -449,8 +449,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         partner_id = wizard_data['partner_id']
         sql = '''
@@ -526,10 +526,10 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
-        invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
-        invoice = self.pool.get('account.invoice').browse(self.cr, self.uid, invoice_id)
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
+        invoice = self.pool.get('account.invoice').browse(self.cr, 1, invoice_id)
+        invoice = self.pool.get('account.invoice').browse(self.cr, 1, invoice_id)
         pays = []
         for pay in invoice.lichsu_thutienlai_line:
             if pay.ngay >= period_from.date_start and pay.ngay<=period_to.date_stop:
@@ -543,8 +543,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         partner_id = wizard_data['partner_id']
         sql = '''

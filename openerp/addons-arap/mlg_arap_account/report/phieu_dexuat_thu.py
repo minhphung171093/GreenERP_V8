@@ -60,7 +60,7 @@ class Parser(report_sxw.rml_parse):
         return ''
     
     def get_user(self):
-        user = self.pool.get('res.users').browse(self.cr, self.uid, self.uid)
+        user = self.pool.get('res.users').browse(self.cr, 1, self.uid)
         return user.login
         
     def get_sotien(self):

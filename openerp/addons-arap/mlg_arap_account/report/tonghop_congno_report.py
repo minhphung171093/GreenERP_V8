@@ -91,7 +91,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         if not chinhanh_id:
             return {'name':'','code':''}
-        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        account = self.pool.get('account.account').browse(self.cr, 1, chinhanh_id[0])
         return {'name':account.name,'code':account.code}
     
     def get_from_thang(self):
@@ -154,8 +154,8 @@ class Parser(report_sxw.rml_parse):
         
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         mlg_type = wizard_data['mlg_type']
         sql = '''
@@ -473,13 +473,13 @@ class Parser(report_sxw.rml_parse):
     def get_madoituong(self, partner_id):
         mdt = ''
         if partner_id:
-            return self.pool.get('res.partner').browse(self.cr, self.uid, partner_id).ma_doi_tuong
+            return self.pool.get('res.partner').browse(self.cr, 1, partner_id).ma_doi_tuong
         return mdt
     
     def get_tendoituong(self, partner_id):
         tdt = ''
         if partner_id:
-            return self.pool.get('res.partner').browse(self.cr, self.uid, partner_id).name
+            return self.pool.get('res.partner').browse(self.cr, 1, partner_id).name
         return tdt
     
     def get_loaidoituong(self):
@@ -509,7 +509,7 @@ class Parser(report_sxw.rml_parse):
     
     def get_title_doituong(self, partner_id):
         if partner_id:
-            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+            partner = self.pool.get('res.partner').browse(self.cr, 1, partner_id)
             return (partner.ma_doi_tuong or '')+'_'+(partner.name or '')
         return ''
     
@@ -723,8 +723,8 @@ class Parser(report_sxw.rml_parse):
             p_ids = str(p_ids).replace(']', ')')
             period_from_id = wizard_data['period_from_id']
             period_to_id = wizard_data['period_to_id']
-            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
             loaicongnotu = ''
@@ -1040,8 +1040,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         mlg_type = wizard_data['mlg_type']
         sql = '''
@@ -1101,8 +1101,8 @@ class Parser(report_sxw.rml_parse):
             
             period_from_id = wizard_data['period_from_id']
             period_to_id = wizard_data['period_to_id']
-            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             mlg_type = wizard_data['mlg_type']
             sql = '''
@@ -1134,7 +1134,7 @@ class Parser(report_sxw.rml_parse):
             notrongky = self.cr.fetchone()[0]
             nocuoiky = nodauky+notrongky
             if nocuoiky:
-                partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+                partner = self.pool.get('res.partner').browse(self.cr, 1, partner_id)
                 lines = [{'madoituong':partner.ma_doi_tuong,'tendoituong':partner.name,'no':0,'co':0}]
         return lines
             

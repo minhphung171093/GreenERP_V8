@@ -82,7 +82,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         if not chinhanh_id:
             return {'name':'','code':''}
-        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        account = self.pool.get('account.account').browse(self.cr, 1, chinhanh_id[0])
         return {'name':account.name,'code':account.code}
     
     def get_loaidoituong(self):
@@ -107,7 +107,7 @@ class Parser(report_sxw.rml_parse):
         if partner_ids:
             p_ids = []
             partner_obj = self.pool.get('res.partner')
-            for partner in partner_obj.browse(self.cr, self.uid, partner_ids):
+            for partner in partner_obj.browse(self.cr, 1, partner_ids):
                 if ldt=='taixe' and partner.taixe:
                     p_ids.append(partner.id)
                 if ldt=='nhadautu' and partner.nhadautu:
@@ -118,8 +118,8 @@ class Parser(report_sxw.rml_parse):
         else:
             period_from_id = wizard_data['period_from_id']
             period_to_id = wizard_data['period_to_id']
-            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             sql = '''
                 select foo.partner_id as partner_id from (
@@ -165,7 +165,7 @@ class Parser(report_sxw.rml_parse):
 
     def get_title_doituong(self, partner_id):
         if partner_id:
-            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+            partner = self.pool.get('res.partner').browse(self.cr, 1, partner_id)
             return {'name': partner.name or '','ma': partner.ma_doi_tuong or ''}
         return {'name': '','ma': ''}
     
@@ -175,8 +175,8 @@ class Parser(report_sxw.rml_parse):
         if partner_id:
             period_from_id = wizard_data['period_from_id']
             period_to_id = wizard_data['period_to_id']
-            period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-            period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
             chinhanh_id = wizard_data['chinhanh_id']
             sql = '''
                 select id, name from bien_so_xe where id in (
@@ -204,8 +204,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         res = []
         sql = '''
@@ -266,8 +266,8 @@ class Parser(report_sxw.rml_parse):
         wizard_data = self.localcontext['data']['form']
         period_from_id = wizard_data['period_from_id']
         period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, self.uid, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, self.uid, period_to_id[0])
+        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         res = []
         thu = 0

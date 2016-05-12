@@ -65,7 +65,7 @@ class Parser(report_sxw.rml_parse):
         chinhanh_id = wizard_data['chinhanh_id']
         if not chinhanh_id:
             return {'name':'','code':''}
-        account = self.pool.get('account.account').browse(self.cr, self.uid, chinhanh_id[0])
+        account = self.pool.get('account.account').browse(self.cr, 1, chinhanh_id[0])
         return {'name':account.name,'code':account.code}
     
     def get_loaidoituong(self):
@@ -129,7 +129,7 @@ class Parser(report_sxw.rml_parse):
     
     def get_title_doituong(self, partner_id):
         if partner_id:
-            partner = self.pool.get('res.partner').browse(self.cr, self.uid, partner_id)
+            partner = self.pool.get('res.partner').browse(self.cr, 1, partner_id)
             return (partner.ma_doi_tuong or '')+'_'+(partner.name or '')
         return ''
     
