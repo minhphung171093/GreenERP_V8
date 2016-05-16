@@ -28,6 +28,10 @@ class Parser(report_sxw.rml_parse):
         self.tongcongnothu = 0
         self.tongcongnocantru = 0
         self.tongcongnochi = 0
+        self.partner_ids = []
+        self.sdtlkdauky_dict = {}
+        self.sdtlkcuoiky_dict = {}
+        self.soducuoi = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -45,6 +49,8 @@ class Parser(report_sxw.rml_parse):
             'get_chitiet_congno_ndt': self.get_chitiet_congno_ndt,
             'get_bsx': self.get_bsx,
             'get_soducuoi': self.get_soducuoi,
+            'get_sdtlkdauky': self.get_sdtlkdauky,
+            'get_sdtlkcuoiky': self.get_sdtlkcuoiky,
         })
         
     def convert_date(self, date):
@@ -151,6 +157,11 @@ class Parser(report_sxw.rml_parse):
             for partner_id in self.cr.fetchall():
                 if partner_id[0] not in partner_ids:
                     partner_ids.append(partner_id[0])
+            self.partner_ids = partner_ids
+            self.sdtlkdauky_dict = {}
+            self.sdtlkcuoiky_dict = {}
+            self.get_sdtlkdauky_data()
+            self.get_sdtlkcuoiky_data()
             return partner_ids
 
     def get_title_doituong(self, partner_id):
@@ -334,11 +345,141 @@ class Parser(report_sxw.rml_parse):
         return tongcongnochi
     
     def get_soducuoi(self):
-        soducuoi = self.tongcongnothu-self.tongcongnocantru-self.tongcongnochi
+        soducuoi = self.soducuoi#self.tongcongnothu-self.tongcongnocantru-self.tongcongnochi
+        self.soducuoi = 0
         self.tongcongnochi = 0
         self.tongcongnothu = 0
         self.tongcongnocantru = 0
         return soducuoi
-        
-        
+    
+    def get_sdtlkdauky(self, partner_id):
+        if self.sdtlkdauky_dict.get(partner_id, False):
+            return self.sdtlkdauky_dict[partner_id]
+        return 0
+    
+    def get_sdtlkdauky_data(self):
+        if self.partner_ids:
+            p_ids = self.partner_ids
+            p_ids = str(p_ids).replace('[', '(')
+            p_ids = str(p_ids).replace(']', ')')
+            wizard_data = self.localcontext['data']['form']
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
+            chinhanh_id = wizard_data['chinhanh_id']
+            res = []
+            sql = '''
+                select partner_id,case when sum(COALESCE(so_tien,0))!=0 then sum(COALESCE(so_tien,0)) else 0 end sotien
+                    from thu_ky_quy where ngay_thu < '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s
+                    group by partner_id 
+            '''%(period_from.date_start,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            sptlkdaukys = self.cr.dictfetchall()
+            for sptlkdauky in sptlkdaukys:
+                if self.sdtlkdauky_dict.get(sptlkdauky['partner_id'],False):
+                    self.sdtlkdauky_dict[sptlkdauky['partner_id']] += sptlkdauky['sotien']
+                else:
+                    self.sdtlkdauky_dict[sptlkdauky['partner_id']] = sptlkdauky['sotien']
+
+            sql = '''
+                select aml.partner_id as partner_id,case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
+                    from account_move_line aml
+                    left join account_move am on am.id = aml.move_id
+                    left join account_invoice ai on ai.name = aml.ref
+                    
+                    where aml.date < '%s'
+                        and aml.account_id in (select id from account_account where parent_id=%s)
+                        and aml.partner_id in %s and aml.credit is not null and aml.credit>0
+                        and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
+                    group by aml.partner_id
+            '''%(period_from.date_start,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            sptlkdaukys = self.cr.dictfetchall()
+            for sptlkdauky in sptlkdaukys:
+                if self.sdtlkdauky_dict.get(sptlkdauky['partner_id'],False):
+                    self.sdtlkdauky_dict[sptlkdauky['partner_id']] += sptlkdauky['sotien']
+                else:
+                    self.sdtlkdauky_dict[sptlkdauky['partner_id']] = sptlkdauky['sotien']
+            sql = '''
+                select partner_id,case when sum(COALESCE(so_tien,0))!=0 then -1*sum(COALESCE(so_tien,0)) else 0 end sotien
+                    from tra_ky_quy where ngay_tra < '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s
+                    group by partner_id 
+            '''%(period_from.date_start,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            sptlkdaukys = self.cr.dictfetchall()
+            for sptlkdauky in sptlkdaukys:
+                if self.sdtlkdauky_dict.get(sptlkdauky['partner_id'],False):
+                    self.sdtlkdauky_dict[sptlkdauky['partner_id']] += sptlkdauky['sotien']
+                else:
+                    self.sdtlkdauky_dict[sptlkdauky['partner_id']] = sptlkdauky['sotien']
+        return True
+    
+    def get_sdtlkcuoiky(self, partner_id):
+        if self.sdtlkcuoiky_dict.get(partner_id, False):
+            self.soducuoi += self.sdtlkcuoiky_dict[partner_id]
+            return self.sdtlkcuoiky_dict[partner_id]
+        return 0
+    
+    def get_sdtlkcuoiky_data(self):
+        if self.partner_ids:
+            p_ids = self.partner_ids
+            p_ids = str(p_ids).replace('[', '(')
+            p_ids = str(p_ids).replace(']', ')')
+            wizard_data = self.localcontext['data']['form']
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
+            chinhanh_id = wizard_data['chinhanh_id']
+            res = []
+            sql = '''
+                select partner_id,case when sum(COALESCE(so_tien,0))!=0 then sum(COALESCE(so_tien,0)) else 0 end sotien
+                    from thu_ky_quy where ngay_thu <= '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s
+                    group by partner_id 
+            '''%(period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            sptlkcuoikys = self.cr.dictfetchall()
+            for sptlkcuoiky in sptlkcuoikys:
+                if self.sdtlkcuoiky_dict.get(sptlkcuoiky['partner_id'],False):
+                    self.sdtlkcuoiky_dict[sptlkcuoiky['partner_id']] += sptlkcuoiky['sotien']
+                else:
+                    self.sdtlkcuoiky_dict[sptlkcuoiky['partner_id']] = sptlkcuoiky['sotien']
+
+            sql = '''
+                select aml.partner_id as partner_id,case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
+                    from account_move_line aml
+                    left join account_move am on am.id = aml.move_id
+                    left join account_invoice ai on ai.name = aml.ref
+                    
+                    where aml.date <= '%s'
+                        and aml.account_id in (select id from account_account where parent_id=%s)
+                        and aml.partner_id in %s and aml.credit is not null and aml.credit>0
+                        and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
+                    group by aml.partner_id
+            '''%(period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            sptlkcuoikys = self.cr.dictfetchall()
+            for sptlkcuoiky in sptlkcuoikys:
+                if self.sdtlkcuoiky_dict.get(sptlkcuoiky['partner_id'],False):
+                    self.sdtlkcuoiky_dict[sptlkcuoiky['partner_id']] += sptlkcuoiky['sotien']
+                else:
+                    self.sdtlkcuoiky_dict[sptlkcuoiky['partner_id']] = sptlkcuoiky['sotien']
+            sql = '''
+                select partner_id,case when sum(COALESCE(so_tien,0))!=0 then -1*sum(COALESCE(so_tien,0)) else 0 end sotien
+                    from tra_ky_quy where ngay_tra <= '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s
+                    group by partner_id 
+            '''%(period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            sptlkcuoikys = self.cr.dictfetchall()
+            for sptlkcuoiky in sptlkcuoikys:
+                if self.sdtlkcuoiky_dict.get(sptlkcuoiky['partner_id'],False):
+                    self.sdtlkcuoiky_dict[sptlkcuoiky['partner_id']] += sptlkcuoiky['sotien']
+                else:
+                    self.sdtlkcuoiky_dict[sptlkcuoiky['partner_id']] = sptlkcuoiky['sotien']
+        return True
     

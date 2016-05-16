@@ -33,6 +33,8 @@ class Parser(report_sxw.rml_parse):
         self.tongcong_cantru = 0
         self.tongcong_chi = 0
         self.tongcong_conlai = 0
+        self.tongcongdauky = 0
+        self.tongcong_dauky = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -55,6 +57,8 @@ class Parser(report_sxw.rml_parse):
             'get_tongcong_chi': self.get_tongcong_chi,
             'get_tongcongnoconlai': self.get_tongcongnoconlai,
             'get_tongcong_conlai': self.get_tongcong_conlai,
+            'get_tongcongdauky': self.get_tongcongdauky,
+            'get_tongcong_dauky': self.get_tongcong_dauky,
         })
         
     def convert_date(self, date):
@@ -270,9 +274,39 @@ class Parser(report_sxw.rml_parse):
         period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
         chinhanh_id = wizard_data['chinhanh_id']
         res = []
+        dauky = 0
         thu = 0
         cantru = 0
         chi = 0
+        
+        sql = '''
+        select case when sum(sotien)!=0 then sum(sotien) else 0 end dauky from (
+            select case when sum(COALESCE(so_tien,0))!=0 then sum(COALESCE(so_tien,0)) else 0 end sotien
+                from thu_ky_quy where ngay_thu < '%s' and chinhanh_id=%s
+                    and state in ('paid') and partner_id=%s
+                    
+            union
+            
+            select case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
+                from account_move_line aml
+                left join account_move am on am.id = aml.move_id
+                
+                where aml.date < '%s'
+                    and aml.account_id in (select id from account_account where parent_id=%s)
+                    and aml.partner_id=%s and aml.credit is not null and aml.credit>0
+                    and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
+            union
+            
+            select case when sum(COALESCE(so_tien,0))!=0 then -1*sum(COALESCE(so_tien,0)) else 0 end sotien
+                from tra_ky_quy where ngay_tra < '%s' and chinhanh_id=%s
+                    and state in ('paid') and partner_id=%s 
+            )foo
+        '''%(period_from.date_start,chinhanh_id[0],partner_id,period_from.date_start,chinhanh_id[0],partner_id,period_from.date_start,chinhanh_id[0],partner_id)
+        self.cr.execute(sql)
+        for line in self.cr.dictfetchall():
+            dauky += line['dauky']
+            self.tongcongdauky += line['dauky']
+        
         sql = '''
             select case when sum(so_tien)!=0 then sum(so_tien) else 0 end so_tien from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
                     and state in ('paid') and partner_id=%s 
@@ -303,10 +337,16 @@ class Parser(report_sxw.rml_parse):
         for line in self.cr.dictfetchall():
             chi += line['so_tien']
             self.tongcongnochi += line['so_tien']
-        conlai = thu - cantru - chi
+        conlai = dauky + thu - cantru - chi
         self.tongcongnoconlai += conlai
-        res = [{'thu': thu,'cantru': cantru,'chi': chi, 'conlai': conlai}]
+        res = [{'dauky': dauky,'thu': thu,'cantru': cantru,'chi': chi, 'conlai': conlai}]
         return res
+    
+    def get_tongcongdauky(self):
+        tongcongdauky = self.tongcongdauky
+        self.tongcong_dauky += tongcongdauky
+        self.tongcongdauky = 0
+        return tongcongdauky
     
     def get_tongcongnothu(self):
         tongcongnothu = self.tongcongnothu
@@ -331,6 +371,11 @@ class Parser(report_sxw.rml_parse):
         self.tongcong_conlai += tongcongnoconlai
         self.tongcongnoconlai = 0
         return tongcongnoconlai
+    
+    def get_tongcong_dauky(self):
+        tongcong_dauky = self.tongcong_dauky
+        self.tongcong_dauky = 0
+        return tongcong_dauky
     
     def get_tongcong_thu(self):
         tongcong_thu = self.tongcong_thu
