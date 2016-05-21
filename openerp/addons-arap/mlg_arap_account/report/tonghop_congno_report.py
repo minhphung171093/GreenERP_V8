@@ -710,7 +710,6 @@ class Parser(report_sxw.rml_parse):
     
     def get_nocuoiky(self, partner_id,lcntu):
         nocuoiky = self.nocuoiky
-        self.tongcong_congno += nocuoiky
         self.tongcongno += nocuoiky
         self.nocuoiky = 0
         return nocuoiky
