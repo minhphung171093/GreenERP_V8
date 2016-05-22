@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="odoo backend theme assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/odoo_backend_theme_v8/static/src/css/main.css" />
+                <script type="text/javascript" src="/odoo_backend_theme_v8/static/src/js/main.js" />
+                <script type="text/javascript" src="/odoo_backend_theme_v8/static/src/js/jquery.mCustomScrollbar.concat.min.js" />
+            </xpath>
+        </template>
+        <template id="custom_menu_nav_header" name="odoo backend theme navbar header" inherit_id="web.menu_link">
+            <xpath expr="//a/span[@class='oe_menu_text']" position="replace">
+                <span class="oe_menu_text">
+        			<img t-if="menu['image_icon']" style="margin-top:-10px;" t-attf-src="/web/binary/image?model=ir.ui.menu&amp;id=#{menu['id']}&amp;field=image_icon&amp;resize=32,32" />
+        			<span><t t-esc="menu['name']"/></span>
+                </span>
+            </xpath>
+        </template>
+        <template id="custom_menu_nav_left" name="odoo backend theme navbar left" inherit_id="web.menu_secondary">
+            <xpath expr="//div[@class='oe_secondary_menu_section']" position="replace">
+                <div class="oe_secondary_menu_section">
+                    <img t-if="menu['image_icon']" t-attf-src="/web/binary/image?model=ir.ui.menu&amp;id=#{menu['id']}&amp;field=image_icon&amp;resize=32,32" />
+                    <t t-esc="menu['name']" />
+                </div>
+            </xpath>
+        </template>
+   	</data>
+</openerp>
