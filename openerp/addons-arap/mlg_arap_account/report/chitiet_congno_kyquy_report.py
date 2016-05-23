@@ -31,6 +31,7 @@ class Parser(report_sxw.rml_parse):
         self.partner_ids = []
         self.sdtlkdauky_dict = {}
         self.sdtlkcuoiky_dict = {}
+        self.chitiet_congno_dict = {}
         self.soducuoi = 0
         self.localcontext.update({
             'get_doituong': self.get_doituong,
@@ -110,6 +111,13 @@ class Parser(report_sxw.rml_parse):
                     p_ids.append(partner.id)
                 if ldt=='nhanvienvanphong' and partner.nhanvienvanphong:
                     p_ids.append(partner.id)
+            self.partner_ids = p_ids
+            self.sdtlkdauky_dict = {}
+            self.sdtlkcuoiky_dict = {}
+            self.chitiet_congno_dict = {}
+            self.get_sdtlkdauky_data()
+            self.get_sdtlkcuoiky_data()
+            self.get_chitiet_congno_data()
             return p_ids
         else:
             period_from_id = wizard_data['period_from_id']
@@ -120,39 +128,39 @@ class Parser(report_sxw.rml_parse):
             sql = '''
                 select foo.partner_id as partner_id from (
             
-                    select partner_id from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
+                    select partner_id from thu_ky_quy where ngay_thu <= '%s' and chinhanh_id=%s
                         and state in ('paid') and loai_doituong='%s'
                     union
-                    select partner_id from tra_ky_quy where ngay_tra between '%s' and '%s' and chinhanh_id=%s
+                    select partner_id from tra_ky_quy where ngay_tra <= '%s' and chinhanh_id=%s
                         and state in ('paid') and loai_doituong='%s'
                 )foo group by foo.partner_id
-            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],ldt,period_from.date_start,period_to.date_stop,chinhanh_id[0],ldt)
+            '''%(period_to.date_stop,chinhanh_id[0],ldt,period_to.date_stop,chinhanh_id[0],ldt)
             self.cr.execute(sql)
             partner_ids = [r[0] for r in self.cr.fetchall()]
             if ldt=='taixe':
                 sql = '''
-                    select partner_id from account_move_line where date between '%s' and '%s'
+                    select partner_id from account_move_line where date <= '%s'
                         and account_id in (select id from account_account where parent_id=%s)
                         and partner_id in (select id from res_partner where taixe=True)
                         and loai_giaodich='Giao dịch cấn trừ ký quỹ'
                         group by partner_id
-                '''%(period_from.date_start,period_to.date_stop ,chinhanh_id[0])
+                '''%(period_to.date_stop ,chinhanh_id[0])
             elif ldt=='nhadautu':
                 sql = '''
-                    select partner_id from account_move_line where date between '%s' and '%s'
+                    select partner_id from account_move_line where date <= '%s'
                         and account_id in (select id from account_account where parent_id=%s)
                         and partner_id in (select id from res_partner where nhadautu=True)
                         and loai_giaodich='Giao dịch cấn trừ ký quỹ'
                         group by partner_id
-                '''%(period_from.date_start,period_to.date_stop ,chinhanh_id[0])
+                '''%(period_to.date_stop ,chinhanh_id[0])
             else:
                 sql = '''
-                    select partner_id from account_move_line where date between '%s' and '%s'
+                    select partner_id from account_move_line where date <= '%s'
                         and account_id in (select id from account_account where parent_id=%s)
                         and partner_id in (select id from res_partner where nhanvienvanphong=True)
                         and loai_giaodich='Giao dịch cấn trừ ký quỹ'
                         group by partner_id
-                '''%(period_from.date_start,period_to.date_stop ,chinhanh_id[0])
+                '''%(period_to.date_stop ,chinhanh_id[0])
             self.cr.execute(sql)
             for partner_id in self.cr.fetchall():
                 if partner_id[0] not in partner_ids:
@@ -160,8 +168,10 @@ class Parser(report_sxw.rml_parse):
             self.partner_ids = partner_ids
             self.sdtlkdauky_dict = {}
             self.sdtlkcuoiky_dict = {}
+            self.chitiet_congno_dict = {}
             self.get_sdtlkdauky_data()
             self.get_sdtlkcuoiky_data()
+            self.get_chitiet_congno_data()
             return partner_ids
 
     def get_title_doituong(self, partner_id):
@@ -264,73 +274,95 @@ class Parser(report_sxw.rml_parse):
         return res
     
     def get_chitiet_congno(self, partner_id):
-        wizard_data = self.localcontext['data']['form']
-        period_from_id = wizard_data['period_from_id']
-        period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
-        chinhanh_id = wizard_data['chinhanh_id']
-        res = []
-        sql = '''
-            select ngay_thu,name,dien_giai,fusion_id,so_tien from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
-                    and state in ('paid') and partner_id=%s 
-        '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],partner_id)
-        self.cr.execute(sql)
-        for line in self.cr.dictfetchall():
-            res.append({
-                'ngay': line['ngay_thu'],
-                'maphieu': line['name'],
-                'diengiai': line['dien_giai'],
-                'fusion_id': line['fusion_id'],
-                'giaodich': '',
-                'thu': line['so_tien'],
-                'cantru': 0,
-                'chi': 0,
-            })
-            self.tongcongnothu += line['so_tien']
-        sql = '''
-            select aml.date as date,aml.loai_giaodich as loai_giaodich,aml.credit as credit, am.ref as ref,aml.fusion_id as fusion_id,ai.dien_giai as dien_giai
-                from account_move_line aml
-                left join account_move am on am.id = aml.move_id
-                left join account_invoice ai on ai.name = aml.ref
-                
-                where aml.date between '%s' and '%s'
-                    and aml.account_id in (select id from account_account where parent_id=%s)
-                    and aml.partner_id=%s and aml.credit is not null and aml.credit>0
-                    and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
-        '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],partner_id)
-        self.cr.execute(sql)
-        for line in self.cr.dictfetchall():
-            res.append({
-                'ngay': line['date'],
-                'maphieu': line['ref'],
-                'diengiai': line['dien_giai'],
-                'fusion_id': line['fusion_id'],
-                'giaodich': line['loai_giaodich'],
-                'thu': 0,
-                'cantru': line['credit'],
-                'chi': 0,
-            })
-            self.tongcongnocantru += line['credit']
-        sql = '''
-            select ngay_tra,name,dien_giai,fusion_id,so_tien from tra_ky_quy where ngay_tra between '%s' and '%s' and chinhanh_id=%s
-                    and state in ('paid') and partner_id=%s 
-        '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],partner_id)
-        self.cr.execute(sql)
-        for line in self.cr.dictfetchall():
-            res.append({
-                'ngay': line['ngay_tra'],
-                'maphieu': line['name'],
-                'diengiai': line['dien_giai'],
-                'fusion_id': line['fusion_id'],
-                'giaodich': '',
-                'thu': 0,
-                'cantru': 0,
-                'chi': line['so_tien'],
-            })
-            self.tongcongnochi += line['so_tien']
-        res = sorted(res,key=lambda t: t['ngay'])
-        return res
+        if self.chitiet_congno_dict.get(partner_id, False):
+            res = self.chitiet_congno_dict[partner_id]
+            res = sorted(res,key=lambda t: t['ngay'])
+            return res
+        return []
+    
+    def get_chitiet_congno_data(self):
+        if self.partner_ids:
+            p_ids = self.partner_ids
+            p_ids = str(p_ids).replace('[', '(')
+            p_ids = str(p_ids).replace(']', ')')
+            wizard_data = self.localcontext['data']['form']
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
+            chinhanh_id = wizard_data['chinhanh_id']
+            sql = '''
+                select partner_id,ngay_thu,name,dien_giai,fusion_id,so_tien from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s 
+            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            for line in self.cr.dictfetchall():
+                res = {
+                    'ngay': line['ngay_thu'],
+                    'maphieu': line['name'],
+                    'diengiai': line['dien_giai'],
+                    'fusion_id': line['fusion_id'],
+                    'giaodich': '',
+                    'thu': line['so_tien'],
+                    'cantru': 0,
+                    'chi': 0,
+                }
+                self.tongcongnothu += line['so_tien']
+                if self.chitiet_congno_dict.get(line['partner_id'], False):
+                    self.chitiet_congno_dict[line['partner_id']].append(res)
+                else:
+                    self.chitiet_congno_dict[line['partner_id']] = [res]
+            sql = '''
+                select aml.partner_id as partner_id,aml.date as date,aml.loai_giaodich as loai_giaodich,aml.credit as credit, am.ref as ref,aml.fusion_id as fusion_id,ai.dien_giai as dien_giai
+                    from account_move_line aml
+                    left join account_move am on am.id = aml.move_id
+                    left join account_invoice ai on ai.name = aml.ref
+                    
+                    where aml.date between '%s' and '%s'
+                        and aml.account_id in (select id from account_account where parent_id = %s)
+                        and aml.partner_id in %s and aml.credit is not null and aml.credit>0
+                        and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
+            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            for line in self.cr.dictfetchall():
+                res = {
+                    'ngay': line['date'],
+                    'maphieu': line['ref'],
+                    'diengiai': line['dien_giai'],
+                    'fusion_id': line['fusion_id'],
+                    'giaodich': line['loai_giaodich'],
+                    'thu': 0,
+                    'cantru': line['credit'],
+                    'chi': 0,
+                }
+                self.tongcongnocantru += line['credit']
+                if self.chitiet_congno_dict.get(line['partner_id'], False):
+                    self.chitiet_congno_dict[line['partner_id']].append(res)
+                else:
+                    self.chitiet_congno_dict[line['partner_id']] = [res]
+            sql = '''
+                select partner_id,ngay_tra,name,dien_giai,fusion_id,so_tien from tra_ky_quy where ngay_tra between '%s' and '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s 
+            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            for line in self.cr.dictfetchall():
+                res = {
+                    'ngay': line['ngay_tra'],
+                    'maphieu': line['name'],
+                    'diengiai': line['dien_giai'],
+                    'fusion_id': line['fusion_id'],
+                    'giaodich': '',
+                    'thu': 0,
+                    'cantru': 0,
+                    'chi': line['so_tien'],
+                }
+                self.tongcongnochi += line['so_tien']
+                if self.chitiet_congno_dict.get(line['partner_id'], False):
+                    self.chitiet_congno_dict[line['partner_id']].append(res)
+                else:
+                    self.chitiet_congno_dict[line['partner_id']] = [res]
+#             res = sorted(res,key=lambda t: t['ngay'])
+        return True
     
     def get_tongcongnothu(self):
         tongcongnothu = self.tongcongnothu

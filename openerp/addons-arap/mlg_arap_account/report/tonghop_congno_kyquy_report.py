@@ -35,6 +35,8 @@ class Parser(report_sxw.rml_parse):
         self.tongcong_conlai = 0
         self.tongcongdauky = 0
         self.tongcong_dauky = 0
+        self.partner_ids = []
+        self.chitiet_congno_dict = {}
         self.localcontext.update({
             'get_doituong': self.get_doituong,
             'convert_date': self.convert_date,
@@ -118,6 +120,8 @@ class Parser(report_sxw.rml_parse):
                     p_ids.append(partner.id)
                 if ldt=='nhanvienvanphong' and partner.nhanvienvanphong:
                     p_ids.append(partner.id)
+            self.partner_ids = p_ids
+            self.get_chitiet_congno_data()
             return p_ids
         else:
             period_from_id = wizard_data['period_from_id']
@@ -128,43 +132,45 @@ class Parser(report_sxw.rml_parse):
             sql = '''
                 select foo.partner_id as partner_id from (
             
-                    select partner_id from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
+                    select partner_id from thu_ky_quy where ngay_thu <= '%s' and chinhanh_id=%s
                         and state in ('paid') and loai_doituong='%s'
                     union
-                    select partner_id from tra_ky_quy where ngay_tra between '%s' and '%s' and chinhanh_id=%s
+                    select partner_id from tra_ky_quy where ngay_tra <= '%s' and chinhanh_id=%s
                         and state in ('paid') and loai_doituong='%s'
                 )foo group by foo.partner_id
-            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],ldt,period_from.date_start,period_to.date_stop,chinhanh_id[0],ldt)
+            '''%(period_to.date_stop,chinhanh_id[0],ldt,period_to.date_stop,chinhanh_id[0],ldt)
             self.cr.execute(sql)
             partner_ids = [r[0] for r in self.cr.fetchall()]
             if ldt=='taixe':
                 sql = '''
-                    select partner_id from account_move_line where date between '%s' and '%s'
+                    select partner_id from account_move_line where date <= '%s'
                         and account_id in (select id from account_account where parent_id=%s)
                         and partner_id in (select id from res_partner where taixe=True)
                         and loai_giaodich='Giao dịch cấn trừ ký quỹ'
                         group by partner_id
-                '''%(period_from.date_start,period_to.date_stop ,chinhanh_id[0])
+                '''%(period_to.date_stop ,chinhanh_id[0])
             elif ldt=='nhadautu':
                 sql = '''
-                    select partner_id from account_move_line where date between '%s' and '%s'
+                    select partner_id from account_move_line where date <= '%s'
                         and account_id in (select id from account_account where parent_id=%s)
                         and partner_id in (select id from res_partner where nhadautu=True)
                         and loai_giaodich='Giao dịch cấn trừ ký quỹ'
                         group by partner_id
-                '''%(period_from.date_start,period_to.date_stop ,chinhanh_id[0])
+                '''%(period_to.date_stop ,chinhanh_id[0])
             else:
                 sql = '''
-                    select partner_id from account_move_line where date between '%s' and '%s'
+                    select partner_id from account_move_line where date <= '%s'
                         and account_id in (select id from account_account where parent_id=%s)
                         and partner_id in (select id from res_partner where nhanvienvanphong=True)
                         and loai_giaodich='Giao dịch cấn trừ ký quỹ'
                         group by partner_id
-                '''%(period_from.date_start,period_to.date_stop ,chinhanh_id[0])
+                '''%(period_to.date_stop ,chinhanh_id[0])
             self.cr.execute(sql)
             for partner_id in self.cr.fetchall():
                 if partner_id[0] not in partner_ids:
                     partner_ids.append(partner_id[0])
+            self.partner_ids = partner_ids
+            self.get_chitiet_congno_data()
             return partner_ids
 
     def get_title_doituong(self, partner_id):
@@ -267,80 +273,117 @@ class Parser(report_sxw.rml_parse):
         return res
     
     def get_chitiet_congno(self, partner_id):
-        wizard_data = self.localcontext['data']['form']
-        period_from_id = wizard_data['period_from_id']
-        period_to_id = wizard_data['period_to_id']
-        period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
-        period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
-        chinhanh_id = wizard_data['chinhanh_id']
-        res = []
-        dauky = 0
-        thu = 0
-        cantru = 0
-        chi = 0
-        
-        sql = '''
-        select case when sum(sotien)!=0 then sum(sotien) else 0 end dauky from (
-            select case when sum(COALESCE(so_tien,0))!=0 then sum(COALESCE(so_tien,0)) else 0 end sotien
-                from thu_ky_quy where ngay_thu < '%s' and chinhanh_id=%s
-                    and state in ('paid') and partner_id=%s
+        if self.chitiet_congno_dict.get(partner_id, False):
+            return self.chitiet_congno_dict[partner_id]
+        return []
+    
+    def get_chitiet_congno_data(self):
+        if self.partner_ids:
+            p_ids = self.partner_ids
+            p_ids = str(p_ids).replace('[', '(')
+            p_ids = str(p_ids).replace(']', ')')
+            wizard_data = self.localcontext['data']['form']
+            period_from_id = wizard_data['period_from_id']
+            period_to_id = wizard_data['period_to_id']
+            period_from = self.pool.get('account.period').browse(self.cr, 1, period_from_id[0])
+            period_to = self.pool.get('account.period').browse(self.cr, 1, period_to_id[0])
+            chinhanh_id = wizard_data['chinhanh_id']
+            res = []
+            dauky = 0
+            thu = 0
+            cantru = 0
+            chi = 0
+            
+            sql = '''
+            select partner_id,case when sum(sotien)!=0 then sum(sotien) else 0 end dauky from (
+                select partner_id,case when sum(COALESCE(so_tien,0))!=0 then sum(COALESCE(so_tien,0)) else 0 end sotien
+                    from thu_ky_quy where ngay_thu < '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s
+                    group by partner_id
+                union
+                
+                select aml.partner_id as partner_id,case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
+                    from account_move_line aml
+                    left join account_move am on am.id = aml.move_id
                     
-            union
-            
-            select case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
-                from account_move_line aml
-                left join account_move am on am.id = aml.move_id
+                    where aml.date < '%s'
+                        and aml.account_id in (select id from account_account where parent_id=%s)
+                        and aml.partner_id in %s and aml.credit is not null and aml.credit>0
+                        and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
+                    group by aml.partner_id
+                union
                 
-                where aml.date < '%s'
-                    and aml.account_id in (select id from account_account where parent_id=%s)
-                    and aml.partner_id=%s and aml.credit is not null and aml.credit>0
-                    and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
-            union
-            
-            select case when sum(COALESCE(so_tien,0))!=0 then -1*sum(COALESCE(so_tien,0)) else 0 end sotien
-                from tra_ky_quy where ngay_tra < '%s' and chinhanh_id=%s
-                    and state in ('paid') and partner_id=%s 
-            )foo
-        '''%(period_from.date_start,chinhanh_id[0],partner_id,period_from.date_start,chinhanh_id[0],partner_id,period_from.date_start,chinhanh_id[0],partner_id)
-        self.cr.execute(sql)
-        for line in self.cr.dictfetchall():
-            dauky += line['dauky']
-            self.tongcongdauky += line['dauky']
-        
-        sql = '''
-            select case when sum(so_tien)!=0 then sum(so_tien) else 0 end so_tien from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
-                    and state in ('paid') and partner_id=%s 
-        '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],partner_id)
-        self.cr.execute(sql)
-        for line in self.cr.dictfetchall():
-            thu += line['so_tien']
-            self.tongcongnothu += line['so_tien']
-        sql = '''
-            select case when aml.credit!=0 then aml.credit else 0 end credit
-                from account_move_line aml
-                left join account_move am on am.id = aml.move_id
-                
-                where aml.date between '%s' and '%s'
-                    and aml.account_id in (select id from account_account where parent_id=%s)
-                    and aml.partner_id=%s and aml.credit is not null and aml.credit>0
-                    and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
-        '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],partner_id)
-        self.cr.execute(sql)
-        for line in self.cr.dictfetchall():
-            cantru += line['credit']
-            self.tongcongnocantru += line['credit']
-        sql = '''
-            select case when sum(so_tien)!=0 then sum(so_tien) else 0 end so_tien from tra_ky_quy where ngay_tra between '%s' and '%s' and chinhanh_id=%s
-                    and state in ('paid') and partner_id=%s 
-        '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],partner_id)
-        self.cr.execute(sql)
-        for line in self.cr.dictfetchall():
-            chi += line['so_tien']
-            self.tongcongnochi += line['so_tien']
-        conlai = dauky + thu - cantru - chi
-        self.tongcongnoconlai += conlai
-        res = [{'dauky': dauky,'thu': thu,'cantru': cantru,'chi': chi, 'conlai': conlai}]
-        return res
+                select partner_id,case when sum(COALESCE(so_tien,0))!=0 then -1*sum(COALESCE(so_tien,0)) else 0 end sotien
+                    from tra_ky_quy where ngay_tra < '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s 
+                    group by partner_id
+                )foo group by partner_id
+            '''%(period_from.date_start,chinhanh_id[0],p_ids,period_from.date_start,chinhanh_id[0],p_ids,period_from.date_start,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            for line in self.cr.dictfetchall():
+                dauky += line['dauky']
+                self.tongcongdauky += line['dauky']
+                if self.chitiet_congno_dict.get(line['partner_id'], False):
+                    self.chitiet_congno_dict[line['partner_id']][0]['dauky'] += line['dauky']
+                    self.chitiet_congno_dict[line['partner_id']][0]['conlai'] += line['dauky']
+                else:
+                    self.chitiet_congno_dict[line['partner_id']] = [{'dauky': line['dauky'],'thu': 0,'cantru': 0,'chi': 0, 'conlai': line['dauky']}]
+                    
+            sql = '''
+                select partner_id,case when sum(so_tien)!=0 then sum(so_tien) else 0 end so_tien from thu_ky_quy where ngay_thu between '%s' and '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s
+                    group by partner_id 
+            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            for line in self.cr.dictfetchall():
+                thu += line['so_tien']
+                self.tongcongnothu += line['so_tien']
+                if self.chitiet_congno_dict.get(line['partner_id'], False):
+                    self.chitiet_congno_dict[line['partner_id']][0]['thu'] += line['so_tien']
+                    self.chitiet_congno_dict[line['partner_id']][0]['conlai'] += line['so_tien']
+                else:
+                    self.chitiet_congno_dict[line['partner_id']] = [{'dauky': 0,'thu': line['so_tien'],'cantru': 0,'chi': 0, 'conlai': line['so_tien']}]
+                    
+            sql = '''
+                select aml.partner_id as partner_id,case when sum(aml.credit)!=0 then sum(aml.credit) else 0 end credit
+                    from account_move_line aml
+                    left join account_move am on am.id = aml.move_id
+                    
+                    where aml.date between '%s' and '%s'
+                        and aml.account_id in (select id from account_account where parent_id=%s)
+                        and aml.partner_id in %s and aml.credit is not null and aml.credit>0
+                        and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
+                    group by aml.partner_id
+            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            for line in self.cr.dictfetchall():
+                cantru += line['credit']
+                self.tongcongnocantru += line['credit']
+                if self.chitiet_congno_dict.get(line['partner_id'], False):
+                    self.chitiet_congno_dict[line['partner_id']][0]['cantru'] += line['credit']
+                    self.chitiet_congno_dict[line['partner_id']][0]['conlai'] += -line['credit']
+                else:
+                    self.chitiet_congno_dict[line['partner_id']] = [{'dauky': 0,'thu': 0,'cantru': line['credit'],'chi': 0, 'conlai': -line['so_tien']}]
+                    
+            sql = '''
+                select partner_id,case when sum(so_tien)!=0 then sum(so_tien) else 0 end so_tien from tra_ky_quy where ngay_tra between '%s' and '%s' and chinhanh_id=%s
+                        and state in ('paid') and partner_id in %s
+                    group by partner_id 
+            '''%(period_from.date_start,period_to.date_stop,chinhanh_id[0],p_ids)
+            self.cr.execute(sql)
+            for line in self.cr.dictfetchall():
+                chi += line['so_tien']
+                self.tongcongnochi += line['so_tien']
+                if self.chitiet_congno_dict.get(line['partner_id'], False):
+                    self.chitiet_congno_dict[line['partner_id']][0]['chi'] += line['so_tien']
+                    self.chitiet_congno_dict[line['partner_id']][0]['conlai'] += -line['so_tien']
+                else:
+                    self.chitiet_congno_dict[line['partner_id']] = [{'dauky': 0,'thu': 0,'cantru': 0,'chi': line['so_tien'], 'conlai': -line['so_tien']}]
+                    
+            conlai = dauky + thu - cantru - chi
+            self.tongcongnoconlai += conlai
+#             res = [{'dauky': dauky,'thu': thu,'cantru': cantru,'chi': chi, 'conlai': conlai}]
+        return True
     
     def get_tongcongdauky(self):
         tongcongdauky = self.tongcongdauky
