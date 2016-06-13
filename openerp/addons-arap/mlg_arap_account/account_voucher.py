@@ -376,6 +376,15 @@ class account_voucher(osv.osv):
                     cr.execute(sql)
                     period = cr.dictfetchone()
                     if period:
+
+                        #Tinh so tien lai tra gop xe
+                        sotien = 0
+                        if voucher.sotien_tragopxe and voucher.sotien_lai_conlai:
+                            if voucher.sotien_tragopxe>=voucher.sotien_lai_conlai:
+                                sotien = voucher.sotien_lai_conlai
+                            else:
+                                sotien = voucher.sotien_tragopxe
+                        
                         sql = '''
                             select id from congno_dauky where period_id=%s and partner_id=%s
                         '''%(period['id'],voucher.partner_id.id)
@@ -391,7 +400,7 @@ class account_voucher(osv.osv):
                             if nodauky_line:
                                 sql = '''
                                     update congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s                            
-                                '''%(voucher.amount,nodauky_line[0])
+                                '''%(voucher.amount+sotien,nodauky_line[0])
                                 cr.execute(sql)
                                 
                                 if voucher.mlg_type=='no_doanh_thu' and invoice.loai_nodoanhthu_id:
@@ -578,7 +587,7 @@ class account_voucher(osv.osv):
                                 congno_dauky_line.append((0,0,{
                                     'chinhanh_id': inv['chinhanh_id'],
                                     'mlg_type': inv['mlg_type'],
-                                    'so_tien_no': inv['so_tien_no']-voucher.amount,
+                                    'so_tien_no': inv['so_tien_no']-voucher.amount-sotien,
                                     'chitiet_loai_line': chitiet_loai_line,
                                 }))
                             nodauky_obj.create(cr, uid, {
