@@ -26,7 +26,7 @@ class tragopxe_wizard(osv.osv_memory):
         this = self.browse(cr, uid, ids[0])
         user = self.pool.get('res.users').browse(cr, uid, uid)
         sql = '''
-            select id from account_invoice where mlg_type='tra_gop_xe' and bien_so_xe_id=%s and chinhanh_id=%s
+            select id from account_invoice where mlg_type='tra_gop_xe' and bien_so_xe_id=%s and chinhanh_id=%s and state!='cancel'
                 and thu_cho_doituong_id in (select id from res_partner where ma_doi_tuong='%s' and nhadautugiantiep=True)
         '''%(this.bien_so_xe_id.id, user.chinhanh_id.id,user.chinhanh_id.code)
         cr.execute(sql)
