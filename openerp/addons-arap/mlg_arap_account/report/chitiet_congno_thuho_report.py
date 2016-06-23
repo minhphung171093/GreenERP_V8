@@ -228,7 +228,7 @@ class Parser(report_sxw.rml_parse):
                 from account_invoice
                 where thu_cho_doituong_id=%s and state in ('open','paid') and date_invoice between '%s' and '%s' and chinhanh_id=%s
                     and mlg_type='tra_gop_xe' and bien_so_xe_id=%s
-            union
+            union all
             select case when sum(aml.credit)!=0 then -1*sum(aml.credit) else 0 end sotien
                     from account_move_line aml
                     left join account_voucher av on aml.move_id=av.move_id

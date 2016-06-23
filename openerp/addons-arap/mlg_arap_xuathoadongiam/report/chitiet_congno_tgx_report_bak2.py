@@ -234,7 +234,7 @@ class Parser(report_sxw.rml_parse):
                     '''%(bien_so_xe_ids)
                 sql_2 += ' group by partner_id,bien_so_xe_id,name '
                 sql_2 += '''
-                    union
+                    union all
                     select ai.partner_id as partner_id, ai.bien_so_xe_id as bien_so_xe_id,ai.name as invoice_name,
                             case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
                         from account_move_line aml
@@ -270,7 +270,7 @@ class Parser(report_sxw.rml_parse):
                     '''%(bien_so_xe_ids)
                 sql_2 += ' group by ai.partner_id,ai.bien_so_xe_id,ai.name '
                 sql_2 += '''
-                    union
+                    union all 
                     select ai.partner_id as partner_id, ai.bien_so_xe_id as bien_so_xe_id,ai.name as invoice_name,
                             case when sum(COALESCE(stl.so_tien,0))!=0 then -1*sum(COALESCE(stl.so_tien,0)) else 0 end sotien
                         from so_tien_lai stl
@@ -540,7 +540,7 @@ class Parser(report_sxw.rml_parse):
                     '''%(bien_so_xe_ids)
                 sql_3 += ' group by ai.partner_id, bsx.id, bsx.name,ai.name '
                 sql_3 += '''
-                    union
+                    union all
                     select ai.partner_id as partner_id, bsx.id as id, bsx.name as name,ai.name as invoice_name,
                             case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
                         from account_move_line aml
@@ -577,7 +577,7 @@ class Parser(report_sxw.rml_parse):
                     '''%(bien_so_xe_ids)
                 sql_3 += ' group by ai.partner_id,bsx.id, bsx.name,ai.name '
                 sql_3 += '''
-                    union
+                    union all
                     select ai.partner_id as partner_id, bsx.id as id, bsx.name as name,ai.name as invoice_name,
                             case when sum(COALESCE(stl.so_tien,0))!=0 then -1*sum(COALESCE(stl.so_tien,0)) else 0 end sotien
                         from so_tien_lai stl
@@ -743,7 +743,7 @@ class Parser(report_sxw.rml_parse):
             
             sql_tong = '''
                 select partner_id, sum(sotien) as sotien from (
-            '''+sql_dathu_dauky+' union '+sql_no_dauky+' union '+sql_thulai_dauky+' )foo group by partner_id '
+            '''+sql_dathu_dauky+' union all '+sql_no_dauky+' union all '+sql_thulai_dauky+' )foo group by partner_id '
             
             self.cr.execute(sql_tong)
             ndks = self.cr.dictfetchall()
@@ -873,7 +873,7 @@ class Parser(report_sxw.rml_parse):
             
             sql_tong = '''
                 select partner_id, sum(sotien) as sotien from (
-            '''+sql_dathu_cuoiky+' union '+sql_no_cuoiky+' union '+sql_thulai_cuoiky+' )foo group by partner_id '
+            '''+sql_dathu_cuoiky+' union all '+sql_no_cuoiky+' union all '+sql_thulai_cuoiky+' )foo group by partner_id '
             
             self.cr.execute(sql_tong)
             ncks = self.cr.dictfetchall()

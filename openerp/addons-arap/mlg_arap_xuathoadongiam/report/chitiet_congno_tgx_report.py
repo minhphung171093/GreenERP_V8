@@ -521,7 +521,7 @@ class Parser(report_sxw.rml_parse):
             
             sql_tong = '''
                 select partner_id, sum(sotien) as sotien from (
-            '''+sql_dathu_dauky+' union '+sql_no_dauky+' union '+sql_thulai_dauky+' )foo group by partner_id '
+            '''+sql_dathu_dauky+' union all '+sql_no_dauky+' union all '+sql_thulai_dauky+' )foo group by partner_id '
             
             self.cr.execute(sql_tong)
             ndks = self.cr.dictfetchall()
@@ -651,7 +651,7 @@ class Parser(report_sxw.rml_parse):
             
             sql_tong = '''
                 select partner_id, sum(sotien) as sotien from (
-            '''+sql_dathu_cuoiky+' union '+sql_no_cuoiky+' union '+sql_thulai_cuoiky+' )foo group by partner_id '
+            '''+sql_dathu_cuoiky+' union all '+sql_no_cuoiky+' union all '+sql_thulai_cuoiky+' )foo group by partner_id '
             
             self.cr.execute(sql_tong)
             ncks = self.cr.dictfetchall()

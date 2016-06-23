@@ -205,7 +205,7 @@ class congno_dauky(osv.osv):
                                             where mlg_type='%s' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' ))
                                     and date<'%s'
                                     
-                                union 
+                                union all 
                                 
                                 select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
                                     from so_tien_lai

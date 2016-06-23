@@ -802,7 +802,7 @@ class Parser(report_sxw.rml_parse):
                     sql += '''
                             and aml.date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
                     sql += ' group by ai.partner_id '
-                    sql += ' union '
+                    sql += ' union all '
                     sql += '''
                         select ai.partner_id, case when sum(stl.so_tien)!=0 then sum(stl.so_tien) else 0 end sotien
                         
@@ -945,7 +945,7 @@ class Parser(report_sxw.rml_parse):
                     sql += '''
                             and aml.date between '%s' and '%s' '''%(period_from.date_start,period_to.date_stop)
                     sql += ' group by ai.partner_id '
-                    sql += ' union '
+                    sql += ' union all '
                     sql += '''
                         select ai.partner_id, case when sum(stl.so_tien)!=0 then sum(stl.so_tien) else 0 end sotien
                         

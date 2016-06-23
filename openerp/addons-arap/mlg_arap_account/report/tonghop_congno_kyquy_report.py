@@ -300,7 +300,7 @@ class Parser(report_sxw.rml_parse):
                     from thu_ky_quy where ngay_thu < '%s' and chinhanh_id=%s
                         and state in ('paid') and partner_id in %s
                     group by partner_id
-                union
+                union all
                 
                 select aml.partner_id as partner_id,case when sum(COALESCE(aml.credit,0))!=0 then -1*sum(COALESCE(aml.credit,0)) else 0 end sotien
                     from account_move_line aml
@@ -311,7 +311,7 @@ class Parser(report_sxw.rml_parse):
                         and aml.partner_id in %s and aml.credit is not null and aml.credit>0
                         and aml.loai_giaodich='Giao dịch cấn trừ ký quỹ'
                     group by aml.partner_id
-                union
+                union all
                 
                 select partner_id,case when sum(COALESCE(so_tien,0))!=0 then -1*sum(COALESCE(so_tien,0)) else 0 end sotien
                     from tra_ky_quy where ngay_tra < '%s' and chinhanh_id=%s
