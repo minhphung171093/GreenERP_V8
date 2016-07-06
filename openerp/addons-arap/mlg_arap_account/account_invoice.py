@@ -26,7 +26,7 @@ import time
 from openerp.exceptions import except_orm, Warning, RedirectWarning
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from openerp import netsvc
+from openerp import netsvc, api
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -119,7 +119,7 @@ class account_invoice(osv.osv):
         res={}
         for invoice in self.browse(cr, uid, ids, context=context):
             res[invoice.id] = False
-            if invoice.state != 'draft' and invoice.so_tien!=invoice.residual:
+            if invoice.state not in ['draft', 'open']:
                 res[invoice.id] = True
         return res
     
@@ -441,7 +441,7 @@ class account_invoice(osv.osv):
                     if sotien_dathu<line.so_tien:
                         raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
             
-            if vals.get('state',False)=='cancel' and old_state_vals and old_state_vals[line.id]=='open':
+            if vals.get('state',False)=='cancel' and old_state_vals and old_state_vals[line.id] in ['draft','open','paid']:
                 date_now = time.strftime('%Y-%m-%d')
                 startdate_now = time.strftime('%Y-%m-01')
                 enddate_pre = datetime.strptime(startdate_now,'%Y-%m-%d')+timedelta(days=-1)
@@ -454,6 +454,7 @@ class account_invoice(osv.osv):
                     nodauky_obj = self.pool.get('congno.dauky')
                     nodauky_line_obj = self.pool.get('congno.dauky.line')
                     chitiet_nodauky_line_obj = self.pool.get('chitiet.congno.dauky.line')
+                    stl_obj = self.pool.get('so.tien.lai')
                     date_invoice = datetime.strptime(line.date_invoice,'%Y-%m-%d')
                     end_of_month = str(date_invoice + relativedelta(months=+1, day=1, days=-1))[:10]
                     date_invoice_str = date_invoice.strftime('%Y-%m-%d')
@@ -484,7 +485,8 @@ class account_invoice(osv.osv):
                                     update congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s                            
                                 '''%(line.so_tien,nodauky_line[0])
                                 cr.execute(sql)
-                                
+                                for stl in line.lichsu_thutienlai_line:
+                                    stl_obj.unlink(cr, uid, stl.id)
                                 if line.mlg_type=='no_doanh_thu' and line.loai_nodoanhthu_id:
                                     sql = '''
                                         select id from chitiet_congno_dauky_line
@@ -534,7 +536,7 @@ class account_invoice(osv.osv):
                                         '''%(line.so_tien,chitiet_line[0])
                                         cr.execute(sql)
                 
-            if vals.get('state',False)=='open':
+            if vals.get('state',False)=='open' and old_state_vals and old_state_vals[line.id]=='draft':
                 date_now = time.strftime('%Y-%m-%d')
                 startdate_now = time.strftime('%Y-%m-01')
                 enddate_pre = datetime.strptime(startdate_now,'%Y-%m-%d')+timedelta(days=-1)
@@ -575,7 +577,7 @@ class account_invoice(osv.osv):
                             if nodauky_line:
                                 sql = '''
                                     update congno_dauky_line set so_tien_no=so_tien_no+%s where id=%s                            
-                                '''%(line.so_tien,nodauky_line[0])
+                                '''%(line.so_tien+line.sotien_lai,nodauky_line[0])
                                 cr.execute(sql)
                                 if line.mlg_type=='no_doanh_thu' and line.loai_nodoanhthu_id:
                                     sql = '''
@@ -1117,6 +1119,17 @@ class account_invoice(osv.osv):
         except Exception, e:
             cr.rollback()
         return True
+    
+    @api.multi
+    def action_cancel(self):
+        voucher_obj = self.pool.get('account.voucher')
+        stl_obj = self.pool.get('so.tien.lai')
+        for inv in self:
+            voucher_ids = voucher_obj.search(self.env.cr, self.env.uid, [('reference', '=', inv.name),('state','=','posted')])
+            voucher_obj.cancel_voucher(self.env.cr, self.env.uid, voucher_ids)
+        
+        res = super(account_invoice, self).action_cancel()
+        return res
     
 account_invoice()
 
