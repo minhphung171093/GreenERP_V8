@@ -441,7 +441,7 @@ class account_invoice(osv.osv):
                     if sotien_dathu<line.so_tien:
                         raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
             
-            if vals.get('state',False)=='cancel' and old_state_vals and old_state_vals[line.id] in ['draft','open','paid']:
+            if vals.get('state',False)=='cancel' and old_state_vals and old_state_vals[line.id] in ['open','paid']:
                 date_now = time.strftime('%Y-%m-%d')
                 startdate_now = time.strftime('%Y-%m-01')
                 enddate_pre = datetime.strptime(startdate_now,'%Y-%m-%d')+timedelta(days=-1)
