@@ -41,12 +41,13 @@ class congno_dauky(osv.osv):
     
     def get_congno_dauky(self, cr, uid, context=None):
         try:
-            date_now = datetime.now() + timedelta(hours=7)
-            end_of_month = str(date_now + relativedelta(months=+1, day=1, days=-1))[:10]
-            date_now_str = date_now.strftime('%Y-%m-%d')
-            day = int(end_of_month[8:10])-int(date_now_str[8:10])+3
-            next_month = date_now + timedelta(days=day)
-            next_month_str = next_month.strftime('%Y-%m-%d')
+#             date_now = datetime.now() + timedelta(hours=7)
+#             end_of_month = str(date_now + relativedelta(months=+1, day=1, days=-1))[:10]
+#             date_now_str = date_now.strftime('%Y-%m-%d')
+#             day = int(end_of_month[8:10])-int(date_now_str[8:10])+3
+#             next_month = date_now + timedelta(days=day)
+#             next_month_str = next_month.strftime('%Y-%m-%d')
+            next_month_str = time.strftime('%Y-%m-%d')
             sql = '''
                 select id,date_start,date_stop from account_period
                     where '%s' between date_start and date_stop and special != 't' limit 1 
