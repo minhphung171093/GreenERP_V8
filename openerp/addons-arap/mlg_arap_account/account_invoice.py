@@ -442,6 +442,9 @@ class account_invoice(osv.osv):
                         raise osv.except_osv(_('Cảnh báo!'), _('Không được phép chỉnh sửa với số tiền nhập vào lớn hơn số tiền ký quỹ đã thu!'))
             
             if vals.get('state',False)=='cancel' and old_state_vals and old_state_vals[line.id] in ['open','paid']:
+                if line.payment_ids:
+                    raise osv.except_osv(_('Cảnh báo!'), _('Vui lòng hủy hết thanh toán trước khi hủy công nợ này!'))
+                
                 date_now = time.strftime('%Y-%m-%d')
                 startdate_now = time.strftime('%Y-%m-01')
                 enddate_pre = datetime.strptime(startdate_now,'%Y-%m-%d')+timedelta(days=-1)
@@ -1120,17 +1123,28 @@ class account_invoice(osv.osv):
             cr.rollback()
         return True
     
+#     @api.multi
+#     def action_cancel(self):
+#         voucher_obj = self.pool.get('account.voucher')
+#         stl_obj = self.pool.get('so.tien.lai')
+#         for inv in self:
+#             voucher_ids = voucher_obj.search(self.env.cr, self.env.uid, [('reference', '=', inv.name),('state','=','posted')])
+#             voucher_obj.cancel_voucher(self.env.cr, self.env.uid, voucher_ids)
+#         
+#         res = super(account_invoice, self).action_cancel()
+#         return res
+    
     @api.multi
-    def action_cancel(self):
+    def bt_huythanhtoan_hoadon(self):
+        wf_service = netsvc.LocalService("workflow")
         voucher_obj = self.pool.get('account.voucher')
-        stl_obj = self.pool.get('so.tien.lai')
         for inv in self:
             voucher_ids = voucher_obj.search(self.env.cr, self.env.uid, [('reference', '=', inv.name),('state','=','posted')])
-            voucher_obj.cancel_voucher(self.env.cr, self.env.uid, voucher_ids)
+            if voucher_ids:
+                voucher_obj.cancel_voucher(self.env.cr, self.env.uid, voucher_ids)
+                wf_service.trg_validate(self.env.uid, 'account.invoice', inv.id, 'invoice_cancel', self.env.cr)
+        return True
         
-        res = super(account_invoice, self).action_cancel()
-        return res
-    
 account_invoice()
 
 class account_invoice_line(osv.osv):

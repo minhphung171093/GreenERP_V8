@@ -58,8 +58,8 @@
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action"/>
-	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy" groups="base.group_no_one"/>
-	                    <button name="action_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" type="object" states="paid" string="Hủy" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
+	                    <button name="bt_huythanhtoan_hoadon" type='object' confirm="Bạn thật sự muốn hủy giao dịch này?" string="Hủy thanh toán và hóa đơn" context="{'huy_thanhtoan_va_hoadon': 1}" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
@@ -213,8 +213,8 @@
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" string="In phiếu đề xuất" type="action"/>
-	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy" groups="base.group_no_one"/>
-	                    <button name="action_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" type="object" states="paid" string="Hủy" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
+	                    <button name="bt_huythanhtoan_hoadon" type='object' confirm="Bạn thật sự muốn hủy giao dịch này?" string="Hủy thanh toán và hóa đơn" context="{'huy_thanhtoan_va_hoadon': 1}" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
@@ -368,8 +368,8 @@
 	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
-	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy" groups="base.group_no_one"/>
-	                    <button name="action_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" type="object" states="paid" string="Hủy" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
+	                    <button name="bt_huythanhtoan_hoadon" type='object' confirm="Bạn thật sự muốn hủy giao dịch này?" string="Hủy thanh toán và hóa đơn" context="{'huy_thanhtoan_va_hoadon': 1}" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
@@ -527,8 +527,8 @@
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="%(action_phieu_de_xuat)d" attrs="{'invisible': [('state','!=','open')]}" context="{'default_loai':'thu'}" string="In phiếu đề xuất trả ký quỹ" type="action"/>
-	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy" groups="base.group_no_one"/>
-	                    <button name="action_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" type="object" states="paid" string="Hủy" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
+	                    <button name="bt_huythanhtoan_hoadon" type='object' confirm="Bạn thật sự muốn hủy giao dịch này?" string="Hủy thanh toán và hóa đơn" context="{'huy_thanhtoan_va_hoadon': 1}" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
@@ -684,8 +684,8 @@
 	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
-	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy" groups="base.group_no_one"/>
-	                    <button name="action_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" type="object" states="paid" string="Hủy" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
+	                    <button name="bt_huythanhtoan_hoadon" type='object' confirm="Bạn thật sự muốn hủy giao dịch này?" string="Hủy thanh toán và hóa đơn" context="{'huy_thanhtoan_va_hoadon': 1}" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
@@ -842,8 +842,8 @@
 	                    <button name="invoice_open" states="proforma2" string="Duyệt" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
 	                    <button name="invoice_pay_customer" type="object" string="Thanh toán"
 	                        attrs="{'invisible': [('state','!=','open')]}" class="oe_highlight" groups="mlg_arap_account.group_mlg_arap_phanquyen_button"/>
-	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy" groups="base.group_no_one"/>
-	                    <button name="action_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" type="object" states="paid" string="Hủy" groups="base.group_no_one"/>
+	                    <button name="invoice_cancel" confirm="Bạn thật sự muốn hủy giao dịch này?" attrs="{'invisible': [('invisible_button_cancel','=',True)]}" string="Hủy"/>
+	                    <button name="bt_huythanhtoan_hoadon" type='object' confirm="Bạn thật sự muốn hủy giao dịch này?" string="Hủy thanh toán và hóa đơn" context="{'huy_thanhtoan_va_hoadon': 1}" groups="base.group_no_one"/>
 	                    <button name="action_cancel_draft" states="cancel" string="Chuyển về đợi" type="object" groups="base.group_user"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,open,paid"/>
 						<field name="mlg_type" invisible='1'/>
