@@ -61,7 +61,7 @@
 		                    			<field name="mlg_type"/>
 		                    			<field name="so_tien_no"/>
 		                    		</group>
-		                    		<group attrs="{'invisible':[('mlg_type','not in',['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','hoan_tam_ung'])]}">
+		                    		<group attrs="{'invisible':[('mlg_type','not in',['no_doanh_thu','phai_thu_bao_hiem','phat_vi_pham','hoan_tam_ung','thu_no_xuong'])]}">
 		                    			<field name="chitiet_loai_line" nolabel='1'>
 			                    			<tree>
 				                    			<field name="loai"/>

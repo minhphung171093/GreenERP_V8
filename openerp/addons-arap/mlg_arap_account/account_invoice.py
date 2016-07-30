@@ -538,6 +538,18 @@ class account_invoice(osv.osv):
                                             update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
                                         '''%(line.so_tien,chitiet_line[0])
                                         cr.execute(sql)
+                                if line.mlg_type=='thu_no_xuong' and line.ma_xuong_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],line.ma_xuong_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(line.so_tien,chitiet_line[0])
+                                        cr.execute(sql)
                 
             if vals.get('state',False)=='open' and old_state_vals and old_state_vals[line.id]=='draft':
                 date_now = time.strftime('%Y-%m-%d')
@@ -654,6 +666,24 @@ class account_invoice(osv.osv):
                                             'loai_id': line.loai_tamung_id.id,
                                             'so_tien_no': line.so_tien,
                                         })
+                                if line.mlg_type=='thu_no_xuong' and line.ma_xuong_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],line.ma_xuong_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no+%s where id=%s  
+                                        '''%(line.so_tien,chitiet_line[0])
+                                        cr.execute(sql)
+                                    else:
+                                        chitiet_nodauky_line_obj.create(cr, uid, {
+                                            'congno_dauky_line_id': nodauky_line[0],
+                                            'loai_id': line.ma_xuong_id.id,
+                                            'so_tien_no': line.so_tien,
+                                        })
                             else:
                                 chitiet_loai_line=[]
                                 if line.mlg_type=='no_doanh_thu' and line.loai_nodoanhthu_id:
@@ -674,6 +704,11 @@ class account_invoice(osv.osv):
                                 if line.mlg_type=='hoan_tam_ung' and line.loai_tamung_id:
                                     chitiet_loai_line = [(0,0,{
                                                             'loai_id': line.loai_tamung_id.id,
+                                                            'so_tien_no': line.so_tien,
+                                                        })]
+                                if line.mlg_type=='thu_no_xuong' and line.ma_xuong_id:
+                                    chitiet_loai_line = [(0,0,{
+                                                            'loai_id': line.ma_xuong_id.id,
                                                             'so_tien_no': line.so_tien,
                                                         })]
                                 nodauky_line_obj.create(cr, uid, {

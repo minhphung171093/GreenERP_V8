@@ -585,6 +585,10 @@ class chitiet_congno_dauky_line(osv.osv):
                 obj = self.pool.get('loai.tam.ung')
                 loai = obj.browse(cr, uid, line.loai_id)
                 res[line.id] = loai.name
+            if line.congno_dauky_line_id.mlg_type=='thu_no_xuong' and line.loai_id:
+                obj = self.pool.get('ma.xuong')
+                loai = obj.browse(cr, uid, line.loai_id)
+                res[line.id] = loai.name
         return res
     
     _columns = {

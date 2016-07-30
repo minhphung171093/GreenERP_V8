@@ -476,6 +476,24 @@ class account_voucher(osv.osv):
                                             'loai_id': invoice.loai_tamung_id.id,
                                             'so_tien_no': invoice.so_tien-voucher.amount,
                                         })
+                                if voucher.mlg_type=='thu_no_xuong' and invoice.ma_xuong_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],invoice.ma_xuong_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no-%s where id=%s  
+                                        '''%(voucher.amount,chitiet_line[0])
+                                        cr.execute(sql)
+                                    else:
+                                        chitiet_nodauky_line_obj.create(cr, uid, {
+                                            'congno_dauky_line_id': nodauky_line[0],
+                                            'loai_id': invoice.ma_xuong_id.id,
+                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                        })
                                 
                             else:
                                 chitiet_loai_line=[]
@@ -497,6 +515,11 @@ class account_voucher(osv.osv):
                                 if voucher.mlg_type=='hoan_tam_ung' and invoice.loai_tamung_id:
                                     chitiet_loai_line = [(0,0,{
                                                             'loai_id': invoice.loai_tamung_id.id,
+                                                            'so_tien_no': invoice.so_tien-voucher.amount,
+                                                        })]
+                                if voucher.mlg_type=='thu_no_xuong' and invoice.ma_xuong_id:
+                                    chitiet_loai_line = [(0,0,{
+                                                            'loai_id': invoice.ma_xuong_id.id,
                                                             'so_tien_no': invoice.so_tien-voucher.amount,
                                                         })]
                                 nodauky_line_obj.create(cr, uid, {
@@ -583,6 +606,23 @@ class account_voucher(osv.osv):
                                             so_tien = inv_line['so_tien_no']
                                         chitiet_loai_line.append((0,0,{
                                             'loai_id': inv_line['loai_tamung_id'],
+                                            'so_tien_no': so_tien,
+                                        }))
+                                if inv['mlg_type']=='thu_no_xuong':
+                                    sql = '''
+                                        select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,ma_xuong_id
+                                            from account_invoice
+                                            where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                            group by ma_xuong_id
+                                    '''%(voucher.partner_id.id,inv['mlg_type'],inv['chinhanh_id'],period['date_start'])
+                                    cr.execute(sql)
+                                    for inv_line in cr.dictfetchall():
+                                        if voucher.mlg_type=='thu_no_xuong':
+                                            so_tien = inv_line['so_tien_no']-voucher.amount
+                                        else:
+                                            so_tien = inv_line['so_tien_no']
+                                        chitiet_loai_line.append((0,0,{
+                                            'loai_id': inv_line['ma_xuong_id'],
                                             'so_tien_no': so_tien,
                                         }))
                                 congno_dauky_line.append((0,0,{
@@ -817,6 +857,24 @@ class account_voucher(osv.osv):
                                             'loai_id': invoice.loai_tamung_id.id,
                                             'so_tien_no': voucher.amount,
                                         })
+                                if invoice.mlg_type=='thu_no_xuong' and invoice.ma_xuong_id:
+                                    sql = '''
+                                        select id from chitiet_congno_dauky_line
+                                            where congno_dauky_line_id=%s and loai_id=%s
+                                    '''%(nodauky_line[0],invoice.ma_xuong_id.id)
+                                    cr.execute(sql)
+                                    chitiet_line = cr.fetchone()
+                                    if chitiet_line:
+                                        sql = '''
+                                            update chitiet_congno_dauky_line set so_tien_no=so_tien_no+%s where id=%s  
+                                        '''%(voucher.amount,chitiet_line[0])
+                                        cr.execute(sql)
+                                    else:
+                                        chitiet_nodauky_line_obj.create(cr, uid, {
+                                            'congno_dauky_line_id': nodauky_line[0],
+                                            'loai_id': invoice.ma_xuong_id.id,
+                                            'so_tien_no': voucher.amount,
+                                        })
                             else:
                                 chitiet_loai_line=[]
                                 if invoice.mlg_type=='no_doanh_thu' and invoice.loai_nodoanhthu_id:
@@ -837,6 +895,11 @@ class account_voucher(osv.osv):
                                 if invoice.mlg_type=='hoan_tam_ung' and invoice.loai_tamung_id:
                                     chitiet_loai_line = [(0,0,{
                                                             'loai_id': invoice.loai_tamung_id.id,
+                                                            'so_tien_no': voucher.amount,
+                                                        })]
+                                if invoice.mlg_type=='thu_no_xuong' and invoice.ma_xuong_id:
+                                    chitiet_loai_line = [(0,0,{
+                                                            'loai_id': invoice.ma_xuong_id.id,
                                                             'so_tien_no': voucher.amount,
                                                         })]
                                 nodauky_line_obj.create(cr, uid, {
