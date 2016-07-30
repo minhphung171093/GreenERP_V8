@@ -972,6 +972,19 @@ class account_voucher(osv.osv):
                                             'loai_id': inv_line['loai_tamung_id'],
                                             'so_tien_no': inv_line['so_tien_no'],
                                         }))
+                                if inv['mlg_type']=='thu_no_xuong':
+                                    sql = '''
+                                        select sum(COALESCE(residual,0) + COALESCE(sotien_lai_conlai,0)) as so_tien_no,ma_xuong_id
+                                            from account_invoice
+                                            where state='open' and partner_id=%s and mlg_type='%s' and chinhanh_id=%s and date_invoice<'%s'
+                                            group by ma_xuong_id
+                                    '''%(invoice.partner_id.id,inv['mlg_type'],inv['chinhanh_id'],period['date_start'])
+                                    cr.execute(sql)
+                                    for inv_line in cr.dictfetchall():
+                                        chitiet_loai_line.append((0,0,{
+                                            'loai_id': inv_line['ma_xuong_id'],
+                                            'so_tien_no': inv_line['so_tien_no'],
+                                        }))
                                 congno_dauky_line.append((0,0,{
                                     'chinhanh_id': inv['chinhanh_id'],
                                     'mlg_type': inv['mlg_type'],
