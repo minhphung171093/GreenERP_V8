@@ -119,7 +119,7 @@ class account_invoice(osv.osv):
         res={}
         for invoice in self.browse(cr, uid, ids, context=context):
             res[invoice.id] = False
-            if invoice.state not in ['draft', 'open']:
+            if invoice.state != 'draft' and invoice.so_tien!=invoice.residual:
                 res[invoice.id] = True
         return res
     
