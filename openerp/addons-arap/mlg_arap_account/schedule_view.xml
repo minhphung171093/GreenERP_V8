@@ -535,5 +535,18 @@
             <field name="mlg" eval="True"/>
         </record>
         
+        <record model="ir.cron" id="get_congno_dauky_formonth_thunoxuong_cron">
+            <field name="name">Tính công nợ đầu kỳ theo tháng (thu nợ xưởng)</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="False"/>
+            <field name="doall" eval="True"/>
+            <field name="model" eval="'congno.dauky'"/>
+            <field name="function" eval="'get_congno_dauky_formonth_thunoxuong'"/>
+            <field name="args" eval="'(6,2016)'" />
+            <field name="mlg" eval="True"/>
+        </record>
+        
 	</data>
 </openerp>

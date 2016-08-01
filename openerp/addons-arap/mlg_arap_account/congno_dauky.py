@@ -359,6 +359,286 @@ class congno_dauky(osv.osv):
             raise osv.except_osv(_('Warning!'), str(e))
         return True
     
+    def get_congno_dauky_formonth_thunoxuong(self, cr, uid, month=False,year=False, context=None):
+        try:
+            if month and year:
+                date = datetime(year,month,5)
+                date_str = date.strftime('%Y-%m-%d')
+                sql = '''
+                    select id,date_start,date_stop from account_period
+                        where '%s' between date_start and date_stop and special != 't' limit 1 
+                '''%(date_str)
+                cr.execute(sql)
+                period = cr.dictfetchone()
+                sql = '''
+                    select id from congno_dauky where period_id = %s
+                '''%(period['id'])
+                cr.execute(sql)
+                cndk_ids = [r[0] for r in cr.fetchall()]
+                if not cndk_ids:
+                    sql = '''
+                        select partner_id
+                            from account_invoice
+                            where state in ('open','paid') and date_invoice<'%s'
+                            group by partner_id
+                    '''%(period['date_start'])
+                    cr.execute(sql)
+                    for partner in cr.dictfetchall():
+                        sql = '''
+                            select sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0)) as tongtien,chinhanh_id
+                                from account_invoice
+                                where state in ('open','paid') and partner_id=%s and date_invoice<'%s' and mlg_type='thu_no_xuong'
+                                group by chinhanh_id
+                        '''%(partner['partner_id'],period['date_start'])
+                        cr.execute(sql)
+                        congno_dauky_line = []
+                        for invoice in cr.dictfetchall():
+                            sql = '''
+                            select case when sum(sotien)!=0 then sum(sotien) else 0 end sotien from
+                                (select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                                    from account_move_line
+                                    where move_id in (select move_id from account_voucher
+                                        where reference in (select name from account_invoice
+                                            where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' ))
+                                    and date<'%s'
+                                    
+                                union all 
+                                
+                                select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+                                    from so_tien_lai
+                                    where invoice_id in (select id from account_invoice
+                                            where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s')
+                                        and ngay<'%s'
+                                )foo
+                            '''%(invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'],invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'])
+                            cr.execute(sql)
+                            tongthu = cr.fetchone()[0]
+                            if invoice['tongtien']>tongthu:
+                                chitiet_loai_line = []
+                                sql = '''
+                                    select sum(COALESCE(so_tien,0)) as tongtien,ma_xuong_id
+                                        from account_invoice
+                                        where state in ('open','paid') and partner_id=%s and date_invoice<'%s' and mlg_type='thu_no_xuong' and chinhanh_id=%s
+                                        group by ma_xuong_id
+                                '''%(partner['partner_id'],period['date_start'],invoice['chinhanh_id'])
+                                cr.execute(sql)
+                                for inv_chitiet in cr.dictfetchall():
+                                    sql = '''
+                                        select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                                            from account_move_line
+                                            where move_id in (select move_id from account_voucher
+                                                where reference in (select name from account_invoice
+                                                    where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s'
+                                                        and ma_xuong_id=%s ))
+                                            and date<'%s'
+                                    '''%(invoice['chinhanh_id'],partner['partner_id'],period['date_start'],inv_chitiet['ma_xuong_id'],period['date_start'])
+                                    cr.execute(sql)
+                                    inv_tongtra = cr.fetchone()[0]
+                                    if inv_chitiet['tongtien']>inv_tongtra:
+                                        chitiet_loai_line.append((0,0,{
+                                            'loai_id': inv_chitiet['ma_xuong_id'],
+                                            'so_tien_no': inv_chitiet['tongtien']-inv_tongtra,
+                                        }))
+                                congno_dauky_line.append((0,0,{
+                                    'chinhanh_id': invoice['chinhanh_id'],
+                                    'mlg_type': 'thu_no_xuong',
+                                    'so_tien_no': invoice['tongtien']-tongthu,
+                                    'chitiet_loai_line': chitiet_loai_line,
+                                }))
+                        self.create(cr, uid, {
+                            'period_id': period['id'],
+                            'partner_id': partner['partner_id'],
+                            'congno_dauky_line': congno_dauky_line,               
+                        })
+                else:
+                    sql = '''
+                        select partner_id
+                            from account_invoice
+                            where state in ('open','paid') and date_invoice<'%s' and mlg_type='thu_no_xuong'
+                            group by partner_id
+                    '''%(period['date_start'])
+                    cr.execute(sql)
+                    for partner in cr.dictfetchall():
+                        sql = '''
+                            select id from congno_dauky where period_id=%s and partner_id=%s limit 1
+                        '''%(period['id'],partner['partner_id'])
+                        cr.execute(sql)
+                        cndk2_ids = [r[0] for r in cr.fetchall()]
+                        if cndk2_ids:
+                            sql = '''
+                                select id from congno_dauky_line where mlg_type='thu_no_xuong' and congno_dauky_id=%s limit 1
+                            '''%(cndk2_ids[0])
+                            cr.execute(sql)
+                            cndkl_ids = [r[0] for r in cr.fetchall()]
+                            if cndkl_ids:
+                                sql = '''
+                                    select id from chitiet_congno_dauky_line where congno_dauky_line_id=%s limit 1
+                                '''%(cndkl_ids[0])
+                                cr.execute(sql)
+                                ctcndkl_ids = [r[0] for r in cr.fetchall()]
+                                if not ctcndkl_ids:
+                                    chitiet_loai_line = []
+                                    sql = '''
+                                        select sum(COALESCE(so_tien,0)) as tongtien,ma_xuong_id
+                                            from account_invoice
+                                            where state in ('open','paid') and partner_id=%s and date_invoice<'%s' and mlg_type='thu_no_xuong' and chinhanh_id=%s
+                                            group by ma_xuong_id
+                                    '''%(partner['partner_id'],period['date_start'],invoice['chinhanh_id'])
+                                    cr.execute(sql)
+                                    for inv_chitiet in cr.dictfetchall():
+                                        sql = '''
+                                            select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                                                from account_move_line
+                                                where move_id in (select move_id from account_voucher
+                                                    where reference in (select name from account_invoice
+                                                        where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s'
+                                                            and ma_xuong_id=%s ))
+                                                and date<'%s'
+                                        '''%(invoice['chinhanh_id'],partner['partner_id'],period['date_start'],inv_chitiet['ma_xuong_id'],period['date_start'])
+                                        cr.execute(sql)
+                                        inv_tongtra = cr.fetchone()[0]
+                                        if inv_chitiet['tongtien']>inv_tongtra:
+                                            chitiet_loai_line.append((0,0,{
+                                                'loai_id': inv_chitiet['ma_xuong_id'],
+                                                'so_tien_no': inv_chitiet['tongtien']-inv_tongtra,
+                                            }))
+                                    self.pool.get('congno.dauky.line').write(cr, uid, cndkl_ids, {'chitiet_loai_line': chitiet_loai_line})
+                            else:
+                                sql = '''
+                                    select sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0)) as tongtien,chinhanh_id
+                                        from account_invoice
+                                        where state in ('open','paid') and partner_id=%s and date_invoice<'%s' and mlg_type='thu_no_xuong'
+                                        group by chinhanh_id
+                                '''%(partner['partner_id'],period['date_start'])
+                                cr.execute(sql)
+                                congno_dauky_line = []
+                                for invoice in cr.dictfetchall():
+                                    sql = '''
+                                    select case when sum(sotien)!=0 then sum(sotien) else 0 end sotien from
+                                        (select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                                            from account_move_line
+                                            where move_id in (select move_id from account_voucher
+                                                where reference in (select name from account_invoice
+                                                    where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' ))
+                                            and date<'%s'
+                                            
+                                        union all 
+                                        
+                                        select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+                                            from so_tien_lai
+                                            where invoice_id in (select id from account_invoice
+                                                    where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s')
+                                                and ngay<'%s'
+                                        )foo
+                                    '''%(invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'],invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'])
+                                    cr.execute(sql)
+                                    tongthu = cr.fetchone()[0]
+                                    if invoice['tongtien']>tongthu:
+                                        chitiet_loai_line = []
+                                        sql = '''
+                                            select sum(COALESCE(so_tien,0)) as tongtien,ma_xuong_id
+                                                from account_invoice
+                                                where state in ('open','paid') and partner_id=%s and date_invoice<'%s' and mlg_type='thu_no_xuong' and chinhanh_id=%s
+                                                group by ma_xuong_id
+                                        '''%(partner['partner_id'],period['date_start'],invoice['chinhanh_id'])
+                                        cr.execute(sql)
+                                        for inv_chitiet in cr.dictfetchall():
+                                            sql = '''
+                                                select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                                                    from account_move_line
+                                                    where move_id in (select move_id from account_voucher
+                                                        where reference in (select name from account_invoice
+                                                            where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s'
+                                                                and ma_xuong_id=%s ))
+                                                    and date<'%s'
+                                            '''%(invoice['chinhanh_id'],partner['partner_id'],period['date_start'],inv_chitiet['ma_xuong_id'],period['date_start'])
+                                            cr.execute(sql)
+                                            inv_tongtra = cr.fetchone()[0]
+                                            if inv_chitiet['tongtien']>inv_tongtra:
+                                                chitiet_loai_line.append((0,0,{
+                                                    'loai_id': inv_chitiet['ma_xuong_id'],
+                                                    'so_tien_no': inv_chitiet['tongtien']-inv_tongtra,
+                                                }))
+                                        congno_dauky_line.append((0,0,{
+                                            'chinhanh_id': invoice['chinhanh_id'],
+                                            'mlg_type': 'thu_no_xuong',
+                                            'so_tien_no': invoice['tongtien']-tongthu,
+                                            'chitiet_loai_line': chitiet_loai_line,
+                                        }))
+                                self.write(cr, uid, cndk2_ids,{
+                                    'congno_dauky_line': congno_dauky_line,               
+                                })
+                        else:
+                            sql = '''
+                                select sum(COALESCE(so_tien,0)+COALESCE(sotien_lai,0)) as tongtien,chinhanh_id
+                                    from account_invoice
+                                    where state in ('open','paid') and partner_id=%s and date_invoice<'%s' and mlg_type='thu_no_xuong'
+                                    group by chinhanh_id
+                            '''%(partner['partner_id'],period['date_start'])
+                            cr.execute(sql)
+                            congno_dauky_line = []
+                            for invoice in cr.dictfetchall():
+                                sql = '''
+                                select case when sum(sotien)!=0 then sum(sotien) else 0 end sotien from
+                                    (select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                                        from account_move_line
+                                        where move_id in (select move_id from account_voucher
+                                            where reference in (select name from account_invoice
+                                                where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s' ))
+                                        and date<'%s'
+                                        
+                                    union all 
+                                    
+                                    select case when sum(so_tien)!=0 then sum(so_tien) else 0 end sotien
+                                        from so_tien_lai
+                                        where invoice_id in (select id from account_invoice
+                                                where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s')
+                                            and ngay<'%s'
+                                    )foo
+                                '''%(invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'],invoice['chinhanh_id'],partner['partner_id'],period['date_start'],period['date_start'])
+                                cr.execute(sql)
+                                tongthu = cr.fetchone()[0]
+                                if invoice['tongtien']>tongthu:
+                                    chitiet_loai_line = []
+                                    sql = '''
+                                        select sum(COALESCE(so_tien,0)) as tongtien,ma_xuong_id
+                                            from account_invoice
+                                            where state in ('open','paid') and partner_id=%s and date_invoice<'%s' and mlg_type='thu_no_xuong' and chinhanh_id=%s
+                                            group by ma_xuong_id
+                                    '''%(partner['partner_id'],period['date_start'],invoice['chinhanh_id'])
+                                    cr.execute(sql)
+                                    for inv_chitiet in cr.dictfetchall():
+                                        sql = '''
+                                            select case when sum(credit)!=0 then sum(credit) else 0 end sotien
+                                                from account_move_line
+                                                where move_id in (select move_id from account_voucher
+                                                    where reference in (select name from account_invoice
+                                                        where mlg_type='thu_no_xuong' and state in ('open','paid') and chinhanh_id=%s and partner_id=%s and date_invoice<'%s'
+                                                            and ma_xuong_id=%s ))
+                                                and date<'%s'
+                                        '''%(invoice['chinhanh_id'],partner['partner_id'],period['date_start'],inv_chitiet['ma_xuong_id'],period['date_start'])
+                                        cr.execute(sql)
+                                        inv_tongtra = cr.fetchone()[0]
+                                        if inv_chitiet['tongtien']>inv_tongtra:
+                                            chitiet_loai_line.append((0,0,{
+                                                'loai_id': inv_chitiet['ma_xuong_id'],
+                                                'so_tien_no': inv_chitiet['tongtien']-inv_tongtra,
+                                            }))
+                                    congno_dauky_line.append((0,0,{
+                                        'chinhanh_id': invoice['chinhanh_id'],
+                                        'mlg_type': 'thu_no_xuong',
+                                        'so_tien_no': invoice['tongtien']-tongthu,
+                                        'chitiet_loai_line': chitiet_loai_line,
+                                    }))
+                            self.create(cr, uid, {
+                                'period_id': period['id'],
+                                'partner_id': partner['partner_id'],
+                                'congno_dauky_line': congno_dauky_line,               
+                            })
+        except Exception, e:
+            raise osv.except_osv(_('Warning!'), str(e))
+        return True
+    
     def tinh_chi_tiet(self, cr, uid, ids, context=None):
         invoice_obj = self.pool.get('account.invoice')
         try:
